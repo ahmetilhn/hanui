@@ -123,7 +123,7 @@ yener, uygulamanın geçişlerini de kapatır.
 | `ReferenceSelect` (108) | `Combobox` | Sanallaştırma ve çoklu seçim geldiğinde bedava |
 | `DashboardContainer` sayaçları | `Stat` ızgarası | ✅ `<Link>` sarmalayıcı korundu |
 | `ResourceListContainer` tabloları | `DataTable` (sıralama + toplu şerit) | `aria-sort`, yapışkan ilk sütun |
-| `OrderDetailContainer` durum geçmişi | `Timeline` | `failed` durumu birinci sınıf |
+| Kargo takip zaman çizelgesi (vitrin) | `Timeline` | ✅ işaret geometrisi silindi |
 | `ModerationContainer` toplu onay | `Checkbox` + yapışkan şerit | ✅ kısmi başarı sayıyla |
 | Ayar anahtarları (8 dosya) | `Switch` | `role="switch"` — "açık/kapalı" diye okunur |
 | Üst bar kullanıcı eylemleri | `Menu` | APG menü, harfe atlama |
@@ -283,3 +283,43 @@ duruyorlar. Değişim ya o yerleşimi bozacaktı ya da `Carousel`e "okları dı�
 Mevcut uygulama zaten ölçülmüş ve gerekçeleri yazılı (bir sayfa görünür genişliğin
 %85'i, `ResizeObserver` ile yeniden ölçüm, 1 px alt piksel toleransı). Kazanç
 nokta göstergesiyle sınırlı, bedel görünür bir yerleşim gerilemesi.
+
+### `ShipmentTracking` → `Timeline` + `Badge`
+
+Zaman çizelgesi elle kuruluydu ve geometrisi hassastı: 2 px'lik çizginin
+merkezine oturan 12 px'lik bir işaret, `calc(-#{$space-4} - 7px)` ile
+hizalanıyordu ve bir piksel kaydığında zincir kırık görünüyordu. Güncel olayın
+vurgusu üç sinyalle veriliyordu (tam kontrast metin, kalın durum, halkalı
+işaret) — `Timeline` aynı üçlüyü `status="current"` ile veriyor ve
+`failed` durumu da birinci sınıf.
+
+Gönderi durumu rozeti de elle tint'lenmişti. Ton kararı çağrı yerinde kaldı:
+**teslim edilemedi ve iade UYARI tonunda, hata tonunda değil** — ikisi de bir
+sorun ama müşterinin bir şeyi yanlış yaptığı anlamına gelmiyor ve kırmızı bir
+rozet siparişin iptal edildiği gibi okunuyordu.
+
+SCSS 155 → 81 satır; kalan tek kural konum satırının iç yerleşimi (kargo
+olayına özgü bir alan, kütüphane onu bilmiyor).
+
+### Elle tint'lenmiş durum etiketleri → `Badge`
+
+Üç yerde aynı desen vardı: `@include tint(...)` + yarıçap + punto + dolgu elle.
+Üçü de `Badge tone=… variant="soft"`a indi ve **ton kararı çağrı yerinde
+kaldı**, çünkü hangi tonun doğru olduğu alana özgü:
+
+| Nerede | Ton | Neden bu ton |
+| --- | --- | --- |
+| `FitmentPreview` uyduğu araç | `success` | "Aracınıza uygun" rozetiyle aynı aile; nötr griyken sayfanın en çok bakılan teknik bilgisi arka plana karışıyordu |
+| `OemList` "birebir" | `success` | Birebir mi muadil mi ayrımı — yanlış parça siparişinin en sık nedeni bu ayrımın kaybolması |
+| Admin `TopBar` ortam etiketi | `warning` | Üretim olmayan ortamda çalışıldığının uyarısı |
+
+Hepsinde `variant="soft"`: doygun dolgu "tıklanabilir" demek (ev kuralı) ve
+bunlar etiket, eylem değil.
+
+### `Stat` ürün sayfasına EKLENMEDİ
+
+Belge "uyumluluk özeti → `Stat`" diyordu. Uyumluluk bir ÖLÇÜ değil bir DURUM:
+uyar / uymaz / bilinmiyor. `Stat` bir sayı gösterir ve `trend`/`delta` ile
+değişimini anlatır; üç durumlu bir bilgiyi oraya sokmak, doğru cevabı olan bir
+alanı "kaç" sorusuna çevirirdi. Uyumluluk kutusu `CompatibilityBox` olarak
+kalıyor ve "bilinmiyor" ≠ "uymuyor" ayrımı orada kodlu.

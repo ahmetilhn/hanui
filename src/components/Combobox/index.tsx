@@ -18,11 +18,29 @@ import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { matchesSearch } from '../../helpers/text.helper';
 import useListboxNavigation from '../../hooks/useListboxNavigation';
+import useVirtualList from '../../hooks/useVirtualList';
 import { useHanui } from '../../theme/context';
 import BottomSheet from '../BottomSheet';
 import Spinner from '../Spinner';
 
 import styles from './index.module.scss';
+
+/**
+ * Sanallaştırmanın devreye girdiği eşik.
+ *
+ * <p>Altında kazanç yok: kırk satırlık bir listede DOM maliyeti zaten ihmal
+ * edilebilir ve ölçüm katmanı yalnızca karmaşıklık ekler.
+ */
+const VIRTUAL_THRESHOLD = 80;
+
+/**
+ * Seçenek satırının yüksekliği (`--sheet` dışında).
+ *
+ * <p>SCSS'teki `min-height` ile birlikte değişir; ayrıştıklarında satırlar
+ * yanlış konumlanır. Ölçüyü çalışma zamanında okumak (`getComputedStyle`) bir
+ * seçenek değil: liste henüz çizilmemişken okunacak bir satır yok.
+ */
+const OPTION_HEIGHT = 40;
 
 export type ComboboxOption<T extends string = string> = {
   value: T;
@@ -342,6 +360,47 @@ const Combobox = <T extends string>({
       onClose: close,
     });
 
+  /*
+   * SANALLASTIRMA — ve UC kosulu birden.
+   *
+   * Olculen sorun: 1121 markali bir listede DOM 1121 satir tasiyordu, panel
+   * acilisi donuyor ve her tus vurusunda liste yeniden ciziliyordu. Ama kanca
+   * SABIT satir yuksekligi istiyor ve burada uc sinir var:
+   *
+   * 1. `popover` KIPINDE. Alt sayfada kaydiran oge liste degil sayfanin
+   *    govdesi (`--sheet`: `overflow: visible`); kancanin olctugu kutu hic
+   *    kaydirilmiyor ve aralik hep basta kalirdi.
+   * 2. ACIKLAMASIZ listede. Ikincil satir tasiyan secenek daha uzun; karisik
+   *    bir listede tek bir `rowHeight` her satiri yanlis konumlandirir.
+   * 3. Liste UZUNSA. Kirk satirlik bir listede sanallastirma hicbir sey
+   *    kazandirmaz, yalnizca bir olcum katmani ekler.
+   *
+   * Ucu birden saglanmiyorsa liste TAM cizilir — eski davranis.
+   */
+  const hasDescriptions = visibleOptions.some(option => Boolean(option.description));
+  const isVirtual =
+    openMode === 'popover' && !hasDescriptions && visibleOptions.length > VIRTUAL_THRESHOLD;
+
+  const { scrollRef, range, scrollToIndex } = useVirtualList(visibleOptions.length, {
+    rowHeight: OPTION_HEIGHT,
+    isEnabled: isVirtual,
+  });
+
+  /*
+   * Etkin secenek CIZILMEMIS olabilir: `scrollIntoView` o satirda calismaz.
+   * Konum once hesaplanir, satir sonra cizilir.
+   */
+  useEffect(() => {
+    if (isVirtual) scrollToIndex(activeIndex);
+  }, [activeIndex, isVirtual, scrollToIndex]);
+
+  /* Iki kanca da AYNI `<ul>`e baglanir: biri etkin secenegi gorunur tutuyor,
+     digeri kaydirmayi olcuyor. */
+  const attachList = (node: HTMLUListElement | null) => {
+    listRef.current = node;
+    scrollRef.current = node;
+  };
+
   const handleInputKeyDown = handleKeyDown;
 
   const clearSelection = () => {
@@ -381,54 +440,86 @@ const Combobox = <T extends string>({
     </div>
   );
 
-  const renderList = (isSheet: boolean) => (
-    <ul
-      ref={listRef}
-      id={listboxId}
-      role="listbox"
-      className={cx(styles.combobox__list, isSheet && styles['combobox__list--sheet'])}
-    >
-      {visibleOptions.map((option, index) => {
-        const isActive = index === activeIndex;
-        const isChosen = option.value === value;
+  const renderList = (isSheet: boolean) => {
+    /*
+     * Cizilen dilim. Sanallastirma kapaliyken aralik tum listeyi kapsiyor
+     * (`useVirtualList` olcum yoksa tam listeye duser), yani burada ayri bir
+     * kosula gerek yok.
+     */
+    const slice = visibleOptions.slice(range.start, range.end);
 
-        return (
-          <li key={option.value}>
-            <div
-              id={`${baseId}-option-${index}`}
-              role="option"
-              data-index={index}
-              aria-selected={isChosen}
-              aria-disabled={option.isDisabled}
-              className={cx(
-                styles.combobox__option,
-                isActive && styles['combobox__option--active'],
-                isChosen && styles['combobox__option--selected'],
-                option.isDisabled && styles['combobox__option--disabled'],
-              )}
-              // Fare imleci seçeneğin üstündeyken etkin seçenek de oraya
-              // taşınır; iki ayrı vurgu kullanıcıyı şaşırtıyordu.
-              onMouseEnter={() => setActiveIndex(index)}
-              onClick={() => selectOption(option)}
-            >
-              <span className={styles.combobox__optionText}>
-                <span className={styles.combobox__optionLabel}>{option.label}</span>
-                {option.description && (
-                  <span className={styles.combobox__optionDescription}>{option.description}</span>
+    return (
+      <ul
+        ref={attachList}
+        id={listboxId}
+        role="listbox"
+        className={cx(styles.combobox__list, isSheet && styles['combobox__list--sheet'])}
+      >
+        {/*
+        Kaydirma cubugu GERCEK boyda olmali: cizilmeyen satirlarin yeri
+        korunmazsa 1121 ogelik bir liste 16 satirlik bir cubuk gosterir ve
+        kullanici listenin bittigini sanardi. Yukseklik ust ve alt bosluklara
+        boluniyor — tek bir mutlak konumlu kutu kullanmak `<ul>`in cocuk
+        sozlesmesini bozardi (`role="listbox"` yalnizca `option` bekler).
+      */}
+        {isVirtual && range.offset > 0 && <li aria-hidden style={{ height: range.offset }} />}
+
+        {slice.map((option, sliceIndex) => {
+          const index = range.start + sliceIndex;
+          const isActive = index === activeIndex;
+          const isChosen = option.value === value;
+
+          return (
+            <li key={option.value}>
+              <div
+                id={`${baseId}-option-${index}`}
+                role="option"
+                data-index={index}
+                /*
+                EKRAN OKUYUCU GERCEK SAYIYI DUYMALI. Cizilmeyen satirlar
+                yuzunden "16 secenekten 3." deniyordu; dogrusu "1121
+                secenekten 3.". Ikisi de yalnizca sanallastirma acikken
+                yazilir — tam cizilen listede tarayici zaten dogru sayiyor ve
+                elle yazmak iki kaynak demek olurdu.
+              */
+                aria-setsize={isVirtual ? visibleOptions.length : undefined}
+                aria-posinset={isVirtual ? index + 1 : undefined}
+                aria-selected={isChosen}
+                aria-disabled={option.isDisabled}
+                className={cx(
+                  styles.combobox__option,
+                  isActive && styles['combobox__option--active'],
+                  isChosen && styles['combobox__option--selected'],
+                  option.isDisabled && styles['combobox__option--disabled'],
                 )}
-              </span>
+                // Fare imleci seçeneğin üstündeyken etkin seçenek de oraya
+                // taşınır; iki ayrı vurgu kullanıcıyı şaşırtıyordu.
+                onMouseEnter={() => setActiveIndex(index)}
+                onClick={() => selectOption(option)}
+              >
+                <span className={styles.combobox__optionText}>
+                  <span className={styles.combobox__optionLabel}>{option.label}</span>
+                  {option.description && (
+                    <span className={styles.combobox__optionDescription}>{option.description}</span>
+                  )}
+                </span>
 
-              {isChosen && <CheckLg aria-hidden className={styles.combobox__check} />}
-            </div>
-          </li>
-        );
-      })}
+                {isChosen && <CheckLg aria-hidden className={styles.combobox__check} />}
+              </div>
+            </li>
+          );
+        })}
 
-      {visibleOptions.length === 0 && (
-        <li className={styles.combobox__empty}>{isLoading ? text.loading : text.empty}</li>
-      )}
-    </ul>
-  );
+        {isVirtual && range.end < visibleOptions.length && (
+          <li aria-hidden style={{ height: (visibleOptions.length - range.end) * OPTION_HEIGHT }} />
+        )}
+
+        {visibleOptions.length === 0 && (
+          <li className={styles.combobox__empty}>{isLoading ? text.loading : text.empty}</li>
+        )}
+      </ul>
+    );
+  };
 
   return (
     <div ref={rootRef} className={cx(styles.combobox, className)} data-testid={testId}>

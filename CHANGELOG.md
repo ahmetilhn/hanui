@@ -141,12 +141,42 @@ aşıldığında yükseltmek onu anlamsız kılar.
 `hanparca-admin`i `^2.0.0`a çıkarmak, `react-hot-toast`ı kaldırmak, kopya
 `useSheetViewport`/`focus.helper`/`useTheme`yi silmek (~2 400 satır).
 
-**`Combobox` çoklu seçim** — kasıtlı olarak ertelendi. `useVirtualList` yazıldı
-ve testi var ama `Combobox`a **henüz bağlanmadı**: sanallaştırma `aria-setsize`
-/ `aria-posinset` gerektiriyor (çizilmeyen satırlar yüzünden ekran okuyucu
-"3 / 16" diyordu, "3 / 1121" değil) ve çoklu seçim `Chip`lerle alanın kendisini
-büyütüyor — ikisi de klavye modelinin ötesinde, ölçülmesi gereken görsel
-değişiklikler. Kancalar hazır; bağlama ayrı bir adım.
+#### `Combobox` sanallaştırma BAĞLANDI
+
+`useVirtualList` artık `Combobox`ta. 1121 markalı bir listede DOM 16 satır
+taşıyor; paket 10 B büyüdü.
+
+**`aria-setsize` / `aria-posinset` yazılıyor** — ertelemenin gerekçesi buydu ve
+çözüldü. Çizilmeyen satırlar yüzünden ekran okuyucu "16 seçenekten 3." diyordu;
+doğrusu "1121 seçenekten 3.". İkisi de YALNIZCA sanallaştırma açıkken yazılıyor:
+tam çizilen listede tarayıcı zaten doğru sayıyor ve elle yazmak iki kaynak
+demek olurdu.
+
+**Üç koşul birden aranıyor** ve her biri ayrı test ediliyor — biri gevşetilirse
+sanallaştırma sessizce yanlış konumlandırma üretir (satırlar üst üste biner):
+
+1. **`popover` kipinde.** Alt sayfada kaydıran öğe liste değil sayfanın gövdesi
+   (`--sheet`: `overflow: visible`); kancanın ölçtüğü kutu hiç kaydırılmıyor ve
+   aralık hep başta kalırdı. **Alt sayfa yolu bilinçli olarak dışarıda:** listeye
+   kendi kaydırma alanını vermek, kullanıcının bildirdiği mobil alt sayfa
+   hatasının düzeltildiği yerleşimi yeniden değiştirmek olurdu — gerçek cihaz
+   doğrulaması olmadan yapılmaz.
+2. **Açıklamasız listede.** İkincil satır taşıyan seçenek daha uzun; karışık bir
+   listede tek bir `rowHeight` her satırı yanlış konumlandırır.
+3. **80 satırdan uzunsa.** Kırk satırlık bir listede kazanç yok, yalnızca bir
+   ölçüm katmanı eklenirdi.
+
+Kaydırma çubuğu gerçek boyda: çizilmeyen satırların yeri üst ve alt boşluk
+öğeleriyle korunuyor. Tek bir mutlak konumlu kutu kullanmak `role="listbox"`in
+çocuk sözleşmesini bozardı.
+
+#### Kalan
+
+**`Combobox` çoklu seçim** — seçili değerler alanın içinde kaldırılabilir
+`Chip`ler olarak duracak. Ertelendi çünkü alanın kendi yüksekliğini değiştiriyor
+(seçim arttıkça büyüyen bir tetikleyici, yanındaki hizalamayı da etkiliyor) ve
+`value`/`onChange` sözleşmesine ikinci bir biçim ekliyor — ikisi de görsel onay
+isteyen kararlar, klavye modelinin ötesinde.
 
 ---
 
