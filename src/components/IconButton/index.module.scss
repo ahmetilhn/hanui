@@ -4,6 +4,9 @@
 .iconButton {
   position: relative;
   display: inline-flex;
+  /* Baglanti kipinde tarayicinin varsayilan alti cizgisi ve miras rengi
+     geliyordu; ikisi de dugme gorunumunu bozuyor. */
+  text-decoration: none;
   align-items: center;
   justify-content: center;
   border: 1px solid transparent;
