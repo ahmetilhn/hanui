@@ -14,6 +14,7 @@ import {
 import { isDefined } from '@ahmetilhn/handy-utils';
 
 import { cx } from '../../helpers/class-name.helper';
+import { scrollIntoViewIfPossible } from '../../helpers/scroll.helper';
 
 import styles from './index.module.scss';
 
@@ -124,9 +125,10 @@ const Tabs: FC<Props> = ({
    * `scrollIntoView` bütün sayfayi zipliyordu.
    */
   useEffect(() => {
-    listRef.current
-      ?.querySelector(`[aria-selected="true"]`)
-      ?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    scrollIntoViewIfPossible(listRef.current?.querySelector(`[aria-selected="true"]`), {
+      block: 'nearest',
+      inline: 'nearest',
+    });
   }, [activeId]);
 
   const select = (id: string) => {

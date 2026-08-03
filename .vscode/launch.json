@@ -1,0 +1,37 @@
+{
+  // ─────────────────────────────────────────────────────────────────────
+  // hanui — LOKAL koşu. Hata ayıklayıcı YOK (`node-terminal` +
+  // `autoAttachChildProcesses: false`).
+  //
+  // ⚠ `nvm use` öneki ZORUNLU: makinenin varsayılanı node 14, `.nvmrc` -> 24.
+  //
+  // ⚠ Her komut `npm run tokens` ile başlıyor. `src/styles/_tokens.generated.scss`,
+  //   `_colors.generated.scss` ve `_metrics.generated.scss` gitignore'da —
+  //   kaynakları `src/theme/*.ts` ve DERLEMEDE üretiliyorlar. Temiz bir
+  //   checkout'ta önek olmadan SCSS derlemesi "dosya yok" ile düşer.
+  // ─────────────────────────────────────────────────────────────────────
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Bileşen galerisi — tema · RTL · yoğunluk anahtarı.
+      // http://localhost:5273 (playground/vite.config.ts, strictPort).
+      "name": "hanui — playground (5273)",
+      "type": "node-terminal",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "command": ". \"$HOME/.nvm/nvm.sh\" && nvm use && npm run tokens && npm run playground",
+      "autoAttachChildProcesses": false
+    },
+    {
+      // Kütüphane derlemesi izleme kipinde: hanparca-frontend/-admin'e
+      // `npm link` ile bağlıyken kaynakta yapılan değişikliği `build/`e taşır.
+      // Galeri bunu KULLANMAZ — orada `src/` doğrudan okunuyor.
+      "name": "hanui — build --watch (link için)",
+      "type": "node-terminal",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "command": ". \"$HOME/.nvm/nvm.sh\" && nvm use && npm run dev",
+      "autoAttachChildProcesses": false
+    }
+  ]
+}

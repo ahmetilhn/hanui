@@ -2,6 +2,8 @@
 
 import { type KeyboardEvent, type RefObject, useCallback, useEffect, useRef, useState } from 'react';
 
+import { scrollIntoViewIfPossible } from '../helpers/scroll.helper';
+
 export type ListboxNavigationOptions = {
   /** Seçenek sayısı. Liste süzüldüğünde değişir. */
   count: number;
@@ -81,9 +83,9 @@ const useListboxNavigation = <T extends HTMLElement = HTMLElement>(
   /* Etkin secenek gorunur alanin disina cikmamali. */
   useEffect(() => {
     if (!isOpen) return;
-    listRef.current
-      ?.querySelector(`[data-index="${activeIndex}"]`)
-      ?.scrollIntoView({ block: 'nearest' });
+    scrollIntoViewIfPossible(listRef.current?.querySelector(`[data-index="${activeIndex}"]`), {
+      block: 'nearest',
+    });
   }, [activeIndex, isOpen, count]);
 
   const handleKeyDown = useCallback(

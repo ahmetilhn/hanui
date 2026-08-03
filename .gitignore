@@ -13,8 +13,14 @@ src/styles/_colors.generated.scss
 npm-debug.log*
 .DS_Store
 .idea/
-.vscode/
+# ⚠ `.vscode/` DEĞİL `.vscode/*`: dizinin tamamı yok sayıldığında git içine
+# HİÇ inmez ve altındaki negatif kural (`!`) etkisiz kalır — `settings.json`
+# istisnası bu yüzden çalışmıyordu.
+.vscode/*
 !.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
 .env
 .env.local
 src/styles/_metrics.generated.scss

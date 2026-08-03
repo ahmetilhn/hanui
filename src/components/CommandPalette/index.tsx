@@ -14,6 +14,7 @@ import {
 import { Search } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
+import { scrollIntoViewIfPossible } from '../../helpers/scroll.helper';
 import { named } from '../../helpers/component.helper';
 import { captureFocus, isTopModal, pushModal } from '../../helpers/focus.helper';
 import { matchesSearch } from '../../helpers/text.helper';
@@ -157,9 +158,9 @@ const CommandPalette = ({
 
   /* Etkin komut gorunur alanin disina cikmamali. */
   useEffect(() => {
-    dialogRef.current
-      ?.querySelector(`[data-index="${activeIndex}"]`)
-      ?.scrollIntoView({ block: 'nearest' });
+    scrollIntoViewIfPossible(dialogRef.current?.querySelector(`[data-index="${activeIndex}"]`), {
+      block: 'nearest',
+    });
   }, [activeIndex]);
 
   const run = (item: CommandItem) => {

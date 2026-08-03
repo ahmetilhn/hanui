@@ -184,17 +184,6 @@ const Select = <T extends string>({
     return () => document.removeEventListener('mousedown', handlePointerDown);
   }, [openMode, close]);
 
-  /*
-   * Alt sayfada odak listenin kendisine gecer: ok tuslari orada isler.
-   *
-   * `preventScroll` ZORUNLU: odaklanan oge ust katmanda duran sabit bir
-   * panelin icinde ve iOS onu "gorunur kilmak" icin sayfayi kaydiriyor —
-   * panel oldugu yerde durdugu icin kaydirmanin tek etkisi, arkadaki sayfanin
-   * kullanicinin bakmadigi bir yere atlamasiydi.
-   */
-  useEffect(() => {
-    if (openMode === 'sheet') listRef.current?.focus({ preventScroll: true });
-  }, [openMode]);
 
   /*
    * KLAVYE MODELI `useListboxNavigation`da — `Combobox`la AYNI kanca.
@@ -215,6 +204,21 @@ const Select = <T extends string>({
       },
       onClose: close,
     });
+
+  /*
+   * Alt sayfada odak listenin kendisine gecer: ok tuslari orada isler.
+   *
+   * `preventScroll` ZORUNLU: odaklanan oge ust katmanda duran sabit bir
+   * panelin icinde ve iOS onu "gorunur kilmak" icin sayfayi kaydiriyor —
+   * panel oldugu yerde durdugu icin kaydirmanin tek etkisi, arkadaki sayfanin
+   * kullanicinin bakmadigi bir yere atlamasiydi.
+   */
+  useEffect(() => {
+    if (openMode === 'sheet') listRef.current?.focus({ preventScroll: true });
+    /* `listRef` kancadan geliyor ve `useRef` kimligi SABIT; bagimlilikta
+       olmasi etkiyi yeniden calistirmaz, denetci ise kancadan gelen bir
+       degerin referans oldugunu kanitlayamiyor. */
+  }, [openMode, listRef]);
 
   /*
    * KAPALIYKEN ok/Enter/Space paneli ACAR. Bu adim kancada DEGIL: acilma

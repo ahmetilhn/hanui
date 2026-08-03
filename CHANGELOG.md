@@ -112,6 +112,21 @@ tarafında ne gerektirdiğini kaydeder.
   gerileme üretirdi; istisna yüzeylere özgü — satır, menü ögesi ve düğme için
   geçerli değil.
 
+#### Tüketici geçişinin bulduğu hata — `scrollIntoView`
+
+`Tabs` seçili sekmeyi görünüre kaydırıyor ve jsdom `scrollIntoView`u
+**uygulamıyor**: çağrı bir `TypeError` atıyordu. Bedeli kütüphanenin kendi
+testleri değil, **tüketicinin** testleri — `hanparca-frontend`in
+`LoginContainer` testi `E.scrollIntoView is not a function` ile düşüyordu.
+Kırılan yer kullanıcının kodu, sebebi kütüphanenin ekranı kaydırma girişimi.
+
+Üç çağrı yeri (`Tabs`, `CommandPalette`, `useListboxNavigation`) tek yardımcıya
+alındı: `helpers/scroll.helper` → `scrollIntoViewIfPossible`. Tüketiciye
+kurulum dosyasında `Element.prototype.scrollIntoView = jest.fn()` yazdırmak,
+kütüphanenin eksiğini her tüketiciye dağıtmak olurdu.
+
+**Yayımlanmalı:** düzeltme `2.0.1`de YOK.
+
 #### Boyut bütçesi 36 kB → 38 kB
 
 Tüm paket girişi 532 B aştı ve bütçe yükseltildi. **Bileşen başına bütçelere
