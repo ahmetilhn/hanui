@@ -2,10 +2,11 @@
 
 import { type FC, memo, useState } from 'react';
 
+import { DashLg, PlusLg } from 'react-bootstrap-icons';
+
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
-import { MinusIcon, PlusIcon } from '../../icons';
 
 import styles from './index.module.scss';
 
@@ -78,7 +79,7 @@ const QuantityStepper: FC<Props> = ({
           labels?.quantity?.decrease,
         )}
       >
-        <MinusIcon />
+        <DashLg aria-hidden />
       </button>
 
       <input
@@ -108,7 +109,7 @@ const QuantityStepper: FC<Props> = ({
           labels?.quantity?.increase,
         )}
       >
-        <PlusIcon />
+        <PlusLg aria-hidden />
       </button>
     </div>
   );

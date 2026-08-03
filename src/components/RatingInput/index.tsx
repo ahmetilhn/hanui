@@ -2,10 +2,11 @@
 
 import { memo, useId, useState } from 'react';
 
+import { StarFill } from 'react-bootstrap-icons';
+
 import { cx } from '../../helpers/class-name.helper';
 import { resolveFormatter } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
-import { StarFillIcon } from '../../icons';
 
 import styles from './index.module.scss';
 
@@ -97,7 +98,7 @@ const RatingInput = ({
               onChange={() => onChange(star)}
               className={styles.rating__input}
             />
-            <StarFillIcon />
+            <StarFill aria-hidden />
             <span className={styles.rating__srOnly}>
               {resolveFormatter(
                 'RatingInput.formatStarCount',

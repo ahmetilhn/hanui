@@ -1,9 +1,10 @@
 import { Children, type FC, type HTMLAttributes, memo, type ReactNode } from 'react';
 
+import { ExclamationCircleFill } from 'react-bootstrap-icons';
+
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
-import { ExclamationCircleIcon } from '../../icons';
 
 import styles from './index.module.scss';
 
@@ -126,7 +127,7 @@ const DataTable: FC<Props> = ({
           {error
             ? renderStateRow(
                 <span role="alert" className={styles.state__message}>
-                  <ExclamationCircleIcon />
+                  <ExclamationCircleFill aria-hidden />
                   {error}
                 </span>,
                 'error',

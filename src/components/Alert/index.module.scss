@@ -33,7 +33,9 @@
     height: 28px;
     flex-shrink: 0;
     border-radius: $radius-sm;
-    font-size: $font-size-sm;
+    /* Ikon olcusu METIN puntosundan degil ikon olceginden: 15 px'lik simge
+       28 px'lik madalyonun ortasinda kayboluyordu. */
+    font-size: $icon-lg;
   }
 
   &__body {

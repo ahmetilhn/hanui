@@ -11,11 +11,12 @@ import {
   useState,
 } from 'react';
 
+import { CaretDownFill, CheckLg } from 'react-bootstrap-icons';
+
 import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
-import { CheckIcon, ChevronDownIcon } from '../../icons';
 import BottomSheet from '../BottomSheet';
 
 import styles from './index.module.scss';
@@ -286,7 +287,7 @@ const Select = <T extends string>({
             onClick={() => selectOption(option)}
           >
             <span className={styles.option__label}>{option.label}</span>
-            {isChosen && <CheckIcon className={styles.option__check} />}
+            {isChosen && <CheckLg aria-hidden className={styles.option__check} />}
           </li>
         );
       })}
@@ -327,7 +328,13 @@ const Select = <T extends string>({
 
         <span className={styles.trigger__value}>{selectedOption?.label ?? emptyText}</span>
 
-        <ChevronDownIcon
+        {/*
+         * Ok DOLU CARET: ince chevron, kutunun sag ucunda `$text-2` tonunda
+         * iki hairline cizgiye iniyor ve kutunun acilir oldugu uzaktan
+         * okunmuyordu. Acikken 180° donuyor — yon hâlâ durumu bildiriyor.
+         */}
+        <CaretDownFill
+          aria-hidden
           className={cx(styles.trigger__chevron, isOpen && styles['trigger__chevron--open'])}
         />
       </button>

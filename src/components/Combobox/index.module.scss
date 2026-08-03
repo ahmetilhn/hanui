@@ -40,10 +40,12 @@
     }
   }
 
+  /* Disaridan gelen icerik ikonu; olcu metinden degil ikon olceginden. */
   &__leadingIcon {
     display: inline-flex;
     color: $text-2;
     flex-shrink: 0;
+    font-size: $icon-md;
   }
 
   &__value {
@@ -60,7 +62,9 @@
     height: 22px;
     border-radius: $radius-pill;
     color: $text-2;
-    font-size: $font-size-2xs;
+    /* 12 px'lik carpi, 22 px'lik dairenin ortasinda dokunulamayacak kadar
+       kucuk bir isaret gibi duruyordu. */
+    font-size: $icon-xs;
     flex-shrink: 0;
     cursor: pointer;
     transition:
@@ -81,7 +85,7 @@
 
   &__chevron {
     color: $text-2;
-    font-size: $font-size-sm;
+    font-size: $icon-xs;
     flex-shrink: 0;
     transition: transform $duration-fast $ease-out;
 
@@ -138,7 +142,7 @@
 
   &__searchIcon {
     color: $text-2;
-    font-size: $font-size-sm;
+    font-size: $icon-md;
     flex-shrink: 0;
   }
 
@@ -262,7 +266,7 @@
 
   &__check {
     color: $blue;
-    font-size: $font-size-sm;
+    font-size: $icon-md;
     flex-shrink: 0;
   }
 

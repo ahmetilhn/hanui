@@ -37,7 +37,9 @@
     background-color: $surface-2;
     border: 1px solid $border;
     color: $text-2;
-    font-size: 26px;
+    /* 64 px'lik madalyonun icinde 26 px'lik simge, kenarina 19 px bosluk
+       birakip daireyi bos gosteriyordu. */
+    font-size: 32px;
     margin-bottom: $space-1;
   }
 
@@ -86,7 +88,7 @@
     .empty__icon {
       width: 48px;
       height: 48px;
-      font-size: 20px;
+      font-size: $icon-xl;
     }
 
     .empty__title {

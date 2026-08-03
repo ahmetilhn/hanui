@@ -23,6 +23,10 @@
     color: $star;
   }
 
+  /*
+   * Bos yildiz DOLU govdeli, soluk tonda (bkz. bilesen). Ton `$border-strong`:
+   * `$border` zeminden ayrilmiyor, `$text-3` ise "bos"u dolu gibi okutuyordu.
+   */
   &__empty {
     color: $border-strong;
   }
@@ -37,11 +41,17 @@
     @include visually-hidden;
   }
 
+  /*
+   * Olcu ikon olceginden. Once 14/16 px'lik elle yazilmis degerlerdi: urun
+   * kartinda bes yildiz, yanindaki adet metniyle (13 px) neredeyse ayni
+   * yuksekliktedir ve puan bir ETIKET degil bir GRAFIK — okunmasi icin
+   * metinden buyuk olmali.
+   */
   &--sm .rating__stars {
-    font-size: 14px;
+    font-size: $icon-sm;
   }
 
   &--md .rating__stars {
-    font-size: 16px;
+    font-size: $icon-md;
   }
 }

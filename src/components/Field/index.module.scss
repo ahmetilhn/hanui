@@ -55,4 +55,15 @@
     line-height: $leading-normal;
     margin: 0;
   }
+
+  /*
+   * Ikon mesajdan BUYUK (13 px metin, 14 px simge) ve kucultulemez.
+   * Mesaj puntosunu miras aldiginda simge 13 px'e dusup dolu dairenin
+   * icindeki unlem isareti okunmaz hale geliyordu; `flex-shrink` ise uzun
+   * mesajlarda ikonu eziyordu.
+   */
+  &__errorIcon {
+    font-size: $icon-xs;
+    flex-shrink: 0;
+  }
 }

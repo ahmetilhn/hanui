@@ -2,10 +2,11 @@ import { type FC, memo } from 'react';
 
 import { isDefined } from '@ahmetilhn/handy-utils';
 
+import { StarFill, StarHalf } from 'react-bootstrap-icons';
+
 import { cx } from '../../helpers/class-name.helper';
 import { resolveFormatter } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
-import { StarFillIcon, StarHalfIcon, StarIcon } from '../../icons';
 
 import styles from './index.module.scss';
 
@@ -45,12 +46,20 @@ const Rating: FC<Props> = ({ value, count, srLabel, size = 'sm', className, test
 
   return (
     <span className={cx(styles.rating, styles[`rating--${size}`], className)} data-testid={testId}>
+      {/*
+       * BOS YILDIZ DA DOLU — farkı renk taşır (`rating__empty`), çizgi değil.
+       *
+       * <p>İçi boş yıldız yalnızca bir konturdur: dolu komşusunun yanında
+       * "eksik çizilmiş" gibi durur ve küçük boyda kontur tek piksele inip
+       * kayboluyordu. Aynı gövde + soluk ton, beş yıldızın silüetini bozmadan
+       * doluluğu okutur.
+       */}
       <span className={styles.rating__stars} aria-hidden>
         {Array.from({ length: 5 }, (_, index) => {
           const position = index + 1;
-          if (rounded >= position) return <StarFillIcon key={index} />;
-          if (rounded >= position - 0.5) return <StarHalfIcon key={index} />;
-          return <StarIcon key={index} className={styles.rating__empty} />;
+          if (rounded >= position) return <StarFill key={index} />;
+          if (rounded >= position - 0.5) return <StarHalf key={index} />;
+          return <StarFill key={index} className={styles.rating__empty} />;
         })}
       </span>
 

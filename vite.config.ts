@@ -89,7 +89,19 @@ export default defineConfig({
       fileName: format => (format === 'es' ? 'index.js' : 'index.cjs'),
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime', '@ahmetilhn/handy-utils'],
+      external: [
+        'react',
+        'react-dom',
+        'react/jsx-runtime',
+        '@ahmetilhn/handy-utils',
+        /*
+         * İkonlar da EXTERNAL: paket tüketicide zaten var (uygulamalar kendi
+         * içerik ikonlarını aynı setten alıyor). Bundle'a gömülseydi aynı
+         * simgeler iki kez inecek ve ağaç sallama tüketici tarafında hiç
+         * çalışmayacaktı.
+         */
+        'react-bootstrap-icons',
+      ],
       output: {
         banner: "'use client';",
         assetFileNames: 'styles.css',

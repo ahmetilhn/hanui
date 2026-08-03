@@ -50,13 +50,28 @@
     }
   }
 
-  &__icon,
+  /*
+   * Ikon metinden buyuk — ama 1.05em kadar degil.
+   *
+   * Ikonlarin gorsel agirligi harflerden dusuk: esit puntoda etiketin
+   * yaninda kucuk kaliyorlar. Ilk duzeltme %5'ti ve OLCULEBILIR bir fark
+   * degildi (15 px metin → 15.75 px ikon). Ikon olcegi ise puntodan tamamen
+   * ayri: `medium` dugmede 15 px etiket + 18 px ikon.
+   *
+   * Spinner ETIKETLE olceklenmeye devam eder (`1.15em`): o bir simge degil,
+   * metnin yerini tutan bir hareket — buyudugunde dugme icinde ziplar.
+   */
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    font-size: $icon-md;
+  }
+
   &__spinner {
     display: inline-flex;
     align-items: center;
     flex-shrink: 0;
-    /* Ikon metinden bir tik buyuk: esit puntoda ikon metnin yaninda kucuk
-       kaliyordu (ikonlarin gorsel agirligi harflerden dusuk). */
     font-size: 1.05em;
   }
 
@@ -86,6 +101,10 @@
     padding: $space-2 $space-3;
     font-size: $font-size-sm;
     min-height: 36px;
+
+    .button__icon {
+      font-size: $icon-sm;
+    }
   }
 
   &--medium {
@@ -98,6 +117,10 @@
     padding: $space-4 $space-6;
     font-size: $font-size-base;
     min-height: 52px;
+
+    .button__icon {
+      font-size: $icon-lg;
+    }
   }
 
   // =====================================================================

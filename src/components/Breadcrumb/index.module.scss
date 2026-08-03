@@ -59,8 +59,16 @@
     font-weight: $weight-medium;
   }
 
+  /*
+   * Ayrac DOLU ucgen (`CaretRightFill`), ince chevron degil.
+   *
+   * Chevron 12 px'te yalnizca iki hairline cizgiye iniyor ve `$text-3`
+   * tonunda — yolun en soluk ogesi — acik temada neredeyse kayboluyordu.
+   * Dolu ucgen ayni olcude ayni sessizlikte ama gorunur.
+   */
   &__separator {
     color: $text-3;
-    font-size: 12px;
+    font-size: $icon-xs;
+    flex-shrink: 0;
   }
 }

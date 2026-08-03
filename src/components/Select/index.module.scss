@@ -44,11 +44,14 @@
     font-weight: $weight-medium;
   }
 
+  /* Tetikleyicideki icerik ikonu (disaridan gelir): metin puntosunu degil
+     ikon olcegini alir, yoksa etiketle ayni yukseklikte kalip etiketi
+     ezeleyen bir "harf" gibi duruyordu. */
   &__icon {
     display: inline-flex;
     color: $text-2;
     flex-shrink: 0;
-    font-size: $font-size-sm;
+    font-size: $icon-md;
   }
 
   &__value {
@@ -60,7 +63,7 @@
   &__chevron {
     color: $text-2;
     flex-shrink: 0;
-    font-size: $font-size-sm;
+    font-size: $icon-xs;
     transition: transform $duration-fast $ease-out;
 
     &--open {
@@ -189,7 +192,7 @@
   &__check {
     color: $blue-text;
     flex-shrink: 0;
-    font-size: $font-size-sm;
+    font-size: $icon-md;
   }
 
   @include reduced-motion {

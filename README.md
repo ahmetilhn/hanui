@@ -1,7 +1,7 @@
 # @ahmetilhn/hanui
 
 Erişilebilir, tema güdümlü React bileşen kütüphanesi. SCSS Modules üzerine
-kurulu; çalışma zamanında **hiçbir UI bağımlılığı yok**.
+kurulu; tek çalışma zamanı bağımlılığı ikon seti (`react-bootstrap-icons`).
 
 - **Tek CSS dosyası, iki tema.** Açık ve koyu hazır gelir, her token dışarıdan
   ezilebilir.
@@ -14,10 +14,11 @@ kurulu; çalışma zamanında **hiçbir UI bağımlılığı yok**.
   duyurusu tarayıcıdan gelir.
 
 ```bash
-npm install @ahmetilhn/hanui @ahmetilhn/handy-utils
+npm install @ahmetilhn/hanui @ahmetilhn/handy-utils react-bootstrap-icons
 ```
 
-`react`, `react-dom` ve `@ahmetilhn/handy-utils` **peer** bağımlılıktır.
+`react`, `react-dom`, `@ahmetilhn/handy-utils` ve `react-bootstrap-icons`
+**peer** bağımlılıktır.
 
 ---
 
@@ -291,6 +292,23 @@ turuncu — dönüşüm eylemi.
 işaretle de bildirilir: `Alert`in her tonunun kendi ikonu var, `Field`in zorunlu
 yıldızının yanında okunabilir bir metin, `RatingInput`in yıldızlarının altında
 açıklama duruyor.
+
+**İkonlar `react-bootstrap-icons`ten, DOLU sürümüyle.** Kabuk simgeleri
+(`Modal`ın kapatma çarpısı, `Select`in oku, `Alert`in durum ikonu) bir zamanlar
+kütüphanenin içinde elle çizilmiş yollardı; bir ikon setinin bakımını üstlenmek
+hiçbir şey kazandırmıyordu — tüketici uygulamalar kendi içerik ikonlarını zaten
+aynı setten alıyor ve paket `external`, yani ikinci bir kopya inmiyor. Dolu
+(`*Fill`) sürüm kural: ince konturlu bir simge, tint zeminde ve küçük ölçüde
+tek piksele inip kayboluyor. Fill eşi olmayan simgelerde (`X`, `Check`, `Plus`,
+`Dash`) kalın `*Lg` sürümü kullanılır, chevron yerine dolu `Caret*Fill` —
+böylece bütün kabuk aynı çizgi ağırlığında kalır. İçerik ikonları (kategori
+simgesi, marka logosu) her zaman `ReactNode` prop'u olarak DIŞARIDAN gelir.
+
+**İkon ölçüsü metin puntosundan ayrıdır.** İkonlar `1em` ile ölçeklenir ama
+taşındıkları kutunun `font-size` değeri metin için seçilmiştir ve simge için
+küçük kalır: 40 px'lik bir `IconButton`ın ortasındaki 16 px'lik simge tıklanabilir
+görünmüyordu. Ölçek ayrı bir token dizisidir (`$icon-xs` … `$icon-xl`,
+14/16/18/20/24 px) ve ikon taşıyan her kutu puntosunu oradan alır.
 
 **"Yüklenemedi" ile "boş" ayrı durumlardır.** `DataTable`da `error` verilmişken
 boş mesajı **asla** çizilmez; bir ağ hatasını "kayıt kalmamış" diye okutmak

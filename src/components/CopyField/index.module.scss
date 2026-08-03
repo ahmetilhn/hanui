@@ -55,15 +55,21 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    /*
+     * Gorsel kutu 24 px, ikon 16 px. Once 20/13'tu: 13 px'lik bir pano
+     * simgesi, yanindaki tek aralikli deger metniyle ayni yukseklikte
+     * kaliyor ve TIKLANABILIR oldugu okunmuyordu. Dokunma hedefi 44 px
+     * (`tap-target`) — o degismedi, satir yuksekligi de degismez.
+     */
+    width: 24px;
+    height: 24px;
     flex-shrink: 0;
     padding: 0;
     border: none;
     border-radius: $radius-xs;
     background: none;
     color: $text-3;
-    font-size: 13px;
+    font-size: $icon-sm;
     cursor: pointer;
     transition:
       color $duration-fast $ease-out,

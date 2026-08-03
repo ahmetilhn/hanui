@@ -1,9 +1,10 @@
 import { type FC, memo } from 'react';
 
+import { CaretRightFill } from 'react-bootstrap-icons';
+
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
-import { ChevronRightIcon } from '../../icons';
 import type { HanuiLinkExtraProps } from '../../types/link.type';
 import HanuiLink from '../Link';
 
@@ -59,7 +60,9 @@ const Breadcrumb: FC<Props> = ({ items, label, linkProps, className, testId }) =
                 </span>
               )}
 
-              {!isLast && <ChevronRightIcon className={styles.breadcrumb__separator} />}
+              {!isLast && (
+                <CaretRightFill aria-hidden className={styles.breadcrumb__separator} />
+              )}
             </li>
           );
         })}

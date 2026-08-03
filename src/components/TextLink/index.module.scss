@@ -21,8 +21,14 @@
     text-underline-offset: 3px;
   }
 
+  /*
+   * Ok metinle birlikte olceklenir (`em`) ama METINDEN KUCUK DEGIL: 0.9em
+   * kucuk boyda (13 px) oku 11.7 px'e dusuruyor ve okun govdesi tek piksele
+   * inip yariml pikselde bulaniklasiyordu. 1em ayni ritmi korur, hizalama
+   * `align-items: center` ile zaten dogru.
+   */
   &__arrow {
-    font-size: 0.9em;
+    font-size: 1em;
     flex-shrink: 0;
     transition: transform $duration-fast $ease-out;
 

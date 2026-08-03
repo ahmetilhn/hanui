@@ -2,12 +2,13 @@
 
 import { type FC, memo, useMemo } from 'react';
 
+import { CaretLeftFill, CaretRightFill } from 'react-bootstrap-icons';
+
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
 import UISize from '../../enums/ui-size.enum';
 import UIVariant from '../../enums/ui-variant.enum';
-import { ChevronLeftIcon, ChevronRightIcon } from '../../icons';
 import type { HanuiLinkExtraProps } from '../../types/link.type';
 import Button from '../Button';
 import IconButton from '../IconButton';
@@ -126,7 +127,7 @@ const Pagination: FC<Props> = ({
     >
       <IconButton
         className={styles.pagination__arrow}
-        icon={<ChevronLeftIcon />}
+        icon={<CaretLeftFill aria-hidden />}
         label={resolveLabel(
           'Pagination.previousLabel',
           previousLabel,
@@ -178,7 +179,7 @@ const Pagination: FC<Props> = ({
 
       <IconButton
         className={styles.pagination__arrow}
-        icon={<ChevronRightIcon />}
+        icon={<CaretRightFill aria-hidden />}
         label={resolveLabel('Pagination.nextLabel', nextLabel, labels?.pagination?.next)}
         variant="outline"
         disabled={page >= totalPages}

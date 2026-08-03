@@ -1,9 +1,10 @@
 import { type FC, memo, type ReactNode, useId } from 'react';
 
+import { ExclamationCircleFill } from 'react-bootstrap-icons';
+
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
-import { ExclamationCircleIcon } from '../../icons';
 
 import styles from './index.module.scss';
 
@@ -105,7 +106,7 @@ const Field: FC<Props> = ({
 
       {error ? (
         <p id={errorId} className={styles.field__error} role="alert">
-          <ExclamationCircleIcon />
+          <ExclamationCircleFill aria-hidden className={styles.field__errorIcon} />
           {error}
         </p>
       ) : (

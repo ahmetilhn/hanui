@@ -54,11 +54,22 @@
     color: $bad-fg;
   }
 
-  /* Ikon + metin; renk tek basina anlam tasiyamaz (WCAG 1.4.1). */
+  /*
+   * Ikon + metin; renk tek basina anlam tasiyamaz (WCAG 1.4.1).
+   *
+   * Ikon tablo puntosunu (15 px) degil ikon olcegini kullanir: bos ve hatali
+   * tablo, sayfadaki en genis bosluga cizilen tek satirdir ve orada 15 px'lik
+   * bir simge iliskisiz bir noktaya donusuyordu.
+   */
   &__message {
     display: inline-flex;
     align-items: center;
     gap: $space-2;
+
+    svg {
+      font-size: $icon-md;
+      flex-shrink: 0;
+    }
   }
 }
 

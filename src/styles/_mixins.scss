@@ -74,21 +74,54 @@
 /// `viewport-fit=cover` ile icerik centikli cihazlarda (yatay telefon)
 /// ekranin TAMAMINA yayilir; bu mixin verilen dolguyu centik payinin altina
 /// dusurmez. Centiksiz cihazda `env()` 0 doner ve olcu aynen kalir.
+///
+/// `env()` YEDEKSIZ YAZILMAZ. Anahtar kelimeyi tanimayan bir tarayicida
+/// yedeksiz `env()` ifadeyi ayristirilamaz kilar ve tarayici BUTUN
+/// bildirimi atar — yani centik payini eklemek soyle dursun, verilen taban
+/// dolgu da kayboluyor ve icerik kenara yapisiyordu.
 @mixin safe-inline($padding: $space-4) {
-  padding-left: max(#{$padding}, env(safe-area-inset-left));
-  padding-right: max(#{$padding}, env(safe-area-inset-right));
+  padding-left: max(#{$padding}, env(safe-area-inset-left, 0px));
+  padding-right: max(#{$padding}, env(safe-area-inset-right, 0px));
 }
+
+/// Panelin dibinin, YERLESIM gorunum alaninin dibinden ne kadar yukarida
+/// duracagi. Alt sayfanin konumu da (`bottom-sheet`) dip seridin dolgusu da
+/// (`safe-bottom`) bu tek ifadeden okur.
+///
+/// Ekranin dibindeki seridi iki AYRI sey gizleyebiliyor ve ikisi de tek
+/// basina yeterli degil:
+///
+/// - `--hanui-sheet-inset-bottom` — `useSheetViewport`in olctugu, tarayici
+///   cubugunun/klavyenin ortuldugu bant. Tarayici cubugu yokken (ana ekrana
+///   eklenmis PWA, tam ekran) 0 cikar.
+/// - `env(safe-area-inset-bottom)` — cihazin ana ekran cubugu payi. Tarayici
+///   cubugu ACIKKEN bu serit zaten o cubugun altinda kalir.
+///
+/// Bu yuzden TOPLAM DEGIL `max()`: toplandiginda tarayici cubugu acikken pay
+/// iki kez sayiliyor ve panelle cubuk arasinda 34 px'lik bos bir bant
+/// kaliyordu. `max()` hangisi buyukse onu secer, ikisi de yoksa 0.
+///
+/// Yalnizca `--hanui-sheet-inset-bottom` kullanildiginda hata standalone
+/// PWA'da geri geliyordu: orada tarayici cubugu olmadigi icin olcum 0 doner,
+/// panel yerlesim gorunum alaninin dibine oturur ve dip seridi ana ekran
+/// cubugunun ALTINDA kalir — kisa bir panelde bu, panelin gorunur yarisini
+/// goturuyordu.
+$sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bottom, 0px))'};
 
 /// Dikey guvenli alan dolgusu — alt sayfalarin DIP seridi icin.
 ///
 /// Ana ekran cubugunun payi (`env(safe-area-inset-bottom)`) yalnizca panel
-/// gercekten ekranin dibinde dururken gerekli. Klavye acildiginda panel
-/// klavyenin ustune tasiniyor (bkz. `bottom-sheet`) ve o pay artik hicbir
-/// seyin altinda degil: dolgu oldugu gibi birakildiginda dip dugmelerin
-/// altinda 34 px'lik bos bir serit kaliyor, panel klavyeden "kopuk"
-/// goruluyordu. Cikarma negatife dustugunde `max()` zaten tabani secer.
+/// gercekten ekranin dibinde dururken gerekli. Panel `$sheet-lift` kadar
+/// yukari alindiginda (bkz. `bottom-sheet`) o pay artik hicbir seyin altinda
+/// degil: dolgu oldugu gibi birakildiginda dip dugmelerin altinda 34 px'lik
+/// bos bir serit kaliyor, panel klavyeden "kopuk" goruluyordu. Cikarma
+/// negatife dustugunde `max()` zaten tabani secer.
+///
+/// Cikarilan deger panelin GERCEK kaldirma miktari olmali; eskiden yalnizca
+/// `--hanui-sheet-inset-bottom` cikariliyordu ve panel ana ekran cubugu
+/// yuzunden kaldirildiginda ayni pay bir de dolguya ekleniyordu.
 @mixin safe-bottom($padding: $space-3) {
-  padding-bottom: max(#{$padding}, calc(env(safe-area-inset-bottom) - #{$sheet-inset-bottom}));
+  padding-bottom: max(#{$padding}, calc(env(safe-area-inset-bottom, 0px) - #{$sheet-lift}));
 }
 
 @mixin container($width: $container-max-width) {
@@ -285,11 +318,12 @@
 /// YUKSELIYOR gibi okunuyor.
 ///
 /// GORUNEN ALANA yaslanir, yerlesim gorunum alanina degil. `bottom: 0` iOS'ta
-/// panelin dibini adres cubugunun ve KLAVYENIN altina birakiyordu: kisa bir
-/// panel neredeyse yarisini kaybediyor, arama kutusu olan bir panelde klavye
-/// acilinca liste erisilemez oluyordu. Olcum `useSheetViewport` icinde;
-/// degiskenler yoksa yedek deger eski davranistir, yani panel hicbir kosulda
-/// kaybolmaz.
+/// panelin dibini adres cubugunun, ANA EKRAN CUBUGUNUN ve KLAVYENIN altina
+/// birakiyordu: kisa bir panel neredeyse yarisini kaybediyor, arama kutusu
+/// olan bir panelde klavye acilinca liste erisilemez oluyordu. Kaldirma
+/// miktari `$sheet-lift` — iki nedeni birlestiren tek ifade; olcum bacagi
+/// `useSheetViewport` icinde ve degiskenler yoksa `env()` bacagi devrede
+/// kalir, yani panel hicbir kosulda ekranin disina dusmez.
 ///
 /// @param $max-height Panelin en fazla kaplayacagi yukseklik. Ustunde bir
 ///   parca sayfa gorunur kalmali: kullanici neyin ustunde durdugunu bilmeli.
@@ -297,12 +331,17 @@
   display: flex;
   flex-direction: column;
   position: fixed;
-  inset: auto 0 #{$sheet-inset-bottom} 0;
+  inset: auto 0 #{$sheet-lift} 0;
   width: 100%;
   max-width: none;
   /* Gorunen alanin tamamini kaplamaz: kullanici panelin ustunde ne oldugunu
-     gorebilmeli — klavye acikken bile. */
-  max-height: min(#{$max-height}, calc(#{$sheet-height} - #{$space-5}));
+     gorebilmeli — klavye acikken bile. Centik payi (`safe-area-inset-top`)
+     de dusulur: yatay telefonda ve uzun bir listede panelin ust kenari
+     durum cubugunun arkasina giriyordu. */
+  max-height: min(
+    #{$max-height},
+    calc(#{$sheet-height} - #{$space-5} - env(safe-area-inset-top, 0px))
+  );
   margin: 0;
   padding: 0;
   border: none;

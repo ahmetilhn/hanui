@@ -37,16 +37,25 @@
    */
   @include tap-target;
 
+  /*
+   * IKON OLCUSU METIN PUNTOSUNDAN GELMEZ.
+   *
+   * Once `sm` 15 px, `md` 16 px metin puntosu tasiyordu: 40 px'lik bir kutunun
+   * ortasinda 16 px'lik bir simge, cevresinde 12 px bosluk birakip
+   * "yanlislikla kucuk kalmis" gibi duruyordu — dugmenin kendisi degil icindeki
+   * isaret tiklanabilir gorunmeli. Kutu olculeri DEGISMEDI (32/40) ve dokunma
+   * hedefi hâlâ 44 px; buyuyen yalnizca simge.
+   */
   &--sm {
     width: 32px;
     height: 32px;
-    font-size: $font-size-sm;
+    font-size: $icon-sm;
   }
 
   &--md {
     width: 40px;
     height: 40px;
-    font-size: $font-size-base;
+    font-size: $icon-md;
   }
 
   &--ghost:hover:not(:disabled) {

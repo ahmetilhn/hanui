@@ -2,20 +2,22 @@
 
 import { type FC, memo, type ReactNode, useState } from 'react';
 
+import { ExclamationTriangleFill, QuestionCircleFill, TrashFill } from 'react-bootstrap-icons';
+
 import { resolveLabel } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
 import UISize from '../../enums/ui-size.enum';
 import UIVariant from '../../enums/ui-variant.enum';
-import { ExclamationTriangleFillIcon, QuestionCircleFillIcon, TrashFillIcon } from '../../icons';
 import Button from '../Button';
 import Modal, { type ModalTone } from '../Modal';
 
 export type ConfirmKind = 'destructive' | 'warning' | 'neutral';
 
+/** Üçü de DOLU sürüm: madalyonun tint zemininde kontur kaybolur. */
 const KIND_ICON: Record<ConfirmKind, ReactNode> = {
-  destructive: <TrashFillIcon />,
-  warning: <ExclamationTriangleFillIcon />,
-  neutral: <QuestionCircleFillIcon />,
+  destructive: <TrashFill aria-hidden />,
+  warning: <ExclamationTriangleFill aria-hidden />,
+  neutral: <QuestionCircleFill aria-hidden />,
 };
 
 const KIND_TONE: Record<ConfirmKind, ModalTone> = {

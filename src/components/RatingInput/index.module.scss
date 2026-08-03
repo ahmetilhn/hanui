@@ -45,7 +45,9 @@
     min-width: 44px;
     min-height: 44px;
 
-    font-size: $font-size-xl;
+    /* Metin degil GRAFIK olcusu: 44 px'lik kutunun icinde secilebilir
+       buyuklukte tek deger. */
+    font-size: $icon-xl;
     color: $border;
     cursor: pointer;
     transition:

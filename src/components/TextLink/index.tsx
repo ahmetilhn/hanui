@@ -1,7 +1,8 @@
 import { type AnchorHTMLAttributes, memo, type ReactNode } from 'react';
 
+import { ArrowRight } from 'react-bootstrap-icons';
+
 import { cx } from '../../helpers/class-name.helper';
-import { ArrowRightIcon } from '../../icons';
 import type { HanuiLinkExtraProps } from '../../types/link.type';
 import HanuiLink from '../Link';
 
@@ -52,7 +53,11 @@ const TextLink = ({
     {...rest}
   >
     <span className={styles.link__label}>{children}</span>
-    {hasArrow && <ArrowRightIcon className={styles.link__arrow} />}
+    {/*
+     * Ok DOLU DEĞİL: Bootstrap Icons'ta uzun okun dolu bir eşi yok ve dolu
+     * caret bir "devam" oku değil, bir açılır menü işareti okunuyor.
+     */}
+    {hasArrow && <ArrowRight aria-hidden className={styles.link__arrow} />}
   </HanuiLink>
 );
 

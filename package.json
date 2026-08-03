@@ -1,7 +1,7 @@
 {
   "name": "@ahmetilhn/hanui",
-  "version": "1.1.1",
-  "description": "Accessible, theme-driven React component library built on SCSS Modules. Zero runtime UI dependencies, two built-in themes and a fully overridable design-token contract.",
+  "version": "1.2.0",
+  "description": "Accessible, theme-driven React component library built on SCSS Modules. Bootstrap Icons for shell iconography, two built-in themes and a fully overridable design-token contract.",
   "author": "Ahmet ilhan <ahmetilhan.dev@gmail.com>",
   "license": "MIT",
   "publisher": "Ahmet ilhan",
@@ -71,6 +71,7 @@
   "peerDependencies": {
     "@ahmetilhn/handy-utils": ">=3.2.0",
     "react": ">=18",
+    "react-bootstrap-icons": ">=1.11.0",
     "react-dom": ">=18"
   },
   "devDependencies": {
@@ -93,6 +94,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "prettier": "^3.4.2",
     "react": "^19.0.0",
+    "react-bootstrap-icons": "^1.11.6",
     "react-dom": "^19.0.0",
     "sass": "^1.83.4",
     "ts-jest": "^29.2.5",

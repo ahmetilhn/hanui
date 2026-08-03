@@ -6,12 +6,13 @@ import { createPortal } from 'react-dom';
 import { isClient } from '@ahmetilhn/handy-utils';
 
 import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
+import { XLg } from 'react-bootstrap-icons';
+
 import { cx } from '../../helpers/class-name.helper';
 import { preventAutoKeyboard } from '../../helpers/focus.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
 import useSheetViewport from '../../hooks/useSheetViewport';
-import { XIcon } from '../../icons';
 import IconButton from '../IconButton';
 
 import styles from './index.module.scss';
@@ -144,7 +145,7 @@ const BottomSheet = ({
           {title}
         </h2>
         <IconButton
-          icon={<XIcon />}
+          icon={<XLg aria-hidden />}
           label={resolveLabel('BottomSheet.closeLabel', closeLabel, labels?.close)}
           variant="ghost"
           size="sm"

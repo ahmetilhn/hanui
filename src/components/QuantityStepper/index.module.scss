@@ -64,10 +64,18 @@
     }
   }
 
+  /*
+   * ARTI VE EKSI IKON OLCEGINDEN OLCULUR.
+   *
+   * Once dugmeler metin puntosu tasiyordu (13 / 15 px) ve adet kutusundaki
+   * rakam onlardan buyuk gorunuyordu: adedi degistiren iki dugme, degistirdigi
+   * sayidan kucuktu. `PlusLg`/`DashLg` cizgileri daha kalin; ayni olcude bile
+   * dokunulabilir bir hedef gibi okunuyorlar.
+   */
   &--sm {
     .stepper__button {
       height: 32px;
-      font-size: 13px;
+      font-size: $icon-sm;
     }
 
     .stepper__input {
@@ -85,7 +93,7 @@
   &--md {
     .stepper__button {
       height: 44px;
-      font-size: $font-size-sm;
+      font-size: $icon-md;
     }
 
     .stepper__input {

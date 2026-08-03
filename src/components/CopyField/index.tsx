@@ -2,10 +2,11 @@
 
 import { type FC, memo, useCallback, useEffect, useRef, useState } from 'react';
 
+import { ClipboardCheckFill, ClipboardFill } from 'react-bootstrap-icons';
+
 import { cx } from '../../helpers/class-name.helper';
 import { resolveFormatter, resolveLabel } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
-import { CheckSmallIcon, CopyIcon } from '../../icons';
 
 import styles from './index.module.scss';
 
@@ -138,7 +139,12 @@ const CopyField: FC<Props> = ({
                 resolveFormatter('CopyField.copyLabel', labels?.copyField?.copy, value))
           }
         >
-          {isCopied ? <CheckSmallIcon /> : <CopyIcon />}
+          {/*
+            Kopyalandi ISARETLI PANO, yalin tik degil: yalin tik "dogru
+            deger" diye de okunabiliyordu. Ayni gövde + tik, degisimin
+            kopyalama eylemine ait oldugunu birakiyor.
+          */}
+          {isCopied ? <ClipboardCheckFill aria-hidden /> : <ClipboardFill aria-hidden />}
         </button>
       )}
 

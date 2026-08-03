@@ -61,6 +61,26 @@ $weight-medium: 500;
 $weight-semibold: 600;
 $weight-bold: 700;
 
+/*
+ * --- IKON OLCUSU -----------------------------------------------------
+ *
+ * Ikonlar `react-bootstrap-icons`ten gelir ve olculerini `1em` ile, yani
+ * kapsayicinin `font-size` degerinden alir. Kapsayicinin PUNTOSU ise metin
+ * icin secilmis bir degerdir ve ikon icin kucuk kaliyordu: 15 px'lik bir
+ * arayuz puntosunda simge, 16'lik viewBox'in ~14 px'lik cizim alanina
+ * dusuyor — 40 px'lik bir `IconButton`in ortasinda bir nokta gibi duruyordu.
+ *
+ * Bu yuzden ikon olcusu METIN OLCEGINDEN AYRI: ikonu tasiyan her kutu
+ * `font-size` degerini buradan alir. Olcek Bootstrap Icons'in 16px'lik
+ * cizim izgarasinin katlarina yakin durur; ara degerler (17, 19) simgeyi
+ * yariml piksele oturtup bulaniklastiriyordu.
+ */
+$icon-xs: 14px; // yardim metni, yol ayraci — metnin icinde akan simge
+$icon-sm: 16px; // arayuz varsayilani: kucuk dugme, liste tiki
+$icon-md: 18px; // dugme ve alan icindeki simge
+$icon-lg: 20px; // madalyon, kip pencere kapatma
+$icon-xl: 24px; // durum ikonu, bos durum
+
 // Okunabilir satir uzunlugu. 75ch'nin otesinde goz satir basina donerken
 // yerini kaybediyor.
 $measure: 68ch;

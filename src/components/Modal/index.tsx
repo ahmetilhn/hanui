@@ -10,11 +10,12 @@ import {
   useRef,
 } from 'react';
 
+import { XLg } from 'react-bootstrap-icons';
+
 import { cx } from '../../helpers/class-name.helper';
 import { preventAutoKeyboard } from '../../helpers/focus.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
-import { XIcon } from '../../icons';
 import IconButton from '../IconButton';
 
 import styles from './index.module.scss';
@@ -188,7 +189,7 @@ const Modal = ({
 
           {isDismissable && (
             <IconButton
-              icon={<XIcon />}
+              icon={<XLg aria-hidden />}
               label={resolveLabel('Modal.closeLabel', closeLabel, labels?.close)}
               variant="ghost"
               size="sm"

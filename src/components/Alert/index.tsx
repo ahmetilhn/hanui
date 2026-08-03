@@ -1,12 +1,13 @@
 import { type FC, memo, type ReactNode } from 'react';
 
-import { cx } from '../../helpers/class-name.helper';
 import {
-  CheckCircleFillIcon,
-  ExclamationTriangleFillIcon,
-  InfoCircleFillIcon,
-  XCircleFillIcon,
-} from '../../icons';
+  CheckCircleFill,
+  ExclamationTriangleFill,
+  InfoCircleFill,
+  XCircleFill,
+} from 'react-bootstrap-icons';
+
+import { cx } from '../../helpers/class-name.helper';
 
 import styles from './index.module.scss';
 
@@ -22,12 +23,20 @@ type Props = {
   testId?: string;
 };
 
-/** Her tona kendi ikonu; renk tek başına anlam taşımaz (WCAG 1.4.1). */
+/**
+ * Her tona kendi ikonu; renk tek başına anlam taşımaz (WCAG 1.4.1).
+ *
+ * <p>Dördü de DOLU (`*Fill`) sürüm: ton zeminin üzerinde ince çizgili bir
+ * simge, madalyonun içinde soluk kalıp uzaktan seçilemiyordu.
+ *
+ * <p>`aria-hidden`: ikonun taşıdığı bilgi yanındaki metinde zaten var; ikisini
+ * birden okumak ekran okuyucuda tekrar üretiyordu.
+ */
 const ICONS: Record<AlertTone, ReactNode> = {
-  info: <InfoCircleFillIcon />,
-  success: <CheckCircleFillIcon />,
-  warning: <ExclamationTriangleFillIcon />,
-  danger: <XCircleFillIcon />,
+  info: <InfoCircleFill aria-hidden />,
+  success: <CheckCircleFill aria-hidden />,
+  warning: <ExclamationTriangleFill aria-hidden />,
+  danger: <XCircleFill aria-hidden />,
 };
 
 /**

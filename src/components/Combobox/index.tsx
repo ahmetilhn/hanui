@@ -12,12 +12,13 @@ import {
   useState,
 } from 'react';
 
+import { CaretDownFill, CheckLg, Search, XLg } from 'react-bootstrap-icons';
+
 import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { matchesSearch } from '../../helpers/text.helper';
 import { useHanui } from '../../theme/context';
-import { CheckIcon, ChevronDownIcon, SearchIcon, XIcon } from '../../icons';
 import BottomSheet from '../BottomSheet';
 import Spinner from '../Spinner';
 
@@ -372,7 +373,7 @@ const Combobox = <T extends string>({
    */
   const search = isSearchHidden ? null : (
     <div className={styles.combobox__search}>
-      <SearchIcon className={styles.combobox__searchIcon} />
+      <Search aria-hidden className={styles.combobox__searchIcon} />
       <input
         ref={inputRef}
         type="text"
@@ -435,7 +436,7 @@ const Combobox = <T extends string>({
                 )}
               </span>
 
-              {isChosen && <CheckIcon className={styles.combobox__check} />}
+              {isChosen && <CheckLg aria-hidden className={styles.combobox__check} />}
             </div>
           </li>
         );
@@ -503,11 +504,13 @@ const Combobox = <T extends string>({
               clearSelection();
             }}
           >
-            <XIcon />
+            <XLg aria-hidden />
           </span>
         )}
 
-        <ChevronDownIcon
+        {/* Dolu caret — gerekcesi `Select` ile ayni. */}
+        <CaretDownFill
+          aria-hidden
           className={cx(styles.combobox__chevron, isOpen && styles['combobox__chevron--open'])}
         />
       </button>
