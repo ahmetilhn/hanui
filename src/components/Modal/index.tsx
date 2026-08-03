@@ -12,6 +12,8 @@ import {
 
 import { cx } from '../../helpers/class-name.helper';
 import { preventAutoKeyboard } from '../../helpers/focus.helper';
+import { resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 import { XIcon } from '../../icons';
 import IconButton from '../IconButton';
 
@@ -23,8 +25,13 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  /** Kapatma düğmesinin erişilebilir adı ("Kapat", "Close"). */
-  closeLabel: string;
+  /**
+   * Kapatma düğmesinin erişilebilir adı.
+   *
+   * <p>Verilmezse `HanuiProvider labels.close` okunur. Bağlama göre farklı
+   * olması gereken pencerelerde ("Daha sonra") prop kazanır.
+   */
+  closeLabel?: string;
   children?: ReactNode;
   /**
    * Başlığın altındaki bir cümlelik açıklama.
@@ -90,6 +97,7 @@ const Modal = ({
   className,
   testId,
 }: Props) => {
+  const { labels } = useHanui();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   const descriptionId = useId();
@@ -181,7 +189,7 @@ const Modal = ({
           {isDismissable && (
             <IconButton
               icon={<XIcon />}
-              label={closeLabel}
+              label={resolveLabel('Modal.closeLabel', closeLabel, labels?.close)}
               variant="ghost"
               size="sm"
               className={styles.modal__close}

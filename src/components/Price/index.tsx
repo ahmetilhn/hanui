@@ -1,14 +1,16 @@
 import { type FC, memo } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 
 import styles from './index.module.scss';
 
 type Props = {
   /** BİÇİMLENMİŞ tutar: "1.299,90". Bileşen hesap yapmaz. */
   value: string;
-  /** Para birimi simgesi ya da kodu: "₺", "$", "EUR". */
-  currency: string;
+  /** Para birimi simgesi ya da kodu. Verilmezse `labels.currency`. */
+  currency?: string;
   /** Üstü çizili liste fiyatı; indirim varsa verilir (biçimlenmiş). */
   listValue?: string;
   /** İndirim oranı (tam sayı yüzde). */
@@ -44,26 +46,31 @@ const Price: FC<Props> = ({
   size = 'md',
   className,
   testId,
-}) => (
-  <span className={cx(styles.price, styles[`price--${size}`], className)} data-testid={testId}>
-    <span className={styles.price__current}>
-      {value}
-      <span className={styles.price__currency}>{currency}</span>
-    </span>
+}) => {
+  const { labels } = useHanui();
+  const symbol = resolveLabel('Price.currency', currency, labels?.currency);
 
-    {listValue && (
-      <s className={styles.price__list}>
-        {listValue}
-        <span className={styles.price__currency}>{currency}</span>
-      </s>
-    )}
+  return (
+    <span className={cx(styles.price, styles[`price--${size}`], className)} data-testid={testId}>
+      <span className={styles.price__current}>
+        {value}
+        <span className={styles.price__currency}>{symbol}</span>
+      </span>
 
-    {/* `isDefined` DEGIL acik karsilastirma: handy-utils'in koruyucusu
+      {listValue && (
+        <s className={styles.price__list}>
+          {listValue}
+          <span className={styles.price__currency}>{symbol}</span>
+        </s>
+      )}
+
+      {/* `isDefined` DEGIL acik karsilastirma: handy-utils'in koruyucusu
         `Exclude<any, …>` donuyor ve TypeScript'te daraltma uretmiyor. */}
-    {discountPercent !== undefined && discountPercent > 0 && (
-      <span className={styles.price__discount}>{formatDiscount(discountPercent)}</span>
-    )}
-  </span>
-);
+      {discountPercent !== undefined && discountPercent > 0 && (
+        <span className={styles.price__discount}>{formatDiscount(discountPercent)}</span>
+      )}
+    </span>
+  );
+};
 
 export default memo(Price) as typeof Price;

@@ -2,6 +2,8 @@
 
 import { type FC, memo, type ReactNode, useState } from 'react';
 
+import { resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 import UISize from '../../enums/ui-size.enum';
 import UIVariant from '../../enums/ui-variant.enum';
 import { ExclamationTriangleFillIcon, QuestionCircleFillIcon, TrashFillIcon } from '../../icons';
@@ -43,11 +45,19 @@ type Props = {
   title: string;
   /** Sonucu açıklar: neyin geri alınamaz olduğu burada yazılır. */
   description?: ReactNode;
-  /** Onay düğmesinin etiketi. Eylemi TEKRARLAR: "Sil", "İptal et". */
+  /**
+   * Onay düğmesinin etiketi — ZORUNLU, config'ten okunmaz.
+   *
+   * <p>Eylemi TEKRARLAR: "Sil", "İptal et". Her pencerede farklı olduğu için
+   * uygulama düzeyinde bir varsayılanı olamaz; "Tamam" gibi bir varsayılan
+   * kullanıcıya neyi onayladığını söylemez ve `window.confirm()`ten kaçmamızın
+   * sebeplerinden biri tam olarak buydu.
+   */
   confirmLabel: string;
-  cancelLabel: string;
-  /** Kapatma düğmesinin erişilebilir adı. */
-  closeLabel: string;
+  /** Verilmezse `labels.cancel`. */
+  cancelLabel?: string;
+  /** Verilmezse `labels.close`. */
+  closeLabel?: string;
   kind?: ConfirmKind;
   /** Ek bağlam: silinecek kaydın özeti, uyarı kutusu. */
   children?: ReactNode;
@@ -104,6 +114,7 @@ const ConfirmDialog: FC<Props> = ({
   kind = 'neutral',
   children,
 }) => {
+  const { labels } = useHanui();
   const [isRunning, setIsRunning] = useState(false);
 
   const handleConfirm = async () => {
@@ -125,7 +136,7 @@ const ConfirmDialog: FC<Props> = ({
       isOpen={isOpen}
       onClose={onClose}
       title={title}
-      closeLabel={closeLabel}
+      closeLabel={closeLabel ?? labels?.close}
       description={description}
       icon={KIND_ICON[kind]}
       tone={KIND_TONE[kind]}
@@ -144,7 +155,7 @@ const ConfirmDialog: FC<Props> = ({
             onClick={onClose}
             disabled={isRunning}
           >
-            {cancelLabel}
+            {resolveLabel('ConfirmDialog.cancelLabel', cancelLabel, labels?.cancel)}
           </Button>
           <Button
             variant={KIND_VARIANT[kind]}

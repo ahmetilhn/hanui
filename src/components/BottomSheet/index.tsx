@@ -8,6 +8,8 @@ import { isClient } from '@ahmetilhn/handy-utils';
 import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
 import { cx } from '../../helpers/class-name.helper';
 import { preventAutoKeyboard } from '../../helpers/focus.helper';
+import { resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 import useSheetViewport from '../../hooks/useSheetViewport';
 import { XIcon } from '../../icons';
 import IconButton from '../IconButton';
@@ -16,8 +18,8 @@ import styles from './index.module.scss';
 
 type Props = {
   title: string;
-  /** Kapatma düğmesinin erişilebilir adı. */
-  closeLabel: string;
+  /** Kapatma düğmesinin erişilebilir adı. Verilmezse `labels.close`. */
+  closeLabel?: string;
   onClose: () => void;
   children: ReactNode;
   /**
@@ -77,6 +79,7 @@ const BottomSheet = ({
   className,
   testId,
 }: Props) => {
+  const { labels } = useHanui();
   const titleId = useId();
 
   /* Panel GORUNEN alana yaslanir: klavye ve adres cubugu altinda kalmaz. */
@@ -142,7 +145,7 @@ const BottomSheet = ({
         </h2>
         <IconButton
           icon={<XIcon />}
-          label={closeLabel}
+          label={resolveLabel('BottomSheet.closeLabel', closeLabel, labels?.close)}
           variant="ghost"
           size="sm"
           onClick={onClose}

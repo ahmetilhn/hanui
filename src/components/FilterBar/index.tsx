@@ -1,6 +1,8 @@
 import { type FC, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -14,8 +16,8 @@ type Props = {
   children: ReactNode;
   /** Şeridin sağ ucundaki eylemler ("Uygula" düğmesi gibi). */
   actions?: ReactNode;
-  /** Şeridin erişilebilir adı ("Filtreler"). */
-  label: string;
+  /** Şeridin erişilebilir adı. Verilmezse `labels.filters`. */
+  label?: string;
   className?: string;
   testId?: string;
 };
@@ -37,28 +39,32 @@ type Props = {
  * daraltılabilir kalır: alan tercihen 220px'tir ama sığmadığı yerde küçülür,
  * taşmaz.
  */
-const FilterBar: FC<Props> = ({ onSubmit, children, actions, label, className, testId }) => (
-  <form
-    className={cx(styles.bar, className)}
-    aria-label={label}
-    data-testid={testId}
-    onSubmit={event => {
-      event.preventDefault();
-      onSubmit();
-    }}
-  >
-    {children}
+const FilterBar: FC<Props> = ({ onSubmit, children, actions, label, className, testId }) => {
+  const { labels } = useHanui();
 
-    {/*
+  return (
+    <form
+      className={cx(styles.bar, className)}
+      aria-label={resolveLabel('FilterBar.label', label, labels?.filters)}
+      data-testid={testId}
+      onSubmit={event => {
+        event.preventDefault();
+        onSubmit();
+      }}
+    >
+      {children}
+
+      {/*
       Enter'ın yedeği. Görünmez ama tarayıcı için formun varsayılan gönderme
       düğmesi: `display: none` örtük gönderimi bozmaz. Görünür "Uygula" düğmesi
       `actions` ile ayrıca verilebilir; ikisi aynı submit olayına düşer.
     */}
-    <button type="submit" className={styles.bar__hiddenSubmit} tabIndex={-1} aria-hidden />
+      <button type="submit" className={styles.bar__hiddenSubmit} tabIndex={-1} aria-hidden />
 
-    {actions && <div className={styles.bar__actions}>{actions}</div>}
-  </form>
-);
+      {actions && <div className={styles.bar__actions}>{actions}</div>}
+    </form>
+  );
+};
 
 type FieldProps = {
   children: ReactNode;

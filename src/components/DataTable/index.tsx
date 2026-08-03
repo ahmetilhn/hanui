@@ -1,6 +1,8 @@
 import { Children, type FC, type HTMLAttributes, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 import { ExclamationCircleIcon } from '../../icons';
 
 import styles from './index.module.scss';
@@ -31,10 +33,10 @@ type Props = {
    * üstlenir. Uyarı tinti için {@link DataTableRow}.
    */
   children?: ReactNode;
-  /** Satır yokken gösterilen metin. */
-  emptyMessage: string;
-  /** Yükleme sürerken satırların yerine gösterilen metin. */
-  loadingMessage: string;
+  /** Satır yokken gösterilen metin. Verilmezse `labels.dataTable.empty`. */
+  emptyMessage?: string;
+  /** Yükleme sürerken gösterilen metin. Verilmezse `labels.dataTable.loading`. */
+  loadingMessage?: string;
   isLoading?: boolean;
   /**
    * Liste ÇEKİLEMEDİ. <strong>"Yüklenemedi" ile "boş" ayrı durumlardır</strong>:
@@ -85,6 +87,7 @@ const DataTable: FC<Props> = ({
    * gerekmez. Satirlar tek bir Fragment icinde verilirse sayi 1 gorunur —
    * satirlari dogrudan (ya da dizi olarak) verin.
    */
+  const { labels } = useHanui();
   const rowCount = Children.count(children);
 
   const renderStateRow = (content: ReactNode, modifier?: 'error') => (
@@ -129,9 +132,17 @@ const DataTable: FC<Props> = ({
                 'error',
               )
             : isLoading
-              ? renderStateRow(loadingMessage)
+              ? renderStateRow(
+                  resolveLabel(
+                    'DataTable.loadingMessage',
+                    loadingMessage,
+                    labels?.dataTable?.loading,
+                  ),
+                )
               : rowCount === 0
-                ? renderStateRow(emptyMessage)
+                ? renderStateRow(
+                    resolveLabel('DataTable.emptyMessage', emptyMessage, labels?.dataTable?.empty),
+                  )
                 : children}
         </tbody>
       </table>

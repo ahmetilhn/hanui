@@ -1,16 +1,16 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import Combobox, { type ComboboxLabels, type ComboboxOption } from '../Combobox';
+import Combobox, { type ComboboxOption } from '../Combobox';
 
-const LABELS: ComboboxLabels = {
+const LABELS = {
   placeholder: 'Şehir seçin',
   searchPlaceholder: 'Ara…',
   emptyMessage: 'Sonuç bulunamadı',
   loadingMessage: 'Aranıyor…',
   clearLabel: 'Seçimi temizle',
   closeLabel: 'Kapat',
-};
+} as const;
 
 const OPTIONS: ComboboxOption[] = [
   { value: 'istanbul', label: 'İstanbul' },

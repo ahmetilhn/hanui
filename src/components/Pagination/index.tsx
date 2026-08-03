@@ -3,6 +3,8 @@
 import { type FC, memo, useMemo } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 import UISize from '../../enums/ui-size.enum';
 import UIVariant from '../../enums/ui-variant.enum';
 import { ChevronLeftIcon, ChevronRightIcon } from '../../icons';
@@ -16,10 +18,12 @@ import styles from './index.module.scss';
 type BaseProps = {
   page: number;
   totalPages: number;
-  /** Gezinme bölgesinin erişilebilir adı ("Sayfalar"). */
-  label: string;
-  previousLabel: string;
-  nextLabel: string;
+  /** Gezinme bölgesinin erişilebilir adı. Verilmezse `labels.pagination.label`. */
+  label?: string;
+  /** Verilmezse `labels.pagination.previous`. */
+  previousLabel?: string;
+  /** Verilmezse `labels.pagination.next`. */
+  nextLabel?: string;
   className?: string;
   testId?: string;
 };
@@ -105,6 +109,7 @@ const Pagination: FC<Props> = ({
   className,
   testId,
 }) => {
+  const { labels } = useHanui();
   const pages = useMemo(() => buildPageList(page, totalPages), [page, totalPages]);
 
   if (totalPages <= 1) return null;
@@ -114,11 +119,19 @@ const Pagination: FC<Props> = ({
   };
 
   return (
-    <nav className={cx(styles.pagination, className)} aria-label={label} data-testid={testId}>
+    <nav
+      className={cx(styles.pagination, className)}
+      aria-label={resolveLabel('Pagination.label', label, labels?.pagination?.label)}
+      data-testid={testId}
+    >
       <IconButton
         className={styles.pagination__arrow}
         icon={<ChevronLeftIcon />}
-        label={previousLabel}
+        label={resolveLabel(
+          'Pagination.previousLabel',
+          previousLabel,
+          labels?.pagination?.previous,
+        )}
         variant="outline"
         disabled={page <= 1}
         onClick={() => goTo(page - 1)}
@@ -166,7 +179,7 @@ const Pagination: FC<Props> = ({
       <IconButton
         className={styles.pagination__arrow}
         icon={<ChevronRightIcon />}
-        label={nextLabel}
+        label={resolveLabel('Pagination.nextLabel', nextLabel, labels?.pagination?.next)}
         variant="outline"
         disabled={page >= totalPages}
         onClick={() => goTo(page + 1)}

@@ -1,6 +1,8 @@
 import { type FC, memo } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 import { ChevronRightIcon } from '../../icons';
 import type { HanuiLinkExtraProps } from '../../types/link.type';
 import HanuiLink from '../Link';
@@ -15,8 +17,8 @@ export type Crumb = {
 
 type Props = {
   items: Crumb[];
-  /** Gezinme bölgesinin erişilebilir adı ("Konum", "Breadcrumb"). */
-  label: string;
+  /** Gezinme bölgesinin erişilebilir adı. Verilmezse `labels.breadcrumb`. */
+  label?: string;
   /** Yönlendiriciye geçirilecek ek props. */
   linkProps?: HanuiLinkExtraProps;
   className?: string;
@@ -32,30 +34,38 @@ type Props = {
  * <p>Ayırıcı ikon `aria-hidden`; ekran okuyucu liste yapısından hiyerarşiyi
  * zaten anlar.
  */
-const Breadcrumb: FC<Props> = ({ items, label, linkProps, className, testId }) => (
-  <nav className={className} aria-label={label} data-testid={testId}>
-    <ol className={cx(styles.breadcrumb)}>
-      {items.map((item, index) => {
-        const isLast = index === items.length - 1;
+const Breadcrumb: FC<Props> = ({ items, label, linkProps, className, testId }) => {
+  const { labels } = useHanui();
 
-        return (
-          <li key={`${item.label}-${index}`} className={styles.breadcrumb__item}>
-            {item.href && !isLast ? (
-              <HanuiLink href={item.href} className={styles.breadcrumb__link} {...linkProps}>
-                {item.label}
-              </HanuiLink>
-            ) : (
-              <span className={styles.breadcrumb__current} aria-current="page">
-                {item.label}
-              </span>
-            )}
+  return (
+    <nav
+      className={className}
+      aria-label={resolveLabel('Breadcrumb.label', label, labels?.breadcrumb)}
+      data-testid={testId}
+    >
+      <ol className={cx(styles.breadcrumb)}>
+        {items.map((item, index) => {
+          const isLast = index === items.length - 1;
 
-            {!isLast && <ChevronRightIcon className={styles.breadcrumb__separator} />}
-          </li>
-        );
-      })}
-    </ol>
-  </nav>
-);
+          return (
+            <li key={`${item.label}-${index}`} className={styles.breadcrumb__item}>
+              {item.href && !isLast ? (
+                <HanuiLink href={item.href} className={styles.breadcrumb__link} {...linkProps}>
+                  {item.label}
+                </HanuiLink>
+              ) : (
+                <span className={styles.breadcrumb__current} aria-current="page">
+                  {item.label}
+                </span>
+              )}
+
+              {!isLast && <ChevronRightIcon className={styles.breadcrumb__separator} />}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+};
 
 export default memo(Breadcrumb) as typeof Breadcrumb;

@@ -1,6 +1,8 @@
 import { type FC, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 import type { HanuiLinkExtraProps } from '../../types/link.type';
 import HanuiLink from '../Link';
 
@@ -118,8 +120,8 @@ type DirectoryJumpProps = {
   labels: string[];
   /** Çıpa kimliğini üretir; `DirectoryGroup id` ile aynı olmalı. */
   toId: (label: string) => string;
-  /** Şeridin erişilebilir adı ("Harfe göre atla"). */
-  label: string;
+  /** Şeridin erişilebilir adı. Verilmezse `labels.directoryJump`. */
+  label?: string;
 };
 
 /**
@@ -133,15 +135,24 @@ type DirectoryJumpProps = {
  * yönlendiriciden geçirmek aynı sayfayı yeniden çözümleyip kaydırmayı
  * kaçırıyordu.
  */
-export const DirectoryJump: FC<DirectoryJumpProps> = memo(({ labels, toId, label }) => (
-  <nav className={styles.jump} aria-label={label}>
-    {labels.map(item => (
-      <a key={item} href={`#${toId(item)}`} className={styles.jump__link}>
-        {item}
-      </a>
-    ))}
-  </nav>
-));
+export const DirectoryJump: FC<DirectoryJumpProps> = memo(({ labels, toId, label }) => {
+  /* Prop adi `labels` (grup etiketleri) config'in adiyla cakisiyor; config
+     `config` olarak alinir. */
+  const { labels: config } = useHanui();
+
+  return (
+    <nav
+      className={styles.jump}
+      aria-label={resolveLabel('DirectoryJump.label', label, config?.directoryJump)}
+    >
+      {labels.map(item => (
+        <a key={item} href={`#${toId(item)}`} className={styles.jump__link}>
+          {item}
+        </a>
+      ))}
+    </nav>
+  );
+});
 
 DirectoryJump.displayName = 'DirectoryJump';
 

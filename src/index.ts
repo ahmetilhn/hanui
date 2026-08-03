@@ -19,6 +19,7 @@ import './styles/base.scss';
 export { default as HanuiProvider } from './theme/HanuiProvider';
 export { default as initHanui, type InitHanuiOptions } from './theme/initHanui';
 export { useHanui, type HanuiContextValue } from './theme/context';
+export type { HanuiLabels } from './theme/labels';
 export {
   DARK_THEME,
   DEFAULT_FONTS,

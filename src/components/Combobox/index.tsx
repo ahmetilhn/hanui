@@ -14,7 +14,9 @@ import {
 
 import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
 import { cx } from '../../helpers/class-name.helper';
+import { resolveLabel } from '../../helpers/label.helper';
 import { matchesSearch } from '../../helpers/text.helper';
+import { useHanui } from '../../theme/context';
 import { CheckIcon, ChevronDownIcon, SearchIcon, XIcon } from '../../icons';
 import BottomSheet from '../BottomSheet';
 import Spinner from '../Spinner';
@@ -29,20 +31,27 @@ export type ComboboxOption<T extends string = string> = {
   isDisabled?: boolean;
 };
 
-/** Bileşenin çizdiği metinler. Hepsi ZORUNLU: kütüphane dil kararı vermez. */
+/**
+ * Bileşenin çizdiği metinler.
+ *
+ * <p>`placeholder` dışındaki her şey `HanuiProvider labels.combobox`ten de
+ * gelebilir; buradaki değer kazanır. `placeholder` ALANI adlandırır
+ * ("Şehir seçin", "Marka seçin") ve her çağrı yerinde farklıdır — o yüzden
+ * zorunlu kaldı.
+ */
 export type ComboboxLabels = {
   /** Seçim yokken tetikleyicide ve alt sayfa başlığında görünen metin. */
   placeholder: string;
   /** Arama kutusunun yer tutucusu ve erişilebilir adı. */
-  searchPlaceholder: string;
+  searchPlaceholder?: string;
   /** Liste boşken gösterilen metin. */
-  emptyMessage: string;
+  emptyMessage?: string;
   /** Arama sürerken liste yerine gösterilen metin. */
-  loadingMessage: string;
+  loadingMessage?: string;
   /** Seçimi kaldıran çarpının erişilebilir adı. */
-  clearLabel: string;
+  clearLabel?: string;
   /** Alt sayfanın kapatma düğmesinin erişilebilir adı. */
-  closeLabel: string;
+  closeLabel?: string;
 };
 
 type Props<T extends string> = {
@@ -132,6 +141,40 @@ const Combobox = <T extends string>({
   'aria-describedby': describedBy,
   'aria-invalid': isInvalid,
 }: Props<T>) => {
+  const { labels: config } = useHanui();
+
+  /*
+   * Metinler TEMBEL cozulur: cizilmeyen bir ogenin metnini istemek yanlis
+   * alarm uretiyordu — `isSearchHidden` iken arama kutusu hic yok ama toplu
+   * cozumleme yine de "eksik metin" diye uyariyordu.
+   */
+  const text = {
+    get search() {
+      return resolveLabel(
+        'Combobox.searchPlaceholder',
+        labels.searchPlaceholder,
+        config?.combobox?.searchPlaceholder,
+      );
+    },
+    get empty() {
+      return resolveLabel(
+        'Combobox.emptyMessage',
+        labels.emptyMessage,
+        config?.combobox?.emptyMessage,
+      );
+    },
+    get loading() {
+      return resolveLabel(
+        'Combobox.loadingMessage',
+        labels.loadingMessage,
+        config?.combobox?.loadingMessage,
+      );
+    },
+    get clear() {
+      return resolveLabel('Combobox.clearLabel', labels.clearLabel, config?.combobox?.clearLabel);
+    },
+  };
+
   const generatedId = useId();
   const baseId = id ?? generatedId;
   const listboxId = `${baseId}-listbox`;
@@ -336,7 +379,7 @@ const Combobox = <T extends string>({
         role="combobox"
         className={styles.combobox__searchInput}
         value={query}
-        placeholder={labels.searchPlaceholder}
+        placeholder={text.search}
         autoComplete="off"
         aria-autocomplete="list"
         aria-expanded
@@ -344,7 +387,7 @@ const Combobox = <T extends string>({
         aria-activedescendant={
           visibleOptions[activeIndex] ? `${baseId}-option-${activeIndex}` : undefined
         }
-        aria-label={labels.searchPlaceholder}
+        aria-label={text.search}
         onChange={event => {
           setQuery(event.target.value);
           setActiveIndex(0);
@@ -399,9 +442,7 @@ const Combobox = <T extends string>({
       })}
 
       {visibleOptions.length === 0 && (
-        <li className={styles.combobox__empty}>
-          {isLoading ? labels.loadingMessage : labels.emptyMessage}
-        </li>
+        <li className={styles.combobox__empty}>{isLoading ? text.loading : text.empty}</li>
       )}
     </ul>
   );
@@ -450,7 +491,7 @@ const Combobox = <T extends string>({
             role="button"
             tabIndex={0}
             className={styles.combobox__clear}
-            aria-label={labels.clearLabel}
+            aria-label={text.clear}
             onClick={event => {
               event.stopPropagation();
               clearSelection();
@@ -488,7 +529,7 @@ const Combobox = <T extends string>({
       {openMode === 'sheet' && (
         <BottomSheet
           title={labels.placeholder}
-          closeLabel={labels.closeLabel}
+          closeLabel={labels.closeLabel ?? config?.close}
           onClose={close}
           toolbar={search ?? undefined}
         >

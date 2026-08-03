@@ -1,10 +1,11 @@
 'use client';
 
-import { type FC, type ReactNode, useEffect, useMemo } from 'react';
+import { type FC, type ReactNode, useEffect, useMemo, useRef } from 'react';
 
 import { applyThemeConfig } from '../helpers/theme.helper';
 import type { HanuiLinkComponent } from '../types/link.type';
 import HanuiContext from './context';
+import type { HanuiLabels } from './labels';
 import type { HanuiThemeConfig } from './tokens';
 
 type Props = {
@@ -27,6 +28,19 @@ type Props = {
    * <HanuiProvider linkComponent={NextLink}>…</HanuiProvider>
    */
   linkComponent?: HanuiLinkComponent;
+  /**
+   * Arayüz metinleri — bir kez, burada.
+   *
+   * <p>Kütüphane hiçbir dilde metin uydurmaz ama aynı "Kapat" dizesini yüz
+   * çağrı yerine dağıtmak da doğru değildi: biri değiştiğinde doksan dokuzu
+   * eski kalıyordu. Çözümleme sırası prop → buradaki config; ikisi de yoksa
+   * geliştirme kipinde konsola uyarı düşer.
+   *
+   * <p>Öğeye ÖZGÜ metinler buraya girmez (`Modal.title`,
+   * `ConfirmDialog.confirmLabel`, `IconButton.label`); onlar prop olarak
+   * zorunlu kalır çünkü her çağrı yerinde farklıdır.
+   */
+  labels?: HanuiLabels;
 };
 
 /**
@@ -56,7 +70,7 @@ type Props = {
  *   <App />
  * </HanuiProvider>
  */
-const HanuiProvider: FC<Props> = ({ children, theme, linkComponent }) => {
+const HanuiProvider: FC<Props> = ({ children, theme, linkComponent, labels }) => {
   /*
    * `JSON.stringify` bagimlilik anahtari olarak kullaniliyor: cagiran taraf
    * neredeyse her zaman satir ici bir nesne literali veriyor ve referans her
@@ -70,11 +84,27 @@ const HanuiProvider: FC<Props> = ({ children, theme, linkComponent }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [themeKey]);
 
-  /* Bagimlilik `themeKey`: `theme` referansi her render'da degistigi icin
-     ona baglanan bir memo hicbir sey saklamaz ve tuketicideki her bilesen
-     bos yere yeniden cizilir. */
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const value = useMemo(() => ({ theme, linkComponent }), [themeKey, linkComponent]);
+  /*
+   * `theme` bir REFERANSTAN okunur, bagimliliktan degil.
+   *
+   * Cagiran taraf neredeyse her zaman satir ici bir nesne literali veriyor ve
+   * referans her render'da degisiyor; `theme`i bagimliliga koymak memo'yu ise
+   * yaramaz hale getirip tuketicideki her bileseni bos yere yeniden cizerdi.
+   * Kimlik yerine ICERIK izleniyor (`themeKey`) — ve memo'nun icinde `theme`e
+   * dogrudan dokunulmadigi icin denetci de dogru: eksik bir bagimlilik yok.
+   */
+  const themeRef = useRef(theme);
+  themeRef.current = theme;
+
+  const value = useMemo(
+    () => ({ theme: themeRef.current, linkComponent, labels }),
+    /* `themeKey` denetciye GEREKSIZ gorunuyor cunku memo'nun govdesinde
+       gecmiyor — ama tam da isi bu: temanin ICERIGI degistiginde yeni bir
+       nesne uretilmesini saglayan tetik o. Cikarilirsa tema ezmesi degisse
+       de tuketiciler eski degeri gorurdu. */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [themeKey, linkComponent, labels],
+  );
 
   return <HanuiContext.Provider value={value}>{children}</HanuiContext.Provider>;
 };

@@ -3,6 +3,8 @@
 import { memo, useId, useState } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { resolveFormatter } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 import { StarFillIcon } from '../../icons';
 
 import styles from './index.module.scss';
@@ -16,16 +18,19 @@ type Props = {
   /** Grubun erişilebilir adı ("Ürün puanı"). */
   label: string;
   /**
-   * Puan açıklamaları — ZORUNLU. Hem ekran okuyucuya okunur hem de seçildiğinde
-   * yıldızların altında yazar.
+   * Puan açıklamaları. Hem ekran okuyucuya okunur hem de seçildiğinde
+   * yıldızların altında yazar. Verilmezse `labels.rating.scale`.
    *
    * <p>Dolu yıldız sayısı tek başına bir renk/şekil sinyali. Yanına açıklama
    * yazmak hem anlamı netleştirir hem de renk körü kullanıcıya ikinci bir ipucu
    * verir (WCAG 1.4.1).
    */
-  ratingLabels: RatingLabels;
-  /** Ekran okuyucuda yıldız sayısını okuyan biçimlendirici ("4 yıldız"). */
-  formatStarCount: (star: number) => string;
+  ratingLabels?: RatingLabels;
+  /**
+   * Ekran okuyucuda yıldız sayısını okuyan biçimlendirici ("4 yıldız").
+   * Verilmezse `labels.rating.starCount`.
+   */
+  formatStarCount?: (star: number) => string;
   isDisabled?: boolean;
   className?: string;
   testId?: string;
@@ -57,6 +62,8 @@ const RatingInput = ({
   className,
   testId,
 }: Props) => {
+  const { labels } = useHanui();
+  const scale = ratingLabels ?? labels?.rating?.scale;
   const name = useId();
   const [hovered, setHovered] = useState<number | null>(null);
 
@@ -92,7 +99,12 @@ const RatingInput = ({
             />
             <StarFillIcon />
             <span className={styles.rating__srOnly}>
-              {formatStarCount(star)} — {ratingLabels[star]}
+              {resolveFormatter(
+                'RatingInput.formatStarCount',
+                formatStarCount ?? labels?.rating?.starCount,
+                star,
+              )}{' '}
+              — {scale?.[star] ?? ''}
             </span>
           </label>
         ))}
@@ -101,7 +113,7 @@ const RatingInput = ({
       {/* Secim metni: `aria-hidden` cunku ayni bilgi radyonun etiketinde var. */}
       {shown !== null && (
         <span className={styles.rating__caption} aria-hidden>
-          {ratingLabels[shown as 1 | 2 | 3 | 4 | 5]}
+          {scale?.[shown as 1 | 2 | 3 | 4 | 5] ?? ''}
         </span>
       )}
     </fieldset>

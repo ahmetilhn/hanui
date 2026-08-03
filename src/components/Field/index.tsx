@@ -1,6 +1,8 @@
 import { type FC, memo, type ReactNode, useId } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 import { ExclamationCircleIcon } from '../../icons';
 
 import styles from './index.module.scss';
@@ -24,17 +26,17 @@ type BaseProps = {
   className?: string;
 };
 
-/**
- * Zorunluluk işareti ve onun ekran okuyucu karşılığı BİRLİKTE verilir.
- *
- * <p>Yıldız yalnızca görsel bir kısayol; renk ve şekil tek başına anlam
- * taşıyamaz (WCAG 1.4.1). `requiredLabel` bir dil kararı ve kütüphane onu
- * uyduramaz — bu yüzden `isRequired` verildiğinde tip zorunlu kılıyor.
- */
-type RequiredProps =
-  { isRequired: true; requiredLabel: string } | { isRequired?: false; requiredLabel?: never };
-
-type Props = BaseProps & RequiredProps;
+type Props = BaseProps & {
+  isRequired?: boolean;
+  /**
+   * Zorunluluk yıldızının ekran okuyucu karşılığı ("(zorunlu)").
+   *
+   * <p>Yıldız yalnızca GÖRSEL bir kısayol; renk ve şekil tek başına anlam
+   * taşıyamaz (WCAG 1.4.1), o yüzden yanında okunabilir bir metin olmak
+   * zorunda. Verilmezse `labels.required` okunur.
+   */
+  requiredLabel?: string;
+};
 
 /**
  * Form alanı sarmalayıcısı.
@@ -70,6 +72,7 @@ const Field: FC<Props> = ({
   isLabelHidden,
   className,
 }) => {
+  const { labels } = useHanui();
   const id = useId();
   const errorId = `${id}-error`;
   const hintId = `${id}-hint`;
@@ -86,7 +89,9 @@ const Field: FC<Props> = ({
             <span className={styles.field__required} aria-hidden>
               *
             </span>
-            <span className={styles.field__srOnly}>{requiredLabel}</span>
+            <span className={styles.field__srOnly}>
+              {resolveLabel('Field.requiredLabel', requiredLabel, labels?.required)}
+            </span>
           </>
         )}
       </label>

@@ -3,6 +3,8 @@
 import { type FC, memo, useCallback, useEffect, useRef, useState } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { resolveFormatter, resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 import { CheckSmallIcon, CopyIcon } from '../../icons';
 
 import styles from './index.module.scss';
@@ -10,12 +12,19 @@ import styles from './index.module.scss';
 type Props = {
   /** Gösterilecek ve panoya kopyalanacak değer. */
   value: string;
-  /** Kopyalama düğmesinin erişilebilir adı ve `title`ı. */
-  copyLabel: string;
-  /** Kopyalandıktan sonraki erişilebilir ad ve `title`. */
-  copiedLabel: string;
-  /** `aria-live` ile duyurulan onay cümlesi ("Panoya kopyalandı"). */
-  copiedAnnouncement: string;
+  /**
+   * Kopyalama düğmesinin erişilebilir adı ve `title`ı.
+   *
+   * <p>Verilmezse `labels.copyField.copy(value)` çağrılır. Config bir DİZE
+   * değil biçimlendirici tutar: ad değeri İÇERMELİ — bir listede on beş
+   * kopyalama düğmesi var ve hepsi "Kopyala" diye okunduğunda ekran okuyucu
+   * kullanıcısı hangisinin hangi kayıt olduğunu bilmiyordu.
+   */
+  copyLabel?: string;
+  /** Kopyalandıktan sonraki ad. Verilmezse `labels.copyField.copied(value)`. */
+  copiedLabel?: string;
+  /** `aria-live` ile duyurulan onay cümlesi. Verilmezse `labels.copyField.announcement`. */
+  copiedAnnouncement?: string;
   size?: 'sm' | 'md';
   /**
    * Kopyalama düğmesini gizler.
@@ -68,6 +77,7 @@ const CopyField: FC<Props> = ({
   className,
   testId,
 }) => {
+  const { labels } = useHanui();
   const [isCopied, setIsCopied] = useState(false);
   const codeRef = useRef<HTMLSpanElement>(null);
   const timerRef = useRef<number | undefined>(undefined);
@@ -113,8 +123,20 @@ const CopyField: FC<Props> = ({
           type="button"
           className={cx(styles.copy__button, isCopied && styles['copy__button--done'])}
           onClick={handleCopy}
-          aria-label={isCopied ? copiedLabel : copyLabel}
-          title={isCopied ? copiedLabel : copyLabel}
+          aria-label={
+            isCopied
+              ? (copiedLabel ??
+                resolveFormatter('CopyField.copiedLabel', labels?.copyField?.copied, value))
+              : (copyLabel ??
+                resolveFormatter('CopyField.copyLabel', labels?.copyField?.copy, value))
+          }
+          title={
+            isCopied
+              ? (copiedLabel ??
+                resolveFormatter('CopyField.copiedLabel', labels?.copyField?.copied, value))
+              : (copyLabel ??
+                resolveFormatter('CopyField.copyLabel', labels?.copyField?.copy, value))
+          }
         >
           {isCopied ? <CheckSmallIcon /> : <CopyIcon />}
         </button>
@@ -125,7 +147,13 @@ const CopyField: FC<Props> = ({
         `aria-live` yalnizca DEGISTIGINDE konusur.
       */}
       <span aria-live="polite" className={styles.copy__srOnly}>
-        {isCopied ? copiedAnnouncement : ''}
+        {isCopied
+          ? resolveLabel(
+              'CopyField.copiedAnnouncement',
+              copiedAnnouncement,
+              labels?.copyField?.announcement,
+            )
+          : ''}
       </span>
     </span>
   );

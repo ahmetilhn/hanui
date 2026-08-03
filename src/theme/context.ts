@@ -3,6 +3,7 @@
 import { createContext, useContext } from 'react';
 
 import type { HanuiLinkComponent } from '../types/link.type';
+import type { HanuiLabels } from './labels';
 import type { HanuiThemeConfig } from './tokens';
 
 export type HanuiContextValue = {
@@ -17,6 +18,11 @@ export type HanuiContextValue = {
   linkComponent?: HanuiLinkComponent;
   /** Uygulanan tema ezmeleri. Salt okunur; değiştirmek için `HanuiProvider`. */
   theme?: HanuiThemeConfig;
+  /**
+   * Arayüz metinleri. Bir bileşen metnini prop olarak almadıysa buradan okur
+   * (bkz. `theme/labels.ts`).
+   */
+  labels?: HanuiLabels;
 };
 
 const HanuiContext = createContext<HanuiContextValue>({});

@@ -5,6 +5,8 @@ import { memo, useCallback } from 'react';
 import { normalize } from '@ahmetilhn/handy-utils';
 
 import { cx } from '../../helpers/class-name.helper';
+import { resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -26,10 +28,10 @@ type Props = {
   formatValue?: (value: number) => string;
   /** Grubun erişilebilir adı ("Fiyat aralığı"). */
   label: string;
-  /** Alt kulbun erişilebilir ad eki ("En az"). */
-  minLabel: string;
-  /** Üst kulbun erişilebilir ad eki ("En çok"). */
-  maxLabel: string;
+  /** Alt kulbun erişilebilir ad eki. Verilmezse `labels.range.min`. */
+  minLabel?: string;
+  /** Üst kulbun erişilebilir ad eki. Verilmezse `labels.range.max`. */
+  maxLabel?: string;
   isDisabled?: boolean;
   className?: string;
   testId?: string;
@@ -73,6 +75,9 @@ const RangeSlider = ({
   className,
   testId,
 }: Props) => {
+  const { labels } = useHanui();
+  const lowName = resolveLabel('RangeSlider.minLabel', minLabel, labels?.range?.min);
+  const highName = resolveLabel('RangeSlider.maxLabel', maxLabel, labels?.range?.max);
   const [low, high] = value;
 
   const handleLowChange = useCallback(
@@ -132,7 +137,7 @@ const RangeSlider = ({
           step={step}
           value={low}
           disabled={isDisabled}
-          aria-label={`${label} — ${minLabel}`}
+          aria-label={`${label} — ${lowName}`}
           aria-valuetext={formatValue(low)}
           onChange={event => handleLowChange(Number(event.target.value))}
           onPointerUp={commit}
@@ -148,7 +153,7 @@ const RangeSlider = ({
           step={step}
           value={high}
           disabled={isDisabled}
-          aria-label={`${label} — ${maxLabel}`}
+          aria-label={`${label} — ${highName}`}
           aria-valuetext={formatValue(high)}
           onChange={event => handleHighChange(Number(event.target.value))}
           onPointerUp={commit}

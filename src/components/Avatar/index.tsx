@@ -1,6 +1,7 @@
 import { type FC, memo } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { useHanui } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -17,7 +18,7 @@ type Props = {
    *
    * <p>Türkçede ZORUNLU: `toUpperCase()` "i" harfini "I" yapıyor ve "İlhan"ın
    * baş harfi "I" çıkıyor. `toLocaleUpperCase('tr')` doğru "İ" verir.
-   * Verilmezse çalışma ortamının varsayılan dili kullanılır.
+   * Verilmezse `labels.locale`, o da yoksa çalışma ortamının varsayılan dili.
    */
   locale?: string;
   size?: 'sm' | 'md' | 'lg';
@@ -55,18 +56,22 @@ const resolveInitials = (name: string, locale?: string): string => {
  * okumak "A İ Ahmet İlhan" gibi bir gürültü üretiyordu. Adın yanında
  * durmadığı bir yerde kullanılıyorsa çağıran taraf metni kendisi yazar.
  */
-const Avatar: FC<Props> = ({ name, imageUrl, locale, size = 'md', className, testId }) => (
-  <span
-    className={cx(styles.avatar, styles[`avatar--${size}`], className)}
-    aria-hidden
-    data-testid={testId}
-  >
-    {imageUrl ? (
-      <img className={styles.avatar__image} src={imageUrl} alt="" />
-    ) : (
-      resolveInitials(name, locale)
-    )}
-  </span>
-);
+const Avatar: FC<Props> = ({ name, imageUrl, locale, size = 'md', className, testId }) => {
+  const { labels } = useHanui();
+
+  return (
+    <span
+      className={cx(styles.avatar, styles[`avatar--${size}`], className)}
+      aria-hidden
+      data-testid={testId}
+    >
+      {imageUrl ? (
+        <img className={styles.avatar__image} src={imageUrl} alt="" />
+      ) : (
+        resolveInitials(name, locale ?? labels?.locale)
+      )}
+    </span>
+  );
+};
 
 export default memo(Avatar) as typeof Avatar;

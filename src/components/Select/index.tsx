@@ -13,6 +13,8 @@ import {
 
 import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
 import { cx } from '../../helpers/class-name.helper';
+import { resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 import { CheckIcon, ChevronDownIcon } from '../../icons';
 import BottomSheet from '../BottomSheet';
 
@@ -46,10 +48,10 @@ type Props<T extends string> = {
    * seçili değeri okur ("En yeni, düğme") ve neyi seçtiğini söylemez.
    */
   label: string;
-  /** Seçim yokken tetikleyicide görünen metin. */
-  placeholder: string;
-  /** Alt sayfanın kapatma düğmesinin erişilebilir adı. */
-  closeLabel: string;
+  /** Seçim yokken tetikleyicide görünen metin. Verilmezse `labels.selectPlaceholder`. */
+  placeholder?: string;
+  /** Alt sayfanın kapatma düğmesinin erişilebilir adı. Verilmezse `labels.close`. */
+  closeLabel?: string;
   /** Tetikleyicinin solundaki ikon. */
   icon?: ReactNode;
   /** `sm` yoğun şeritler içindir (araç çubuğu); varsayılan form ölçüsü `md`. */
@@ -111,6 +113,8 @@ const Select = <T extends string>({
   'aria-describedby': describedBy,
   'aria-invalid': isInvalid,
 }: Props<T>) => {
+  const { labels } = useHanui();
+  const emptyText = resolveLabel('Select.placeholder', placeholder, labels?.selectPlaceholder);
   const generatedId = useId();
   const baseId = id ?? generatedId;
   const listboxId = `${baseId}-listbox`;
@@ -321,7 +325,7 @@ const Select = <T extends string>({
           </span>
         )}
 
-        <span className={styles.trigger__value}>{selectedOption?.label ?? placeholder}</span>
+        <span className={styles.trigger__value}>{selectedOption?.label ?? emptyText}</span>
 
         <ChevronDownIcon
           className={cx(styles.trigger__chevron, isOpen && styles['trigger__chevron--open'])}
@@ -335,7 +339,7 @@ const Select = <T extends string>({
       {/* Dar ekranda liste alt sayfada acilir; panel klavye acilinca sikisiyor
           ve alt ucu ekranin disinda kaliyordu (bkz. `BottomSheet`). */}
       {openMode === 'sheet' && (
-        <BottomSheet title={label} closeLabel={closeLabel} onClose={close}>
+        <BottomSheet title={label} closeLabel={closeLabel ?? labels?.close} onClose={close}>
           {renderList(true)}
         </BottomSheet>
       )}

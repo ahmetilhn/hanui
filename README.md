@@ -7,8 +7,8 @@ kurulu; çalışma zamanında **hiçbir UI bağımlılığı yok**.
   ezilebilir.
 - **Yönlendirici enjekte edilir.** `next/link`, `react-router`, ham `<a>` —
   karar tüketicinin.
-- **Metin dışarıdan.** Kütüphane hiçbir dilde metin uydurmaz; kullanıcıya
-  görünen her dize bir prop.
+- **Metin dışarıdan, ama BİR KEZ.** Kütüphane hiçbir dilde metin uydurmaz;
+  kullanıcıya görünen dizeler sağlayıcıda tek yerde tanımlanır.
 - **Yerel öğeler korunur.** `<dialog>`, `<input type="range">`,
   `<input type="radio">` — odak tuzağı, klavye gezinmesi ve ekran okuyucu
   duyurusu tarayıcıdan gelir.
@@ -31,7 +31,7 @@ import '@ahmetilhn/hanui/styles.css';
 ```tsx
 import { Button, Field, Input, UIVariant } from '@ahmetilhn/hanui';
 
-<Field label="E-posta" isRequired requiredLabel="(zorunlu)" error={error}>
+<Field label="E-posta" isRequired error={error}>
   {props => <Input {...props} type="email" value={email} onChange={onChange} />}
 </Field>
 
@@ -127,6 +127,81 @@ styles/*.generated → yukarıdakinden ÜRETİLİR (npm run tokens)
 SCSS ve TypeScript tarafı elle tutulsaydı bir tarafta var olup diğerinde
 olmayan bir token çıkardı — ve ayrışma sessiz: bileşen `var(--hanui-yok)`
 okuyup rengini kaybediyor, derleme yeşil dönüyor.
+
+---
+
+## Metinler
+
+Kütüphane "Kapat" yazamaz: hangi dilde, hangi üslupta, hangi terimle
+yazacağını bilmez. Ama aynı dizeyi yüz çağrı yerine dağıtmak da doğru değil —
+biri değiştiğinde doksan dokuzu eski kalıyor. Metinler **bir kez**, sağlayıcıda
+verilir:
+
+```tsx
+<HanuiProvider
+  labels={{
+    close: 'Kapat',
+    cancel: 'Vazgeç',
+    submit: 'Kaydet',
+    loading: 'Yükleniyor',
+    required: '(zorunlu)',
+    filters: 'Filtreler',
+    breadcrumb: 'Konum',
+    directoryJump: 'Harfe göre atla',
+    selectPlaceholder: 'Seçiniz',
+    locale: 'tr',
+    currency: '₺',
+    combobox: {
+      searchPlaceholder: 'Ara…',
+      emptyMessage: 'Sonuç bulunamadı',
+      loadingMessage: 'Aranıyor…',
+      clearLabel: 'Seçimi temizle',
+    },
+    pagination: { label: 'Sayfalar', previous: 'Önceki sayfa', next: 'Sonraki sayfa' },
+    quantity: { label: 'Adet', decrease: 'Adeti azalt', increase: 'Adeti artır' },
+    range: { min: 'En az', max: 'En çok' },
+    dataTable: { empty: 'Kayıt bulunamadı.', loading: 'Yükleniyor…' },
+    copyField: {
+      copy: value => `${value} kopyala`,
+      copied: value => `${value} kopyalandı`,
+      announcement: 'Panoya kopyalandı',
+    },
+    rating: {
+      srLabel: (value, count) => `5 üzerinden ${value}${count ? `, ${count} değerlendirme` : ''}`,
+      starCount: star => `${star} yıldız`,
+      scale: { 1: 'Hiç memnun kalmadım', 2: 'Beklentimi karşılamadı', 3: 'İdare eder', 4: 'Memnun kaldım', 5: 'Çok memnun kaldım' },
+    },
+  }}
+>
+```
+
+**Çözümleme sırası: prop → config → geliştirme uyarısı.** Bir prop verilmişse o
+kazanır; bağlama göre farklı olması gereken yerlerde (`closeLabel="Daha sonra"`)
+hâlâ prop geçilir.
+
+### Config'e girmeyenler
+
+Öğeye **özgü** hiçbir metin config'e girmez — her çağrı yerinde farklı olduğu
+için bir uygulama düzeyinde varsayılanı olamaz:
+
+`Modal.title` · `ConfirmDialog.confirmLabel` ("Sil" — eylemi tekrarlamak
+zorunda; "Tamam" kullanıcıya neyi onayladığını söylemez) · `IconButton.label` ·
+`Select.label` · `Combobox.labels.placeholder` · `TableCheckbox.label` ·
+`ChipGroup.label` · `RatingInput.label`
+
+### Eksik metin nasıl görünür
+
+TypeScript sağlayıcının çalışma zamanında ne taşıdığını göremiyor, o yüzden
+prop'lar isteğe bağlı. Ne prop ne config varsa öğe adsız kalır ve bu geliştirme
+kipinde konsola düşer:
+
+```
+[hanui] Eksik metin: Modal.closeLabel. Prop olarak geçin ya da
+<HanuiProvider labels={…}> içinde bir kez tanımlayın.
+```
+
+Uyarı anahtar başına bir kez verilir; yirmi satırlık bir liste konsolu
+doldurmaz.
 
 ---
 

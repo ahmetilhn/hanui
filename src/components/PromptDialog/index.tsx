@@ -2,6 +2,8 @@
 
 import { type FC, memo, type ReactNode, useEffect, useId, useRef, useState } from 'react';
 
+import { resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 import UISize from '../../enums/ui-size.enum';
 import UIVariant from '../../enums/ui-variant.enum';
 import Button from '../Button';
@@ -25,10 +27,12 @@ type BaseProps = {
   title: string;
   /** Girdi alanının etiketi. */
   label: string;
-  submitLabel: string;
-  cancelLabel: string;
-  /** Kapatma düğmesinin erişilebilir adı. */
-  closeLabel: string;
+  /** Verilmezse `labels.submit`. */
+  submitLabel?: string;
+  /** Verilmezse `labels.cancel`. */
+  cancelLabel?: string;
+  /** Kapatma düğmesinin erişilebilir adı. Verilmezse `labels.close`. */
+  closeLabel?: string;
   /** Başlığın altındaki bir cümlelik bağlam. */
   description?: ReactNode;
   hint?: string;
@@ -44,11 +48,18 @@ type BaseProps = {
   rows?: number;
 };
 
-/** Zorunluluk işareti ve ekran okuyucu karşılığı birlikte (bkz. {@link Field}). */
-type RequiredProps =
-  { isRequired: true; requiredLabel: string } | { isRequired?: false; requiredLabel?: never };
-
-type Props = BaseProps & RequiredProps;
+type Props = BaseProps & {
+  /** Boş (yalnızca boşluk dahil) değer gönderilemez. */
+  isRequired?: boolean;
+  /**
+   * Zorunluluk yıldızının ekran okuyucu karşılığı ("(zorunlu)").
+   *
+   * <p>Yıldız yalnızca GÖRSEL bir kısayol; renk ve şekil tek başına anlam
+   * taşıyamaz (WCAG 1.4.1), o yüzden yanında okunabilir bir metin olmak
+   * zorunda. Verilmezse `labels.required` okunur.
+   */
+  requiredLabel?: string;
+};
 
 /**
  * Metin isteyen pencere — `window.prompt()` yerine.
@@ -88,6 +99,7 @@ const PromptDialog: FC<Props> = ({
   maxLength,
   rows = 4,
 }) => {
+  const { labels } = useHanui();
   const formId = useId();
   const [value, setValue] = useState(defaultValue);
   const [isBusy, setIsBusy] = useState(false);
@@ -148,7 +160,7 @@ const PromptDialog: FC<Props> = ({
       isOpen={isOpen}
       onClose={onClose}
       title={title}
-      closeLabel={closeLabel}
+      closeLabel={closeLabel ?? labels?.close}
       description={description}
       size="sm"
       // Istek surerken kapanmaz: kapanis "islem iptal oldu" gibi gorunuyordu.
@@ -161,7 +173,7 @@ const PromptDialog: FC<Props> = ({
             onClick={onClose}
             disabled={isBusy}
           >
-            {cancelLabel}
+            {resolveLabel('PromptDialog.cancelLabel', cancelLabel, labels?.cancel)}
           </Button>
           <Button
             type="submit"
@@ -171,7 +183,7 @@ const PromptDialog: FC<Props> = ({
             disabled={isSubmitDisabled}
             isLoading={isBusy}
           >
-            {submitLabel}
+            {resolveLabel('PromptDialog.submitLabel', submitLabel, labels?.submit)}
           </Button>
         </>
       }
@@ -184,21 +196,9 @@ const PromptDialog: FC<Props> = ({
           handleSubmit();
         }}
       >
-        {/*
-          `Field` iki ayri kolda ciziliyor, kosullu yayilimla (`{...(cond ? … )}`)
-          degil: `isRequired`/`requiredLabel` ikilisi bir ayrik birlesim
-          (discriminated union) ve kosullu bir nesne yayilimi o birlesimin
-          hangi koluna dustugunu TypeScript'e anlatamiyor.
-        */}
-        {isRequired ? (
-          <Field label={label} hint={hint} isRequired requiredLabel={requiredLabel}>
-            {renderControl}
-          </Field>
-        ) : (
-          <Field label={label} hint={hint}>
-            {renderControl}
-          </Field>
-        )}
+        <Field label={label} hint={hint} isRequired={isRequired} requiredLabel={requiredLabel}>
+          {renderControl}
+        </Field>
       </form>
     </Modal>
   );

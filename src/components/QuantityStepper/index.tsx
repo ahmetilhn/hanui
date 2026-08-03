@@ -3,6 +3,8 @@
 import { type FC, memo, useState } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { resolveLabel } from '../../helpers/label.helper';
+import { useHanui } from '../../theme/context';
 import { MinusIcon, PlusIcon } from '../../icons';
 
 import styles from './index.module.scss';
@@ -10,10 +12,12 @@ import styles from './index.module.scss';
 type Props = {
   value: number;
   onChange: (value: number) => void;
-  /** Grubun ve girdinin erişilebilir adı ("Adet"). */
-  label: string;
-  decreaseLabel: string;
-  increaseLabel: string;
+  /** Grubun ve girdinin erişilebilir adı. Verilmezse `labels.quantity.label`. */
+  label?: string;
+  /** Verilmezse `labels.quantity.decrease`. */
+  decreaseLabel?: string;
+  /** Verilmezse `labels.quantity.increase`. */
+  increaseLabel?: string;
   min?: number;
   max?: number;
   isDisabled?: boolean;
@@ -45,6 +49,8 @@ const QuantityStepper: FC<Props> = ({
   className,
   testId,
 }) => {
+  const { labels } = useHanui();
+  const groupLabel = resolveLabel('QuantityStepper.label', label, labels?.quantity?.label);
   const [draft, setDraft] = useState<string | null>(null);
 
   const commit = (raw: string) => {
@@ -58,7 +64,7 @@ const QuantityStepper: FC<Props> = ({
     <div
       className={cx(styles.stepper, styles[`stepper--${size}`], className)}
       role="group"
-      aria-label={label}
+      aria-label={groupLabel}
       data-testid={testId}
     >
       <button
@@ -66,7 +72,11 @@ const QuantityStepper: FC<Props> = ({
         className={styles.stepper__button}
         onClick={() => onChange(Math.max(value - 1, min))}
         disabled={isDisabled || value <= min}
-        aria-label={decreaseLabel}
+        aria-label={resolveLabel(
+          'QuantityStepper.decreaseLabel',
+          decreaseLabel,
+          labels?.quantity?.decrease,
+        )}
       >
         <MinusIcon />
       </button>
@@ -84,7 +94,7 @@ const QuantityStepper: FC<Props> = ({
         }}
         inputMode="numeric"
         disabled={isDisabled}
-        aria-label={`${label} (${min}-${max})`}
+        aria-label={`${groupLabel} (${min}-${max})`}
       />
 
       <button
@@ -92,7 +102,11 @@ const QuantityStepper: FC<Props> = ({
         className={styles.stepper__button}
         onClick={() => onChange(Math.min(value + 1, max))}
         disabled={isDisabled || value >= max}
-        aria-label={increaseLabel}
+        aria-label={resolveLabel(
+          'QuantityStepper.increaseLabel',
+          increaseLabel,
+          labels?.quantity?.increase,
+        )}
       >
         <PlusIcon />
       </button>
