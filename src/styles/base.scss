@@ -75,6 +75,22 @@
   }
 }
 
+/* Ustten acilan yuzey: `fade-in-up`in aynasi. Cikis yonu her zaman GERCEK
+   konumu izler — `usePositioning` carpisma yuzunden karsit kenara dustugunde
+   animasyon da onunla birlikte doner; sabit bir yon, asagi acilan bir balonun
+   yukaridan gelmesi demekti. */
+@keyframes hanui-fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes hanui-fade-in {
   from {
     opacity: 0;
@@ -114,4 +130,149 @@
 /// Ekran okuyucuya birakilan metin — tuketicinin de kullanabilecegi tek sinif.
 .hanui-visually-hidden {
   @include visually-hidden;
+}
+
+/*
+ * =====================================================================
+ * ZORLANMIS RENK KIPI — Windows Yuksek Kontrast (WCAG 1.4.1 / 1.4.11)
+ * =====================================================================
+ *
+ * Bu kipte isletim sistemi TUM renkleri kendi paletiyle degistirir:
+ * `background-color`, `color` ve `border-color` yok sayilir, sistem renkleri
+ * (`Canvas`, `CanvasText`, `Highlight`, `ButtonBorder`) yerlerini alir.
+ * Amaci dogru; bedeli, RENKLE anlatilan her seyin KAYBOLMASI:
+ *
+ *   * Tint zeminli rozetler (`Badge`, `Alert`, `Chip`) tek tip bir kutuya
+ *     dusuyor — "stokta" ile "tukendi" ayirt edilemiyor.
+ *   * `box-shadow` ile cizilen odak halkasi TAMAMEN kayboluyor: golge bu
+ *     kipte cizilmiyor. Klavye kullanicisi nerede oldugunu goremiyor.
+ *   * `Spinner`in donen yayi zeminle ayni renge dusuyor.
+ *   * Onay kutusu ve radyo isaretleri kayboluyor.
+ *
+ * Kutuphanede bu kip icin SIFIR kural vardi. Asagidakiler her durumu sistem
+ * renkleriyle yeniden kuruyor; `forced-color-adjust: none` YALNIZCA rengin
+ * kendisi bir DURUM tasidigi yerlerde (durum noktasi, dolu yildiz).
+ */
+@media (forced-colors: active) {
+  /*
+   * ODAK HALKASI — bu kipteki en kritik madde.
+   *
+   * `focus-ring` mixin'i `outline` kullaniyor ve `outline` zorlanmis kipte
+   * KORUNUR; ama `input-base` gibi yerlerde odak `box-shadow: $ring` ile
+   * ciziliyor ve golge cizilmiyor. Yedek burada: odaklanan her ogeye sistem
+   * vurgu rengiyle gercek bir cizgi.
+   */
+  :focus-visible {
+    outline: 3px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  /*
+   * KUTU SINIRI. Tint zemin gittigi icin rozet/uyari/cip kutu olarak
+   * okunmayi kenarliga borclu; kenarlik rengi de sistemden gelmeli.
+   */
+  [class*='badge'],
+  [class*='alert'],
+  [class*='chip'],
+  [class*='panel'],
+  [class*='card'],
+  [class*='tile'] {
+    border: 1px solid ButtonBorder;
+  }
+
+  /*
+   * SECILI DURUM. Zemin tinti kayboldugu icin "secili cip" ile "secili
+   * olmayan cip" ayni goruntuye dusuyordu; sistemin vurgu cifti ikisini
+   * yeniden ayirir.
+   */
+  [aria-selected='true'],
+  [aria-current='page'],
+  [aria-pressed='true'],
+  [class*='--selected'],
+  [class*='--active'] {
+    background-color: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  /* Pasif oge: sistemin GrayText'i tek dogru sinyal. */
+  :disabled,
+  [aria-disabled='true'] {
+    color: GrayText;
+    border-color: GrayText;
+  }
+
+  /*
+   * Yerel kontrollerin isaretleri (`accent-color` ile boyanmis tik ve nokta)
+   * bu kipte sistem tarafindan zaten dogru ciziliyor; `forced-color-adjust`
+   * ile ellenmemeleri gerekiyor. Kural, birinin sonradan ekleyecegi bir
+   * ezmeye karsi ACIK bir kayit.
+   */
+  input[type='checkbox'],
+  input[type='radio'],
+  input[type='range'] {
+    forced-color-adjust: auto;
+  }
+}
+
+/*
+ * =====================================================================
+ * YUKSEK KONTRAST TERCIHI (`prefers-contrast: more`)
+ * =====================================================================
+ *
+ * Zorlanmis kipten farki: kullanici renkleri DEGISTIRMIYOR, daha keskin bir
+ * ayrim istiyor. Hairline'lar en cok burada sikinti veriyor — `$border`
+ * beyaz uzerinde 1,38:1 ve dusuk kontrast tercihi olan bir kullanici icin
+ * bu bir cizgi degil bir tahmin. Kenarliklar bir kademe koyulasir.
+ */
+@media (prefers-contrast: more) {
+  :root {
+    --hanui-border: var(--hanui-border-strong);
+    --hanui-nav-line: var(--hanui-nav-line-strong);
+    /* Soluk metin bir kademe koyulasir: ucuncu kademe ikinciye cikar. */
+    --hanui-text-3: var(--hanui-text-2);
+    --hanui-nav-fg-3: var(--hanui-nav-fg-2);
+  }
+}
+
+/*
+ * =====================================================================
+ * SAYDAMLIK AZALTMA (`prefers-reduced-transparency`)
+ * =====================================================================
+ *
+ * Saydam yuzeyler (kip pencere perdesi, cam efektli baslik) arkalarindaki
+ * metni okunur birakmiyor ve bazi kullanicilar icin bas donmesi/odak
+ * kaybi kaynagi. Tercih verildiginde saydam token'lar OPAK karsiliklarina
+ * duser — deger yine token, bilesende hicbir kural degismiyor.
+ */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --hanui-glass: var(--hanui-glass-solid);
+    /* Perde saydam KALMAK zorunda (arkasi gorunmeyen bir kip pencere neyin
+       ustunde durdugunu soylemiyor) ama tam opaklige yaklasir. */
+    --hanui-scrim: rgb(17 21 27 / 92%);
+    --hanui-scrim-soft: rgb(17 21 27 / 78%);
+  }
+
+  :root[data-hanui-theme='dark'] {
+    --hanui-scrim: rgb(0 0 0 / 94%);
+    --hanui-scrim-soft: rgb(0 0 0 / 82%);
+  }
+}
+
+/*
+ * Belirsiz ilerleme cubugu: dolgu ray boyunca akar.
+ *
+ * Genislik SABIT, hareket eden sey KONUM: genisligi canlandirmak her karede
+ * yerlesim hesabi demekti ve dusuk guclu telefonda cubuk takiliyordu.
+ * `translate` bilesik katmanda kalir.
+ */
+@keyframes hanui-progress-slide {
+  from {
+    translate: -100% 0;
+  }
+
+  to {
+    translate: 250% 0;
+  }
 }

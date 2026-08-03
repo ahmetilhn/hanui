@@ -41,6 +41,38 @@ describe('buildThemeCss', () => {
     expect(css).toContain(`:root:not([${THEME_ATTRIBUTE}])`);
   });
 
+  /*
+   * OLCU EZMELERI TEMA BASINA DEGIL.
+   *
+   * Bir markanin yuvarlakligi acik temada 12 px, koyu temada 8 px olmaz. Ayri
+   * verilebilseydi iki degerin ayrismasi kacinilmazdi ve fark yalnizca tema
+   * degistirildiginde gorunurdu — yani neredeyse hic.
+   */
+  it('ölçü ezmesi tema seçiminden bağımsız `:root`a yazılır', () => {
+    const css = buildThemeCss({ metrics: { 'radius-md': '2px', 'space-4': '20px' } });
+
+    expect(css).toContain('--hanui-radius-md: 2px;');
+    expect(css).toContain('--hanui-space-4: 20px;');
+    expect(css).not.toContain(`[${THEME_ATTRIBUTE}='dark']`);
+  });
+
+  /*
+   * `[data-hanui-density='compact']` uretilmis blogu `:root`tan DAHA YUKSEK
+   * ozgullukte. Ezme yalnizca `:root`a yazilsaydi tuketicinin verdigi olcu,
+   * yogun kip acilir acilmaz kutuphanenin varsayilanina donuyordu.
+   */
+  it('ölçü ezmesi YOĞUN kipte de geçerli kalır', () => {
+    const css = buildThemeCss({ metrics: { 'space-4': '20px' } });
+
+    expect(css).toContain(":root[data-hanui-density='compact'] {");
+    expect(css.match(/--hanui-space-4: 20px;/g)).toHaveLength(2);
+  });
+
+  it('ölçü verilmediğinde yoğunluk bloğu HİÇ yazılmaz', () => {
+    expect(buildThemeCss({ metrics: {} })).toBe('');
+    expect(buildThemeCss({ light: { blue: '#0d6efd' } })).not.toContain('density');
+  });
+
   it('font ezmesi tema seçiminden bağımsız `:root`a yazılır', () => {
     const css = buildThemeCss({ fonts: { heading: 'Archivo, sans-serif' } });
 

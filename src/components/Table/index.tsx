@@ -1,6 +1,7 @@
 import { type FC, type HTMLAttributes, memo, type TableHTMLAttributes } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { named } from '../../helpers/component.helper';
 
 import styles from './index.module.scss';
 
@@ -26,18 +27,17 @@ type ScrollerProps = HTMLAttributes<HTMLDivElement> & {
  * <p>Kaydırma çubuğu TEMALI (`custom-scrollbar`): işletim sisteminin açık
  * çubuğu koyu temada tablonun altında parlak bir şerit bırakıyordu.
  */
-export const TableScroller: FC<ScrollerProps> = memo(
-  ({ hasFrame = true, className, children, ...rest }) => (
+export const TableScroller: FC<ScrollerProps> = /*#__PURE__*/ named(
+  /*#__PURE__*/ memo(({ hasFrame = true, className, children, ...rest }) => (
     <div
       className={cx(styles.scroller, hasFrame && styles['scroller--frame'], className)}
       {...rest}
     >
       {children}
     </div>
-  ),
+  )),
+  'TableScroller',
 );
-
-TableScroller.displayName = 'TableScroller';
 
 type Props = TableHTMLAttributes<HTMLTableElement> &
   Partial<{
@@ -91,4 +91,4 @@ const Table: FC<Props> = ({
   </table>
 );
 
-export default memo(Table) as typeof Table;
+export default /*#__PURE__*/ memo(Table) as typeof Table;

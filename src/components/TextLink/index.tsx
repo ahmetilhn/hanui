@@ -61,4 +61,4 @@ const TextLink = ({
   </HanuiLink>
 );
 
-export default memo(TextLink) as typeof TextLink;
+export default /*#__PURE__*/ memo(TextLink) as typeof TextLink;

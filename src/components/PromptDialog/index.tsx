@@ -204,4 +204,4 @@ const PromptDialog: FC<Props> = ({
   );
 };
 
-export default memo(PromptDialog) as typeof PromptDialog;
+export default /*#__PURE__*/ memo(PromptDialog) as typeof PromptDialog;

@@ -1,0 +1,149 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.progress {
+  @include row($space-3);
+
+  width: 100%;
+}
+
+.progress__track {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  border-radius: $radius-pill;
+  background-color: $track;
+  overflow: hidden;
+
+  &--sm {
+    height: 4px;
+  }
+
+  &--md {
+    height: 8px;
+  }
+
+  /*
+   * BELIRSIZ KIP: dolgu ray boyunca akar.
+   *
+   * Genislik `40%`te SABIT ve hareket eden sey konum: genisligi
+   * canlandirmak her karede yerlesim hesabi demekti.
+   */
+  &--indeterminate .progress__fill {
+    inline-size: 40%;
+    animation: hanui-progress-slide $duration-shimmer $ease-in-out infinite;
+
+    @include reduced-motion {
+      /* Hareket kapaliyken belirsizlik yine anlatilmali: cubuk yarim dolu
+         kalir — bos bir ray "hic ilerlemedi" gibi okunuyordu. */
+      animation: none;
+      inline-size: 50%;
+    }
+  }
+}
+
+.progress__fill {
+  display: block;
+  height: 100%;
+  border-radius: $radius-pill;
+  background-color: $blue;
+  transition: inline-size $duration-normal $ease-out;
+
+  &--success {
+    background-color: $green-accent;
+  }
+
+  &--warning {
+    background-color: $star;
+  }
+
+  &--danger {
+    background-color: $danger-solid;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+
+  /* Zorlanmis renk kipinde dolgu ile ray ayni renge dusuyor; sistemin vurgu
+     rengi ikisini yeniden ayirir. */
+  @media (forced-colors: active) {
+    background-color: Highlight;
+    forced-color-adjust: none;
+  }
+}
+
+.progress__value {
+  @include technical-text($font-size-xs);
+
+  flex-shrink: 0;
+  color: $text-2;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Dairesel --- */
+
+.circle {
+  display: inline-flex;
+  position: relative;
+  flex-shrink: 0;
+
+  &__svg {
+    /* SVG dairesi 12 yonunden baslar; varsayilan 3 yonu bir ilerleme
+       gostergesinde "yarim baslamis" gibi okunuyordu. */
+    rotate: -90deg;
+  }
+
+  &__track {
+    stroke: $track;
+  }
+
+  &__fill {
+    stroke: $blue;
+    stroke-linecap: round;
+    transition: stroke-dashoffset $duration-normal $ease-out;
+
+    &--success {
+      stroke: $green-accent;
+    }
+
+    &--warning {
+      stroke: $star;
+    }
+
+    &--danger {
+      stroke: $danger-solid;
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+
+    @media (forced-colors: active) {
+      stroke: Highlight;
+      forced-color-adjust: none;
+    }
+  }
+
+  /* Belirsiz kipte cember doner. */
+  &--indeterminate &__svg {
+    animation: hanui-spin $duration-spin linear infinite;
+
+    @include reduced-motion {
+      animation: none;
+    }
+  }
+
+  /* Ortadaki sayi: dairenin ICINDE, mutlak konumla ortalanir. */
+  &__label {
+    @include technical-text($font-size-xs);
+
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $text;
+    font-variant-numeric: tabular-nums;
+  }
+}

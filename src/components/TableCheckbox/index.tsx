@@ -1,6 +1,7 @@
 import { forwardRef, type InputHTMLAttributes, memo } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { named } from '../../helpers/component.helper';
 
 import styles from './index.module.scss';
 
@@ -25,8 +26,15 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'aria-label'> 
  *
  * <p>Renk `Checkbox` ile aynı kaynaktan: `accent-color` mavi — onay kutusu bir
  * seçimdir, bir dönüşüm değil.
+ *
+ * <h3>Klavye</h3>
+ * <table>
+ *   <tr><td>`Space`</td><td>seçimi değiştirir</td></tr>
+ * </table>
+ * Yerel öğe: `Space`, `indeterminate` durumu ve form gönderimine katılma
+ * platformdan gelir. Nöbetçi: `components/__tests__/keyboard.test.tsx`.
  */
-const TableCheckbox = forwardRef<HTMLInputElement, Props>(
+const TableCheckbox = /*#__PURE__*/ forwardRef<HTMLInputElement, Props>(
   ({ label, className, testId, ...rest }, ref) => (
     <input
       ref={ref}
@@ -39,6 +47,6 @@ const TableCheckbox = forwardRef<HTMLInputElement, Props>(
   ),
 );
 
-TableCheckbox.displayName = 'TableCheckbox';
-
-export default memo(TableCheckbox) as typeof TableCheckbox;
+export default /*#__PURE__*/ memo(
+  /*#__PURE__*/ named(TableCheckbox, 'TableCheckbox'),
+) as typeof TableCheckbox;

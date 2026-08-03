@@ -1,0 +1,130 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.timeline {
+  @include stack($space-0);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline__item {
+  display: flex;
+  gap: $space-3;
+  padding-bottom: $space-4;
+  position: relative;
+
+  /*
+   * BAGLAYICI CIZGI: olaylarin bir AKIS oldugunu gosterir. Isaretin
+   * ALTINDAN baslar ve bir sonraki isarete kadar iner; son olayda cizilmez —
+   * sonrasi yok.
+   */
+  &:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 26px;
+    inset-block-end: 0;
+    /* Isaretin tam ortasi: 24px genislik / 2 - 1px cizgi / 2. */
+    inset-inline-start: 11px;
+    width: 2px;
+    background-color: $border;
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+/*
+ * ISARET — durumun BICIM farki.
+ *
+ * Tamamlanan: dolu + TIK. Su an: dolu halka (ic bosluk). Bekleyen: bos daire
+ * + kesikli kenarlik. Basarisiz: dolu + CARPI. Dort BICIM; renk bunlara eslik
+ * ediyor, tek basina anlatmiyor (WCAG 1.4.1) — "tamamlandi" ile "basarisiz"
+ * yalnizca renkle ayrilsaydi renk koru bir kullanici icin ayni daireydi.
+ */
+.timeline__marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: $radius-pill;
+  border: 2px solid $border-strong;
+  background-color: $surface;
+  color: $on-green;
+  font-size: $font-size-2xs;
+  z-index: $z-base;
+
+  .timeline__item--done & {
+    background-color: $green-accent;
+    border-color: $green-accent;
+  }
+
+  .timeline__item--current & {
+    border-color: $blue;
+    /* Ic halka: "su an" dolu DEGIL, canli. */
+    box-shadow: inset 0 0 0 3px $blue;
+  }
+
+  .timeline__item--pending & {
+    border-style: dashed;
+    background-color: $surface;
+  }
+
+  .timeline__item--failed & {
+    background-color: $danger-solid;
+    border-color: $danger-solid;
+    color: $on-danger;
+  }
+
+  @media (forced-colors: active) {
+    .timeline__item--done &,
+    .timeline__item--current &,
+    .timeline__item--failed & {
+      background-color: Highlight;
+      border-color: Highlight;
+      forced-color-adjust: none;
+    }
+  }
+}
+
+.timeline__body {
+  @include stack(2px);
+
+  min-width: 0;
+  padding-block-start: 1px;
+}
+
+.timeline__title {
+  font-size: $font-size-sm;
+  font-weight: $weight-semibold;
+  color: $text;
+
+  .timeline__item--pending & {
+    color: $text-2;
+    font-weight: $weight-medium;
+  }
+
+  .timeline__item--failed & {
+    color: $bad-fg;
+  }
+}
+
+.timeline__time {
+  font-size: $font-size-xs;
+  color: $text-3;
+  font-variant-numeric: tabular-nums;
+}
+
+.timeline__description {
+  font-size: $font-size-xs;
+  line-height: $leading-normal;
+  color: $text-2;
+}
+
+.timeline__srOnly {
+  @include visually-hidden;
+}

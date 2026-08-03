@@ -1,6 +1,7 @@
 import { type FC, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { named } from '../../helpers/component.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
 
@@ -80,10 +81,11 @@ type FieldProps = {
  * Şerit içindeki tek alanın genişlik sözleşmesi. İçine `Field` + girdi ya da
  * yalın `Input` konur; genişlik kararı alanın kendisine yazılmaz.
  */
-export const FilterBarField: FC<FieldProps> = memo(({ children, isWide, className }) => (
-  <div className={cx(styles.field, isWide && styles['field--wide'], className)}>{children}</div>
-));
+export const FilterBarField: FC<FieldProps> = /*#__PURE__*/ named(
+  /*#__PURE__*/ memo(({ children, isWide, className }) => (
+    <div className={cx(styles.field, isWide && styles['field--wide'], className)}>{children}</div>
+  )),
+  'FilterBarField',
+);
 
-FilterBarField.displayName = 'FilterBarField';
-
-export default memo(FilterBar) as typeof FilterBar;
+export default /*#__PURE__*/ memo(FilterBar) as typeof FilterBar;

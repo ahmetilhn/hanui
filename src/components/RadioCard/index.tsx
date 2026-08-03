@@ -76,4 +76,4 @@ const RadioCard: FC<Props> = ({
   </label>
 );
 
-export default memo(RadioCard) as typeof RadioCard;
+export default /*#__PURE__*/ memo(RadioCard) as typeof RadioCard;

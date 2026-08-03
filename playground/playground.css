@@ -1,0 +1,102 @@
+/*
+ * GALERİNİN KENDİ KABUĞU.
+ *
+ * Bu dosya kütüphanenin parçası DEĞİL ve paketlenmiyor. Kütüphane tüketicinin
+ * sayfasına karışan global stil yazmadığı için (sıfırlama, `body`, başlık,
+ * bağlantı) galerinin kendi kabuğunu kendisi kurması gerekiyor — ve bu kabuk
+ * bilerek çıplak: bileşenlerin görünüşünü etkileyen tek şey token'lar olmalı,
+ * galerinin süsü değil.
+ *
+ * Renkler doğrudan CSS özel özelliklerinden okunuyor; galeri de temayı izler.
+ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--hanui-page);
+  color: var(--hanui-text);
+  font-family: var(--hanui-font-body);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.gallery__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 24px;
+  background: var(--hanui-nav-bg);
+  border-bottom: 1px solid var(--hanui-nav-line);
+}
+
+.gallery__bar h1 {
+  margin: 0;
+  font-size: 18px;
+  font-family: var(--hanui-font-heading);
+}
+
+.gallery__bar nav {
+  display: flex;
+  gap: 16px;
+}
+
+.gallery__bar a {
+  color: var(--hanui-blue-text);
+}
+
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 24px;
+  max-width: 1360px;
+  margin-inline: auto;
+}
+
+.gallery__section {
+  background: var(--hanui-surface);
+  border: 1px solid var(--hanui-border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.gallery__title {
+  margin: 0 0 16px;
+  font-size: 15px;
+  font-family: var(--hanui-font-mono);
+  color: var(--hanui-text-2);
+}
+
+.gallery__states {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.gallery__state {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  /* Genis bilesenler (tablo, filtre seridi) satiri kendilerine alsin. */
+  flex: 0 1 auto;
+}
+
+.gallery__label {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hanui-text-3);
+  font-family: var(--hanui-font-mono);
+}
+
+.gallery__stage {
+  min-width: 240px;
+  max-width: 100%;
+}

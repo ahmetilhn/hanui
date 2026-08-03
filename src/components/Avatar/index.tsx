@@ -43,6 +43,34 @@ const resolveInitials = (name: string, locale?: string): string => {
 };
 
 /**
+ * Adı SABİT bir renk kovasına eşler.
+ *
+ * <h3>Neden rastgele değil, neden hash</h3>
+ * Aynı kişi her ekranda AYNI tonda görünmeli: bir listede yan yana duran on
+ * kullanıcı, hepsi aynı gri madalyonken birbirinden ayırt edilemiyordu ve
+ * renk her render'da değişseydi (rastgele) madalyon kimliği taşımak yerine
+ * gürültü üretiyordu.
+ *
+ * <p>Karma basit ve KASITLI olarak basit: kriptografik bir dağılım gerekmiyor,
+ * gereken tek şey aynı girdinin aynı çıktıyı vermesi. `charCodeAt` toplamı
+ * kısa adlarda kümeleniyordu (djb2'nin `* 33` çarpanı bunu dağıtıyor).
+ *
+ * <h3>Renk tek başına KİMLİK taşımaz</h3>
+ * Madalyonun içinde zaten baş harfler var ve yanında adın kendisi yazıyor.
+ * Ton yalnızca bir tarama yardımı — renk körü bir kullanıcı için hiçbir bilgi
+ * kaybı yok (WCAG 1.4.1).
+ */
+const resolveTone = (name: string, total: number): number => {
+  let hash = 5381;
+  for (let index = 0; index < name.length; index += 1) hash = (hash * 33) ^ name.charCodeAt(index);
+
+  return Math.abs(hash) % total;
+};
+
+/** Madalyon tonlarının sayısı — `_module.scss` içindeki kova sayısıyla AYNI. */
+const TONE_COUNT = 6;
+
+/**
  * Avatar — kullanıcı madalyonu.
  *
  * <h3>Görsel yoksa baş harf</h3>
@@ -61,7 +89,14 @@ const Avatar: FC<Props> = ({ name, imageUrl, locale, size = 'md', className, tes
 
   return (
     <span
-      className={cx(styles.avatar, styles[`avatar--${size}`], className)}
+      className={cx(
+        styles.avatar,
+        styles[`avatar--${size}`],
+        /* Ton yalnizca BAS HARF madalyonunda: gorselin uzerine renk basmak
+           fotografi bozuyordu. */
+        !imageUrl && styles[`avatar--tone-${resolveTone(name, TONE_COUNT)}`],
+        className,
+      )}
       aria-hidden
       data-testid={testId}
     >
@@ -74,4 +109,4 @@ const Avatar: FC<Props> = ({ name, imageUrl, locale, size = 'md', className, tes
   );
 };
 
-export default memo(Avatar) as typeof Avatar;
+export default /*#__PURE__*/ memo(Avatar) as typeof Avatar;

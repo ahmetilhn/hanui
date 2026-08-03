@@ -12,6 +12,21 @@ type Props = {
   action?: ReactNode;
   /** İkincil eylem veya ipucu. */
   secondaryAction?: ReactNode;
+  /**
+   * `error` — liste BOŞ değil, ÇEKİLEMEDİ.
+   *
+   * <p>İkisi ayrı durumlar ve ayrı görünmek zorundalar: ağ hatasını "kayıt
+   * kalmamış" diye okuyan kullanıcı yanlış karar veriyor (ürün aramayı
+   * bırakıyor, siparişinin silindiğini sanıyor). Varyant `role="alert"`
+   * taşıyor ve tonu farklı — layout aynı kalıyor ki iki durum arasındaki
+   * geçiş sıçramasın.
+   *
+   * <p>Ayrım ÖNCE bu bileşenin dışındaydı ("ağ hatasında bu bileşen
+   * çizilmez") ve sonucu şuydu: her çağıran kendi hata kutusunu yazıyor,
+   * kutular birbirinden farklı görünüyordu. Ayrım korunuyor — ama artık
+   * BİLEŞENDE kodlu, çağıranın disiplinine bırakılmış değil.
+   */
+  tone?: 'empty' | 'error';
   size?: 'sm' | 'md';
   className?: string;
   testId?: string;
@@ -25,9 +40,15 @@ type Props = {
  * yapacağını bilmeli: aramayı temizle, filtreyi kaldır, listeye dön. `action`
  * isteğe bağlı ama çağıran taraf onu vermezse kullanıcı tıkanır.
  *
- * <p>Bir listenin BOŞ olması ile YÜKLENEMEMESİ ayrı durumlardır: ağ hatasında
- * bu bileşen çizilmez, hata kendi mesajıyla gösterilir. İkisini birleştirmek
- * kullanıcıya "kayıt kalmamış" dedirtiyordu.
+ * <h3>BOŞ ile YÜKLENEMEDİ ayrı durumlardır</h3>
+ * Ağ hatasını "kayıt kalmamış" diye okuyan kullanıcı yanlış karar veriyor.
+ * İkisi `tone` ile ayrılıyor: `error` farklı bir ton taşıyor ve
+ * `role="alert"` ile duyuruluyor, ama YERLEŞİM aynı — iki durum arasındaki
+ * geçiş sıçramıyor.
+ *
+ * <p>Ayrım önce bu bileşenin DIŞINDAYDI ("ağ hatasında çizilmez") ve sonucu
+ * şuydu: her çağıran kendi hata kutusunu yazıyor, kutular birbirinden farklı
+ * görünüyordu. Ayrım korunuyor, kararın yeri değişti.
  */
 const EmptyState: FC<Props> = ({
   title,
@@ -35,11 +56,18 @@ const EmptyState: FC<Props> = ({
   icon,
   action,
   secondaryAction,
+  tone = 'empty',
   size = 'md',
   className,
   testId,
 }) => (
-  <div className={cx(styles.empty, styles[`empty--${size}`], className)} data-testid={testId}>
+  <div
+    className={cx(styles.empty, styles[`empty--${size}`], styles[`empty--${tone}`], className)}
+    /* Hata DUYURULUR: gormeyen kullanici icin sessizce degisen bir liste, hic
+       degismemis demekti. Bos durum duyurulmaz — o beklenen bir sonuc. */
+    role={tone === 'error' ? 'alert' : undefined}
+    data-testid={testId}
+  >
     {icon && <span className={styles.empty__icon}>{icon}</span>}
     <h3 className={styles.empty__title}>{title}</h3>
     {description && <p className={styles.empty__description}>{description}</p>}
@@ -52,4 +80,4 @@ const EmptyState: FC<Props> = ({
   </div>
 );
 
-export default memo(EmptyState) as typeof EmptyState;
+export default /*#__PURE__*/ memo(EmptyState) as typeof EmptyState;

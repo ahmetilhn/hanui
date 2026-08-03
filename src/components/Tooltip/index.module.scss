@@ -8,7 +8,6 @@
  * koyu temada koyu metin koyu zemine dusuyordu.
  */
 .tooltip {
-  position: relative;
   display: inline-flex;
 
   &__trigger {
@@ -17,11 +16,15 @@
   }
 }
 
+/*
+ * Balon GOVDEDE (portal) ve `position: fixed`.
+ *
+ * Koordinati `usePositioning` yaziyor; buradaki hicbir kural konum
+ * belirlemez. Once tetikleyicinin icinde `position: absolute` ile duruyordu
+ * ve `overflow: hidden` tasiyan her kapsayicida kirpiliyordu.
+ */
 .bubble {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: $z-dropdown;
+  z-index: $z-toast;
 
   /*
    * Genislik SINIRLI: ipucu bir paragraf degil bir aciklama. Sinirsiz
@@ -40,22 +43,41 @@
   font-size: $font-size-xs;
   font-weight: $weight-regular;
   line-height: $leading-normal;
-  text-align: left;
+  text-align: start;
 
-  /* Fare balona giderken tetikleyiciden cikmasin diye tiklama gecirilmez. */
-  pointer-events: none;
+  /*
+   * Fare balona giderken tetikleyiciden cikiyor; balon TIKLAMAYI GECIRMEZ ama
+   * imleci ALIR — `pointer-events: none` olsaydi `onPointerEnter` hic
+   * calismaz ve kapanis toleransi ise yaramazdi. Icinde etkilesimli oge
+   * olmadigi icin tiklamanin gecmesi de gerekmiyor.
+   */
+  user-select: text;
 
-  animation: hanui-fade-in-up $duration-fast $ease-out;
+  /*
+   * Yon: balon hangi kenarda acildiysa oradan gelir. Yer yoksa `usePositioning`
+   * karsit kenara dusuyor ve sinif da onunla birlikte degisiyor — animasyon
+   * yonu her zaman gercek konumu izliyor.
+   */
+  &--top {
+    animation: hanui-fade-in-up $duration-fast $ease-out;
+  }
+
+  &--bottom {
+    animation: hanui-fade-in-down $duration-fast $ease-out;
+  }
+
+  &--left,
+  &--right {
+    animation: hanui-fade-in $duration-fast $ease-out;
+  }
 
   @include reduced-motion {
     animation: none;
   }
 
-  &--top {
-    bottom: calc(100% + #{$space-2});
-  }
-
-  &--bottom {
-    top: calc(100% + #{$space-2});
+  /* Zorlanmis renk kipinde golge ve tint kayboluyor; kutu sinirini sistem
+     rengiyle cizmek balonun sayfadan ayrilmasinin TEK yolu. */
+  @media (forced-colors: active) {
+    border-color: CanvasText;
   }
 }

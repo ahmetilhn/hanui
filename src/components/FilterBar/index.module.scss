@@ -16,13 +16,13 @@
   }
 
   /*
-   * Eylemler sag UCTA durur: `margin-left: auto` alanlarla arasindaki boslugu
+   * Eylemler sag UCTA durur: `margin-inline-start: auto` alanlarla arasindaki boslugu
    * yutar. Satir sarinca kendi satirinda yine saga yaslanir.
    */
   &__actions {
     @include row($space-2);
 
-    margin-left: auto;
+    margin-inline-start: auto;
   }
 }
 

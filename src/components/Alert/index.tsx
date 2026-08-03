@@ -63,4 +63,4 @@ const Alert: FC<Props> = ({ children, tone = 'info', title, action, className, t
   </div>
 );
 
-export default memo(Alert) as typeof Alert;
+export default /*#__PURE__*/ memo(Alert) as typeof Alert;

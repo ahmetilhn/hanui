@@ -32,7 +32,7 @@
   }
 
   &__title {
-    @include heading($font-size-base, $weight-semibold);
+    @include heading(base, $weight-semibold);
 
     margin: 0;
   }

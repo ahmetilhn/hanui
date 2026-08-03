@@ -48,3 +48,44 @@
     font-size: $font-size-lg;
   }
 }
+
+/*
+ * MADALYON TONLARI — ad'dan turetiliyor (bkz. `resolveTone`).
+ *
+ * Alti kova: daha azinda on kisilik bir listede tonlar tekrar ediyor, daha
+ * cogunda tonlar birbirine yaklasip ayirt edilemez oluyordu. Sayi
+ * `TONE_COUNT` ile AYNI olmak zorunda.
+ *
+ * Hepsi TINT: doygun dolgu "tiklanabilir" demek ve avatar tiklanabilir degil.
+ * Metin rengi her kovada kendi koyu esiyle geliyor — kontrast denetcisi bu
+ * ciftleri zaten olcuyor.
+ */
+.avatar--tone-0 {
+  background-color: $blue-tint;
+  color: $blue-text;
+}
+
+.avatar--tone-1 {
+  background-color: $ok-bg;
+  color: $ok-fg;
+}
+
+.avatar--tone-2 {
+  background-color: $warn-bg;
+  color: $warn-fg;
+}
+
+.avatar--tone-3 {
+  background-color: $alt-bg;
+  color: $alt-fg;
+}
+
+.avatar--tone-4 {
+  background-color: $oem-bg;
+  color: $oem-fg;
+}
+
+.avatar--tone-5 {
+  background-color: $bad-bg;
+  color: $bad-fg;
+}

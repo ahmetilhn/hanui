@@ -1,5 +1,8 @@
 node_modules/
 build/
+build-playground/
+test-results/
+playwright-report/
 coverage/
 
 # Token üretici çıktısı — kaynak `src/theme/*.ts`, bu dosyalar derlemede üretilir.
@@ -14,3 +17,4 @@ npm-debug.log*
 !.vscode/settings.json
 .env
 .env.local
+src/styles/_metrics.generated.scss

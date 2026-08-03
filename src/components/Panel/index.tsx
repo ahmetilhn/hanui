@@ -1,6 +1,7 @@
 import { type ElementType, type FC, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { named } from '../../helpers/component.helper';
 
 import styles from './index.module.scss';
 
@@ -107,11 +108,12 @@ type PanelFormProps = {
  * doldurulması zor görünür. Ama bu sınır PANELE değil ızgaraya uygulanır;
  * panel tam genişlikte kalır ve sayfa düzeni bozulmaz.
  */
-export const PanelForm: FC<PanelFormProps> = memo(({ children, columns = 1, className }) => (
-  <div className={cx(styles.form, styles[`form--${columns}`], className)}>{children}</div>
-));
-
-PanelForm.displayName = 'PanelForm';
+export const PanelForm: FC<PanelFormProps> = /*#__PURE__*/ named(
+  /*#__PURE__*/ memo(({ children, columns = 1, className }) => (
+    <div className={cx(styles.form, styles[`form--${columns}`], className)}>{children}</div>
+  )),
+  'PanelForm',
+);
 
 type PanelRowProps = {
   children: ReactNode;
@@ -124,10 +126,11 @@ type PanelRowProps = {
  * <p>`PanelForm columns={2}` tüm ızgarayı ikiye böler; bu yalnızca TEK bir
  * satırı böler (ad + soyad gibi).
  */
-export const PanelRow: FC<PanelRowProps> = memo(({ children, className }) => (
-  <div className={cx(styles.row, className)}>{children}</div>
-));
+export const PanelRow: FC<PanelRowProps> = /*#__PURE__*/ named(
+  /*#__PURE__*/ memo(({ children, className }) => (
+    <div className={cx(styles.row, className)}>{children}</div>
+  )),
+  'PanelRow',
+);
 
-PanelRow.displayName = 'PanelRow';
-
-export default memo(Panel) as typeof Panel;
+export default /*#__PURE__*/ memo(Panel) as typeof Panel;

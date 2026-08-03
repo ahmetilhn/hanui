@@ -59,6 +59,16 @@ type Props<T extends string> = SingleProps<T> | MultipleProps<T>;
  * Radyo grubunda Tab tuşu <strong>gruba</strong> girer, seçenekler arasında ok
  * tuşlarıyla gezilir. Her çipin ayrı ayrı Tab durağı olması, 7 seçenekli bir
  * filtrede klavye kullanıcısını 7 kez Tab'lamaya zorluyordu.
+ *
+ * <h3>Klavye</h3>
+ * <table>
+ *   <tr><td>`ArrowRight` / `ArrowDown`</td><td>sonraki seçenek; uçlarda DÖNER</td></tr>
+ *   <tr><td>`ArrowLeft` / `ArrowUp`</td><td>önceki seçenek</td></tr>
+ * </table>
+ * ÇOKLU seçimde ok tuşu YOKTUR: orada her çip bağımsız bir onay kutusu ve
+ * `Tab` ile gezilir — ok tuşuyla gezinmek seçimi de değiştirirdi, oysa
+ * radyo grubunun aksine burada gezinmek seçmek demek değil. Nöbetçi:
+ * `components/__tests__/keyboard.test.tsx`.
  */
 const ChipGroup = <T extends string>({
   options,
@@ -144,4 +154,4 @@ const ChipGroup = <T extends string>({
   );
 };
 
-export default memo(ChipGroup) as typeof ChipGroup;
+export default /*#__PURE__*/ memo(ChipGroup) as typeof ChipGroup;

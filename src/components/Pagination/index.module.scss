@@ -30,6 +30,11 @@
    * Baglanti (URL kipi) icin tam gorunum: `<a>` primitif tasimiyor, durum
    * matrisi ve odak halkasi burada kurulur.
    */
+  /* Oklar YON TASIR: RTL'de "onceki" sola degil saga bakar. */
+  &__arrow svg {
+    @include mirror-in-rtl;
+  }
+
   &__arrow,
   &__page {
     display: inline-flex;

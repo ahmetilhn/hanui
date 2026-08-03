@@ -114,25 +114,25 @@
 
   &--top-left {
     top: $space-3;
-    left: $space-3;
+    inset-inline-start: $space-3;
     align-items: flex-start;
   }
 
   &--top-right {
     top: $space-3;
-    right: $space-3;
+    inset-inline-end: $space-3;
     align-items: flex-end;
   }
 
   &--bottom-left {
     bottom: $space-3;
-    left: $space-3;
+    inset-inline-start: $space-3;
     align-items: flex-start;
   }
 
   &--bottom-right {
     bottom: $space-3;
-    right: $space-3;
+    inset-inline-end: $space-3;
     align-items: flex-end;
   }
 }

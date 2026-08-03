@@ -46,4 +46,4 @@ const SectionHeader: FC<Props> = ({
   </header>
 );
 
-export default memo(SectionHeader) as typeof SectionHeader;
+export default /*#__PURE__*/ memo(SectionHeader) as typeof SectionHeader;

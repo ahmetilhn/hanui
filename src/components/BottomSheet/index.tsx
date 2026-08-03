@@ -1,6 +1,14 @@
 'use client';
 
-import { memo, type MouseEvent, type ReactNode, useCallback, useEffect, useId } from 'react';
+import {
+  memo,
+  type MouseEvent,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+} from 'react';
 import { createPortal } from 'react-dom';
 
 import { isClient } from '@ahmetilhn/handy-utils';
@@ -9,9 +17,16 @@ import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
 import { XLg } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
-import { preventAutoKeyboard } from '../../helpers/focus.helper';
+import {
+  captureFocus,
+  focusFirstMeaningful,
+  isTopModal,
+  preventAutoKeyboard,
+  pushModal,
+} from '../../helpers/focus.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
+import useScrollLock from '../../hooks/useScrollLock';
 import useSheetViewport from '../../hooks/useSheetViewport';
 import IconButton from '../IconButton';
 
@@ -68,6 +83,16 @@ type Props = {
  * <h3>Kırılma noktası aşılırsa kapanır</h3>
  * `showModal()` sayfanın geri kalanını panel çizilsin ya da çizilmesin inert
  * bırakır; pencere büyütülüp panel gizlenseydi sayfa tıklanamaz kalırdı.
+ *
+ * <h3>Klavye</h3>
+ * <table>
+ *   <tr><td>`Escape`</td><td>kapatır (`cancel` olayı çağırana bildirilir)</td></tr>
+ *   <tr><td>`Tab`</td><td>odak panelin içinde döner</td></tr>
+ * </table>
+ * Açılışta odak metin alanına DÜŞMEZ: `showModal()` odağı ilk odaklanabilir
+ * öğeye taşıyor ve o öğe bir metin alanı olduğunda telefonda ekran klavyesi
+ * kullanıcı istemeden açılıyordu (bkz. `helpers/focus.helper`). Nöbetçi:
+ * `components/__tests__/keyboard.test.tsx`.
  */
 const BottomSheet = ({
   title,
@@ -82,18 +107,35 @@ const BottomSheet = ({
 }: Props) => {
   const { labels } = useHanui();
   const titleId = useId();
+  /* Yigindaki yerimiz: Escape yalnizca EN USTTEKI panelde islenir. */
+  const tokenRef = useRef<symbol | null>(null);
 
   /* Panel GORUNEN alana yaslanir: klavye ve adres cubugu altinda kalmaz. */
   useSheetViewport();
 
   /* Arka plan kaydirmasi kilitlenir: `showModal()` arka plani etkilesime
      kapatir ama kaydirmayi her tarayicida engellemiyor — kullanici alt sayfayi
-     kaydirdigini sanirken arkadaki listeyi kaydiriyordu. */
+     kaydirdigini sanirken arkadaki listeyi kaydiriyordu. Kilit SAYACLI: bu
+     panel neredeyse her zaman baska bir kipsel yuzeyin (secim kutusu, filtre
+     paneli) ICINDE aciliyor ve ilki kapaninca kilit erken acilmamali. */
+  useScrollLock();
+
+  /*
+   * ODAK GERI DONUSU ve KIPSEL YIGIN.
+   *
+   * Panel `isOpen` almiyor — cagiran acikken cizip kapatmak icin kaldiriyor
+   * (bkz. yukaridaki not). Yani "acilis" MONTAJ, "kapanis" SOKUM: ikisi de
+   * bos bagimlilikli tek bir etkiye sigiyor.
+   */
   useEffect(() => {
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    const restoreFocus = captureFocus();
+    const { token, pop } = pushModal();
+    tokenRef.current = token;
+
     return () => {
-      document.body.style.overflow = previous;
+      pop();
+      tokenRef.current = null;
+      restoreFocus();
     };
   }, []);
 
@@ -107,10 +149,15 @@ const BottomSheet = ({
     if (!node || node.open) return;
 
     node.showModal();
+
+    /* Odak KAPATMA DUGMESINE degil ilk anlamli ogeye: ekran okuyucu paneli
+       "Kapat, dugme" diye aciyordu — kullanicinin duydugu ilk sey, panelin ne
+       oldugu degil ondan nasil kacilacagi. */
+    focusFirstMeaningful(node, `.${styles.sheet__header} button`);
+
     /* `showModal()` odagi panelin ILK odaklanabilir ogesine tasiyor; o oge bir
-       metin alani oldugunda telefonda klavye kendiliginden aciliyordu. Bugun
-       ilk oge kapatma dugmesi ama bu DOM sirasinin tesadufu — kural burada
-       zorlanir (bkz. `helpers/focus.helper`). */
+       metin alani oldugunda telefonda klavye kendiliginden aciliyordu
+       (bkz. `helpers/focus.helper`). */
     preventAutoKeyboard(node);
   }, []);
 
@@ -136,6 +183,9 @@ const BottomSheet = ({
          acilmiyordu. */
       onCancel={event => {
         event.preventDefault();
+        /* Yalnizca EN USTTEKI panel kapanir: ust uste iki kipsel yuzeyde tek
+           bir Escape ikisini birden kapatiyordu. */
+        if (tokenRef.current && !isTopModal(tokenRef.current)) return;
         onClose();
       }}
       onClick={handleBackdropClick}
@@ -163,4 +213,4 @@ const BottomSheet = ({
   );
 };
 
-export default memo(BottomSheet);
+export default /*#__PURE__*/ memo(BottomSheet);

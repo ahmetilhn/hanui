@@ -67,6 +67,8 @@
    * Dolu ucgen ayni olcude ayni sessizlikte ama gorunur.
    */
   &__separator {
+    @include mirror-in-rtl;
+
     color: $text-3;
     font-size: $icon-xs;
     flex-shrink: 0;

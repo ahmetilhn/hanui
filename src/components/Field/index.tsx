@@ -120,4 +120,4 @@ const Field: FC<Props> = ({
   );
 };
 
-export default memo(Field) as typeof Field;
+export default /*#__PURE__*/ memo(Field) as typeof Field;

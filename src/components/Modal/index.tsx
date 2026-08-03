@@ -13,8 +13,15 @@ import {
 import { XLg } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
-import { preventAutoKeyboard } from '../../helpers/focus.helper';
+import {
+  captureFocus,
+  focusFirstMeaningful,
+  isTopModal,
+  preventAutoKeyboard,
+  pushModal,
+} from '../../helpers/focus.helper';
 import { resolveLabel } from '../../helpers/label.helper';
+import useScrollLock from '../../hooks/useScrollLock';
 import { useHanui } from '../../theme/context';
 import IconButton from '../IconButton';
 
@@ -82,6 +89,16 @@ type Props = {
  * Dar ekranda ortalanmış bir pencere, klavye açıldığında yukarı sıkışıyor ve
  * dip düğmeleri klavyenin altında kalıyordu. Alt sayfa baş parmağın
  * erişebildiği yerde durur.
+ *
+ * <h3>Klavye</h3>
+ * <table>
+ *   <tr><td>`Escape`</td><td>kapatır — `isDismissable={false}` iken KAPATMAZ</td></tr>
+ *   <tr><td>`Tab`</td><td>odak panelin içinde döner (tarayıcı: `showModal()`)</td></tr>
+ * </table>
+ * Odak tuzağı tarayıcıdan gelir; kütüphanenin işi `cancel` olayını React
+ * durumuna bağlamak. Yakalanmadığında pencere kapanıyor ama `isOpen` `true`
+ * kalıyor ve bir daha açılamıyordu. Nöbetçi:
+ * `components/__tests__/keyboard.test.tsx`.
  */
 const Modal = ({
   isOpen,
@@ -100,38 +117,59 @@ const Modal = ({
 }: Props) => {
   const { labels } = useHanui();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  /* Yigindaki yerimiz: Escape yalnizca EN USTTEKI panelde islenir. */
+  const tokenRef = useRef<symbol | null>(null);
   const titleId = useId();
   const descriptionId = useId();
 
+  /*
+   * ACILIS: `showModal()` + odak + yigina katilma.
+   *
+   * Uc is TEK etkide toplandi cunku SIRALARI onemli: pencere once acilmali
+   * (yoksa icindeki hicbir sey odaklanabilir degil), sonra odak verilmeli,
+   * en son yigina katilmali — yigina once katilsaydi, acilis sirasinda kisa
+   * bir an icin "en ust panel" olup ustundeki gercek panelin Escape'ini
+   * yutuyordu.
+   */
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
 
-    if (isOpen && !dialog.open) {
-      dialog.showModal();
-      /* Odak metin alanina dusmesin: pencere `isDismissable={false}` iken
-         kapatma dugmesi cizilmiyor ve ilk odaklanabilir oge dogrudan
-         govdedeki alan oluyor — form pencerelerinde telefonda klavye
-         kendiliginden aciliyordu (bkz. `helpers/focus.helper`). */
-      preventAutoKeyboard(dialog);
+    if (!isOpen) {
+      if (dialog.open) dialog.close();
+      return;
     }
-    if (!isOpen && dialog.open) dialog.close();
+
+    const restoreFocus = captureFocus();
+    if (!dialog.open) dialog.showModal();
+
+    /* Odak KAPATMA DUGMESINE degil ilk anlamli ogeye. `showModal()` DOM
+       sirasindaki ilk odaklanabilir ogeye gidiyor ve o neredeyse her zaman
+       basliktaki carpi: ekran okuyucu pencereyi "Kapat, dugme" diye aciyor —
+       kullanicinin duydugu ilk sey, pencerenin ne oldugu degil ondan nasil
+       kacilacagi. */
+    focusFirstMeaningful(dialog, `.${styles.modal__close}`);
+    /* Odak bir metin alanina dustuyse geri alinir: telefonda ekran klavyesi
+       kullanici istemeden aciliyordu (bkz. `helpers/focus.helper`). */
+    preventAutoKeyboard(dialog);
+
+    const { token, pop } = pushModal();
+    tokenRef.current = token;
+
+    return () => {
+      pop();
+      tokenRef.current = null;
+      restoreFocus();
+    };
   }, [isOpen]);
 
   /*
    * Arka plan kaydirmasi kilitlenir. `showModal()` arka plani etkilesime
    * kapatir ama kaydirmayi her tarayicida engellemiyor: kullanici pencereyi
-   * kaydirdigini sanirken arkadaki listeyi kaydiriyordu.
+   * kaydirdigini sanirken arkadaki listeyi kaydiriyordu. Kilit SAYACLI —
+   * ic ice iki panelde ilki kapaninca erken acilmamali (bkz. `useScrollLock`).
    */
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = previous;
-    };
-  }, [isOpen]);
+  useScrollLock(isOpen);
 
   /*
    * Escape'i tarayici isliyor ama React durumu bundan haberdar olmuyor;
@@ -143,9 +181,18 @@ const Modal = ({
     if (!dialog) return;
 
     const handleCancel = (event: Event) => {
-      // Kapanmaya izin verilmiyorsa Escape de kapatmaz.
+      /* Varsayilan HER ZAMAN engellenir: kapanis karari React'te veriliyor ve
+         tarayicinin pencereyi kendi basina kapatmasi durumu `isOpen: true`
+         birakiyordu. */
       event.preventDefault();
-      if (isDismissable) onClose();
+      if (!isDismissable) return;
+
+      /* Yalnizca EN USTTEKI panel kapanir. Ust uste iki pencerede tek bir
+         Escape ikisini birden kapatiyordu: `cancel` her ikisine de ulasiyor
+         ve ikisi de kendi `onClose`unu cagiriyordu. */
+      if (tokenRef.current && !isTopModal(tokenRef.current)) return;
+
+      onClose();
     };
 
     dialog.addEventListener('cancel', handleCancel);
@@ -212,4 +259,4 @@ const Modal = ({
   );
 };
 
-export default memo(Modal) as typeof Modal;
+export default /*#__PURE__*/ memo(Modal) as typeof Modal;

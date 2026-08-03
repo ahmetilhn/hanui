@@ -5,6 +5,7 @@ import { type ButtonHTMLAttributes, forwardRef, memo, type ReactNode } from 'rea
 import { isDefined } from '@ahmetilhn/handy-utils';
 
 import { cx } from '../../helpers/class-name.helper';
+import { named } from '../../helpers/component.helper';
 import type { HanuiLinkExtraProps } from '../../types/link.type';
 import HanuiLink from '../Link';
 
@@ -60,7 +61,7 @@ type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
  * düğme semantiği (`aria-pressed`) ekran okuyucuya "seçili, kapatılabilir"
  * bilgisini verir.
  */
-const Chip = forwardRef<HTMLButtonElement, Props>(
+const Chip = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
   (
     {
       children,
@@ -141,6 +142,4 @@ const Chip = forwardRef<HTMLButtonElement, Props>(
   },
 );
 
-Chip.displayName = 'Chip';
-
-export default memo(Chip) as typeof Chip;
+export default /*#__PURE__*/ memo(/*#__PURE__*/ named(Chip, 'Chip')) as typeof Chip;

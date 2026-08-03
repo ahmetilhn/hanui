@@ -1,0 +1,162 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * KOMUT PALETI.
+ *
+ * Ekranin USTUNE yakin duruyor, ortalanmis degil: palet acildiginda goz zaten
+ * yukariya bakiyor ve dikeyde ortalanmis bir kutu, uzun bir listede asagi
+ * dogru buyudukce yerinden kayiyordu.
+ */
+.palette {
+  display: flex;
+  flex-direction: column;
+
+  width: min(92vw, 560px);
+  max-height: min(70dvh, 480px);
+  /* Ust bosluk: kutu ekranin tepesine yapismasin. */
+  margin: 12vh auto auto;
+  padding: 0;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  background-color: $surface;
+  color: $text;
+  box-shadow: $shadow-xl;
+  overflow: hidden;
+
+  @include surface-transition;
+  @include backdrop-transition;
+
+  &::backdrop {
+    background-color: $scrim;
+    backdrop-filter: blur(3px);
+  }
+
+  /* Dar ekranda tam genislige yakin: 560 px sabit genislik 360 px'lik bir
+     telefonda kutuyu ekranin disina tasiriyordu. */
+  @include for-mobile {
+    width: 94vw;
+    margin-top: $space-5;
+    max-height: 80dvh;
+  }
+
+  &__search {
+    @include row($space-2);
+
+    padding: $space-3 $space-4;
+    border-bottom: 1px solid $border;
+    flex-shrink: 0;
+  }
+
+  &__searchIcon {
+    color: $text-2;
+    font-size: $icon-md;
+    flex-shrink: 0;
+  }
+
+  &__input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: none;
+    font-family: $font-ui;
+    font-size: $font-size-base;
+    color: $text;
+
+    &::placeholder {
+      color: $text-3;
+    }
+
+    /* Odak halkasi kutunun KENDISINDE degil: pencere zaten acik ve vurgulu. */
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &__list {
+    flex: 1;
+    /* `min-height: 0` OLMADAN esnek oge icerigiyle buyur ve pencerenin
+       yuksekligini asar. */
+    min-height: 0;
+    overflow-y: auto;
+    margin: 0;
+    padding: $space-1;
+    list-style: none;
+
+    @include custom-scrollbar;
+  }
+
+  &__group {
+    display: block;
+    padding: $space-2 $space-2 $space-1;
+    font-size: $font-size-2xs;
+    font-weight: $weight-semibold;
+    letter-spacing: $tracking-wide;
+    text-transform: uppercase;
+    color: $text-3;
+  }
+
+  &__item {
+    @include row($space-3);
+
+    padding: $space-2 $space-3;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    /* 40px: yogun bir listede parmakla secim 38px'te iskalaniyordu. */
+    min-height: 40px;
+
+    /*
+     * Etkin komut: klavye ve fare TEK bir vurgu paylasir. Iki ayri vurgu
+     * (biri odak halkasi, biri hover zemini) kullaniciyi sasirtiyordu.
+     */
+    &--active {
+      background-color: $blue-tint;
+    }
+  }
+
+  &__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    font-size: $icon-md;
+    color: $text-2;
+  }
+
+  &__text {
+    @include stack(1px);
+
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__label {
+    @include truncate;
+
+    font-size: $font-size-sm;
+    color: $text;
+  }
+
+  &__description {
+    @include truncate;
+
+    font-size: $font-size-2xs;
+    color: $text-2;
+  }
+
+  &__shortcut {
+    @include technical-text($font-size-2xs);
+
+    flex-shrink: 0;
+    padding: 2px $space-1;
+    border: 1px solid $border;
+    border-radius: $radius-xs;
+    background-color: $surface-2;
+    color: $text-2;
+  }
+
+  &__empty {
+    padding: $space-5 $space-3;
+    text-align: center;
+    font-size: $font-size-sm;
+    color: $text-2;
+  }
+}

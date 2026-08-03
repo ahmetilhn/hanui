@@ -41,8 +41,7 @@
     &::after {
       content: '';
       position: absolute;
-      left: $space-3;
-      right: $space-3;
+      inset-inline: $space-3;
       bottom: -1px;
       height: 2px;
       background-color: transparent;
@@ -81,8 +80,8 @@
   &__panel {
     /* Panel klavyeyle odaklanabilir; odak halkasi icerigi sarmamali. */
     &:focus-visible {
-      outline: 2px solid $blue;
-      outline-offset: 4px;
+      @include focus-ring-shape($ring-color, 4px);
+
       border-radius: $radius-sm;
     }
   }

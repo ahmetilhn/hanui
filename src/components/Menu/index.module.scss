@@ -1,0 +1,116 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Menu yuzeyi. GOVDEDE (portal), `position: fixed`; koordinati
+ * `usePositioning` yaziyor.
+ */
+.menu {
+  @include stack(2px);
+
+  z-index: $z-dropdown;
+
+  min-width: 180px;
+  max-width: min(320px, calc(100vw - #{$space-6}));
+  max-height: min(60dvh, 420px);
+  overflow-y: auto;
+
+  padding: $space-1;
+  border-radius: $radius-md;
+  background-color: $surface;
+  border: 1px solid $border;
+  box-shadow: $shadow-lg;
+
+  @include custom-scrollbar;
+
+  &--top {
+    animation: hanui-fade-in-up $duration-fast $ease-out;
+  }
+
+  &--bottom {
+    animation: hanui-fade-in-down $duration-fast $ease-out;
+  }
+
+  &--left,
+  &--right {
+    animation: hanui-fade-in $duration-fast $ease-out;
+  }
+
+  @include reduced-motion {
+    animation: none;
+  }
+
+  @media (forced-colors: active) {
+    border-color: CanvasText;
+  }
+}
+
+.menu__item {
+  @include row($space-2);
+
+  width: 100%;
+  /* 40px: yogun bir listede parmakla secim 38px'te iskalaniyordu. */
+  min-height: 40px;
+  padding: $space-2 $space-3;
+  border: none;
+  border-radius: $radius-sm;
+  background: none;
+  cursor: pointer;
+  text-align: start;
+  font-family: $font-ui;
+  font-size: $font-size-sm;
+  color: $text;
+  transition: background-color $duration-fast $ease-out;
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    background-color: $surface-2;
+  }
+
+  /*
+   * Odak halkasi YOK, zemin VAR.
+   *
+   * Menude odak her zaman bir ogenin uzerinde ve halka her satirda yeniden
+   * ciziliyordu: goz "secili satir" ile "odakli satir" arasinda ayrim
+   * yapamiyordu. Vurgu tek: zemin. Zorlanmis renk kipinde zemin kayboldugu
+   * icin orada halka geri geliyor (asagida).
+   */
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    color: $text-3;
+    cursor: not-allowed;
+  }
+
+  /* Yikici eylem: geri alinamaz oldugu OKUNMALI. Renk tek sinyal degil —
+     cagiran taraf ikonu da verir. */
+  &--danger {
+    color: $bad-fg;
+
+    &:hover:not(:disabled),
+    &:focus-visible {
+      background-color: $bad-bg;
+    }
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+
+  @media (forced-colors: active) {
+    /* Zeminle anlatilan vurgu bu kipte kayboluyor; halka sistem rengiyle
+       geri geliyor — ve mixin'den geciyor (bkz. stylelint kurali). */
+    &:focus-visible {
+      @include focus-ring-shape(Highlight, -2px);
+    }
+  }
+}
+
+.menu__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: $icon-sm;
+  color: $text-2;
+}

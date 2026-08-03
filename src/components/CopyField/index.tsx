@@ -165,4 +165,4 @@ const CopyField: FC<Props> = ({
   );
 };
 
-export default memo(CopyField) as typeof CopyField;
+export default /*#__PURE__*/ memo(CopyField) as typeof CopyField;

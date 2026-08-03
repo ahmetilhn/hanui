@@ -160,7 +160,15 @@ export const LIGHT_THEME = {
   'nav-bg-2': NEUTRAL.n100,
   'nav-fg': NEUTRAL.n900,
   'nav-fg-2': NEUTRAL.n600,
-  'nav-fg-3': NEUTRAL.n500,
+  /*
+   * `n500` DEĞİL. Ölçüldü: `n500` üst bandın beyaz zemininde 3,06:1, alt
+   * bilginin `n100` zemininde 2,68:1 veriyordu — yani bandın en soluk metni
+   * (telif satırı, yardımcı bağlantılar) hiçbir yerde gövde metni eşiğini
+   * geçmiyordu. Sayfa tarafındaki karşılığıyla (`text-3`) aynı tona bağlandı:
+   * ikisi aynı işi yapıyor ve ayrı tutulmalarının tek sebebi bandın kendi
+   * yüzey merdiveniydi, kendi okunurluk kuralı değil.
+   */
+  'nav-fg-3': NEUTRAL.n550,
   'nav-line': NEUTRAL.n200,
   'nav-line-strong': NEUTRAL.n300,
   'nav-hover': NEUTRAL.n100,
@@ -182,7 +190,15 @@ export const LIGHT_THEME = {
   'ring-ok': `0 0 0 4px ${alpha(STATUS.okFg, 0.16)}`,
 
   // --- Örtü ve cam: görsel üzerine binen yüzeyler ---
-  scrim: alpha(NEUTRAL.n900, 0.55),
+  /*
+   * %55 DEĞİL. Örtü yalnızca kip pencerenin arkasını karartmıyor; `on-scrim`
+   * onun üzerine yazılan metnin rengi ve o metin AÇIK temada bir sayfanın
+   * üstüne düşüyor. Ölçüldü: %55 örtü `page` üzerine düzlendiğinde beyaz metin
+   * 4,27:1 — gövde metni eşiğinin altında. %60'ta 5,01:1.
+   *
+   * <p>Koyu temada sorun yok (20:1); ölçüyü belirleyen açık tema.
+   */
+  scrim: alpha(NEUTRAL.n900, 0.6),
   'scrim-soft': alpha(NEUTRAL.n900, 0.32),
   glass: alpha(NEUTRAL.n0, 0.92),
   'glass-solid': NEUTRAL.n0,
@@ -225,7 +241,14 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
 
   text: '#e7eaee',
   'text-2': '#9aa4b2',
-  'text-3': '#6b7583',
+  /*
+   * Açık temanın `text-3`ü ile AYNI HEX DEĞİL, olamaz da: koyu temada aynı ton
+   * zeminden uzaklaşmaz, yaklaşır. Ölçüldü: `#6b7583` `surface` üzerinde
+   * 3,69:1 ve `surface-2` üzerinde 3,25:1 — yer tutucu ve üstü çizili fiyat
+   * koyu temada okunmuyordu. `#818b99` yüzeylerin en açığında (`surface-2`)
+   * 4,51:1.
+   */
+  'text-3': '#818b99',
 
   graphite: GRAPHITE.ink,
   'graphite-2': GRAPHITE.inkTwo,
@@ -296,7 +319,8 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'nav-bg-2': GRAPHITE.inkTwo,
   'nav-fg': '#e7eaee',
   'nav-fg-2': '#9aa4b2',
-  'nav-fg-3': '#6b7583',
+  /* Açık temadaki kardeşiyle aynı gerekçe: bandın en soluk metni de metindir. */
+  'nav-fg-3': '#818b99',
   'nav-line': '#262c36',
   'nav-line-strong': '#363e4a',
   'nav-hover': alpha(NEUTRAL.n0, 0.07),
@@ -336,8 +360,188 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'glow-amber': alpha(AMBER.dark, 0.12),
 };
 
+/**
+ * ÖLÇÜ TOKEN'LARI — temadan bağımsız, çalışma zamanında EZİLEBİLİR.
+ *
+ * <h3>Neden bunlar da CSS değişkeni</h3>
+ * Bir zamanlar yalnızca renkler ve font aileleri çalışma zamanında
+ * eziliyordu; yarıçap, boşluk, süre ve tipografi ölçeği `_variables.scss`
+ * içinde SCSS sabitiydi. Sonucu şuydu: bir tüketici markasının RENGİNİ
+ * verebiliyor ama YUVARLAKLIĞINI veremiyordu. Oysa bir markayı tanınır kılan
+ * şeylerin listesinde yarıçap renkten sonra gelir — keskin köşeli bir
+ * kurumsal panelle yumuşak köşeli bir vitrin aynı pakete aynı derecede
+ * ihtiyaç duyuyor. Aynısı bilgi yoğunluğu (boşluk ölçeği) ve hareket süresi
+ * için de geçerli.
+ *
+ * <h3>SCSS sabiti olarak KALANLAR ve nedenleri</h3>
+ * <ul>
+ *   <li><b>Kırılma noktaları</b> — `@media (max-width: var(--x))` GEÇERSİZ
+ *       CSS. Medya sorgusu özel özellik okuyamaz; taşınsalardı bütün duyarlı
+ *       yerleşim sessizce çökerdi.</li>
+ *   <li><b>Katman (`z-*`)</b> — bir yığılma bağlamı sayısı, marka kararı
+ *       değil. Tüketicinin ezmesi gereken bir şey değil; ezerse kip pencere
+ *       perdenin altında kalır.</li>
+ *   <li><b>Ağırlık, harf aralığı, kapsayıcı genişlikleri, sayfa dolgusu</b> —
+ *       ölçek değil tekil değer; ezme ihtiyacı ölçülmedi. Gerektiğinde
+ *       buraya taşınabilir, ters yön (geri alma) kırıcıdır.</li>
+ * </ul>
+ *
+ * <h3>Değerler DİZE, sayı değil</h3>
+ * `'4px'` yazılıyor çünkü çıktı doğrudan bir CSS bildirimi. Sayı tutulup
+ * birim sonradan eklenseydi, `radius-pill` (999px) ile `leading-normal`
+ * (birimsiz 1.62) aynı listede duramazdı.
+ */
+export const METRIC_TOKENS = {
+  // --- Yarıçap ---
+  // Küçük öğeler ile büyük yüzeyler aynı yarıçapı PAYLAŞMAZ: küçük bir öğede
+  // 12px onu şişman gösterir, büyük bir kartta 6px keskin ve ucuz görünür.
+  'radius-xs': '4px',
+  'radius-sm': '6px',
+  'radius-md': '8px',
+  'radius-lg': '12px',
+  'radius-xl': '16px',
+  'radius-pill': '999px',
+
+  // --- Boşluk ---
+  'space-0': '0',
+  'space-1': '4px',
+  'space-2': '8px',
+  'space-3': '12px',
+  'space-4': '16px',
+  'space-5': '24px',
+  'space-6': '32px',
+  'space-7': '48px',
+  'space-8': '64px',
+  'space-9': '96px',
+
+  /*
+   * --- Tipografi ölçeği ---
+   *
+   * ÖLÇÜLDÜ: kaynak tasarım sisteminde `font-size` bildirimlerinin %67'si
+   * 14 px ve altındaydı; arayüz varsayılanı, uzun süre ekrana bakan bir
+   * kullanıcıda "okunabilir ama yorucu" eşiğinde duruyordu. Düzeltme TOKEN
+   * düzeyinde yapıldı: yüzlerce dosyaya tek tek girmek yerine ölçek
+   * kaydırıldı, böylece oranlar ve ritim korundu. Üst basamaklar (19/23/29…)
+   * DEĞİŞMEDİ — onlar zaten yeterince büyüktü.
+   */
+  'font-size-2xs': '12px',
+  'font-size-xs': '13px',
+  'font-size-sm': '15px',
+  'font-size-base': '16px',
+  'font-size-body': '17px',
+  'font-size-lg': '19px',
+  'font-size-xl': '23px',
+  'font-size-2xl': '29px',
+  'font-size-3xl': '37px',
+  'font-size-4xl': '47px',
+
+  // Satır yüksekliği: başlıkta sıkı, metinde rahat. `leading-normal` 1.55'ten
+  // 1.62'ye çıktı — 16 px gövde metninde en belirgin okunurluk kazanımı burada.
+  'leading-none': '1',
+  'leading-tight': '1.16',
+  'leading-snug': '1.35',
+  'leading-normal': '1.62',
+  'leading-relaxed': '1.75',
+
+  /*
+   * --- İkon ölçüsü ---
+   *
+   * İkonlar ölçülerini `1em` ile kapsayıcının `font-size` değerinden alır ve
+   * o değer METİN için seçilmiştir: 15 px'lik bir arayüz puntosunda simge,
+   * 16'lık viewBox'ın ~14 px'lik çizim alanına düşüyor ve 40 px'lik bir
+   * `IconButton`ın ortasında bir nokta gibi duruyordu. Ölçek Bootstrap
+   * Icons'ın 16 px'lik ızgarasının katlarına yakın durur; ara değerler
+   * (17, 19) simgeyi yarım piksele oturtup bulanıklaştırıyordu.
+   */
+  'icon-xs': '14px',
+  'icon-sm': '16px',
+  'icon-md': '18px',
+  'icon-lg': '20px',
+  'icon-xl': '24px',
+
+  // --- Hareket ---
+  // 200 ms üzerindeki geçişler tıklama ile sonuç arasında görünür bir gecikme
+  // yaratır ve arayüz yavaş hissedilir.
+  'duration-instant': '80ms',
+  'duration-fast': '140ms',
+  'duration-normal': '200ms',
+  'duration-slow': '320ms',
+
+  'ease-out': 'cubic-bezier(0.22, 1, 0.36, 1)',
+  'ease-in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
+  'ease-spring': 'cubic-bezier(0.34, 1.4, 0.64, 1)',
+
+  /*
+   * DÖNGÜ SÜRELERİ — geçiş ölçeğinden AYRI.
+   *
+   * `duration-*` ölçeği bir A→B geçişini ölçüyor ve tavanı 320 ms: onun
+   * üstünde tıklama ile sonuç arasında görünür bir gecikme oluşuyor. Sürekli
+   * dönen bir gösterge ise bir geçiş değil; 320 ms'lik bir dönüş baş
+   * döndürücü, 140 ms'lik bir parıltı da titreşim gibi okunuyor.
+   *
+   * <p>Ayrı isim vermenin sebebi ölçekten kaçmak değil, ölçeği KORUMAK:
+   * `Spinner` `0.7s`, iskelet parıltısı `1.4s` yazıyordu ve ikisi de hiçbir
+   * yerde açıklanmamış ham değerlerdi. Ham süre artık lint hatası
+   * (`stylelint.config.mjs`); bu iki değerin de bir adı var.
+   */
+  'duration-spin': '700ms',
+  'duration-shimmer': '1400ms',
+} as const;
+
+/**
+ * YOĞUN (compact) KİP — `<html data-hanui-density="compact">`.
+ *
+ * <h3>Gerekçe ölçülü</h3>
+ * Aynı bileşenleri iki uygulama kullanıyor: vitrin bir ekranda 8 satır,
+ * operasyon paneli 80 satır gösteriyor. Vitrin için doğru olan ferahlık,
+ * panelde kullanıcıyı kaydırmaya mahkûm ediyor; panel için doğru olan
+ * sıkılık vitrinde ucuz duruyor. İkisini tek ölçekle karşılamanın yolu yok.
+ *
+ * <h3>Yalnızca boşluk ve punto iner — ÖLÇEĞİN TAMAMI DEĞİL</h3>
+ * `space-0` ve `space-1` sabit kalır: 4 px'in altına inen bir boşluk kademesi
+ * bir boşluk değil bir çizim hatası. Yarıçap da sabit kalır — yuvarlaklık
+ * yoğunluğun değil markanın işi.
+ *
+ * <h3>DOKUNMA HEDEFİ KÜÇÜLMEZ</h3>
+ * `tap-target` görünmez bir örtü çiziyor ve ölçüsü (44 px) buraya girmiyor:
+ * yoğun kip bilgi yoğunluğunu artırmak içindir, dokunulabilirliği düşürmek
+ * için değil (WCAG 2.5.8). Görsel kutu küçülür, hedef küçülmez.
+ */
+export const COMPACT_DENSITY = {
+  'space-2': '6px',
+  'space-3': '8px',
+  'space-4': '12px',
+  'space-5': '16px',
+  'space-6': '24px',
+  'space-7': '32px',
+
+  'font-size-2xs': '11px',
+  'font-size-xs': '12px',
+  'font-size-sm': '13px',
+  'font-size-base': '15px',
+  'font-size-body': '16px',
+
+  'leading-normal': '1.5',
+  'leading-relaxed': '1.6',
+} as const satisfies Partial<Record<keyof typeof METRIC_TOKENS, string>>;
+
 /** Token adları — `LIGHT_THEME`den türetilir, elle listelenmez. */
 export type HanuiToken = keyof typeof LIGHT_THEME;
+
+/** Ölçü token adları — `METRIC_TOKENS`ten türetilir. */
+export type HanuiMetricToken = keyof typeof METRIC_TOKENS;
+
+/** Ölçü ezmeleri. Kısmî verilebilir; verilmeyen her ölçü varsayılanında kalır. */
+export type HanuiMetrics = Partial<Record<HanuiMetricToken, string>>;
+
+/**
+ * Bilgi yoğunluğu. `default` vitrin, `compact` operasyon paneli.
+ *
+ * <p>Seçim `<html data-hanui-density>` ile taşınır — tıpkı tema gibi, ve aynı
+ * sebeple: bir ölçek kararı tek bir React ağacının değil BELGENİN kararıdır;
+ * portal ile gövdeye taşınan kip pencere de aynı yoğunlukta olmalı.
+ */
+export type HanuiDensity = 'default' | 'compact';
 
 /** Bir temanın token → değer eşlemesi. Kısmî verilebilir; eksikler varsayılandan gelir. */
 export type HanuiThemeTokens = Partial<Record<HanuiToken, string>>;
@@ -345,8 +549,33 @@ export type HanuiThemeTokens = Partial<Record<HanuiToken, string>>;
 /** Bir temanın TAM eşlemesi. */
 export type HanuiResolvedTokens = Record<HanuiToken, string>;
 
-/** Kullanıcının seçtiği tema. `system` işletim sistemi tercihini izler. */
+/**
+ * ÇÖZÜLMÜŞ tema — ekranda gerçekten hangisi çizili.
+ *
+ * <p>Burada `system` YOKTUR ve olamaz: `system` bir tercih, bir tema değil.
+ * Çözüldüğünde ya açık ya koyu olur ve bileşenlerin gördüğü şey o. İkisini tek
+ * tipte toplamak, `scheme === 'system'` yazan bir tüketiciye hangi renklerin
+ * çizildiğini hâlâ söylemiyordu.
+ */
 export type HanuiColorScheme = 'light' | 'dark';
+
+/**
+ * Kullanıcının SEÇİMİ. `system` = açık bir seçim yok, işletim sistemi tercihi
+ * izlenir (`prefers-color-scheme`).
+ *
+ * <h3>Bu tip neden sonradan eklendi</h3>
+ * `HanuiColorScheme`in JSDoc'u "`system` işletim sistemi tercihini izler"
+ * diyordu ama tipte `system` YOKTU — belge bir yeteneği anlatıyor, tip onu
+ * yasaklıyordu. İki çözüm vardı: cümleyi silmek ya da yeteneği gerçekten
+ * eklemek. İkincisi seçildi çünkü eksik olan gerçek bir davranıştı: üç
+ * durumlu tema anahtarı (Açık / Koyu / Sistem) yaygın bir kalıp ve kütüphane
+ * onu kuramıyordu — `system`e dönmenin yolu özniteliği ELLE silmekti ve bunu
+ * tüketicinin bilmesi gerekiyordu.
+ *
+ * <p>Ekleme KIRICI DEĞİL: `scheme` hâlâ çözülmüş değeri döndürüyor, yalnızca
+ * `preference` alanı ve `setScheme('system')` girişi eklendi.
+ */
+export type HanuiColorPreference = HanuiColorScheme | 'system';
 
 /**
  * Yazı tipi ailesi sözleşmesi.
@@ -389,4 +618,16 @@ export type HanuiThemeConfig = Partial<{
   light: HanuiThemeTokens;
   dark: HanuiThemeTokens;
   fonts: HanuiFonts;
+  /**
+   * Ölçü ezmeleri — yarıçap, boşluk, punto, süre.
+   *
+   * <p>Renk gibi tema başına DEĞİL tek blokta: bir markanın yuvarlaklığı açık
+   * temada 12 px, koyu temada 8 px olmaz. Ayrı verilebilseydi iki değerin
+   * ayrışması kaçınılmazdı ve fark yalnızca tema değiştirildiğinde
+   * görünürdü — yani neredeyse hiç.
+   *
+   * @example
+   * initHanui({ theme: { metrics: { 'radius-md': '2px', 'radius-lg': '4px' } } });
+   */
+  metrics: HanuiMetrics;
 }>;

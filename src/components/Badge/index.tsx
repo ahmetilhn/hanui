@@ -67,4 +67,4 @@ const Badge: FC<Props> = ({
   </span>
 );
 
-export default memo(Badge) as typeof Badge;
+export default /*#__PURE__*/ memo(Badge) as typeof Badge;

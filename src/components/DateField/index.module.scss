@@ -1,0 +1,74 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * TARIH ALANI — yerel `<input type="date">`.
+ *
+ * Govde `input-base`ten: bir formda tarih alani ile metin alani yan yana
+ * duruyor ve ikisi ayri yukseklikteyse satir hizasi bozuluyordu.
+ */
+.dateField {
+  @include input-base;
+
+  /*
+   * Yerel takvim simgesi TIKLANABILIR kalir ve imleci isaret eder.
+   * Varsayilan imlec metin oku ve kullanici simgenin tiklanabilir oldugunu
+   * anlamiyordu.
+   */
+  &::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    /* Simge tarayicinin kendi cizimi ve tema token'ini izlemiyor; koyu temada
+       siyah bir kare olarak kaliyordu. `filter` onu metin rengine yaklastirir. */
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  /* Bos tarih alani yer tutucu gostermiyor: tarayici "gg.aa.yyyy" maskesini
+     kendisi ciziyor ve o maske `$text-3` tonunda okunmali. */
+  &:invalid,
+  &:not(:focus):placeholder-shown {
+    color: $text-2;
+  }
+}
+
+/* --- Aralik --- */
+
+.range {
+  @include stack($space-2);
+}
+
+.range__row {
+  @include row($space-2);
+
+  flex-wrap: wrap;
+}
+
+.range__separator {
+  flex-shrink: 0;
+  color: $text-3;
+}
+
+.range__field {
+  flex: 1;
+  min-width: 140px;
+}
+
+/*
+ * OZET SATIRI: secilen araligin okunur hali.
+ *
+ * Iki ISO tarih ("2026-03-01" ve "2026-03-14") kullanici icin bir aralik
+ * degil iki sayi; ozet ikisini tek cumlede birlestiriyor ve `Intl` ile yerel
+ * bicimde yaziyor.
+ */
+.range__summary {
+  font-size: $font-size-xs;
+  color: $text-2;
+}
+
+.range__error {
+  font-size: $font-size-xs;
+  color: $bad-fg;
+}

@@ -1,0 +1,106 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.carousel {
+  position: relative;
+}
+
+/* Dugmeler seridin USTUNDE, sag ucta: kartlarin uzerine binen oklar mobilde
+   icerigi ortuyor ve dokunma hedefleriyle carpisiyordu. */
+.carousel__controls {
+  @include row($space-1);
+
+  justify-content: flex-end;
+  margin-bottom: $space-2;
+}
+
+/* Oklar YON TASIR: RTL'de "onceki" sola degil saga bakar. */
+.carousel__arrowIcon {
+  @include mirror-in-rtl;
+}
+
+/*
+ * SERIT — yerel kaydirma + `scroll-snap`.
+ *
+ * JavaScript ile `transform` kaydiran bir uygulama parmakla kaydirmayi,
+ * shift+tekerlegi ve ok tuslarini getirmiyor; kaydirma cubugunu da goturuyor
+ * ve kullanici seridin devam ettigini goremiyordu.
+ */
+.carousel__track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(var(--hanui-carousel-item, 240px), 1fr);
+  gap: $space-4;
+
+  overflow-x: auto;
+  /* Kart kenarlari duraga OTURUR: yarim gorunen bir kart "devami var" der ama
+     yarim KALAN bir kart bir hata gibi okunuyordu. */
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+
+  /* Odak halkasi ve golge kirpilmasin: `overflow` tasiyan kutuda dikeyde de
+     tasma olusuyor ve halka kesiliyordu. */
+  padding-block: $space-1;
+
+  @include custom-scrollbar;
+  @include focus-ring($ring-color, -2px);
+
+  > * {
+    scroll-snap-align: start;
+  }
+
+  /* Hareket azaltma: yumusak kaydirma da bir harekettir. */
+  @include reduced-motion {
+    scroll-behavior: auto;
+  }
+}
+
+.carousel__dots {
+  @include row($space-1);
+
+  justify-content: center;
+  margin-top: $space-3;
+}
+
+/*
+ * SAYFA GOSTERGESI.
+ *
+ * Gorsel kutu 8 px ama dokunma hedefi 44: noktalari parmakla isabet ettirmek
+ * imkansizdi.
+ */
+.carousel__dot {
+  @include tap-target;
+
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: $radius-pill;
+  background-color: $border-strong;
+  cursor: pointer;
+  transition:
+    background-color $duration-fast $ease-out,
+    width $duration-fast $ease-out;
+
+  /* Etkin nokta hem RENK hem BICIM degistiriyor (uzuyor): renk tek basina
+     anlam tasimaz (WCAG 1.4.1). */
+  &--active {
+    width: 20px;
+    background-color: $blue;
+  }
+
+  @include focus-ring($ring-color, 2px);
+
+  @include reduced-motion {
+    transition: none;
+  }
+
+  @media (forced-colors: active) {
+    background-color: ButtonBorder;
+
+    &--active {
+      background-color: Highlight;
+      forced-color-adjust: none;
+    }
+  }
+}

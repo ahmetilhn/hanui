@@ -83,6 +83,9 @@ const THEME = {
   light: { blue: '#0d6efd', 'blue-text': '#0a58ca' },
   dark: { blue: '#6ea8fe' },
   fonts: { heading: 'Archivo, sans-serif', body: 'Inter, sans-serif' },
+  // Ölçüler tema başına DEĞİL: bir markanın yuvarlaklığı açık temada
+  // 12 px, koyu temada 8 px olmaz.
+  metrics: { 'radius-md': '2px', 'radius-lg': '4px', 'duration-normal': '120ms' },
 };
 
 <HanuiProvider theme={THEME} linkComponent={NextLink}>
@@ -97,15 +100,64 @@ React'in dışından (bir `<head>` betiğinden, Storybook'tan) aynı işi
 (`next/font`, `@font-face`, CDN) siz yaparsınız. Bir UI paketinin ağdan font
 çekmesi, sizin ölçemediğiniz bir istek demek.
 
+#### Ezilebilen ölçüler
+
+`radius-*` · `space-0…9` · `font-size-2xs…4xl` · `leading-*` · `icon-xs…xl` ·
+`duration-*` · `ease-*` — tam liste `METRIC_TOKENS` içinde ve dışa veriliyor.
+
+Ezilemeyenler ve nedenleri: **kırılma noktaları** (`@media (max-width: var(--x))`
+geçersiz CSS), **katman (`z-*`)** (yığılma sırası, marka kararı değil) ve
+**dokunma hedefi** (44 px; yoğun kipte de küçülmemeli — WCAG 2.5.8).
+
+### Bilgi yoğunluğu
+
+```html
+<html data-hanui-density="compact"></html>
+```
+
+Satır yüksekliği, dolgu ve punto bir kademe iner. Vitrin bir ekranda 8 satır,
+operasyon paneli 80 satır gösteriyor; ikisini tek ölçekle karşılamanın yolu yok.
+Kararı `initHanui({ density: 'compact' })` da verebilir.
+
+**Yarıçap değişmez** (yuvarlaklık yoğunluğun değil markanın işi) ve **dokunma
+hedefi küçülmez**: görsel kutu daralır, `tap-target` örtüsü 44 px kalır.
+
+### CSS'imizi ezmek — `@layer hanui`
+
+Kütüphane CSS'inin tamamı `@layer hanui` içinde. Katmanlı bir kural, katmansız
+bir kurala **her zaman yenilir** — özgüllüğe ve sıraya bakılmaksızın:
+
+```css
+/* Bu kadarı yeter; `!important` ya da `.app .card .card` gerekmez. */
+.my-card {
+  padding: 0;
+}
+```
+
+Katman olmadan sizin sınıfınız ile bizimki aynı özgüllükte (0,1,0) yarışıyordu
+ve kazananı **kaynak sırası** belirliyordu; o sıra da bundler'ınızın elinde —
+geliştirme ile üretim aynı olmak zorunda değil.
+
 ### Temayı değiştirmek
 
 ```tsx
-const { scheme, toggle, isReady } = useHanuiTheme();
+const { scheme, preference, setScheme, toggle, isReady } = useHanuiTheme();
 
 useEffect(() => {
-  if (isReady) localStorage.setItem('theme', scheme);
-}, [scheme, isReady]);
+  if (isReady) localStorage.setItem('theme', preference);
+}, [preference, isReady]);
 ```
+
+| Alan | |
+| --- | --- |
+| `scheme` | **ÇÖZÜLMÜŞ** tema — ekranda çizili olan (`light` \| `dark`) |
+| `preference` | kullanıcının **SEÇİMİ** (`light` \| `dark` \| `system`) |
+| `setScheme` | `'system'` verildiğinde açık seçim SİLİNİR |
+
+Üç durumlu bir anahtar (Açık / Koyu / Sistem) `preference` okur; `scheme`
+okusaydı "Sistem" seçiliyken düğme "Koyu"yu işaretli gösterirdi. `system` bir
+değer değil **değerin yokluğu**: öznitelik silinir ve
+`:not([data-hanui-theme])` sorgusu devreye girer.
 
 Kalıcılık **kancanın işi değil**: seçimi `localStorage`a mı, sunucuda
 okunabilsin diye bir çereze mi, kullanıcı profiline mi yazacağınız sizin
@@ -121,13 +173,27 @@ uyuşmazlık üretiyordu.
 
 ```
 theme/palette.ts   → ham hex (TEK hex kaynağı)
-theme/tokens.ts    → anlamsal token → hex (açık + koyu)
+theme/tokens.ts    → anlamsal token → değer
+                     LIGHT_THEME / DARK_THEME  (renk, temaya bağlı)
+                     METRIC_TOKENS             (ölçü, temadan bağımsız)
+                     COMPACT_DENSITY           (yoğun kipin ezdikleri)
 styles/*.generated → yukarıdakinden ÜRETİLİR (npm run tokens)
 ```
 
 SCSS ve TypeScript tarafı elle tutulsaydı bir tarafta var olup diğerinde
 olmayan bir token çıkardı — ve ayrışma sessiz: bileşen `var(--hanui-yok)`
-okuyup rengini kaybediyor, derleme yeşil dönüyor.
+okuyup rengini kaybediyor, derleme yeşil dönüyor. Nöbetçi
+`theme/__tests__/tokens.contract.test.ts`.
+
+**Ölçüler CSS değişkeni olduğu için SCSS aritmetiği çalışmaz.**
+`$space-8 - $space-2` derlenmez — ve Sass hata da vermez: ifadeyi olduğu gibi
+geçirip tarayıcıya `var(--a)-var(--b)` yazar, tarayıcı bütün bildirimi atar.
+Hesap `calc()` içinde yazılır, negatif değer dahil:
+
+```scss
+padding-inline-start: calc(#{$space-8} - #{$space-2});
+margin-inline: calc(-1 * #{$space-2});
+```
 
 ---
 
@@ -350,15 +416,47 @@ import NextLink from 'next/link';
 ```bash
 nvm use            # .nvmrc → 24
 npm install
-npm run verify     # tokens → typecheck → lint → test → build
+npm run verify     # tokens → kontrast → typecheck → lint → kapsam → build → boyut
+npm run playground # bileşen galerisi → http://localhost:5273
 ```
 
-| Komut               |                                                    |
-| ------------------- | -------------------------------------------------- |
-| `npm run tokens`    | SCSS token dosyalarını `theme/tokens.ts`ten üretir |
-| `npm run build`     | `build/` (ESM + CJS + `.d.ts` + `styles.css`)      |
-| `npm run test`      | Jest + Testing Library                             |
-| `npm run typecheck` | `tsc --noEmit`                                     |
+| Komut                     |                                                                 |
+| ------------------------- | --------------------------------------------------------------- |
+| `npm run tokens`          | SCSS token dosyalarını `theme/tokens.ts`ten üretir              |
+| `npm run build`           | `build/` (ESM + CJS + `.d.ts` + `styles.css`)                   |
+| `npm run test`            | Jest + Testing Library + `jest-axe`                              |
+| `npm run test:coverage`   | kapsam kapısı — `helpers`/`hooks`/`theme` satır ≥ %80            |
+| `npm run test:visual`     | görsel regresyon (Playwright); `verify` İÇİNDE DEĞİL, aşağı bkz. |
+| `npm run check:contrast`  | WCAG kontrast ölçümü, iki temada 118 çift                        |
+| `npm run size`            | paket boyutu bütçesi (`size-limit`)                              |
+| `npm run playground`      | bileşen galerisi (tema · RTL · yoğunluk anahtarı)                |
+| `npm run lint`            | ESLint (TS) + stylelint (SCSS)                                    |
+| `npm run typecheck`       | `tsc --noEmit`                                                   |
+
+### Nöbetçiler ne koruyor
+
+- **Eksen taraması** — dışa verilen her bileşen, her anlamlı durumunda
+  (`components/__tests__/a11y.test.tsx`). Deftere girmeyen yeni bir bileşen
+  testi kırar.
+- **Klavye sözleşmesi** — tuş matrisleri her bileşenin JSDoc'unda, nöbetçisi
+  `components/__tests__/keyboard.test.tsx`.
+- **Kontrast** — metin ≥ 4,5:1, ikon ve odak halkası ≥ 3:1. Eşiği tutmayan bir
+  token derlemeyi kırar; düzeltme daima `palette.ts` düzeyinde yapılır.
+- **Token sözleşmesi** — açık/koyu anahtar kümeleri ve üretilmiş SCSS kaynakla
+  eşleşir. Ayrışma bugüne kadar sessizdi.
+- **Paket boyutu** — tek bileşen import eden bir uygulamanın ne indirdiği
+  ölçülür (`Badge` 2,7 kB, `Button` 3,4 kB, tüm paket 22,2 kB gzip).
+- **Odak halkası ve hareket ölçeği** — stylelint, `focus-ring` mixin'i dışında
+  `outline` ve bileşen SCSS'inde ham süre değeri (`0.7s`) yazılmasını
+  engelliyor. Üç bileşen kendi halkasını, iki bileşen kendi süresini
+  yazıyordu.
+
+**Görsel regresyon `verify` içinde değil**: ekran görüntüsü platforma bağlı
+(yazı tipi tarama, alt piksel yumuşatma) ve macOS'te üretilmiş bir referans
+ubuntu üzerinde koşan CI'da her dosyada kırmızı döner. Referanslar platform
+başına saklanıyor (`e2e/__screenshots__/{platform}/`); CI'da açılacağı gün doğru
+yol, Playwright'ın resmi konteynerinde koşup `linux` referanslarını orada
+üretmek.
 
 `master`a her push `npm publish` çalıştırır — **`package.json` sürümünü
 yükseltmeyi unutmayın**, aynı sürüm ikinci kez yayımlanamaz ve iş akışı kırmızı

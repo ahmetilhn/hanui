@@ -1,16 +1,25 @@
 import { isClient } from '@ahmetilhn/handy-utils';
 
-import { applyThemeConfig, THEME_ATTRIBUTE } from '../helpers/theme.helper';
-import type { HanuiColorScheme, HanuiThemeConfig } from './tokens';
+import { applyThemeConfig, DENSITY_ATTRIBUTE, THEME_ATTRIBUTE } from '../helpers/theme.helper';
+import type { HanuiColorScheme, HanuiDensity, HanuiThemeConfig } from './tokens';
 
 export type InitHanuiOptions = Partial<{
-  /** Tema ezmeleri. Yalnızca değiştirilen token'lar verilir. */
+  /** Tema ve ölçü ezmeleri. Yalnızca değiştirilen token'lar verilir. */
   theme: HanuiThemeConfig;
   /**
    * Başlangıç şeması. Verilmezse `<html data-hanui-theme>` neyse o kalır;
    * o da yoksa sistem tercihi (`prefers-color-scheme`) devreye girer.
    */
   colorScheme: HanuiColorScheme;
+  /**
+   * Bilgi yoğunluğu. Verilmezse `<html data-hanui-density>` neyse o kalır;
+   * o da yoksa `default`.
+   *
+   * <p>Uygulama başına SABİT bir karar olduğunda (operasyon paneli her zaman
+   * `compact`) buradan verilir; kullanıcıya seçtiren bir uygulama özniteliği
+   * kendisi yazar.
+   */
+  density: HanuiDensity;
 }>;
 
 /**
@@ -43,9 +52,12 @@ export type InitHanuiOptions = Partial<{
 export const initHanui = (options: InitHanuiOptions = {}): void => {
   applyThemeConfig(options.theme);
 
-  if (!isClient() || !options.colorScheme) return;
+  if (!isClient()) return;
 
-  document.documentElement.setAttribute(THEME_ATTRIBUTE, options.colorScheme);
+  if (options.colorScheme)
+    document.documentElement.setAttribute(THEME_ATTRIBUTE, options.colorScheme);
+
+  if (options.density) document.documentElement.setAttribute(DENSITY_ATTRIBUTE, options.density);
 };
 
 export default initHanui;

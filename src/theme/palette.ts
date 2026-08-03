@@ -34,13 +34,25 @@ export const NEUTRAL = {
   /**
    * İkincil metnin okunur tabanı.
    *
-   * ÖLÇÜLDÜ: `text-3` `n500`'dü ve beyaz üzerinde 3,2:1 veriyor; üstü çizili
-   * fiyat, yer tutucu ve yardım metni gövde metni sayıldığı için WCAG
-   * 1.4.3'ün 4,5:1 eşiğini GEÇMİYORDU. Aynı ton açısında aydınlık
-   * düşürüldü: 4,67:1. Bir kademe daha koyulaştırmak `n600` ile ayrımı yok
-   * ediyordu.
+   * ÖLÇÜLDÜ (birinci düzeltme): `text-3` `n500`'dü ve beyaz üzerinde 3,2:1
+   * veriyor; üstü çizili fiyat, yer tutucu ve yardım metni gövde metni
+   * sayıldığı için WCAG 1.4.3'ün 4,5:1 eşiğini GEÇMİYORDU. Aynı ton açısında
+   * aydınlık düşürüldü: `#6b7583`, beyaz üzerinde 4,67:1.
+   *
+   * ÖLÇÜLDÜ (ikinci düzeltme, `scripts/check-contrast.mjs`): o değer yalnızca
+   * BEYAZ üzerinde ölçülmüştü. Gerçekte aynı metin dört yüzeyin üzerine
+   * düşüyor ve beyaz onların en açığı: `page` üzerinde 4,36:1, `surface-2`
+   * üzerinde (cip sayacı, pasif girdi) 3,94:1 — yani ölçüm yapılan yer
+   * dışındaki her yerde ihlal. Yüzeylerin en KOYUSU (`surface-2`) eşiği
+   * belirler: `#626c7a` orada 4,67:1.
+   *
+   * <p>Bedeli açık: `n600` ile arasındaki fark daraldı (sayfa üzerinde 5,60'a
+   * karşı 4,97). Üç kademeli soluk metin merdiveni bu paletin taşıyabileceğinin
+   * sınırında; kademe sayısı bir tasarım kararıdır ve görsel dil fazında
+   * yeniden görülür. Ama "görünür ama okunmayan" bir ton, kademesi bol bir
+   * merdivenden kötüdür.
    */
-  n550: '#6b7583',
+  n550: '#626c7a',
   n600: '#5a6472',
   n700: '#3a424f',
   n800: '#232a35',
@@ -191,18 +203,43 @@ export const DANGER_SOLID = {
 } as const;
 
 /**
- * İKON DOLGULARI — favori kalbi gibi METİN OLMAYAN, doygun kalması gereken
- * yerler. WCAG grafik öğesi eşiği 3:1 (1.4.11) ve hepsi geçiyor; gövde
- * metni olarak KULLANILMAZ.
+ * İKON DOLGULARI — favori kalbi, kopyalandı tiki gibi METİN OLMAYAN,
+ * doygun kalması gereken yerler. Eşik WCAG 1.4.11: grafik öğesi 3:1.
+ *
+ * <p>⚠ BU DOSYA BİR ZAMANLAR "hepsi geçiyor" DİYORDU VE GEÇMİYORLARDI.
+ * `scripts/check-contrast.mjs` yazıldığında ölçüldü: ankorun kendisi
+ * (`#34c759`) beyaz üzerinde 2,21:1, `surface-2` üzerinde 1,94:1 — grafik
+ * eşiğinin yarısı. `CopyField`in "kopyalandı" tiki tam olarak bu tonda
+ * çiziliyor ve tik, kopyalamanın başarılı olduğunu söyleyen TEK görsel
+ * sinyaldi (metin `visually-hidden`). Yeşil ailesinin ikon katmanı bu yüzden
+ * ankordan ayrıldı: ton açısı ve doygunluk korunarak aydınlık düşürüldü.
+ *
+ * <h3>Açık temada bu aile ESNEK DEĞİL</h3>
+ * `green` iki eşiğin arasına sıkışır: bir ikon olarak açık yüzeyden ayrılmak
+ * için KOYU olmalı (3:1), üzerine metin binecekse o metne yer bırakacak kadar
+ * AÇIK kalmalı (4,5:1). Bant dar ve `#299d46` içinde duruyor: `surface-2`
+ * üzerinde 3,06:1, `onGreen` ile 4,56:1.
+ *
+ * <p>Bunun bir sonucu var: <strong>metin taşıyan bir yeşil dolgunun hover'ı
+ * dolguyu koyulaştıramaz.</strong> Bir kademe koyulaşan her ton `onGreen`i
+ * 4,5'in altına düşürüyor (en koyu mürekkeple bile 4,47:1). `greenHover` bu
+ * yüzden yalnızca İKON hover'ıdır; metin taşıyan bir yüzeyin hover'ı
+ * kenarlıkta ya da gölgede anlatılır. Kütüphane bugün yeşil dolgu üzerine
+ * metin çizmiyor; `onGreen` tüketici için duruyor ve sözleşmesi `green` ile.
+ *
+ * <p>Koyu tema sıkışık değil: orada zemin koyu, ikon açık ve iki eşik aynı
+ * yöne çekiyor.
  */
 export const ACCENT = {
   red: '#dc2626',
   redDark: '#e35252',
-  green: '#34c759',
+  /** 3,06:1 `surface-2` üzerinde — ailenin ikon katmanı, ankor değil. */
+  green: '#299d46',
   greenDark: '#4cd76c',
-  greenHover: '#2aae4b',
+  /** İKON hover'ı; metin taşıyan dolgunun hover'ı değil (yukarıdaki not). */
+  greenHover: '#23883c',
   greenHoverDark: '#63e084',
-  /** Yeşil dolgu üzerindeki metin. BEYAZ DEĞİL: #34c759 üzerinde 2,22:1. */
+  /** Yeşil dolgu üzerindeki metin. BEYAZ DEĞİL: `green` üzerinde 3,50:1. */
   onGreen: '#06280f',
 } as const;
 

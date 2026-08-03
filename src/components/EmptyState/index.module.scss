@@ -44,7 +44,7 @@
   }
 
   &__title {
-    @include heading($font-size-lg);
+    @include heading(lg);
 
     margin: 0;
     text-wrap: balance;
@@ -92,7 +92,25 @@
     }
 
     .empty__title {
-      @include heading($font-size-base);
+      @include heading(base);
     }
+  }
+}
+
+/*
+ * HATA TONU — "bos" ile "yuklenemedi" ayni yerlesimde ama AYRI gorunur.
+ *
+ * Yerlesim ayni kaliyor ki iki durum arasindaki gecis sicramasin; ayrimi ikon
+ * madalyonunun tonu ve baslik rengi tasiyor. Ag hatasini "kayit kalmamis" diye
+ * okuyan kullanici yanlis karar veriyordu.
+ */
+.empty--error {
+  .empty__icon {
+    color: $bad-fg;
+    background-color: $bad-bg;
+  }
+
+  .empty__title {
+    color: $bad-fg;
   }
 }

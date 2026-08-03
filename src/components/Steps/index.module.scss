@@ -1,0 +1,156 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.steps {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &--horizontal {
+    flex-direction: row;
+    gap: $space-2;
+
+    /* Dar ekranda yatay adimlar kirpiliyor: dikeye duser. */
+    @include for-mobile {
+      flex-direction: column;
+      gap: $space-1;
+    }
+  }
+
+  &--vertical {
+    flex-direction: column;
+    gap: $space-1;
+  }
+}
+
+.steps__item {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+
+  /*
+   * BAGLAYICI CIZGI: adimlarin bir AKIS oldugunu gosterir.
+   *
+   * Ayri ayri duran uc kutu "uc secenek" gibi okunuyordu; cizgi sirayi
+   * anlatiyor. Son adimda cizilmez — sonrasi yok.
+   */
+  .steps--horizontal &:not(:last-child)::after {
+    content: '';
+    align-self: center;
+    flex: 1;
+    height: 1px;
+    margin-inline: $space-2;
+    background-color: $border;
+
+    @include for-mobile {
+      display: none;
+    }
+  }
+}
+
+.steps__button {
+  @include row($space-3, center);
+
+  flex: 0 1 auto;
+  min-width: 0;
+  padding: $space-2;
+  border: none;
+  border-radius: $radius-md;
+  background: none;
+  text-align: start;
+  font-family: $font-ui;
+  color: inherit;
+}
+
+button.steps__button {
+  cursor: pointer;
+  transition: background-color $duration-fast $ease-out;
+
+  &:hover {
+    background-color: $surface-2;
+  }
+
+  @include focus-ring($ring-color, -1px);
+
+  @include reduced-motion {
+    transition: none;
+  }
+}
+
+/*
+ * MADALYON — durumun BICIM farki.
+ *
+ * Tamamlanan: dolu zemin + tik. Bulunulan: dolu zemin + numara. Siradaki:
+ * bos zemin + kenarlik + numara. Uc BICIM; renk bunlara eslik ediyor, tek
+ * basina anlatmiyor (WCAG 1.4.1).
+ */
+.steps__marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: $radius-pill;
+  border: 1px solid $border-strong;
+  background-color: $surface;
+  color: $text-2;
+  font-size: $font-size-xs;
+  font-weight: $weight-semibold;
+  font-variant-numeric: tabular-nums;
+
+  .steps__item--done & {
+    background-color: $green-accent;
+    border-color: $green-accent;
+    color: $on-green;
+  }
+
+  .steps__item--current & {
+    background-color: $blue;
+    border-color: $blue;
+    color: $on-action;
+  }
+
+  @media (forced-colors: active) {
+    .steps__item--done &,
+    .steps__item--current & {
+      background-color: Highlight;
+      color: HighlightText;
+      forced-color-adjust: none;
+    }
+  }
+}
+
+.steps__text {
+  @include stack(2px);
+
+  min-width: 0;
+}
+
+.steps__label {
+  @include truncate;
+
+  font-size: $font-size-sm;
+  font-weight: $weight-medium;
+  color: $text-2;
+
+  .steps__item--current & {
+    color: $text;
+    font-weight: $weight-semibold;
+  }
+
+  .steps__item--done & {
+    color: $text;
+  }
+}
+
+.steps__description {
+  font-size: $font-size-xs;
+  color: $text-3;
+}
+
+/* Durumun METIN karsiligi: gorsel isaret ekran okuyucuya gecmiyor. */
+.steps__status {
+  @include visually-hidden;
+}

@@ -33,9 +33,37 @@ let frame = 0;
  * panel (alti secenekli bir liste) neredeyse yarisini kaybederken ekranin
  * cogunu kaplayan bir panel ayni kaymayi gorunur kilmiyordu.
  */
+/**
+ * MAKUL EN KÜÇÜK GÖRÜNÜM ALANI.
+ *
+ * <p>Bunun altındaki bir ölçüm bir görünüm alanı değil, GEÇİCİ BİR HÂL:
+ * klavye açılırken/kapanırken, sayfa arka plana alınıp geri gelirken ve
+ * `<dialog>` üst katmana girerken `visualViewport.height` bir kare boyunca
+ * absürt küçük değerler raporluyor.
+ *
+ * <p>ÖLÇÜLDÜ (`e2e` sondası): değişkene 120 px yazıldığında panelin tamamı
+ * 96 px'e iniyor — 57 px başlık + <strong>39 px gövde</strong>, yani listenin
+ * yarım satırı görünen bir kaydırma yarığı. Bu, gerçek cihazda bildirilen
+ * hatanın birebir görüntüsü.
+ */
+const MIN_VIEWPORT_HEIGHT = 240;
+
 const measure = () => {
   const viewport = window.visualViewport;
   if (!viewport) return;
+
+  /*
+   * ABSURT OLCUM YAZILMAZ.
+   *
+   * Once her deger kosulsuz yaziliyordu ve tek bir gecici kare paneli
+   * kullanilamaz hale getirmeye yetiyordu. Daha kotusu KALICIYDI: yanlis
+   * deger ancak bir sonraki `resize` ile duzeliyor, o olay gelmezse panel
+   * kapanana kadar oyle kaliyordu.
+   *
+   * Olcum atlandiginda ONCEKI dogru deger yerinde kalir; hicbir olcum
+   * yapilmadiysa CSS yedegi (`100dvh`) devrede.
+   */
+  if (viewport.height < MIN_VIEWPORT_HEIGHT) return;
 
   const covered = window.innerHeight - viewport.height - viewport.offsetTop;
   const root = document.documentElement;
@@ -44,14 +72,32 @@ const measure = () => {
   root.style.setProperty(HEIGHT_VAR, `${Math.round(viewport.height)}px`);
 };
 
-/* Klavye acilirken `resize` ve `scroll` ard arda dusuyor; kare basina bir
-   olcum yeterli ve her olcum bir yerlesim okumasi. */
+/**
+ * Kare başına bir ölçüm: klavye açılırken `resize` ve `scroll` ard arda
+ * düşüyor ve her ölçüm bir yerleşim okuması.
+ *
+ * <h3>Kare bayrağı NEDEN sıfırlanabilir olmak zorunda</h3>
+ * Bayrak yalnızca `requestAnimationFrame` geri çağrısında sıfırlanıyordu.
+ * O geri çağrı ÇALIŞMAYABİLİR: tarayıcı sekme arka plandayken kareleri
+ * durduruyor, iOS bunu üst katman geçişlerinde de yapıyor. Kare hiç
+ * gelmediğinde bayrak sonsuza kadar dolu kalıyor ve <strong>sonraki her
+ * ölçüm sessizce atlanıyordu</strong> — panel, o an ne ölçüldüyse orada
+ * donuyordu. Panel açılırken bayrak elle sıfırlanıyor (bkz. kancanın
+ * gövdesi).
+ */
 const schedule = () => {
   if (frame) return;
   frame = window.requestAnimationFrame(() => {
     frame = 0;
     measure();
   });
+};
+
+/** Bekleyen kareyi iptal eder ve bayrağı serbest bırakır. */
+const cancelScheduled = () => {
+  if (!frame) return;
+  window.cancelAnimationFrame(frame);
+  frame = 0;
 };
 
 /**
@@ -94,6 +140,15 @@ const useSheetViewport = (isActive = true) => {
       window.addEventListener('orientationchange', schedule);
     }
 
+    /*
+     * Bekleyen kare IPTAL edilir ve olcum SENKRON yapilir.
+     *
+     * Onceki panelden kalmis, hicbir zaman calismamis bir kare bayragi
+     * sonraki her olcumu susturuyordu (bkz. `schedule`). Panel her acildiginda
+     * bayrak serbest birakiliyor ve deger o anda yeniden okunuyor: acilan
+     * panel HER ZAMAN taze bir olcumle basliyor.
+     */
+    cancelScheduled();
     measure();
 
     return () => {
@@ -104,10 +159,7 @@ const useSheetViewport = (isActive = true) => {
       viewport.removeEventListener('scroll', schedule);
       window.removeEventListener('orientationchange', schedule);
 
-      if (frame) {
-        window.cancelAnimationFrame(frame);
-        frame = 0;
-      }
+      cancelScheduled();
 
       /* Degiskenler SILINIR, sifirlanmaz: yedek deger CSS'te
          (`var(…, 0px)` / `var(…, 100dvh)`) ve panel kapaliyken dogru olan o. */

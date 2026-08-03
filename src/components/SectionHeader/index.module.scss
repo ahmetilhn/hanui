@@ -19,7 +19,7 @@
   }
 
   &__title {
-    @include heading($font-size-xl);
+    @include heading(xl);
 
     margin: 0;
   }

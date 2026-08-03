@@ -110,7 +110,7 @@
   &--medium {
     padding: $space-3 $space-5;
     font-size: $font-size-sm;
-    min-height: 44px;
+    min-height: $tap-target-size;
   }
 
   &--large {

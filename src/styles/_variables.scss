@@ -1,4 +1,5 @@
 @forward 'colors.generated';
+@forward 'metrics.generated';
 
 // =====================================================================
 // HANUI — TASARIM DEGISKENLERI
@@ -8,53 +9,32 @@
 // enjeksiyon (Next'in `sassOptions.additionalData`si gibi) YOK: bir
 // kutuphane tuketicisinin bundler'ini yapilandirmasini bekleyemez.
 //
-// RENKLER BU DOSYADA DEGIL: `_colors.generated.scss` icinde ve o dosya
-// `src/theme/tokens.ts`ten uretiliyor (bkz. scripts/build-tokens.mjs).
-// Buradaki her sey TEMADAN BAGIMSIZ: olcu, punto, bosluk, yaricap, sure,
-// katman. Bunlar tema degistiginde degismez ve SCSS aritmetigi
-// (`$space-8 - $space-2`) modullerin her yerinde kullaniliyor.
+// BURADA NE YOK:
+//   * RENKLER      -> `_colors.generated.scss`
+//   * OLCULER      -> `_metrics.generated.scss` (yaricap, bosluk, punto,
+//                     satir yuksekligi, ikon olcusu, sure, egri)
+// Ikisi de `src/theme/tokens.ts`ten URETILIYOR ve ikisi de CSS degiskeni:
+// tuketici calisma zamaninda ezebiliyor.
+//
+// BURADA KALANLAR ve NEDENLERI — hepsi "ezilemez olmasi GEREKEN" degerler:
+//
+//   * Kirilma noktalari: `@media (max-width: var(--x))` GECERSIZ CSS. Medya
+//     sorgusu ozel ozellik okuyamaz.
+//   * Katman (`z-*`): yigilma baglami sirasi, marka karari degil. Tuketici
+//     ezerse kip pencere perdenin altinda kalir.
+//   * Agirlik, harf araligi, kapsayici genislikleri, sayfa dolgusu: olcek
+//     degil tekil deger; ezme ihtiyaci olculmedi. Buraya tasinabilirler,
+//     ters yon (geri alma) kiricidir.
 // =====================================================================
 
-// --- Tipografi olcegi -------------------------------------------------
+// --- Tipografi: olcek DISINDA kalanlar --------------------------------
 // Font AILELERI `_colors.generated.scss` icinde ($font-heading, $font-body,
-// $font-ui, $font-mono): onlar da CSS degiskeni, cunku tuketici degistirebilir.
+// $font-ui, $font-mono); punto ve satir yuksekligi `_metrics.generated.scss`.
 
 $tracking-logo: 0.13em;
 $tracking-tight: -0.022em; // buyuk basliklar; genis aralik onlari dagitir
 $tracking-snug: -0.011em; // orta boy basliklar
 $tracking-wide: 0.045em; // kucuk buyuk-harf etiketler
-
-/*
- * OLCEK BIR KADEME YUKSELTILDI.
- *
- * OLCULDU: kaynak tasarim sisteminde `font-size` bildirimlerinin %67'si
- * 14 px ve altindaydi. Arayuz varsayilani 14 px, uzun sure ekrana bakan
- * bir kullanicida "okunabilir ama yorucu" esiginde duruyordu.
- *
- * Duzeltme TOKEN duzeyinde yapildi: yuzlerce dosyaya tek tek girmek yerine
- * olcek kaydirildi, boylece oranlar ve ritim korundu. Ust basamaklar
- * (19/23/29…) DEGISMEDI — onlar zaten yeterince buyuktu ve buyutmek sayfayi
- * dagitirdi.
- */
-$font-size-2xs: 12px; // yalnizca overline (buyuk harf + tracking)
-$font-size-xs: 13px; // adet, yardim metni
-$font-size-sm: 15px; // arayuz varsayilani: dugme, etiket, tablo
-$font-size-base: 16px; // govde
-$font-size-body: 17px; // uzun okuma
-$font-size-lg: 19px;
-$font-size-xl: 23px;
-$font-size-2xl: 29px;
-$font-size-3xl: 37px;
-$font-size-4xl: 47px;
-
-// Satir yuksekligi: baslikta siki, metinde rahat.
-// `$leading-normal` 1.55'ten 1.62'ye cikti — 16 px govde metninde en belirgin
-// okunurluk kazanimi burada.
-$leading-none: 1;
-$leading-tight: 1.16;
-$leading-snug: 1.35;
-$leading-normal: 1.62;
-$leading-relaxed: 1.75;
 
 $weight-regular: 400;
 $weight-medium: 500;
@@ -62,55 +42,27 @@ $weight-semibold: 600;
 $weight-bold: 700;
 
 /*
- * --- IKON OLCUSU -----------------------------------------------------
+ * TIPOGRAFI KADEMELERI — `heading()` mixin'inin gordugu SIRA.
  *
- * Ikonlar `react-bootstrap-icons`ten gelir ve olculerini `1em` ile, yani
- * kapsayicinin `font-size` degerinden alir. Kapsayicinin PUNTOSU ise metin
- * icin secilmis bir degerdir ve ikon icin kucuk kaliyordu: 15 px'lik bir
- * arayuz puntosunda simge, 16'lik viewBox'in ~14 px'lik cizim alanina
- * dusuyor — 40 px'lik bir `IconButton`in ortasinda bir nokta gibi duruyordu.
- *
- * Bu yuzden ikon olcusu METIN OLCEGINDEN AYRI: ikonu tasiyan her kutu
- * `font-size` degerini buradan alir. Olcek Bootstrap Icons'in 16px'lik
- * cizim izgarasinin katlarina yakin durur; ara degerler (17, 19) simgeyi
- * yariml piksele oturtup bulaniklastiriyordu.
+ * Punto degerleri artik calisma zamaninda ezilebiliyor ve bu, derleme
+ * aninda yapilan her SAYISAL karsilastirmayi gecersiz kilar:
+ * `@if $size >= $font-size-lg` bir `var()` ile calismaz — calissaydi bile
+ * tuketici olcegi kaydirdiginda yanlis cevap verirdi. Karar bu yuzden
+ * KADEME ADI uzerinden veriliyor; sira burada, tek yerde duruyor.
  */
-$icon-xs: 14px; // yardim metni, yol ayraci — metnin icinde akan simge
-$icon-sm: 16px; // arayuz varsayilani: kucuk dugme, liste tiki
-$icon-md: 18px; // dugme ve alan icindeki simge
-$icon-lg: 20px; // madalyon, kip pencere kapatma
-$icon-xl: 24px; // durum ikonu, bos durum
+$font-steps: 2xs, xs, sm, base, body, lg, xl, 2xl, 3xl, 4xl;
 
 // Okunabilir satir uzunlugu. 75ch'nin otesinde goz satir basina donerken
 // yerini kaybediyor.
 $measure: 68ch;
 $measure-narrow: 56ch;
 
-// --- Olcu ve bosluk ---------------------------------------------------
-$space-0: 0;
-$space-1: 4px;
-$space-2: 8px;
-$space-3: 12px;
-$space-4: 16px;
-$space-5: 24px;
-$space-6: 32px;
-$space-7: 48px;
-$space-8: 64px;
-$space-9: 96px;
-
+// --- Sayfa dolgusu ----------------------------------------------------
+// Bosluk OLCEGI degil sayfa kabugunun kenar payi; kirilma noktalariyla
+// birlikte kullaniliyor ve onlar zaten SCSS.
 $desktop-padding: 32px;
 $tablet-padding: 24px;
 $mobile-padding: 16px;
-
-// Yaricap olcegi. Kucuk ogeler ile buyuk yuzeyler ayni yaricapi PAYLASMAZ:
-// kucuk bir ogede 12px onu sisman gosterir, buyuk bir kartta 6px keskin ve
-// ucuz gorunur.
-$radius-xs: 4px;
-$radius-sm: 6px;
-$radius-md: 8px;
-$radius-lg: 12px;
-$radius-xl: 16px;
-$radius-pill: 999px;
 
 $container-max-width: 1360px;
 $container-narrow: 880px;
@@ -119,17 +71,15 @@ $container-prose: 720px;
 
 $sidebar-width: 272px;
 
-// --- Hareket ----------------------------------------------------------
-// 200 ms uzerindeki gecisler tiklama ile sonuc arasinda gorunur bir gecikme
-// yaratir ve arayuz yavas hissedilir.
-$duration-instant: 80ms;
-$duration-fast: 140ms;
-$duration-normal: 200ms;
-$duration-slow: 320ms;
-
-$ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-$ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-$ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+/*
+ * DOKUNMA HEDEFI — WCAG 2.5.8.
+ *
+ * Olcu token DEGIL: yogun kip dahil hicbir yapilandirmada kucumemeli.
+ * `--hanui-space-*` ezilebilir olduğu icin bu deger oradan tureseydi, ölçegi
+ * daraltan bir tuketici dokunma hedefini de daraltirdi — ve bunu istemedigini
+ * bilmeden yapardi.
+ */
+$tap-target-size: 44px;
 
 // --- Kirilma noktalari ------------------------------------------------
 //

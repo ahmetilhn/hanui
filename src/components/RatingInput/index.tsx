@@ -52,6 +52,17 @@ const STARS = [1, 2, 3, 4, 5] as const;
  * <p>{@link Rating} genişletilemez: o `<span>` üretiyor ve açıkça
  * salt-gösterim. İkisini tek bileşende toplamak, gösterim tarafına hiç
  * kullanılmayan etkileşim kodu taşımak olurdu.
+ *
+ * <h3>Klavye (APG: radio group — tamamı YEREL)</h3>
+ * <table>
+ *   <tr><td>`ArrowRight` / `ArrowDown`</td><td>bir sonraki yıldız</td></tr>
+ *   <tr><td>`ArrowLeft` / `ArrowUp`</td><td>bir önceki yıldız</td></tr>
+ *   <tr><td>`Tab`</td><td>grubu TEK durak olarak geçer</td></tr>
+ * </table>
+ * Kütüphane hiçbir tuşu işlemiyor; nöbetçi bu yüzden tuşları değil DEVRİ
+ * ölçüyor — beş gerçek radyo, tek grup adı, okunabilir adlar
+ * (`components/__tests__/keyboard.test.tsx`). Yıldızlar `<span>`e dönerse
+ * test kırılır.
  */
 const RatingInput = ({
   value,
@@ -121,4 +132,4 @@ const RatingInput = ({
   );
 };
 
-export default memo(RatingInput) as typeof RatingInput;
+export default /*#__PURE__*/ memo(RatingInput) as typeof RatingInput;

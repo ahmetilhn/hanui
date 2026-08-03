@@ -30,8 +30,7 @@
    * gorunur kutu kart. `:focus-visible` — fare tiklamasinda halka yok.
    */
   &:has(.radioCard__input:focus-visible) {
-    outline: 2px solid $ring-color;
-    outline-offset: 2px;
+    @include focus-ring-shape;
   }
 
   &--selected {

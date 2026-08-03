@@ -1,0 +1,103 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.stat {
+  @include stack($space-1);
+
+  position: relative;
+  padding: $space-4;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  background-color: $surface;
+
+  &--sm {
+    padding: $space-3;
+  }
+}
+
+/* Ikon madalyonu sag UST kosede: degerin solunda dururken uc haneli bir
+   sayida metnin ustune biniyordu. */
+.stat__icon {
+  position: absolute;
+  inset-block-start: $space-3;
+  inset-inline-end: $space-3;
+  display: inline-flex;
+  font-size: $icon-lg;
+  color: $text-3;
+}
+
+.stat__label {
+  font-size: $font-size-xs;
+  font-weight: $weight-medium;
+  color: $text-2;
+  /* Ikon icin sagda yer: uzun bir etiket madalyonun altina giriyordu. */
+  padding-inline-end: $space-6;
+}
+
+/*
+ * DEGER.
+ *
+ * `tabular-nums` ZORUNLU: alt alta duran olcum kutularinda orantili rakamlar
+ * sutunu tirtikli gosteriyordu.
+ */
+.stat__value {
+  @include row($space-1, baseline);
+
+  font-family: $font-heading;
+  font-size: $font-size-2xl;
+  font-weight: $weight-bold;
+  line-height: $leading-tight;
+  letter-spacing: $tracking-tight;
+  color: $text;
+  font-variant-numeric: tabular-nums;
+
+  .stat--sm & {
+    font-size: $font-size-xl;
+  }
+}
+
+.stat__unit {
+  font-size: $font-size-sm;
+  font-weight: $weight-medium;
+  color: $text-2;
+  letter-spacing: normal;
+}
+
+/*
+ * DEGISIM: ok + renk + metin.
+ *
+ * Uc sinyal birden. Yalnizca renk kullanilsaydi renk koru bir kullanici icin
+ * artisla azalis ayni goruntudeydi (WCAG 1.4.1); ok bir BICIM farki, metin de
+ * ekran okuyucunun tek dayanagi.
+ */
+.stat__delta {
+  @include row(2px);
+
+  align-self: flex-start;
+  font-size: $font-size-xs;
+  font-weight: $weight-semibold;
+  font-variant-numeric: tabular-nums;
+  color: $text-2;
+
+  svg {
+    font-size: $icon-sm;
+    flex-shrink: 0;
+  }
+
+  &--positive {
+    color: $ok-fg;
+  }
+
+  &--negative {
+    color: $bad-fg;
+  }
+}
+
+.stat__description {
+  font-size: $font-size-xs;
+  color: $text-3;
+}
+
+.stat__srOnly {
+  @include visually-hidden;
+}

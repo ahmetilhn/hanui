@@ -56,4 +56,4 @@ const Tile = ({ label, icon, href, meta, isActive, linkProps, className, testId 
   </HanuiLink>
 );
 
-export default memo(Tile) as typeof Tile;
+export default /*#__PURE__*/ memo(Tile) as typeof Tile;

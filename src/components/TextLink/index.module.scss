@@ -28,6 +28,8 @@
    * `align-items: center` ile zaten dogru.
    */
   &__arrow {
+    @include mirror-in-rtl;
+
     font-size: 1em;
     flex-shrink: 0;
     transition: transform $duration-fast $ease-out;
@@ -42,9 +44,20 @@
       text-decoration: underline;
     }
 
-    /* Ok, gidilecek yonu fiziksel olarak sezdirir. */
+    /*
+     * Ok, gidilecek yonu fiziksel olarak sezdirir.
+     *
+     * RTL'de ok zaten `scaleX(-1)` ile aynalanmis durumda ve `transform` TEK
+     * bir ozellik: burada yeniden yazmak aynalamayi EZER — ok bir anda ileriyi
+     * degil geriyi gosterir ve hover'da yanlis yone kayar. Iki donusum
+     * birlikte yazilir.
+     */
     .link__arrow {
       transform: translateX(3px);
+
+      @include for-rtl {
+        transform: scaleX(-1) translateX(3px);
+      }
     }
   }
 

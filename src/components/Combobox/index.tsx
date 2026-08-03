@@ -124,6 +124,17 @@ type Props<T extends string> = {
  * `role="combobox"` + `aria-activedescendant`. Masaüstünde odak arama
  * kutusundan ayrılmaz; ok tuşları yalnızca <em>etkin</em> seçeneği değiştirir.
  * Odağı seçeneklere taşımak, yazmaya devam etmeyi imkânsız kılıyordu.
+ *
+ * <h3>Klavye (APG: combobox with listbox popup)</h3>
+ * <table>
+ *   <tr><td>`ArrowDown` / `ArrowUp`</td><td>etkin seçenek bir alt/üst; uçlarda DÖNER</td></tr>
+ *   <tr><td>`Home` / `End`</td><td>ilk / son seçenek</td></tr>
+ *   <tr><td>`Enter`</td><td>etkin seçeneği seçer, paneli kapatır</td></tr>
+ *   <tr><td>`Escape`</td><td>kapatır, odak tetikleyiciye döner</td></tr>
+ *   <tr><td>`Tab`</td><td>kapatır, gezinme sürer</td></tr>
+ *   <tr><td>yazmak</td><td>filtreler ve etkin seçeneği başa çeker</td></tr>
+ * </table>
+ * Nöbetçi: `components/__tests__/keyboard.test.tsx`.
  */
 const Combobox = <T extends string>({
   options,
@@ -459,6 +470,7 @@ const Combobox = <T extends string>({
           !displayLabel && styles['combobox__trigger--empty'],
           isOpen && styles['combobox__trigger--open'],
           isInvalid && styles['combobox__trigger--invalid'],
+          isClearable && displayLabel && !isDisabled && styles['combobox__trigger--clearable'],
         )}
         disabled={isDisabled}
         aria-haspopup="listbox"
@@ -482,38 +494,35 @@ const Combobox = <T extends string>({
 
         <span className={styles.combobox__value}>{displayLabel ?? labels.placeholder}</span>
 
-        {isClearable && displayLabel && !isDisabled && (
-          /*
-            Temizleme, tetikleyicinin İÇİNDE ayrı bir düğme olamaz (iç içe
-            düğme geçersiz HTML). Görsel olarak içeride duran, DOM'da kardeş
-            olan bir düğme kullanılır.
-          */
-          <span
-            role="button"
-            tabIndex={0}
-            className={styles.combobox__clear}
-            aria-label={text.clear}
-            onClick={event => {
-              event.stopPropagation();
-              clearSelection();
-            }}
-            onKeyDown={event => {
-              if (event.key !== 'Enter' && event.key !== ' ') return;
-              event.preventDefault();
-              event.stopPropagation();
-              clearSelection();
-            }}
-          >
-            <XLg aria-hidden />
-          </span>
-        )}
-
         {/* Dolu caret — gerekcesi `Select` ile ayni. */}
         <CaretDownFill
           aria-hidden
           className={cx(styles.combobox__chevron, isOpen && styles['combobox__chevron--open'])}
         />
       </button>
+
+      {/*
+        TEMİZLEME DÜĞMESİ TETİKLEYİCİNİN İÇİNDE DEĞİL, KARDEŞİ.
+
+        Önce `<button>`ın içinde `role="button" tabIndex={0}` taşıyan bir
+        `<span>` olarak duruyordu; dosyadaki yorum "DOM'da kardeş" diyordu ama
+        kod öyle değildi. Eksen taraması bunu `nested-interactive` olarak
+        bildirdi ve sonucu somut: iç içe etkileşimli öğede ekran okuyucular
+        yalnızca dıştaki düğmeyi duyurur, içteki çarpıya klavyeyle ulaşılsa bile
+        adı okunmaz — yani "seçimi temizle" eylemi destek teknolojisi
+        kullanıcısı için YOK. Kardeş olarak çizilip tetikleyicinin üzerine
+        konumlandırılıyor; görsel yer aynı, ağaçtaki yeri doğru.
+      */}
+      {isClearable && displayLabel && !isDisabled && (
+        <button
+          type="button"
+          className={styles.combobox__clear}
+          aria-label={text.clear}
+          onClick={clearSelection}
+        >
+          <XLg aria-hidden />
+        </button>
+      )}
 
       {/* Masaüstü: tetikleyiciye yapışan panel. */}
       {openMode === 'popover' && (
@@ -543,4 +552,4 @@ const Combobox = <T extends string>({
   );
 };
 
-export default memo(Combobox) as typeof Combobox;
+export default /*#__PURE__*/ memo(Combobox) as typeof Combobox;

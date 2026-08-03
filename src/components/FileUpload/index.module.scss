@@ -1,0 +1,153 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.upload {
+  @include stack($space-3);
+}
+
+/*
+ * SURUKLE-BIRAK ALANI bir `<label>`: tiklama ve klavye YEREL girdiye
+ * yonleniyor ve ekran okuyucu alani dogru duyuruyor.
+ */
+.upload__drop {
+  @include stack($space-1);
+
+  align-items: center;
+  text-align: center;
+  padding: $space-6 $space-4;
+  border: 2px dashed $border-strong;
+  border-radius: $radius-lg;
+  background-color: $surface-inset;
+  cursor: pointer;
+  transition:
+    border-color $duration-fast $ease-out,
+    background-color $duration-fast $ease-out;
+
+  &:hover {
+    border-color: $ring-color;
+    background-color: $blue-tint;
+  }
+
+  /*
+   * Odak halkasi ALANDA: girdi gorsel olarak gizli ve ona cizilen halka
+   * gorunmuyor.
+   */
+  &:has(.upload__input:focus-visible) {
+    @include focus-ring-shape;
+  }
+
+  /* Surukleme sirasinda: kesikli cerceve dolu cerceveye doner — "birakabilirsin"
+     bilgisi renkle DEGIL bicimle de veriliyor. */
+  &--dragging {
+    border-style: solid;
+    border-color: $ring-color;
+    background-color: $blue-tint;
+  }
+
+  &--invalid {
+    border-color: $danger-solid;
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+
+    &:hover {
+      border-color: $border-strong;
+      background-color: $surface-inset;
+    }
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+}
+
+.upload__input {
+  @include visually-hidden;
+}
+
+.upload__icon {
+  font-size: $icon-xl;
+  color: $text-2;
+}
+
+.upload__label {
+  font-size: $font-size-sm;
+  font-weight: $weight-semibold;
+  color: $text;
+}
+
+.upload__drag {
+  font-size: $font-size-xs;
+  color: $text-2;
+}
+
+.upload__hint {
+  font-size: $font-size-xs;
+  color: $text-3;
+}
+
+.upload__error {
+  @include row($space-2, flex-start);
+
+  margin: 0;
+  font-size: $font-size-xs;
+  color: $bad-fg;
+
+  svg {
+    flex-shrink: 0;
+    font-size: $icon-sm;
+    margin-top: 1px;
+  }
+}
+
+.upload__list {
+  @include stack($space-2);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.upload__file {
+  @include row($space-3);
+
+  padding: $space-2 $space-3;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  background-color: $surface;
+
+  &--error {
+    border-color: $bad-line;
+    background-color: $bad-bg;
+  }
+}
+
+.upload__fileText {
+  @include stack(2px);
+
+  flex: 1;
+  min-width: 0;
+}
+
+.upload__fileName {
+  @include truncate;
+
+  font-size: $font-size-sm;
+  color: $text;
+}
+
+.upload__fileMeta {
+  font-size: $font-size-xs;
+  color: $text-2;
+  font-variant-numeric: tabular-nums;
+
+  .upload__file--error & {
+    color: $bad-fg;
+  }
+}
+
+.upload__progress {
+  flex: 0 0 120px;
+}

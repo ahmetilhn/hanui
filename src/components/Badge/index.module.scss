@@ -175,10 +175,19 @@
     @include tint(info);
   }
 
+  /*
+   * Metin `$on-scrim` DEGILDI, oyle olmali. `$on-scrim` her iki temada da
+   * BEYAZ (orgusu: bir ortunun ustunde durur) ama bu rozetin zemini mavi ve
+   * mavi temaya gore degisiyor: koyu temada `$blue` acilip `#5b93ff` oluyor ve
+   * beyaz metin orada 2,97:1'e dusuyordu. `$on-action` maviye gore degil ama
+   * TEMAYA gore donuyor (acikta beyaz, koyuda murekkep) ve ayni dolgunun
+   * `Pagination`/`Tile` icindeki kullanimi zaten onu kullaniyordu — rozet tek
+   * basina ayrisiyordu.
+   */
   &.badge--solid {
     background-color: $blue;
     border-color: $blue;
-    color: $on-scrim;
+    color: $on-action;
   }
 
   &.badge--outline {

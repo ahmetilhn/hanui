@@ -1,5 +1,7 @@
 import { resolve } from 'node:path';
 
+// @ts-expect-error — eklenti düz JS; tip bildirimi yok ve gerekmiyor.
+import hanuiLayer from './scripts/lib/postcss-hanui-layer.mjs';
 import { defineConfig, type Plugin } from 'vite';
 import dts from 'vite-plugin-dts';
 
@@ -63,7 +65,28 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
   },
+  /*
+   * AGAC SALLAMA — bu dosyada BIR AYAR YOK, ve olmamasi bilincli.
+   *
+   * OLCULDU (`npm run size`, Faz 0): yalnizca `Badge` import eden bir uygulama
+   * 20,70 kB indiriyordu; paketin TAMAMI 21,82 kB. Yani hicbir sey
+   * silinmiyordu. Iki sebep vardi ve ikisi de KAYNAKTA:
+   *
+   *   1. `export default memo(X)` — modul duzeyindeki bir cagri ifadesi,
+   *      bundler icin yan etkisi olabilecek bir ifade. Cozum: kaynakta
+   *      `/*#__PURE__*` acilamasi.
+   *   2. `X.displayName = 'X'` — modul duzeyinde bir OZELLIK ATAMASI, yani
+   *      gercek bir yan etki; hedefini ve butun bagimlilik zincirini ayakta
+   *      tutuyordu. Cozum: `helpers/component.helper` icindeki `named()`.
+   *
+   * Vite'in `esbuild.pure` secenegi DENENDI ve bu boru hattinda cikisa
+   * acilama birakmiyor (uretilen `build/index.js` byte-ozdes kaldi). Acilama
+   * kaynakta duruyor; burada tekrarlanmasi yaniltici olurdu.
+   *
+   * Sonuc: `Badge` 2,71 kB, `Button` 3,38 kB. Nobetci `.size-limit.json`.
+   */
   css: {
+    postcss: { plugins: [hanuiLayer()] },
     modules: {
       /*
        * Sınıf adları paket adıyla ön eklenir. Tüketicinin kendi CSS modülü

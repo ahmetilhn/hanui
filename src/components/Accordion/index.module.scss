@@ -1,0 +1,145 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.accordion {
+  @include stack($space-0);
+
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  background-color: $surface;
+  overflow: hidden;
+}
+
+.accordion__item {
+  border-bottom: 1px solid $border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &--disabled {
+    .accordion__title,
+    .accordion__meta,
+    .accordion__marker {
+      color: $text-3;
+    }
+
+    .accordion__summary {
+      cursor: not-allowed;
+    }
+  }
+}
+
+/*
+ * Baslik satiri.
+ *
+ * `list-style: none` + `::-webkit-details-marker` YEREL ucgeni kaldirir:
+ * kendi isaretcimiz donuyor ve iki ucgen yan yana duruyordu. Safari eski
+ * surumlerinde yalnizca `-webkit` kurali isliyor.
+ */
+.accordion__summary {
+  @include row($space-3);
+
+  padding: $space-4;
+  cursor: pointer;
+  list-style: none;
+  font-size: $font-size-sm;
+  font-weight: $weight-semibold;
+  color: $text;
+  transition: background-color $duration-fast $ease-out;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &:hover {
+    background-color: $surface-2;
+  }
+
+  @include focus-ring($ring-color, -2px);
+
+  @include reduced-motion {
+    transition: none;
+  }
+}
+
+/* Isaretci: kapali ok, acikken 90 derece doner. RTL'de ok yon TASIR. */
+.accordion__marker {
+  @include mirror-in-rtl;
+
+  flex-shrink: 0;
+  font-size: $icon-xs;
+  color: $text-2;
+  transition: rotate $duration-fast $ease-out;
+
+  /*
+   * `[open] > &` DEGIL `[open] &`.
+   *
+   * Isaretci `<summary>`nin ICINDE; `<details>`in dogrudan cocugu DEGIL.
+   * Cocuk birlestiricisi hicbir zaman eslesmiyordu: bolum aciliyor, icerik
+   * geliyor ama ok kapali yonde kaliyordu — galeride goruldu.
+   */
+  [open] & {
+    rotate: 90deg;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+}
+
+/*
+ * RTL'de isaretci HEM aynalanir HEM doner: `mirror-in-rtl` `transform`
+ * yaziyor, donme `rotate` — iki AYRI ozellik oldugu icin birbirini ezmiyorlar.
+ * Tek `transform` icinde yazilsalardi ikincisi birincisini siliyordu.
+ */
+[open] .accordion__marker {
+  @include for-rtl {
+    rotate: -90deg;
+  }
+}
+
+.accordion__title {
+  flex: 1;
+  min-width: 0;
+}
+
+.accordion__meta {
+  flex-shrink: 0;
+  font-size: $font-size-xs;
+  font-weight: $weight-regular;
+  color: $text-2;
+}
+
+/*
+ * YUKSEKLIK GECISI.
+ *
+ * `interpolate-size: allow-keywords` `height: auto`ya gecis yapmayi mumkun
+ * kiliyor. Desteklemeyen tarayicida gecis duser ve bolum ANINDA acilir —
+ * yani eski davranis; hicbir sey kirilmiyor.
+ *
+ * `max-height` numarasi KULLANILMADI: tahmini bir tavan kisa bolumlerde gozle
+ * gorulur bir gecikme birakiyor, uzun bolumlerde de icerigi kirpiyordu.
+ */
+.accordion__panel {
+  interpolate-size: allow-keywords;
+
+  height: 0;
+  overflow: hidden;
+  transition: height $duration-normal $ease-out;
+
+  [open] > & {
+    height: auto;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+}
+
+.accordion__content {
+  padding: 0 $space-4 $space-4;
+  font-size: $font-size-sm;
+  line-height: $leading-normal;
+  color: $text-2;
+}

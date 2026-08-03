@@ -1,6 +1,7 @@
 import { type ElementType, type FC, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { named } from '../../helpers/component.helper';
 import type { HanuiLinkExtraProps } from '../../types/link.type';
 import HanuiLink from '../Link';
 
@@ -70,8 +71,8 @@ type CardMediaProps = {
  * yerleşim kaymasını (CLS) önler. Oransız bırakıldığında kartlar görseller
  * yüklendikçe zıplıyordu.
  */
-export const CardMedia: FC<CardMediaProps> = memo(
-  ({ children, ratio = 1, href, linkProps, isContained = true, className }) => {
+export const CardMedia: FC<CardMediaProps> = /*#__PURE__*/ named(
+  /*#__PURE__*/ memo(({ children, ratio = 1, href, linkProps, isContained = true, className }) => {
     const content = (
       <span
         className={cx(styles.media__frame, isContained && styles['media__frame--contained'])}
@@ -102,10 +103,9 @@ export const CardMedia: FC<CardMediaProps> = memo(
         )}
       </div>
     );
-  },
+  }),
+  'CardMedia',
 );
-
-CardMedia.displayName = 'CardMedia';
 
 type CardOverlayProps = {
   children: ReactNode;
@@ -120,13 +120,12 @@ type CardOverlayProps = {
  * bağlantısının tıklanmasını engellememeli. İçindeki gerçek düğmeler kendi
  * olaylarını geri açar.
  */
-export const CardOverlay: FC<CardOverlayProps> = memo(
-  ({ children, position = 'top-left', className }) => (
+export const CardOverlay: FC<CardOverlayProps> = /*#__PURE__*/ named(
+  /*#__PURE__*/ memo(({ children, position = 'top-left', className }) => (
     <div className={cx(styles.overlay, styles[`overlay--${position}`], className)}>{children}</div>
-  ),
+  )),
+  'CardOverlay',
 );
-
-CardOverlay.displayName = 'CardOverlay';
 
 type CardSectionProps = {
   children: ReactNode;
@@ -134,17 +133,19 @@ type CardSectionProps = {
 };
 
 /** Kartın metin gövdesi: başlık, açıklama, üstyazı. */
-export const CardBody: FC<CardSectionProps> = memo(({ children, className }) => (
-  <div className={cx(styles.body, className)}>{children}</div>
-));
-
-CardBody.displayName = 'CardBody';
+export const CardBody: FC<CardSectionProps> = /*#__PURE__*/ named(
+  /*#__PURE__*/ memo(({ children, className }) => (
+    <div className={cx(styles.body, className)}>{children}</div>
+  )),
+  'CardBody',
+);
 
 /** Eylem şeridi — tutar, düğmeler. Kartın dibine yapışır. */
-export const CardFooter: FC<CardSectionProps> = memo(({ children, className }) => (
-  <div className={cx(styles.footer, className)}>{children}</div>
-));
+export const CardFooter: FC<CardSectionProps> = /*#__PURE__*/ named(
+  /*#__PURE__*/ memo(({ children, className }) => (
+    <div className={cx(styles.footer, className)}>{children}</div>
+  )),
+  'CardFooter',
+);
 
-CardFooter.displayName = 'CardFooter';
-
-export default memo(Card) as typeof Card;
+export default /*#__PURE__*/ memo(Card) as typeof Card;

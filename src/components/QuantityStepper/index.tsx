@@ -115,4 +115,4 @@ const QuantityStepper: FC<Props> = ({
   );
 };
 
-export default memo(QuantityStepper) as typeof QuantityStepper;
+export default /*#__PURE__*/ memo(QuantityStepper) as typeof QuantityStepper;

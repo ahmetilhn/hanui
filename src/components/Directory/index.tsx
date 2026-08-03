@@ -1,6 +1,7 @@
 import { type FC, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { named } from '../../helpers/component.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
 import type { HanuiLinkExtraProps } from '../../types/link.type';
@@ -59,8 +60,8 @@ type DirectoryGroupProps = {
  * <p>Başlık <strong>yapışkan</strong>: uzun bir listede kaydırırken hangi
  * harfte olduğunu görmek, listeyi yukarı sarıp kontrol etmekten iyi.
  */
-export const DirectoryGroup: FC<DirectoryGroupProps> = memo(
-  ({ label, href, linkProps, meta, children, id }) => (
+export const DirectoryGroup: FC<DirectoryGroupProps> = /*#__PURE__*/ named(
+  /*#__PURE__*/ memo(({ label, href, linkProps, meta, children, id }) => (
     <section className={styles.group} id={id}>
       <header className={styles.group__header}>
         <h2 className={styles.group__label}>
@@ -77,10 +78,9 @@ export const DirectoryGroup: FC<DirectoryGroupProps> = memo(
 
       <ul className={styles.group__list}>{children}</ul>
     </section>
-  ),
+  )),
+  'DirectoryGroup',
 );
-
-DirectoryGroup.displayName = 'DirectoryGroup';
 
 type DirectoryRowProps = {
   href: string;
@@ -101,8 +101,8 @@ type DirectoryRowProps = {
  * yalnızca metnin tıklanabilir olduğu bir listede dokunmatik kullanıcılar
  * satırın boşluğuna basıp hiçbir şey olmadığını görüyordu.
  */
-export const DirectoryRow: FC<DirectoryRowProps> = memo(
-  ({ href, name, media, marker, linkProps, className }) => (
+export const DirectoryRow: FC<DirectoryRowProps> = /*#__PURE__*/ named(
+  /*#__PURE__*/ memo(({ href, name, media, marker, linkProps, className }) => (
     <li>
       <HanuiLink href={href} className={cx(styles.row, className)} {...linkProps}>
         {media && <span className={styles.row__media}>{media}</span>}
@@ -110,10 +110,9 @@ export const DirectoryRow: FC<DirectoryRowProps> = memo(
         {marker && <span className={styles.row__marker}>{marker}</span>}
       </HanuiLink>
     </li>
-  ),
+  )),
+  'DirectoryRow',
 );
-
-DirectoryRow.displayName = 'DirectoryRow';
 
 type DirectoryJumpProps = {
   /** Grup etiketleri; her biri kendi çıpasına bağlanır. */
@@ -135,25 +134,26 @@ type DirectoryJumpProps = {
  * yönlendiriciden geçirmek aynı sayfayı yeniden çözümleyip kaydırmayı
  * kaçırıyordu.
  */
-export const DirectoryJump: FC<DirectoryJumpProps> = memo(({ labels, toId, label }) => {
-  /* Prop adi `labels` (grup etiketleri) config'in adiyla cakisiyor; config
+export const DirectoryJump: FC<DirectoryJumpProps> = /*#__PURE__*/ named(
+  /*#__PURE__*/ memo(({ labels, toId, label }) => {
+    /* Prop adi `labels` (grup etiketleri) config'in adiyla cakisiyor; config
      `config` olarak alinir. */
-  const { labels: config } = useHanui();
+    const { labels: config } = useHanui();
 
-  return (
-    <nav
-      className={styles.jump}
-      aria-label={resolveLabel('DirectoryJump.label', label, config?.directoryJump)}
-    >
-      {labels.map(item => (
-        <a key={item} href={`#${toId(item)}`} className={styles.jump__link}>
-          {item}
-        </a>
-      ))}
-    </nav>
-  );
-});
+    return (
+      <nav
+        className={styles.jump}
+        aria-label={resolveLabel('DirectoryJump.label', label, config?.directoryJump)}
+      >
+        {labels.map(item => (
+          <a key={item} href={`#${toId(item)}`} className={styles.jump__link}>
+            {item}
+          </a>
+        ))}
+      </nav>
+    );
+  }),
+  'DirectoryJump',
+);
 
-DirectoryJump.displayName = 'DirectoryJump';
-
-export default memo(Directory) as typeof Directory;
+export default /*#__PURE__*/ memo(Directory) as typeof Directory;

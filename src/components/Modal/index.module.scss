@@ -26,6 +26,30 @@
     max-width: min(92vw, 880px);
   }
 
+  /*
+   * GIRIS VE CIKIS SIMETRIK.
+   *
+   * Once yalnizca GIRIS animasyonu vardi (`animation: hanui-fade-in-up`):
+   * pencere yumusakca aciliyor, kapanirken BIR KAREDE yok oluyordu. Kullanici
+   * neyin kapandigini goremiyor — ozellikle iki pencere ust usteyken, hangisinin
+   * kapandigi belirsizdi.
+   *
+   * `@starting-style` + `transition-behavior: allow-discrete` ikisini de tek
+   * kural kumesiyle veriyor: `display` ve `overlay` de gecise katildigi icin
+   * `close()` cagrildiginda oge hemen kaybolmuyor, cikis suresi boyunca ust
+   * katmanda kaliyor. `animation` ile bu MUMKUN DEGILDI — bir animasyon
+   * ogenin `display: none` olmasini geciktiremez.
+   *
+   * Destegi olmayan tarayicida: gecis dusuyor, pencere aninda gorunup aninda
+   * kayboluyor — yani ESKI davranis. Hicbir sey kirilmiyor.
+   */
+  @include surface-transition;
+
+  /* Perde de pencereyle BIRLIKTE belirir VE birlikte kaybolur. Animasyonsuz
+     birakildiginda sayfa bir anda kararip pencere onun ustune "dusuyor" gibi
+     goruntu veriyordu. AYRI mixin: `[open]` sozde ogeye uygulanamaz. */
+  @include backdrop-transition;
+
   &::backdrop {
     background-color: $scrim;
     /*
@@ -34,26 +58,6 @@
      * tamamen almali.
      */
     backdrop-filter: blur(3px);
-    /*
-     * Perde de pencereyle BIRLIKTE belirir. Animasyonsuz birakildiginda sayfa
-     * bir anda kararip pencere onun ustune "dusuyor" gibi goruntu veriyordu;
-     * mobilde alt sayfaya donustugu icin fark daha da belirgindi.
-     */
-    animation: hanui-fade-in $duration-fast $ease-out;
-
-    @include reduced-motion {
-      animation: none;
-    }
-  }
-
-  &[open] {
-    animation: hanui-fade-in-up $duration-fast $ease-out;
-  }
-
-  @include reduced-motion {
-    &[open] {
-      animation: none;
-    }
   }
 
   /*
@@ -79,8 +83,11 @@
       margin-bottom: #{$sheet-lift};
     }
 
+    /* Dar ekranda yuzey DIPTEN gelir: `translateY(6px)` yerine tam yukseklik.
+       Giris ve cikis yine simetrik. */
+    &:not([open]),
     &[open] {
-      animation: hanui-slide-up $duration-normal $ease-out;
+      @include surface-transition($shift: 100%, $duration: $duration-normal);
     }
   }
 
@@ -166,7 +173,7 @@
   }
 
   &__title {
-    @include heading($font-size-lg);
+    @include heading(lg);
 
     margin: 0;
     text-wrap: balance;

@@ -1,0 +1,57 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.scrollArea {
+  @include custom-scrollbar;
+
+  /*
+   * `overscroll-behavior: contain` — kutunun ucuna gelindiginde kaydirma
+   * SAYFAYA sizmaz. Sizinca kullanici uzun bir listenin dibine ulastiginda
+   * sayfa altindan kayip gidiyordu ("scroll chaining").
+   */
+  overscroll-behavior: contain;
+
+  &--vertical {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  &--horizontal {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  &--both {
+    overflow: auto;
+  }
+
+  /* Odak halkasi: bolge klavyeyle odaklanabilir ve nerede oldugu gorunmeli. */
+  @include focus-ring($ring-color, -2px);
+
+  /*
+   * KENAR SOLMASI — icerigin devam ettigini gosterir.
+   *
+   * `mask-image` kullanilir, ustune binen bir gradyan katmani DEGIL: katman
+   * tiklama olaylarini yutuyor ve kutunun icindeki baglantilara
+   * ulasilamiyordu. Maske yalnizca cizimi etkiler.
+   */
+  &--fade.scrollArea--vertical {
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 #{$space-4},
+      #000 calc(100% - #{$space-4}),
+      transparent 100%
+    );
+  }
+
+  &--fade.scrollArea--horizontal {
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 #{$space-4},
+      #000 calc(100% - #{$space-4}),
+      transparent 100%
+    );
+  }
+}

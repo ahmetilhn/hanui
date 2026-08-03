@@ -1,6 +1,7 @@
 import { forwardRef, type InputHTMLAttributes, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { named } from '../../helpers/component.helper';
 
 import styles from './index.module.scss';
 
@@ -28,7 +29,7 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix'> & {
  * <p>Odak halkası sarmalayıcıda değil girdinin kendisinde: sarmalayıcıya
  * verildiğinde `:focus-visible` klavye/fare ayrımını kaybediyordu.
  */
-const Input = forwardRef<HTMLInputElement, Props>(
+const Input = /*#__PURE__*/ forwardRef<HTMLInputElement, Props>(
   ({ prefix, suffix, isTechnical, className, testId, ...rest }, ref) => (
     <span className={cx(styles.wrapper, className)}>
       {prefix && (
@@ -58,6 +59,4 @@ const Input = forwardRef<HTMLInputElement, Props>(
   ),
 );
 
-Input.displayName = 'Input';
-
-export default memo(Input) as typeof Input;
+export default /*#__PURE__*/ memo(/*#__PURE__*/ named(Input, 'Input')) as typeof Input;

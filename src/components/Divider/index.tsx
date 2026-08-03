@@ -25,4 +25,4 @@ const Divider: FC<Props> = ({ label, className }) =>
     <hr className={cx(styles.divider, className)} />
   );
 
-export default memo(Divider) as typeof Divider;
+export default /*#__PURE__*/ memo(Divider) as typeof Divider;

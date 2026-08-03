@@ -39,4 +39,4 @@ const Spinner: FC<Props> = ({ size = 'md', label, className }) => {
   );
 };
 
-export default memo(Spinner) as typeof Spinner;
+export default /*#__PURE__*/ memo(Spinner) as typeof Spinner;

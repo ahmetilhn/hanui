@@ -1,6 +1,7 @@
 import { forwardRef, memo, type TextareaHTMLAttributes } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { named } from '../../helpers/component.helper';
 
 import styles from './index.module.scss';
 
@@ -16,7 +17,7 @@ type Props = TextareaHTMLAttributes<HTMLTextAreaElement> & { testId?: string };
  * <p>Yeniden boyutlandırma yalnızca <strong>dikey</strong>: yatayda büyütmek
  * alanı kapsayıcısının dışına taşırıp yerleşimi bozuyordu.
  */
-const Textarea = forwardRef<HTMLTextAreaElement, Props>(
+const Textarea = /*#__PURE__*/ forwardRef<HTMLTextAreaElement, Props>(
   ({ className, rows = 4, testId, ...rest }, ref) => (
     <textarea
       ref={ref}
@@ -28,6 +29,4 @@ const Textarea = forwardRef<HTMLTextAreaElement, Props>(
   ),
 );
 
-Textarea.displayName = 'Textarea';
-
-export default memo(Textarea) as typeof Textarea;
+export default /*#__PURE__*/ memo(/*#__PURE__*/ named(Textarea, 'Textarea')) as typeof Textarea;

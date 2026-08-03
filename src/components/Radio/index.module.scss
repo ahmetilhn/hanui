@@ -7,7 +7,11 @@
   gap: $space-3;
   cursor: pointer;
   padding: $space-2;
-  margin-inline: -$space-2;
+  /* Dolgu kadar geri cekilir: satir hizasi bozulmadan tiklama alani buyur.
+     NEGATIF DEGER `calc()` ICINDE — `-$space-2` bir CSS degiskeninin onune
+     eksi koymak demek (`-var(--x)`) ve o gecersiz; bildirim sessizce
+     dusuyordu. */
+  margin-inline: calc(-1 * #{$space-2});
   border-radius: $radius-sm;
   transition: background-color $duration-fast $ease-out;
 

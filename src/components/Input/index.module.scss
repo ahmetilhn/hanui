@@ -18,11 +18,11 @@
   }
 
   &__prefix {
-    left: $space-3;
+    inset-inline-start: $space-3;
   }
 
   &__suffix {
-    right: $space-3;
+    inset-inline-end: $space-3;
   }
 }
 
@@ -32,17 +32,23 @@
   /*
    * On/son ek dolgusu.
    *
-   * `$space-8 - $space-2` = 56px: ikon sol kenardan 12px'te basliyor,
-   * genisligi ~16px, metin ondan sonra 12px bosluk istiyor. Sabit bir piksel
-   * yazmak yerine olcekten turetiliyor ki bosluk olcegi degistiginde ikon ile
-   * metin cakismasin.
+   * `$space-8 - $space-2` = 56px: ikon kenardan 12px'te basliyor, genisligi
+   * ~16px, metin ondan sonra 12px bosluk istiyor. Sabit bir piksel yazmak
+   * yerine olcekten turetiliyor ki bosluk olcegi degistiginde ikon ile metin
+   * cakismasin.
+   *
+   * CIKARMA `calc()` ICINDE: olculer artik CSS degiskeni ve Sass iki `var()`
+   * cagrisini cikaramiyor. Cikarabildigini SANIYOR — hata vermiyor, ifadeyi
+   * oldugu gibi gecirip tarayiciya `var(--a)-var(--b)` yaziyor ve tarayici
+   * BUTUN bildirimi atiyor. Sonuc gorunuyordu: on ekli girdide ikon metnin
+   * ustune biniyordu, ama derleme yesildi.
    */
   &--hasPrefix {
-    padding-left: $space-8 - $space-2;
+    padding-inline-start: calc(#{$space-8} - #{$space-2});
   }
 
   &--hasSuffix {
-    padding-right: $space-8 - $space-2;
+    padding-inline-end: calc(#{$space-8} - #{$space-2});
   }
 
   /*

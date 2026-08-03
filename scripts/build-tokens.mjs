@@ -19,49 +19,18 @@
  *
  * <p>Çalıştırma: `npm run tokens` (build ve verify bunu kendiliğinden yapar).
  */
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
-import ts from 'typescript';
+import { loadTokens, ROOT } from './lib/load-tokens.mjs';
 
-const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const STYLES_DIR = resolve(ROOT, 'src/styles');
 
 /** CSS özel özelliği öneki. Tüketicinin kendi değişkenleriyle çakışmaz. */
 const PREFIX = '--hanui-';
 
-/**
- * `tokens.ts` bir TypeScript modülü ve bu betik derleyicisiz çalışıyor.
- *
- * <p>Tipler DÜZENLİ İFADEYLE sökülmez — `as const`, jenerik tip argümanı ve
- * `Record<…>` gibi biçimler bir düzenli ifadenin doğru ayrıştıramayacağı
- * kadar iç içe. TypeScript'in kendi `transpileModule`'ü kullanılıyor: paket
- * zaten `typescript`e bağımlı ve dönüşüm birebir doğru.
- *
- * <p>Palet kaynağı token kaynağının başına gömülür: data URL modülleri
- * birbirini göreli yolla çözemez.
- */
-const transpile = file =>
-  ts.transpileModule(readFileSync(resolve(ROOT, file), 'utf8'), {
-    compilerOptions: {
-      module: ts.ModuleKind.ESNext,
-      target: ts.ScriptTarget.ES2020,
-      isolatedModules: false,
-    },
-  }).outputText;
-
-const loadTokens = () => {
-  const palette = transpile('src/theme/palette.ts').replace(/^export /gm, '');
-  const tokens = transpile('src/theme/tokens.ts').replace(
-    /^import \{[\s\S]*?\} from ['"]\.\/palette['"];?$/m,
-    palette,
-  );
-
-  return import(`data:text/javascript;base64,${Buffer.from(tokens).toString('base64')}`);
-};
-
-const { LIGHT_THEME, DARK_THEME, DEFAULT_FONTS } = await loadTokens();
+const { LIGHT_THEME, DARK_THEME, DEFAULT_FONTS, METRIC_TOKENS, COMPACT_DENSITY } =
+  await loadTokens();
 
 const BANNER = `// ÜRETİLMİŞ DOSYA — ELLE DÜZENLEMEYİN.
 // Kaynak: src/theme/tokens.ts · Üretici: scripts/build-tokens.mjs
@@ -103,8 +72,10 @@ ${declarations(DARK_THEME)}
   color-scheme: dark;
 }
 
-/// Temadan bağımsız varsayılanlar: font yığınları ve ölçüm değişkenleri.
+/// Temadan bağımsız varsayılanlar: ölçü, font yığınları ve ölçüm değişkenleri.
 @mixin base-tokens {
+${declarations(METRIC_TOKENS)}
+
 ${fontDeclarations()}
 
   /*
@@ -147,6 +118,18 @@ ${fontDeclarations()}
 :root[data-hanui-theme='light'] {
   @include light;
 }
+
+/*
+ * YOĞUN KİP — \`<html data-hanui-density="compact">\`.
+ *
+ * Yalnızca EZİLEN ölçüler yazılır; geri kalanı \`base-tokens\`ten miras alınır.
+ * Tam eşlemeyi tekrar yazmak da çalışırdı ama bir sonraki sürümde varsayılan
+ * bir ölçü değiştiğinde yoğun kip ESKİ değeri taşımaya devam ederdi — üstelik
+ * yoğunlukla hiç ilgisi olmayan bir token için.
+ */
+:root[data-hanui-density='compact'] {
+${declarations(COMPACT_DENSITY)}
+}
 `;
 
 const colorsFile = `${BANNER}
@@ -184,10 +167,38 @@ $sheet-inset-bottom: var(${PREFIX}sheet-inset-bottom, 0px);
 $sheet-height: var(${PREFIX}sheet-height, 100dvh);
 `;
 
+/*
+ * NOT: bu dosyanın açıklamaları `//` ile yazılıyor, `/* *` + `/` ile değil.
+ * CSS yorumu çıktıya GEÇER ve Sass onun içindeki `#{…}` dizisini de
+ * yorumlar — açıklamada geçen bir örnek kod, derlemeyi "Undefined variable"
+ * ile kırıyordu. Sass yorumu (`//`) çıktıya hiç inmez.
+ */
+const metricsFile = `${BANNER}
+// Bileşenlerin gördüğü ÖLÇÜ SÖZLEŞMESİ.
+//
+// Renkler gibi bunlar da \`var(${PREFIX}…)\` işaret ediyor ve bunun bir bedeli
+// var: SCSS ARİTMETİĞİ ÇALIŞMAZ. \`$space-8 - $space-2\` derlenmez; Sass iki
+// \`var()\` çağrısını çıkaramaz. Gereken her hesap \`calc()\` ile YAZILIR ve
+// tarayıcıda yapılır — negatif değer dahil:
+//
+//     padding-inline-start: calc(#\{$space-8\} - #\{$space-2\});
+//     margin-inline: calc(-1 * #\{$space-2\});
+//
+// Karşılaştırma (\`@if $size >= $font-size-lg\`) ise HİÇ çalışmaz: çalışma
+// zamanında ezilebilen bir değer derleme anında karşılaştırılamaz. \`heading()\`
+// mixin'i bu yüzden punto değil KADEME ADI alıyor (bkz. \`_mixins.scss\`).
+
+${Object.keys(METRIC_TOKENS)
+  .map(name => `$${name}: var(${PREFIX}${name});`)
+  .join('\n')}
+`;
+
 mkdirSync(STYLES_DIR, { recursive: true });
 writeFileSync(resolve(STYLES_DIR, '_tokens.generated.scss'), tokensFile, 'utf8');
 writeFileSync(resolve(STYLES_DIR, '_colors.generated.scss'), colorsFile, 'utf8');
+writeFileSync(resolve(STYLES_DIR, '_metrics.generated.scss'), metricsFile, 'utf8');
 
 console.log(
-  `hanui: ${Object.keys(LIGHT_THEME).length} token üretildi → _tokens.generated.scss, _colors.generated.scss`,
+  `hanui: ${Object.keys(LIGHT_THEME).length} renk + ${Object.keys(METRIC_TOKENS).length} ölçü` +
+    ' token üretildi → _tokens.generated.scss, _colors.generated.scss, _metrics.generated.scss',
 );

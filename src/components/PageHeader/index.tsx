@@ -78,4 +78,4 @@ const PageHeader: FC<Props> = ({
   </header>
 );
 
-export default memo(PageHeader) as typeof PageHeader;
+export default /*#__PURE__*/ memo(PageHeader) as typeof PageHeader;

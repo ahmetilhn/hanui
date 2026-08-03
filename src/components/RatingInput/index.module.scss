@@ -64,8 +64,8 @@
     }
 
     &:focus-within {
-      outline: 2px solid $blue;
-      outline-offset: 2px;
+      @include focus-ring-shape;
+
       border-radius: $radius-sm;
     }
 

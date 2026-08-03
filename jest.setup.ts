@@ -1,4 +1,13 @@
 import '@testing-library/jest-dom';
+import { toHaveNoViolations } from 'jest-axe';
+
+/*
+ * Eksen eslesticisi GLOBAL kaydedilir: `axe` ile taramak isteyen her test
+ * dosyasi ayrica `expect.extend` yazmak zorunda kalmasin. Yazmayi unutan dosya
+ * `toHaveNoViolations is not a function` ile kiriliyordu — yani hatanin sebebi
+ * erisilebilirlik degil kurulumdu ve mesaj oraya isaret etmiyordu.
+ */
+expect.extend(toHaveNoViolations);
 
 /*
  * jsdom `<dialog>`i uygulamıyor: `showModal()` ve `close()` tanımsız.

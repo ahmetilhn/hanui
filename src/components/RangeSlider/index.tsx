@@ -59,6 +59,18 @@ type Props = {
  * Kaydırırken her adımda adres çubuğuna yazmak, tek bir sürüklemede onlarca
  * gezinme kaydı bırakıp geri tuşunu kullanılamaz hâle getiriyordu. Ekran anında
  * güncellenir (`onChange`), sorgu yalnızca kulp bırakılınca yazılır.
+ *
+ * <h3>Klavye</h3>
+ * <table>
+ *   <tr><td>`ArrowRight` / `ArrowUp`</td><td>bir adım artırır</td></tr>
+ *   <tr><td>`ArrowLeft` / `ArrowDown`</td><td>bir adım azaltır</td></tr>
+ *   <tr><td>`Home` / `End`</td><td>ölçeğin ucuna gider</td></tr>
+ *   <tr><td>`PageUp` / `PageDown`</td><td>büyük adım</td></tr>
+ * </table>
+ * Tamamı YEREL öğeden gelir — kütüphane hiçbir tuşu kendisi işlemez. Buraya
+ * ait olan iki şey ayrıca ölçülüyor: kulpların birbirini geçmemesi ve
+ * `onCommit`in tuş bırakıldığında (`keyup`) çalışması. Nöbetçi:
+ * `components/__tests__/keyboard.test.tsx`.
  */
 const RangeSlider = ({
   min,
@@ -170,4 +182,4 @@ const RangeSlider = ({
   );
 };
 
-export default memo(RangeSlider) as typeof RangeSlider;
+export default /*#__PURE__*/ memo(RangeSlider) as typeof RangeSlider;

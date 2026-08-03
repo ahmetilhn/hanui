@@ -175,4 +175,4 @@ const ConfirmDialog: FC<Props> = ({
   );
 };
 
-export default memo(ConfirmDialog) as typeof ConfirmDialog;
+export default /*#__PURE__*/ memo(ConfirmDialog) as typeof ConfirmDialog;

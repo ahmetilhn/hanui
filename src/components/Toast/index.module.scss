@@ -1,0 +1,154 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * BILDIRIM YIGINI.
+ *
+ * Ekranin DIBINDE: mobilde bas parmagin erisebildigi yer orasi ve icindeki
+ * "Geri al" eylemine ulasmak gerekiyor. Ust kose masaustunde yaygin ama
+ * telefonda erisilemez bir kose.
+ *
+ * `pointer-events: none` kapsayicida, `auto` bildirimde: yigin ekranin
+ * dibinde genis bir serit kapliyor ve altindaki dugmeler tiklanamaz
+ * kaliyordu.
+ */
+.hub {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: $z-toast;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-2;
+
+  padding: $space-4;
+  pointer-events: none;
+
+  @include safe-bottom($space-4);
+
+  /* Masaustunde sag alt kose: ekranin ortasinda beliren bir bildirim
+     icerigin okunmasini kesiyordu. */
+  @include for-desktop-up {
+    align-items: flex-end;
+  }
+}
+
+.toast {
+  @include row($space-3, flex-start);
+
+  pointer-events: auto;
+  width: 100%;
+  max-width: 420px;
+
+  padding: $space-3;
+  border-radius: $radius-md;
+  background-color: $surface;
+  border: 1px solid $border;
+  box-shadow: $shadow-lg;
+
+  animation: hanui-fade-in-up $duration-normal $ease-out;
+
+  @include reduced-motion {
+    animation: none;
+  }
+
+  /*
+   * TON: sol kenarda bir SERIT + ikon. Zemin tinti kullanilmadi — bildirim
+   * yuzeyi sayfadan ayrilmali ve tint zemin koyu temada karti yuzeye
+   * gomuyordu. Renk tek sinyal degil: ikon ton basina degisiyor.
+   */
+  &--info {
+    border-inline-start: 3px solid $blue;
+  }
+
+  &--success {
+    border-inline-start: 3px solid $green-accent;
+  }
+
+  &--warning {
+    border-inline-start: 3px solid $star;
+  }
+
+  &--danger {
+    border-inline-start: 3px solid $danger-solid;
+  }
+
+  @media (forced-colors: active) {
+    border-color: CanvasText;
+  }
+}
+
+.toast__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: $icon-md;
+  /* Ikonun optik merkezi ilk satirin x-yuksekligine hizalanir. */
+  margin-top: 1px;
+
+  .toast--info & {
+    color: $blue;
+  }
+
+  .toast--success & {
+    color: $green-accent;
+  }
+
+  .toast--warning & {
+    color: $star;
+  }
+
+  .toast--danger & {
+    color: $danger-solid;
+  }
+}
+
+.toast__text {
+  @include stack(2px);
+
+  flex: 1;
+  min-width: 0;
+}
+
+.toast__message {
+  font-size: $font-size-sm;
+  font-weight: $weight-semibold;
+  color: $text;
+}
+
+.toast__description {
+  font-size: $font-size-xs;
+  color: $text-2;
+  line-height: $leading-normal;
+}
+
+/*
+ * Bildirim icindeki TEK eylem.
+ *
+ * `Button` DEGIL: dolu bir dugme bildirimde ikinci bir dogurum noktasi gibi
+ * duruyor ve ekrandaki tek `PRIMARY` kuralini bozuyordu. Metin bagi yeterli
+ * — eylem zaten bir cumlelik.
+ */
+.toast__action {
+  flex-shrink: 0;
+  padding: $space-1 $space-2;
+  border: none;
+  border-radius: $radius-sm;
+  background: none;
+  cursor: pointer;
+  font-family: $font-ui;
+  font-size: $font-size-xs;
+  font-weight: $weight-semibold;
+  color: $blue-text;
+
+  &:hover {
+    background-color: $blue-tint;
+  }
+
+  @include focus-ring($ring-color, 1px);
+}
+
+.toast__close {
+  flex-shrink: 0;
+}

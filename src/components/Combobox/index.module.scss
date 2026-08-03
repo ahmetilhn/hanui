@@ -18,10 +18,10 @@
     display: flex;
     align-items: center;
     gap: $space-2;
-    text-align: left;
+    text-align: start;
     cursor: pointer;
     /* Ok ve temizleme dugmesi icin sagda yer. */
-    padding-right: $space-3;
+    padding-inline-end: $space-3;
 
     /* Secim yapilmamis tetikleyici bir YER TUTUCU gosterir. */
     &--empty {
@@ -37,6 +37,15 @@
     /* Hata renkle DEGIL, kenarlik + Field'in yazdigi mesajla bildirilir. */
     &--invalid {
       border-color: $danger-solid;
+    }
+
+    /*
+     * Temizleme dugmesi tetikleyicinin USTUNDE duran bir kardes (bkz. TSX).
+     * Ustune bindigi icin metnin altina kaymasini engelleyen yer burada
+     * ayrilir: carpinin genisligi + caret + iki bosluk.
+     */
+    &--clearable {
+      padding-inline-end: calc(#{$space-3} + #{$icon-md} + #{$space-2} + 22px);
     }
   }
 
@@ -54,12 +63,24 @@
     flex: 1;
   }
 
+  /*
+   * Tetikleyicinin KARDESI, cocugu degil (ic ice etkilesimli oge = ekran
+   * okuyucuda duyurulmayan bir eylem). Gorsel yerini mutlak konum veriyor:
+   * caretin solunda, dikeyde ortalanmis.
+   */
   &__clear {
+    position: absolute;
+    inset-inline-end: calc(#{$space-3} + #{$icon-md} + #{$space-2});
+    top: 50%;
+    transform: translateY(-50%);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 22px;
     height: 22px;
+    padding: 0;
+    border: none;
+    background: none;
     border-radius: $radius-pill;
     color: $text-2;
     /* 12 px'lik carpi, 22 px'lik dairenin ortasinda dokunulamayacak kadar
@@ -108,8 +129,7 @@
   &__panel {
     position: absolute;
     top: calc(100% + #{$space-1});
-    left: 0;
-    right: 0;
+    inset-inline: 0;
     z-index: $z-dropdown;
     background-color: $surface;
     border: 1px solid $border;

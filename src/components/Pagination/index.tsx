@@ -189,4 +189,4 @@ const Pagination: FC<Props> = ({
   );
 };
 
-export default memo(Pagination) as typeof Pagination;
+export default /*#__PURE__*/ memo(Pagination) as typeof Pagination;

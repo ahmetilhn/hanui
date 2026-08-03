@@ -3,6 +3,7 @@
 import { type ButtonHTMLAttributes, forwardRef, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { named } from '../../helpers/component.helper';
 import type { HanuiLinkExtraProps } from '../../types/link.type';
 import HanuiLink from '../Link';
 
@@ -47,7 +48,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
  * yok ve `aria-disabled` tıklamayı engellemez. Erişilemez olması gereken bir
  * eylem hiç çizilmez.
  */
-const IconButton = forwardRef<HTMLButtonElement, Props>(
+const IconButton = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
   (
     {
       icon,
@@ -100,6 +101,6 @@ const IconButton = forwardRef<HTMLButtonElement, Props>(
   },
 );
 
-IconButton.displayName = 'IconButton';
-
-export default memo(IconButton) as typeof IconButton;
+export default /*#__PURE__*/ memo(
+  /*#__PURE__*/ named(IconButton, 'IconButton'),
+) as typeof IconButton;

@@ -73,4 +73,4 @@ const Price: FC<Props> = ({
   );
 };
 
-export default memo(Price) as typeof Price;
+export default /*#__PURE__*/ memo(Price) as typeof Price;

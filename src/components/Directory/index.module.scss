@@ -63,7 +63,7 @@ $jump-height: 49px;
    * sabit kalir.
    */
   &__label {
-    @include heading($font-size-lg, $weight-bold);
+    @include heading(lg, $weight-bold);
 
     margin: 0;
     min-width: 0;

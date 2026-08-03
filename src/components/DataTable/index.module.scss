@@ -85,3 +85,121 @@
     box-shadow: inset 3px 0 0 $warn-fg;
   }
 }
+
+/*
+ * Gorsel basligi olmayan sutunun adi (`srLabel`).
+ *
+ * `aria-label` DEGIL gizlenmis METIN: eksen taramasi `<th aria-label>`i bos
+ * baslik olarak bildiriyor ve ekran okuyucularin tablo gezinme kipi sutun adini
+ * hucrenin icerigi uzerinden okuyor.
+ */
+.srOnly {
+  @include visually-hidden;
+}
+
+/*
+ * SIRALAMA DUGMESI.
+ *
+ * Baslik hucresine `onClick` yazmak yetmiyordu: `<th>` odaklanabilir degil,
+ * klavye kullanicisi siralamaya HIC ulasamiyor ve ekran okuyucu hucrenin
+ * tiklanabilir oldugunu soylemiyordu. Dugme hucrenin tamamini kapliyor.
+ */
+.sort {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+
+  &:hover .sort__arrow {
+    opacity: 1;
+  }
+
+  @include focus-ring($ring-color, -2px);
+}
+
+/*
+ * Yon oku. Siralanabilir ama siralanmamis sutunda SOLUK duruyor: sutunun
+ * siralanabildigi ancak uzerine gelince anlasiliyordu.
+ */
+.sort__arrow {
+  flex-shrink: 0;
+  font-size: $font-size-2xs;
+  color: $text-3;
+  opacity: 0.35;
+  transition: opacity $duration-fast $ease-out;
+
+  &--ascending,
+  &--descending {
+    opacity: 1;
+    color: $blue-text;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+}
+
+/*
+ * YAPISKAN ILK SUTUN.
+ *
+ * Genis bir tabloda saga kaydiran kullanici hangi satira baktigini
+ * kaybediyordu. Zemin ZORUNLU: saydam bir hucrenin arkasindan kayan sutunlar
+ * gecip okunamaz bir karisim birakiyordu.
+ *
+ * `inset-inline-start` DEGIL `left`: `position: sticky` yatay ofseti fiziksel
+ * eksende olcuyor ve RTL'de mantiksal ozellik yapiskanligi sessizce
+ * bozuyordu.
+ */
+.sticky {
+  position: sticky;
+  left: 0;
+  z-index: $z-base;
+  background-color: $surface;
+
+  [dir='rtl'] & {
+    left: auto;
+    right: 0;
+  }
+
+  /* Kayan sutunlarla arasindaki sinir: golge degil hairline — golge koyu
+     temada gorunmuyordu. */
+  &::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    width: 1px;
+    background-color: $border;
+  }
+}
+
+thead .sticky {
+  background-color: $surface-2;
+}
+
+/*
+ * TOPLU EYLEM SERIDI — tablonun USTUNDE ve yapiskan.
+ *
+ * Kullanici yuzlerce satir arasinda secim yapip asagi kaydirdiginda serit
+ * ekranin disinda kaliyor ve secimin ne ise yaradigi gorunmuyordu.
+ */
+.bulkBar {
+  @include row($space-3);
+
+  position: sticky;
+  top: 0;
+  z-index: $z-raised;
+
+  padding: $space-2 $space-3;
+  border-bottom: 1px solid $blue-line;
+  background-color: $blue-tint;
+  font-size: $font-size-sm;
+  color: $text;
+}

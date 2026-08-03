@@ -60,9 +60,7 @@ const Breadcrumb: FC<Props> = ({ items, label, linkProps, className, testId }) =
                 </span>
               )}
 
-              {!isLast && (
-                <CaretRightFill aria-hidden className={styles.breadcrumb__separator} />
-              )}
+              {!isLast && <CaretRightFill aria-hidden className={styles.breadcrumb__separator} />}
             </li>
           );
         })}
@@ -71,4 +69,4 @@ const Breadcrumb: FC<Props> = ({ items, label, linkProps, className, testId }) =
   );
 };
 
-export default memo(Breadcrumb) as typeof Breadcrumb;
+export default /*#__PURE__*/ memo(Breadcrumb) as typeof Breadcrumb;

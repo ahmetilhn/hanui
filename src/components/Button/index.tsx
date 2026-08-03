@@ -3,6 +3,7 @@
 import { type ButtonHTMLAttributes, forwardRef, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { named } from '../../helpers/component.helper';
 import UISize from '../../enums/ui-size.enum';
 import UIVariant from '../../enums/ui-variant.enum';
 import type { CommonElementProps } from '../../types/common-element-props.type';
@@ -61,7 +62,7 @@ type Props = BaseProps &
  *   Kaydet
  * </Button>
  */
-const Button = forwardRef<HTMLButtonElement, Props>(
+const Button = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
   (
     {
       variant = UIVariant.PRIMARY,
@@ -135,6 +136,4 @@ const Button = forwardRef<HTMLButtonElement, Props>(
   },
 );
 
-Button.displayName = 'Button';
-
-export default memo(Button) as typeof Button;
+export default /*#__PURE__*/ memo(/*#__PURE__*/ named(Button, 'Button')) as typeof Button;

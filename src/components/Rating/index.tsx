@@ -76,4 +76,4 @@ const Rating: FC<Props> = ({ value, count, srLabel, size = 'sm', className, test
   );
 };
 
-export default memo(Rating) as typeof Rating;
+export default /*#__PURE__*/ memo(Rating) as typeof Rating;

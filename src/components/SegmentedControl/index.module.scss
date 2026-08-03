@@ -1,0 +1,88 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * BOLMELI DENETIM.
+ *
+ * Bir KUTU icinde bolmeler: kutu, seceneklerin birbirini disladigini gozle
+ * anlatir. Ayri ayri duran dugmeler ayni bilgiyi vermiyordu — kullanici
+ * hangisinin ac/kapa hangisinin secim oldugunu bilemiyor.
+ */
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: $radius-md;
+  background-color: $surface-2;
+  border: 1px solid $border;
+
+  &--sm {
+    font-size: $font-size-xs;
+  }
+
+  &--md {
+    font-size: $font-size-sm;
+  }
+}
+
+.segmented__item {
+  @include row($space-2, center);
+  @include tap-target;
+
+  justify-content: center;
+  min-width: 0;
+  padding: $space-2 $space-3;
+  border: none;
+  border-radius: calc(#{$radius-md} - 3px);
+  background: none;
+  cursor: pointer;
+  font-family: $font-ui;
+  font-size: inherit;
+  font-weight: $weight-medium;
+  color: $text-2;
+  white-space: nowrap;
+  transition:
+    background-color $duration-fast $ease-out,
+    color $duration-fast $ease-out;
+
+  .segmented--sm & {
+    padding: $space-1 $space-2;
+  }
+
+  &:hover:not(:disabled):not(.segmented__item--selected) {
+    color: $text;
+  }
+
+  @include focus-ring($ring-color, -1px);
+
+  /*
+   * SECILI: yuzey YUKSELIR (dolu zemin + golge) ve metin koyulasir.
+   *
+   * Renk tek sinyal DEGIL: secili bolme kutunun icinde kabarik duruyor ve
+   * `aria-checked` durumu duyuruyor. Zorlanmis renk kipinde zemin kayboldugu
+   * icin orada sistem vurgu cifti devrede (asagida).
+   */
+  &--selected {
+    background-color: $surface;
+    color: $text;
+    box-shadow: $shadow-xs;
+  }
+
+  &:disabled {
+    color: $text-3;
+    cursor: not-allowed;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+}
+
+.segmented__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: $icon-sm;
+}
+
+.segmented__label {
+  @include truncate;
+}

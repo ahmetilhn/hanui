@@ -27,17 +27,15 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Test
-        run: npm run test
-
-      - name: Build Package
-        run: npm run build
+      # Tek kapi: tokens -> kontrast -> typecheck -> lint -> kapsam -> build
+      # -> boyut butcesi. Adimlar ayri ayri listelendiginde yeni bir kapi
+      # (kontrast, kapsam, boyut) eklendiginde CI'a yazilmasi UNUTULUYOR ve
+      # yerelde kirmizi olan bir sey yayimlanabiliyordu.
+      #
+      # GORSEL REGRESYON BURADA DEGIL: ekran goruntusu platforma bagli ve
+      # referanslar macOS'te uretildi (bkz. playwright.config.ts).
+      - name: Verify
+        run: npm run verify
 
       - name: Publish to NPM
         run: npm publish --access public

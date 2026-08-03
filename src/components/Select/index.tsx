@@ -93,6 +93,17 @@ type Props<T extends string> = {
  * Seçenekleri tek tek odaklanabilir yapmak, aynı bileşende iki ayrı klavye
  * modeli demekti (APG: listbox + activedescendant).
  *
+ * <table>
+ *   <tr><td>`ArrowDown`/`ArrowUp`/`Enter`/`Space` (kapalıyken)</td><td>paneli açar</td></tr>
+ *   <tr><td>`ArrowDown` / `ArrowUp`</td><td>etkin seçenek bir alt/üst; uçlarda DÖNER</td></tr>
+ *   <tr><td>`Home` / `End`</td><td>ilk / son seçenek</td></tr>
+ *   <tr><td>`Enter` / `Space`</td><td>etkin seçeneği seçer</td></tr>
+ *   <tr><td>`Escape`</td><td>seçim yapmadan kapatır, odak tetikleyicide</td></tr>
+ *   <tr><td>`Tab`</td><td>kapatır, gezinme sürer</td></tr>
+ * </table>
+ * Etkin seçenek açılışta SEÇİLİ olandan başlar. Nöbetçi:
+ * `components/__tests__/keyboard.test.tsx`.
+ *
  * <h3>20+ seçenek varsa bu bileşen DEĞİL</h3>
  * Aramasız bir liste 20 satırdan sonra taranamaz hâle gelir; orada
  * {@link Combobox} kullanılır.
@@ -354,4 +365,4 @@ const Select = <T extends string>({
   );
 };
 
-export default memo(Select) as typeof Select;
+export default /*#__PURE__*/ memo(Select) as typeof Select;

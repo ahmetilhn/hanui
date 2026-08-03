@@ -59,6 +59,16 @@ type Props = {
  *   <li><b>Kontrollü + panelsiz</b> — `activeId` + `onChange` verilir,
  *       `content` verilmez; bileşen yalnızca çubuğu çizer.</li>
  * </ul>
+ *
+ * <h3>Klavye (APG: tabs, OTOMATİK etkinleştirme)</h3>
+ * <table>
+ *   <tr><td>`ArrowRight` / `ArrowLeft`</td><td>sonraki / önceki sekme; uçlarda DÖNER</td></tr>
+ *   <tr><td>`Tab`</td><td>çubuktan panele çıkar — çubuk TEK durak</td></tr>
+ * </table>
+ * Ok tuşu odakla birlikte seçimi de taşır (otomatik etkinleştirme). Panel
+ * içeriği hazır ve ucuz olduğu sürece APG'nin önerdiği budur; pahalı panelli
+ * bir kullanım manuel etkinleştirme ister ve o seçenek HENÜZ YOK. Nöbetçi:
+ * `components/__tests__/keyboard.test.tsx`.
  */
 const Tabs: FC<Props> = ({
   items,
@@ -151,4 +161,4 @@ const Tabs: FC<Props> = ({
   );
 };
 
-export default memo(Tabs) as typeof Tabs;
+export default /*#__PURE__*/ memo(Tabs) as typeof Tabs;
