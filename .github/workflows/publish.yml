@@ -10,11 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # v4'ler Node.js 20 hedefliyor; GitHub 20'yi kullanimdan kaldirdi ve
+      # onlari zorla Node 24'te calistiriyor. Zorlama bugun calisiyor ama
+      # desteklenmeyen bir birlesim — v5'ler Node 24'u kendileri hedefliyor.
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           # package.json `engines` >= 24 istiyor; 18.18 ile npm EBADENGINE
           # uyarisi veriyor ve iki dosya birbiriyle celisiyordu.
