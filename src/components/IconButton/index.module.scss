@@ -1,0 +1,115 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.iconButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: $radius-md;
+  background: none;
+  cursor: pointer;
+  color: $text-2;
+  transition:
+    background-color $duration-fast $ease-out,
+    border-color $duration-fast $ease-out,
+    color $duration-fast $ease-out;
+
+  @include focus-ring;
+
+  &:disabled {
+    cursor: not-allowed;
+    color: $text-3;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+
+  /*
+   * Gorsel kutu kucuk olsa da dokunma hedefi 44 px korunur (WCAG 2.5.8).
+   * `tap-target` gorunmez ortuyu ogenin ORTASINA yerlestirir; elle yazilan
+   * bir ::after tamponu sol-uste demirlenip hedefi tek yone tasiyordu.
+   */
+  @include tap-target;
+
+  &--sm {
+    width: 32px;
+    height: 32px;
+    font-size: $font-size-sm;
+  }
+
+  &--md {
+    width: 40px;
+    height: 40px;
+    font-size: $font-size-base;
+  }
+
+  &--ghost:hover:not(:disabled) {
+    background-color: $surface-2;
+    color: $text;
+  }
+
+  &--outline {
+    border-color: $border-strong;
+    background-color: $surface;
+
+    &:hover:not(:disabled) {
+      border-color: $text-3;
+      color: $text;
+    }
+
+    &:disabled {
+      background-color: $surface-2;
+      border-color: $border;
+    }
+  }
+
+  /* Notr dolgu: grafit. Ekranin birincil eylemi ama DONUSUM noktasi degil. */
+  &--solid {
+    background-color: $action;
+    color: $on-action;
+
+    &:hover:not(:disabled) {
+      background-color: $action-hover;
+    }
+
+    &:disabled {
+      background-color: $action-soft;
+      color: $surface;
+    }
+  }
+
+  /*
+   * DONUSUM EYLEMI — ekrandaki tek doygun turuncu.
+   *
+   * `solid` ile ayni gorunmemesi onemli: bir kart uzerindeki tek amber oge
+   * bu dugme olacak. Metin `$on-amber` (#291500), beyaz DEGIL — amber
+   * uzerinde beyaz 2.3:1'de kalip okunmuyor.
+   */
+  &--cart {
+    background-color: $amber;
+    color: $on-amber;
+
+    &:hover:not(:disabled) {
+      background-color: $amber-hover;
+    }
+
+    &:disabled {
+      background-color: $amber-soft;
+      color: $on-amber;
+    }
+  }
+
+  &--danger {
+    border-color: $border-strong;
+    background-color: $surface;
+
+    &:hover:not(:disabled) {
+      border-color: $danger-solid;
+      color: $danger-solid;
+      background-color: $bad-bg;
+    }
+  }
+}

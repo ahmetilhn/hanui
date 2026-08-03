@@ -1,0 +1,275 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.combobox {
+  position: relative;
+  width: 100%;
+
+  /*
+   * Tetikleyici, girdi alanlariyla AYNI govdeyi kullanir.
+   *
+   * Bir formda arama kutusu, metin girdisi ve secim kutusu yan yana durur;
+   * biri 44px digeri 40px yuksekse satir hizasi bozuluyor ve form "elde
+   * dizilmis" gorunuyordu. `input-base` tek olcuyu dayatir.
+   */
+  &__trigger {
+    @include input-base;
+
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    text-align: left;
+    cursor: pointer;
+    /* Ok ve temizleme dugmesi icin sagda yer. */
+    padding-right: $space-3;
+
+    /* Secim yapilmamis tetikleyici bir YER TUTUCU gosterir. */
+    &--empty {
+      color: $text-3;
+    }
+
+    /* Panel acikken tetikleyici de vurgulu kalir: ikisi tek bir govde. */
+    &--open {
+      border-color: $ring-color;
+      box-shadow: $ring;
+    }
+
+    /* Hata renkle DEGIL, kenarlik + Field'in yazdigi mesajla bildirilir. */
+    &--invalid {
+      border-color: $danger-solid;
+    }
+  }
+
+  &__leadingIcon {
+    display: inline-flex;
+    color: $text-2;
+    flex-shrink: 0;
+  }
+
+  &__value {
+    @include truncate;
+
+    flex: 1;
+  }
+
+  &__clear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: $radius-pill;
+    color: $text-2;
+    font-size: $font-size-2xs;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition:
+      background-color $duration-fast $ease-out,
+      color $duration-fast $ease-out;
+
+    &:hover {
+      background-color: $surface-2;
+      color: $text;
+    }
+
+    @include focus-ring($ring-color, 1px);
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  &__chevron {
+    color: $text-2;
+    font-size: $font-size-sm;
+    flex-shrink: 0;
+    transition: transform $duration-fast $ease-out;
+
+    &--open {
+      transform: rotate(180deg);
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  /*
+   * Panel.
+   *
+   * Tetikleyiciye 4px mesafede acilir ve tam genisligini alir: dar bir panel,
+   * uzun secenek adlarini kirpip kullaniciyi secmeden once tahmin etmeye
+   * zorluyordu.
+   */
+  &__panel {
+    position: absolute;
+    top: calc(100% + #{$space-1});
+    left: 0;
+    right: 0;
+    z-index: $z-dropdown;
+    background-color: $surface;
+    border: 1px solid $border;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-lg;
+    overflow: hidden;
+    animation: hanui-fade-in-up $duration-fast $ease-out;
+
+    @include reduced-motion {
+      animation: none;
+    }
+  }
+
+  /* Arama alani panelin tepesinde YAPISKAN: uzun listede kaydirinca da
+     kullanici yazmaya devam edebilmeli. */
+  &__search {
+    @include row($space-2);
+
+    padding: $space-2 $space-3;
+    border-bottom: 1px solid $border;
+    background-color: $surface;
+
+    /* Alt sayfada cerceveyi `sheet__toolbar` cizer; ikisi birlikte
+       cizildiginde ic ice iki cizgi cikiyordu. */
+    :global(dialog) & {
+      padding: $space-1 $space-2;
+      border-bottom: none;
+    }
+  }
+
+  &__searchIcon {
+    color: $text-2;
+    font-size: $font-size-sm;
+    flex-shrink: 0;
+  }
+
+  &__searchInput {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: none;
+    font-family: $font-ui;
+    font-size: $font-size-sm;
+    color: $text;
+    padding-block: $space-2;
+
+    /*
+     * 16 px ZORUNLU: panel acilinca bu kutuya odak veriliyor ve iOS 16 px
+     * altindaki girdiye odakta sayfayi yakinlastirip geri cikmiyordu —
+     * pencere acilir acilmaz ekranin yarisi disari tasiyordu.
+     */
+    @include for-touch {
+      font-size: $font-size-base;
+    }
+
+    &::placeholder {
+      color: $text-3;
+    }
+
+    /* Odak halkasi panelin kendisinde degil; kutu zaten acik ve vurgulu. */
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &__list {
+    max-height: 280px;
+    overflow-y: auto;
+    padding: $space-1;
+    margin: 0;
+    list-style: none;
+
+    @include custom-scrollbar;
+
+    /*
+     * Alt sayfada kaydirmayi PANELIN GOVDESI yapar; liste oldugu kadar uzar.
+     * Kendi tavani birakilsaydi ic ice iki kaydirma alani olusuyor ve
+     * kullanici hangisini kaydirdigini bilemiyordu.
+     */
+    &--sheet {
+      max-height: none;
+      overflow: visible;
+      padding: 0;
+
+      /* Parmakla secim: 40 px masaustu faresi icin yeterliydi. */
+      .combobox__option {
+        min-height: 48px;
+        font-size: $font-size-base;
+      }
+    }
+  }
+
+  /*
+   * Secenek.
+   *
+   * `<li>` degil icindeki `<div>` `role="option"` tasir: liste ogesinin
+   * kendisine rol vermek, ekran okuyucunun liste sayimini bozuyordu.
+   */
+  &__option {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    padding: $space-2 $space-3;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    font-size: $font-size-sm;
+    color: $text;
+    /* 40px: yogun bir listede parmakla secim 38px'te iskalaniyordu. */
+    min-height: 40px;
+
+    /*
+     * Etkin secenek: klavye ve fare TEK bir vurgu paylasir.
+     *
+     * Mavi tint, notr gri degil: notr vurgu secili durumdan ayirt edilemiyordu
+     * ve okla gezinen kullanici nerede oldugunu kaybediyordu.
+     */
+    &--active {
+      background-color: $blue-tint;
+    }
+
+    &--selected {
+      color: $blue-text;
+      font-weight: $weight-semibold;
+    }
+
+    /*
+     * Pasif secenek: soluklastirma TEK BASINA sinyal degil (WCAG 1.4.1).
+     * Metin rengi + `aria-disabled` birlikte; opaklik metni okunamaz hale
+     * getiriyordu.
+     */
+    &--disabled {
+      color: $text-3;
+      cursor: not-allowed;
+    }
+  }
+
+  &__optionText {
+    @include stack(1px);
+
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__optionLabel {
+    @include truncate;
+  }
+
+  /* Ayirt edici ikincil bilgi: ayni adli iki kayit ancak bununla ayrilir. */
+  &__optionDescription {
+    @include technical-text($font-size-2xs);
+
+    color: $text-2;
+  }
+
+  &__check {
+    color: $blue;
+    font-size: $font-size-sm;
+    flex-shrink: 0;
+  }
+
+  &__empty {
+    padding: $space-5 $space-3;
+    text-align: center;
+    font-size: $font-size-sm;
+    color: $text-2;
+  }
+}

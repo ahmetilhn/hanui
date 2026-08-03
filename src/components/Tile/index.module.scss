@@ -1,0 +1,79 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.tile {
+  @include card($interactive: true);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  padding: $space-5 $space-3;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+
+  @include focus-ring;
+
+  /*
+   * Ikon madalyonu.
+   *
+   * Sabit kutu: farkli ikonlarin dogal genislikleri karolari duzensiz
+   * hizaliyordu. Yuvarlak zemin ayrica ikonu kartin zemininden ayirir.
+   */
+  &__medallion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: $radius-pill;
+    background-color: $surface-2;
+    color: $text-2;
+    font-size: $font-size-xl;
+    flex-shrink: 0;
+    transition:
+      background-color $duration-fast $ease-out,
+      color $duration-fast $ease-out;
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  &__label {
+    font-family: $font-heading;
+    font-size: $font-size-sm;
+    font-weight: $weight-semibold;
+    line-height: $leading-snug;
+    color: $text;
+  }
+
+  &__meta {
+    font-size: $font-size-2xs;
+    color: $text-2;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &:hover &__medallion {
+    background-color: $blue-tint;
+    color: $blue-hover;
+  }
+
+  /* Etkin karo: madalyon DOLAR — karo listesinde tek bir oge secilidir ve dolu
+     zemin onu bir bakista ayirir. */
+  &--active {
+    border-color: $blue;
+
+    .tile__medallion {
+      background-color: $blue;
+      color: $on-action;
+    }
+
+    .tile__label {
+      color: $blue-hover;
+    }
+  }
+}

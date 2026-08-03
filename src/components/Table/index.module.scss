@@ -1,0 +1,86 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Tablo kaydirma kutusu.
+ *
+ * Tek strateji: tablo KENDI kutusunda kayar, sayfa govdesi hicbir kirilma
+ * noktasinda yatay kaymaz. `min-width: 0` sart — esnek bir kapsayicinin
+ * icinde kutunun kendisi buyuyup sayfayi kaydiriyordu.
+ */
+.scroller {
+  overflow: auto;
+  min-width: 0;
+  align-self: stretch;
+
+  @include custom-scrollbar;
+
+  &--frame {
+    border: 1px solid $border;
+    border-radius: $radius-lg;
+    background-color: $surface;
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $font-size-sm;
+
+  th,
+  td {
+    text-align: left;
+    border-bottom: 1px solid $border;
+  }
+
+  tbody tr:last-child > * {
+    border-bottom: none;
+  }
+
+  /* Yogunluk: dolgu iskeletten ayri ki tablolar iceriklerine gore nefes
+     alabilsin. Hucre dolgusu cagiran modulde YENIDEN yazilmaz. */
+  &--compact th,
+  &--compact td {
+    padding: $space-2 $space-3;
+  }
+
+  &--regular th,
+  &--regular td {
+    padding: $space-3;
+  }
+
+  &--spacious th,
+  &--spacious td {
+    padding: $space-3 $space-4;
+  }
+
+  /*
+   * Baslik satiri kutunun icinde yapiskan.
+   *
+   * `$surface-2` zemin ZORUNLU: saydam bir baslik satirinin arkasindan kayan
+   * satirlar geciyordu.
+   *
+   * `top: 0` DOGRU olan: referans ust bant degil, tablonun kendi kaydirma
+   * kutusu (`TableScroller`). Bant offseti buraya yazilirsa baslik satiri
+   * kendi kutusunun 150 px asagisina duser.
+   */
+  &--sticky-head thead th {
+    position: sticky;
+    top: 0;
+    z-index: $z-base;
+    background-color: $surface-2;
+    font-family: $font-ui;
+    font-size: $font-size-2xs;
+    font-weight: $weight-semibold;
+    text-transform: uppercase;
+    letter-spacing: $tracking-wide;
+    color: $text-2;
+    white-space: nowrap;
+  }
+
+  /* Satir hover'i yalnizca veri hucrelerini boyar: yapiskan satir basligi
+     (`th[scope='row']`) kendi zeminini korur. */
+  &--row-hover tbody tr:hover > td {
+    background-color: $surface-2;
+  }
+}

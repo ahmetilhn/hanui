@@ -1,0 +1,89 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.tabs {
+  @include stack($space-5);
+
+  &__list {
+    @include scroll-row($space-1);
+
+    border-bottom: 1px solid $border;
+  }
+
+  &__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    font-family: $font-ui;
+    font-size: $font-size-sm;
+    font-weight: $weight-medium;
+    color: $text-2;
+    background: none;
+    border: none;
+    padding: $space-3 $space-4;
+    cursor: pointer;
+    white-space: nowrap;
+    position: relative;
+    transition: color $duration-fast $ease-out;
+
+    &:hover {
+      color: $text;
+    }
+
+    @include focus-ring($ring-color, -2px);
+
+    /*
+     * Aktif isaret alt kenarda 2px cizgi.
+     *
+     * `border-bottom` yerine `::after` kullanilir: kenarlik, sekmenin
+     * yuksekligini degistirip aktif sekmeyi 2px kaydiriyordu.
+     */
+    &::after {
+      content: '';
+      position: absolute;
+      left: $space-3;
+      right: $space-3;
+      bottom: -1px;
+      height: 2px;
+      background-color: transparent;
+      border-radius: $radius-xs $radius-xs 0 0;
+      transition: background-color $duration-fast $ease-out;
+    }
+
+    &--active {
+      color: $blue-hover;
+      font-weight: $weight-semibold;
+
+      &::after {
+        background-color: $blue;
+      }
+    }
+
+    @include reduced-motion {
+      transition: none;
+
+      &::after {
+        transition: none;
+      }
+    }
+  }
+
+  &__count {
+    font-size: $font-size-2xs;
+    font-weight: $weight-semibold;
+    color: $text-2;
+    background-color: $surface-3;
+    border-radius: $radius-pill;
+    padding: 1px $space-2;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__panel {
+    /* Panel klavyeyle odaklanabilir; odak halkasi icerigi sarmamali. */
+    &:focus-visible {
+      outline: 2px solid $blue;
+      outline-offset: 4px;
+      border-radius: $radius-sm;
+    }
+  }
+}

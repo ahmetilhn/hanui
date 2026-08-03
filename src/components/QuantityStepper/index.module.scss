@@ -1,0 +1,95 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.stepper {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  background-color: $surface;
+  overflow: hidden;
+
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    color: $text-2;
+    cursor: pointer;
+    padding-inline: $space-3;
+    transition: background-color $duration-fast $ease-out;
+
+    &:hover:not(:disabled) {
+      background-color: $surface-3;
+      color: $text;
+    }
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    @include focus-ring($ring-color, -2px);
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  &__input {
+    @include technical-text($font-size-sm);
+
+    width: 40px;
+    border: none;
+    border-inline: 1px solid $border;
+    background: none;
+    text-align: center;
+    color: $text;
+    font-weight: $weight-semibold;
+
+    /* iOS: 16 px altindaki girdiye odak sayfayi yakinlastirip geri
+       cikmiyordu (bkz. for-touch mixin'i). */
+    @include for-touch {
+      font-size: $font-size-base;
+    }
+
+    &:focus {
+      outline: none;
+      background-color: $blue-tint;
+    }
+
+    &:disabled {
+      color: $text-2;
+    }
+  }
+
+  &--sm {
+    .stepper__button {
+      height: 32px;
+      font-size: 13px;
+    }
+
+    .stepper__input {
+      width: 34px;
+      font-size: $font-size-xs;
+
+      /* Ust kuraldaki for-touch bloku bu seciciye yeniliyor; ayni istisna
+         burada da yazilir (iOS odak yakinlastirmasi). */
+      @include for-touch {
+        font-size: $font-size-base;
+      }
+    }
+  }
+
+  &--md {
+    .stepper__button {
+      height: 44px;
+      font-size: $font-size-sm;
+    }
+
+    .stepper__input {
+      width: 46px;
+    }
+  }
+}

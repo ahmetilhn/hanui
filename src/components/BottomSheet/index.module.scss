@@ -1,0 +1,88 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Alt sayfa.
+ *
+ * Gorunurluk `[open]`e BAGLI (bkz. `bottom-sheet` mixin'i): kapali bir
+ * `<dialog>`i gizleyen kural tarayici katmanindadir ve bir sinif secicisine
+ * yenilir.
+ *
+ * Kirilma noktasi SORULMAZ. Panel zaten yalnizca dar ekranda aciliyor; bir
+ * medya sorgusuyla ayrica gizlemek, acilmis bir kipsel paneli GORUNMEZ ama
+ * etkin birakma riski demek — sayfanin tamami tiklanamaz olurdu.
+ */
+.sheet {
+  display: none;
+
+  &[open] {
+    @include bottom-sheet(80dvh);
+  }
+
+  &__header {
+    @include row($space-3);
+
+    justify-content: space-between;
+    padding: $space-3 $space-4;
+    border-bottom: 1px solid $border;
+    flex-shrink: 0;
+
+    /* Panel tam genislik: yatay telefonda centik payi (safe-inline). */
+    @include safe-inline($space-4);
+  }
+
+  &__title {
+    @include heading($font-size-base, $weight-semibold);
+
+    margin: 0;
+  }
+
+  /*
+   * Baslik ile govde arasindaki serit: `Combobox`in arama kutusu buraya
+   * girer. Govdenin ICINE konsaydi listeyle birlikte kayacak ve kullanici
+   * uzun bir listede kaydirirken yazmaya devam edemeyecekti.
+   */
+  &__toolbar {
+    padding: $space-2 $space-3;
+    border-bottom: 1px solid $border;
+    flex-shrink: 0;
+
+    @include safe-inline($space-3);
+  }
+
+  &__body {
+    flex: 1;
+    /* `min-height: 0` OLMADAN esnek oge icerigiyle birlikte buyur ve panelin
+       `max-height`ini asar: klavye acikken liste kaydirilamiyor, panelin alti
+       ekranin disina tasiyordu. */
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: $space-2 $space-3;
+
+    @include safe-inline($space-3);
+    @include custom-scrollbar;
+
+    /* Guvenli alan payi DIP OGENIN isi. Dip serit varsa dolgu orada; ikisine
+       birden yazildiginda son satirin altinda iki kat bosluk kaliyordu. */
+    &:last-child {
+      @include safe-bottom;
+    }
+  }
+
+  &__footer {
+    @include row($space-3);
+
+    padding: $space-3 $space-4;
+
+    @include safe-inline($space-4);
+    @include safe-bottom;
+
+    border-top: 1px solid $border;
+    flex-shrink: 0;
+
+    > * {
+      flex: 1;
+    }
+  }
+}

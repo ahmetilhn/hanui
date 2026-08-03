@@ -1,0 +1,61 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Filtre seridi.
+ *
+ * Yerlesim `filter-surface` mixin'inden (yuzey, hairline, sarma, hizalama);
+ * burada yalnizca alan genislik sozlesmesi ve uclar var.
+ */
+.bar {
+  @include filter-surface;
+
+  /* Enter'in yedegi (bkz. index.tsx). Gorunmez ama form icin var. */
+  &__hiddenSubmit {
+    display: none;
+  }
+
+  /*
+   * Eylemler sag UCTA durur: `margin-left: auto` alanlarla arasindaki boslugu
+   * yutar. Satir sarinca kendi satirinda yine saga yaslanir.
+   */
+  &__actions {
+    @include row($space-2);
+
+    margin-left: auto;
+  }
+}
+
+/*
+ * Alan genisligi: TERCIH `flex-basis`, TABAN `min-width: 0`.
+ *
+ * `min-width: 240px` yazan alanlar 320px ekranda seridin dolgusuyla birlikte
+ * tasiyordu — `min-width` flex daralmasinin katidir ve alan kutusundan buyuk
+ * kalir. `flex-basis` ise yalnizca tercih: yer varsa 220px, yoksa alan kuculur
+ * ve sayfa yatay kaymaz.
+ */
+.field {
+  flex: 0 1 220px;
+  min-width: 0;
+
+  &--wide {
+    flex: 1 1 240px;
+  }
+}
+
+/* Dar ekranda alanlar istiflenir; yarim kalan satirlar seridi kirpik
+   gosteriyordu. */
+@include for-mobile {
+  .field,
+  .field--wide {
+    flex-basis: 100%;
+  }
+
+  .bar__actions {
+    width: 100%;
+
+    > * {
+      flex: 1 1 auto;
+    }
+  }
+}

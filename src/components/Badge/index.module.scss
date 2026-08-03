@@ -1,0 +1,188 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Rozet.
+ *
+ * Arayuz fontunda ($font-ui): 12 px'te baslik fontu sikisip okunmuyordu.
+ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  font-family: $font-ui;
+  font-size: $font-size-xs;
+  font-weight: $weight-semibold;
+  line-height: $leading-none;
+  white-space: nowrap;
+  padding: 5px $space-2;
+  border-radius: $radius-sm;
+  border: 1px solid transparent;
+
+  &__icon {
+    display: flex;
+    /* Ikon metinden bir tik kucuk: esit puntoda ikon metni eziyor. */
+    font-size: 0.95em;
+  }
+}
+
+/*
+ * DURUM TONLARI — hepsi tint zemin + koyu metin + eslesen hairline.
+ *
+ * Uc degeri ayri ayri yazmak yerine `@include tint(...)`: elle yazildiginda
+ * kacinilmaz olarak biri atlaniyordu ve tint zemin uzerinde varsayilan gri
+ * kenarlik kalinca kutu kirli gorunuyordu.
+ *
+ * `soft` ve `solid` DURUM TONLARINDA AYNI SEYI VERIR. Bu bilincli: "doygun
+ * dolgu = tiklanabilir" kuralini bozmadan `solid` istenemez — dolu zeminli bir
+ * durum etiketi dugmeye benziyor. Cagiran taraflari kirmamak icin prop
+ * korundu, gorunum tint'e sabitlendi.
+ *
+ * Doygun dolgu yalnizca EYLEM tonlarinda (`action`, `link`) anlamli.
+ */
+.badge--neutral {
+  &.badge--soft,
+  &.badge--solid {
+    @include tint(neutral);
+  }
+
+  &.badge--outline {
+    border-color: $border-strong;
+    color: $text-2;
+  }
+}
+
+.badge--success {
+  &.badge--soft,
+  &.badge--solid {
+    @include tint(success);
+  }
+
+  &.badge--outline {
+    border-color: $ok-line;
+    color: $ok-fg;
+  }
+}
+
+.badge--danger {
+  &.badge--soft,
+  &.badge--solid {
+    @include tint(danger);
+  }
+
+  &.badge--outline {
+    border-color: $bad-line;
+    color: $bad-fg;
+  }
+}
+
+.badge--warning {
+  &.badge--soft,
+  &.badge--solid {
+    @include tint(warning);
+  }
+
+  &.badge--outline {
+    border-color: $warn-line;
+    color: $warn-fg;
+  }
+}
+
+.badge--info {
+  &.badge--soft,
+  &.badge--solid {
+    @include tint(info);
+  }
+
+  &.badge--outline {
+    border-color: $blue-line;
+    color: $blue-text;
+  }
+}
+
+/* Birincil siniflandirma tinti. */
+.badge--oem {
+  &.badge--soft,
+  &.badge--solid {
+    @include tint(oem);
+  }
+
+  &.badge--outline {
+    border-color: $oem-line;
+    color: $oem-fg;
+  }
+}
+
+/* Ikincil siniflandirma tinti. */
+.badge--alt {
+  &.badge--soft,
+  &.badge--solid {
+    @include tint(alt);
+  }
+
+  &.badge--outline {
+    border-color: $alt-line;
+    color: $alt-fg;
+  }
+}
+
+/*
+ * Indirim yuzdesi.
+ *
+ * Tutarin KENDISI notr kalir; renk yalnizca bu rozette. Kirmizi yerine YESIL:
+ * kazanci kirmizi ile isaretlemek "uyari" gibi okunuyordu.
+ */
+.badge--sale {
+  &.badge--soft,
+  &.badge--solid {
+    background-color: $sale-bg;
+    border-color: $sale-bg;
+    color: $sale-fg;
+  }
+
+  &.badge--outline {
+    border-color: $sale-fg;
+    color: $sale-fg;
+  }
+}
+
+/*
+ * EYLEM TONLARI — doygun dolguya izin verilen tek yer.
+ *
+ * Sayac ve etiket rozetleri: sepet adedi, filtre sayisi. Bunlar bir durumu
+ * degil bir MIKTARI bildirir ve tiklanabilir bir ogenin parcasidir; dolgu
+ * burada yaniltmaz.
+ */
+.badge--action {
+  &.badge--soft {
+    background-color: $surface-2;
+    color: $text;
+  }
+
+  &.badge--solid {
+    background-color: $action;
+    color: $on-action;
+  }
+
+  &.badge--outline {
+    border-color: $border-strong;
+    color: $text;
+  }
+}
+
+.badge--link {
+  &.badge--soft {
+    @include tint(info);
+  }
+
+  &.badge--solid {
+    background-color: $blue;
+    border-color: $blue;
+    color: $on-scrim;
+  }
+
+  &.badge--outline {
+    border-color: $blue;
+    color: $blue-text;
+  }
+}

@@ -1,0 +1,50 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Kullanici madalyonu.
+ *
+ * Notr zemin, koyu metin: marka renginde dolu bir daire hesap menusunun en
+ * ustunde birincil eylem gibi duruyor ve altindaki gercek menuyle
+ * yarisiyordu. Madalyon kimlik tasir, dikkat cekmez.
+ */
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: $radius-pill;
+  background-color: $surface-3;
+  color: $text;
+  font-family: $font-heading;
+  font-weight: $weight-semibold;
+  /* Bas harfler optik olarak ortalanir; harf araligi onlari dagitmamali. */
+  letter-spacing: 0;
+  line-height: $leading-none;
+  user-select: none;
+  overflow: hidden;
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &--sm {
+    width: 32px;
+    height: 32px;
+    font-size: $font-size-xs;
+  }
+
+  &--md {
+    width: 44px;
+    height: 44px;
+    font-size: $font-size-base;
+  }
+
+  &--lg {
+    width: 56px;
+    height: 56px;
+    font-size: $font-size-lg;
+  }
+}

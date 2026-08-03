@@ -1,0 +1,96 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Kopyalanabilir teknik deger.
+ *
+ * Bu tur bir deger kullanicinin TASIDIGI veridir: baska bir yere gonderiyor,
+ * karsilastiriyor, mesajla soruyor. Bu yuzden hem sabit genislikli bir yazi
+ * tipiyle okunur hem de tek dokunusla kopyalanir.
+ */
+.copy {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  max-width: 100%;
+  min-width: 0;
+
+  &--sm .copy__code {
+    @include technical-text($font-size-xs);
+  }
+
+  &--md .copy__code {
+    @include technical-text($font-size-sm);
+  }
+
+  /*
+   * `user-select: all` — tek tiklama degerin TAMAMINI secer. Kullanicilar
+   * fareyle surukleyerek yarim numara kopyaliyordu; bir hanesi eksik bir kod
+   * bambaska bir kayit demek.
+   */
+  &__code {
+    @include truncate;
+
+    user-select: all;
+    color: inherit;
+  }
+
+  /*
+   * Kopyalama dugmesi.
+   *
+   * Notr ve sessiz: degerin YANINDA duruyor, onun yerine gecmiyor. Dokunma
+   * hedefi 44 px, gorsel kutu 20 px — gorunmez tampon ile (WCAG 2.5.8), aksi
+   * halde satir iki katina cikiyordu.
+   */
+  &__button {
+    /*
+     * Tampon ORTALANIR. Elle yazilmis hali `position: absolute` idi ama
+     * `top`/`left` verilmedigi icin 44 px'lik alan dugmenin SOL UST kosesinden
+     * asagi saga dogru aciliyordu: hedef gorsel simgenin uzerinde degil
+     * altinda-sagindaydi ve altta baska bir satir varsa onun uzerine
+     * biniyordu. Ortak mixin ayni tamponu merkeze koyar.
+     */
+    @include tap-target;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    padding: 0;
+    border: none;
+    border-radius: $radius-xs;
+    background: none;
+    color: $text-3;
+    font-size: 13px;
+    cursor: pointer;
+    transition:
+      color $duration-fast $ease-out,
+      background-color $duration-fast $ease-out;
+
+    &:hover {
+      color: $text;
+      background-color: $surface-2;
+    }
+
+    @include focus-ring($ring-color, -1px);
+
+    @include reduced-motion {
+      transition: none;
+    }
+
+    /* Kopyalandi: yesil tik. Ikon DA degisiyor — renk tek sinyal degil. */
+    &--done {
+      color: $green-accent;
+
+      &:hover {
+        color: $green-accent;
+      }
+    }
+  }
+
+  &__srOnly {
+    @include visually-hidden;
+  }
+}

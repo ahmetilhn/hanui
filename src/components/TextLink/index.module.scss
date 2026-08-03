@@ -1,0 +1,73 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  font-weight: $weight-medium;
+  text-decoration: none;
+  border-radius: $radius-xs;
+  transition: color $duration-fast $ease-out;
+
+  @include focus-ring($ring-color, 3px);
+
+  @include reduced-motion {
+    transition: none;
+  }
+
+  &__label {
+    /* Alt cizgi yalnizca metinde; ok altinda cizgi kirik gorunuyordu. */
+    text-underline-offset: 3px;
+  }
+
+  &__arrow {
+    font-size: 0.9em;
+    flex-shrink: 0;
+    transition: transform $duration-fast $ease-out;
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  &:hover {
+    .link__label {
+      text-decoration: underline;
+    }
+
+    /* Ok, gidilecek yonu fiziksel olarak sezdirir. */
+    .link__arrow {
+      transform: translateX(3px);
+    }
+  }
+
+  &--sm {
+    font-size: $font-size-xs;
+  }
+
+  &--md {
+    font-size: $font-size-sm;
+  }
+
+  /*
+   * Vurgulu baglanti MAVI: baglanti bir gezinme ogesi. Doygun turuncu tek bir
+   * donusum noktasina ayrildi ve her sayfada onlarca turuncu metin o
+   * tekilligi yok ediyordu.
+   */
+  &--brand {
+    color: $blue-text;
+
+    &:hover {
+      color: $blue-hover;
+    }
+  }
+
+  &--muted {
+    color: $text-2;
+
+    &:hover {
+      color: $text;
+    }
+  }
+}

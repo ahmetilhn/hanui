@@ -1,0 +1,46 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: $space-4;
+  flex-wrap: wrap;
+
+  &__text {
+    @include stack($space-1);
+
+    min-width: 0;
+  }
+
+  &__overline {
+    @include overline;
+  }
+
+  &__title {
+    @include heading($font-size-xl);
+
+    margin: 0;
+  }
+
+  &__description {
+    font-size: $font-size-sm;
+    color: $text-2;
+    line-height: $leading-normal;
+    max-width: $measure;
+    margin: 0;
+  }
+
+  &__action {
+    flex-shrink: 0;
+  }
+
+  &--sm .header__title {
+    font-size: $font-size-lg;
+  }
+
+  &--lg .header__title {
+    font-size: $font-size-2xl;
+  }
+}

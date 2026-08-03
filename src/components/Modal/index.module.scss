@@ -1,0 +1,235 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Kip pencere.
+ *
+ * `<dialog>` varsayilan olarak kenarlikli ve ortalanir; sifirlanip kendi
+ * yuzeyimiz verilir. Ic bosluk PANELE ait, dialog'un kendisine degil — arka
+ * plana tiklama olcumu dialog'un kutusuna bakiyor ve ic bosluk o kutuyu
+ * buyutup panelin kenarindaki tiklamalari "arka plan" sayiyordu.
+ */
+.modal {
+  border: none;
+  padding: 0;
+  background: none;
+  color: $text;
+  max-width: min(92vw, 560px);
+  width: 100%;
+  max-height: 90dvh;
+
+  &--sm {
+    max-width: min(92vw, 440px);
+  }
+
+  &--lg {
+    max-width: min(92vw, 880px);
+  }
+
+  &::backdrop {
+    background-color: $scrim;
+    /*
+     * Hafif bulaniklik: arka plandaki icerigin okunabilir kalmasi pencereyi
+     * "sayfanin bir parcasi" gibi gosteriyordu. Kip bir pencere dikkati
+     * tamamen almali.
+     */
+    backdrop-filter: blur(3px);
+    /*
+     * Perde de pencereyle BIRLIKTE belirir. Animasyonsuz birakildiginda sayfa
+     * bir anda kararip pencere onun ustune "dusuyor" gibi goruntu veriyordu;
+     * mobilde alt sayfaya donustugu icin fark daha da belirgindi.
+     */
+    animation: hanui-fade-in $duration-fast $ease-out;
+
+    @include reduced-motion {
+      animation: none;
+    }
+  }
+
+  &[open] {
+    animation: hanui-fade-in-up $duration-fast $ease-out;
+  }
+
+  @include reduced-motion {
+    &[open] {
+      animation: none;
+    }
+  }
+
+  /*
+   * MOBILDE ALT SAYFA.
+   *
+   * Ortalanmis bir pencere, klavye acildiginda yukari sikisiyor ve dip
+   * dugmeleri klavyenin altinda kaliyordu. Alt sayfa bas parmagin
+   * erisebildigi yerde durur.
+   */
+  @include for-mobile {
+    &,
+    &--sm,
+    &--lg {
+      max-width: none;
+      width: 100%;
+      max-height: 92dvh;
+      margin: 0;
+      margin-top: auto;
+    }
+
+    &[open] {
+      animation: hanui-slide-up $duration-normal $ease-out;
+    }
+  }
+
+  &__panel {
+    display: flex;
+    flex-direction: column;
+    max-height: 90dvh;
+    background-color: $surface;
+    border: 1px solid $border;
+    border-radius: $radius-xl;
+    box-shadow: $shadow-xl;
+    overflow: hidden;
+
+    @include for-mobile {
+      max-height: 92dvh;
+      border-radius: $radius-xl $radius-xl 0 0;
+      border-bottom: none;
+    }
+  }
+
+  /* Baslik ve kapatma yapiskan: uzun icerikte kaydirinca da erisilebilir. */
+  &__header {
+    @include row($space-3, flex-start);
+
+    padding: $space-4 $space-5;
+    border-bottom: 1px solid $border;
+    flex-shrink: 0;
+
+    @include for-mobile {
+      padding: $space-4;
+
+      /* Alt sayfa tam genislik: yatay telefonda centik payi (safe-inline). */
+      @include safe-inline($space-4);
+    }
+  }
+
+  /*
+   * Ikon madalyonu.
+   *
+   * Tint zemin — doygun dolgu degil: bu bir DURUM gostergesi (yikici islem,
+   * uyari, onay), tiklanabilir bir oge degil.
+   */
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: $radius-md;
+    font-size: $font-size-lg;
+
+    &--neutral {
+      @include tint(neutral);
+    }
+
+    &--danger {
+      @include tint(danger);
+    }
+
+    &--warning {
+      @include tint(warning);
+    }
+
+    &--success {
+      @include tint(success);
+    }
+
+    &--info {
+      @include tint(info);
+    }
+  }
+
+  &__heading {
+    @include stack($space-1);
+
+    flex: 1;
+    min-width: 0;
+    /* Ikon 40 px; baslik onun optik merkezine hizalanir. */
+    padding-top: 2px;
+  }
+
+  &__title {
+    @include heading($font-size-lg);
+
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  &__description {
+    @include muted($font-size-sm);
+
+    margin: 0;
+    max-width: $measure;
+  }
+
+  /* Kapatma dugmesi basligin ust hizasinda; dikey ortalanirsa iki satirlik
+     baslikta asagi kayiyor. */
+  &__close {
+    flex-shrink: 0;
+    margin-top: -2px;
+  }
+
+  &__body {
+    padding: $space-5;
+    overflow-y: auto;
+    /* Uzun formda govde kayar, baslik ve eylemler sabit kalir. */
+    flex: 1;
+
+    @include custom-scrollbar;
+
+    @include for-mobile {
+      padding: $space-4;
+
+      @include safe-inline($space-4);
+
+      /* Dip seridi yoksa guvenli alani govde oder; yoksa son satir ana ekran
+         cubugunun altinda kaliyordu. */
+      &:last-child {
+        padding-bottom: max(#{$space-4}, env(safe-area-inset-bottom));
+      }
+    }
+  }
+
+  /*
+   * Dip seridi: gomulu yuzey. Govdeyle ayni beyaz kalirsa eylemler formun
+   * icindeymis gibi gorunuyordu.
+   */
+  &__footer {
+    @include wrap-row($space-2);
+
+    justify-content: flex-end;
+    padding: $space-4 $space-5;
+    border-top: 1px solid $border;
+    background-color: $surface-2;
+    flex-shrink: 0;
+
+    @include for-mobile {
+      padding: $space-3 $space-4;
+
+      @include safe-inline($space-4);
+
+      padding-bottom: max(#{$space-3}, env(safe-area-inset-bottom));
+
+      /*
+       * Dar ekranda dugmeler tam genislige yayilir. `column-reverse`: JSX'te
+       * "Vazgec" once yazilir (klavye sirasi mantikli) ama ekranda BIRINCIL
+       * EYLEM ALTTA, bas parmaga yakin durur.
+       */
+      flex-direction: column-reverse;
+
+      > * {
+        width: 100%;
+      }
+    }
+  }
+}

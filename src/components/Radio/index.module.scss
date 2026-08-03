@@ -1,0 +1,61 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.radio {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  cursor: pointer;
+  padding: $space-2;
+  margin-inline: -$space-2;
+  border-radius: $radius-sm;
+  transition: background-color $duration-fast $ease-out;
+
+  &:hover {
+    background-color: $surface-2;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+
+  &__input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    flex-shrink: 0;
+    accent-color: $blue;
+    cursor: pointer;
+    /* Daire, yanindaki metnin ilk satiriyla optik olarak hizalanir. */
+    margin-top: 2px;
+
+    @include focus-ring;
+  }
+
+  &__body {
+    @include stack($space-1);
+
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__label {
+    font-size: $font-size-sm;
+    line-height: $leading-normal;
+    color: $text;
+  }
+
+  &__hint {
+    font-size: $font-size-xs;
+    color: $text-2;
+    line-height: $leading-normal;
+  }
+
+  &__count {
+    font-size: $font-size-2xs;
+    color: $text-3;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+}

@@ -1,0 +1,59 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+
+  &__prefix,
+  &__suffix {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    color: $text-2;
+    pointer-events: none;
+    font-size: $font-size-sm;
+  }
+
+  &__prefix {
+    left: $space-3;
+  }
+
+  &__suffix {
+    right: $space-3;
+  }
+}
+
+.input {
+  @include input-base;
+
+  /*
+   * On/son ek dolgusu.
+   *
+   * `$space-8 - $space-2` = 56px: ikon sol kenardan 12px'te basliyor,
+   * genisligi ~16px, metin ondan sonra 12px bosluk istiyor. Sabit bir piksel
+   * yazmak yerine olcekten turetiliyor ki bosluk olcegi degistiginde ikon ile
+   * metin cakismasin.
+   */
+  &--hasPrefix {
+    padding-left: $space-8 - $space-2;
+  }
+
+  &--hasSuffix {
+    padding-right: $space-8 - $space-2;
+  }
+
+  /*
+   * Teknik veri girdisi: seri numarasi, kod, kart numarasi.
+   *
+   * Genis harf araligi ZORUNLU — 17 haneli bir numarayi kullanici hane hane
+   * okuyup dogruluyor ve sik aralikta "8" ile "B" ayirt edilemiyordu.
+   */
+  &--technical {
+    @include technical-text($font-size-base);
+
+    letter-spacing: 0.06em;
+  }
+}

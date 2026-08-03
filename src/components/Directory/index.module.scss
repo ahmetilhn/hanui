@@ -1,0 +1,263 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Dizin — gruplanmis baglanti listesi.
+ *
+ * Iki farkli dizin sayfasi bu gorsel dilbilgisini PAYLASIR: grup basligi,
+ * izgara, satir ogesi. Ayni gorunmeleri buradan gelir.
+ */
+/*
+ * Atlama seridinin YUKSEKLIGI: 4 ust dolgu + 32 baglanti + 12 alt dolgu +
+ * 1 cizgi. Serit de yapiskan; grup basliklari ONUN altina yapismali, yoksa
+ * iki yapiskan katman ayni noktada ust uste biniyor.
+ */
+$jump-height: 49px;
+
+.directory {
+  @include stack($space-6);
+}
+
+.group {
+  /*
+   * Cipa hedefi bandin altina inmeli — ama tuketici bunu
+   * `html { scroll-padding-top }` ile ZATEN dusuruyor olmali. Burada bir kez
+   * daha eklenirse iki deger toplaniyor ve `#harf` baglantisi hedefi ekranin
+   * ortasina kadar itiyordu.
+   */
+  scroll-margin-top: 0;
+
+  &__header {
+    @include row($space-3);
+
+    justify-content: space-between;
+    padding-bottom: $space-2;
+    margin-bottom: $space-3;
+    border-bottom: 1px solid $border;
+
+    /*
+     * Yapiskan baslik: uzun bir listede kaydirirken hangi harfte oldugunu
+     * gormek, listeyi yukari sarip kontrol etmekten iyi. Zemin sayfa
+     * zeminidir — altindaki satirlar basligin arkasindan gecmemeli.
+     *
+     * `top: 0` YETMEZ: tuketicinin ust bandi da yapiskan olabilir ve baslik
+     * onun arkasina girip gorunmez oluyordu.
+     */
+    @include sticky-below-header(0);
+
+    z-index: $z-base;
+    background-color: $page;
+  }
+
+  /*
+   * Grup basligi $text, mavi DEGIL.
+   *
+   * Once harf basliklari vurgu renginde ciziliyordu ve sayfada onlarca renkli
+   * harf, gercek baglantilardan daha cok dikkat cekiyordu. Baslik bir
+   * ayirici; renk baglantilara ait.
+   *
+   * Baslik DARALABILIR olmali: `flex-shrink: 0` ile yazilmisti ve satirin
+   * diger ucundaki sayacla birlikte satiri tasiriyordu — uzun bir baslik +
+   * sayac 360 px'lik ekranda sayfanin TAMAMINI yatay kaydiriyordu (olculdu:
+   * +126 px). Baslik artik daralip sarar; sayac kisa ve sabit oldugu icin o
+   * sabit kalir.
+   */
+  &__label {
+    @include heading($font-size-lg, $weight-bold);
+
+    margin: 0;
+    min-width: 0;
+  }
+
+  &__link {
+    color: inherit;
+    text-decoration: none;
+    transition: color $duration-fast $ease-out;
+
+    &:hover {
+      color: $blue-text;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  &__meta {
+    @include muted($font-size-xs);
+
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /*
+   * Satir izgarasi: sutun sayisi degil ASGARI sutun genisligi verilir. Genis
+   * ekranda dort, tablette iki, mobilde tek sutun — kirilma noktasi basina
+   * kural yazmaya gerek kalmaz.
+   */
+  &__list {
+    @include auto-grid(220px, $space-1);
+
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/*
+ * Dizin satiri.
+ *
+ * TUM SATIR tiklanabilir ve en az 44 px (WCAG 2.5.8): yalnizca metnin
+ * tiklanabilir oldugu bir listede dokunmatik kullanicilar satirin bosluguna
+ * basip hicbir sey olmadigini goruyordu.
+ */
+.row {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  min-height: 44px;
+  padding: $space-2 $space-3;
+  border: 1px solid transparent;
+  border-radius: $radius-md;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    background-color $duration-fast $ease-out,
+    border-color $duration-fast $ease-out,
+    color $duration-fast $ease-out;
+
+  &:hover {
+    background-color: $surface;
+    border-color: $border;
+    color: $blue-text;
+
+    .row__name {
+      color: $blue-text;
+    }
+  }
+
+  @include focus-ring($ring-color, -2px);
+
+  @include reduced-motion {
+    transition: none;
+  }
+
+  /*
+   * Logo/ikon yuvasi SABIT genislikte: farkli genislikte logolar satir
+   * adlarini birbirinden kaydiriyor ve izgara dalgali gorunuyordu.
+   */
+  &__media {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: $radius-sm;
+    background-color: $surface-2;
+    color: $text-2;
+    font-family: $font-ui;
+    font-size: $font-size-sm;
+    font-weight: $weight-semibold;
+    overflow: hidden;
+
+    img {
+      object-fit: contain;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__name {
+    @include truncate;
+
+    flex: 1;
+    font-size: $font-size-sm;
+    color: $text;
+    transition: color $duration-fast $ease-out;
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  &__marker {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    font-size: $font-size-xs;
+    color: $text-2;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/*
+ * Alfabe atlama seridi.
+ *
+ * Yapiskan: liste uzun ve kullanici asagida da harfe atlamak isteyebilir.
+ * `#cipa` baglantilari — JavaScript gerekmez, tarayici kaydirmayi kendisi
+ * yapar ve baglanti paylasilabilir.
+ */
+.jump {
+  @include scroll-row($space-1);
+
+  /* Bandin hemen ALTINA, bosluksuz: serit bandin bir uzantisi gibi okunur ve
+     arada sayfa zemininden bir seritin gorunmesi banti "yuzuyor"
+     gosteriyordu. */
+  @include sticky-below-header(0);
+
+  z-index: $z-raised;
+  background-color: $page;
+  border-bottom: 1px solid $border;
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    min-height: 32px;
+    padding-inline: $space-2;
+    border-radius: $radius-sm;
+    font-family: $font-ui;
+    font-size: $font-size-sm;
+    font-weight: $weight-semibold;
+    color: $text-2;
+    text-decoration: none;
+    transition:
+      background-color $duration-fast $ease-out,
+      color $duration-fast $ease-out;
+
+    &:hover {
+      background-color: $blue-tint;
+      color: $blue-text;
+    }
+
+    @include focus-ring;
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+}
+
+/*
+ * Atlama seridi VARSA grup basliklari onun altina yapisir.
+ *
+ * Ikisi de yapiskan ve ikisi de bandin dibini hedefliyordu: harf basligi
+ * seridin arkasina giriyor, kullanici kaydirirken "hangi harfteyim" sorusunun
+ * cevabini kaybediyordu. Serit kosullu ciziliyor (yalnizca birden fazla grup
+ * varsa) — bu yuzden pay SABIT eklenmez, kardes seciciyle yalnizca serit
+ * gercekten sayfadayken eklenir.
+ */
+.jump ~ .directory {
+  .group {
+    scroll-margin-top: $jump-height;
+  }
+
+  .group__header {
+    top: calc(#{$header-offset} + #{$jump-height});
+  }
+}

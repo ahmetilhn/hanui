@@ -1,0 +1,58 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.field {
+  @include stack($space-2);
+
+  /*
+   * Etiket BIRINCI SINIF metin (`$text`), ikincil degil.
+   *
+   * Once `$text-2` idi. Bir formda etiket "ne yazacagim" sorusunun cevabi;
+   * ipucu ve hata mesaji ikincil. Ucu de ayni gri tonda oldugunda kullanici
+   * hangisinin alan adi oldugunu taramak icin duruyordu.
+   */
+  &__label {
+    @include label;
+
+    display: flex;
+    align-items: center;
+    gap: 2px;
+
+    &--hidden {
+      @include visually-hidden;
+    }
+  }
+
+  /*
+   * Zorunlu yildizi.
+   *
+   * Renk TEK BASINA anlam tasimiyor: bilesen ayrica gorunmez bir
+   * `requiredLabel` metni yaziyor (`__srOnly`) ve girdi `required` ozniteligi
+   * tasiyor. Yildiz yalnizca gorsel bir kisayol.
+   */
+  &__required {
+    color: $bad-fg;
+  }
+
+  &__srOnly {
+    @include visually-hidden;
+  }
+
+  &__hint {
+    font-size: $font-size-xs;
+    color: $text-2;
+    line-height: $leading-normal;
+  }
+
+  /* Hata mesaji ikonla birlikte: renk tek basina anlam tasimaz. */
+  &__error {
+    display: flex;
+    align-items: center;
+    gap: $space-1;
+    font-size: $font-size-xs;
+    font-weight: $weight-medium;
+    color: $bad-fg;
+    line-height: $leading-normal;
+    margin: 0;
+  }
+}

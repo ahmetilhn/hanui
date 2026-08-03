@@ -1,0 +1,155 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.pagination {
+  @include row($space-1);
+
+  /*
+   * SARILABILIR: 320 px'te 1-…-4-5-6-…-24 dizisi tek satira sigmiyor ve satir
+   * kaydirilacagina sayfayi yatay kaydiriyordu. Kaydirma alternatifi elendi —
+   * etkin sayfa gorunum disinda kalabiliyor ve kullanici nerede oldugunu
+   * goremiyordu. Sarmada her hucre gorunur kalir.
+   */
+  flex-wrap: wrap;
+  row-gap: $space-1;
+  justify-content: center;
+  padding-block: $space-5;
+
+  &__list {
+    @include row($space-1);
+
+    flex-wrap: wrap;
+    row-gap: $space-1;
+    justify-content: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /*
+   * Baglanti (URL kipi) icin tam gorunum: `<a>` primitif tasimiyor, durum
+   * matrisi ve odak halkasi burada kurulur.
+   */
+  &__arrow,
+  &__page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding-inline: $space-2;
+    font-family: $font-heading;
+    font-size: $font-size-sm;
+    font-weight: $weight-semibold;
+    font-variant-numeric: tabular-nums;
+    color: $text-2;
+    background-color: $surface;
+    border: 1px solid $border;
+    border-radius: $radius-md;
+    cursor: pointer;
+    /* Sayfa numarasi bir `<a>`: tarayicinin varsayilan alti cizgisi gelir. */
+    text-decoration: none;
+    transition:
+      border-color $duration-fast $ease-out,
+      color $duration-fast $ease-out,
+      background-color $duration-fast $ease-out;
+
+    &:hover:not(:disabled) {
+      border-color: $border-strong;
+      color: $text;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    @include focus-ring;
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  /*
+   * Ayni kurallar primitiflerin (IconButton/Button) USTUNE atali seciciyle bir
+   * kez daha bindirilir. Ozguluk BILEREK yukseltildi: primitif sinifi ile
+   * modul sinifi ayni ozgulukte kaliyor ve kazanan bundle kaynak sirasina
+   * bagli oluyordu. Boylece ok ve dugme, baglanti komsulariyla piksel piksel
+   * ayni gorunur.
+   */
+  & &__arrow,
+  & &__page {
+    width: auto;
+    min-width: 40px;
+    height: 40px;
+    min-height: 40px;
+    padding: 0;
+    padding-inline: $space-2;
+    font-family: $font-heading;
+    font-size: $font-size-sm;
+    font-weight: $weight-semibold;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: normal;
+    color: $text-2;
+    background-color: $surface;
+    border: 1px solid $border;
+    border-radius: $radius-md;
+
+    &:hover:not(:disabled) {
+      border-color: $border-strong;
+      background-color: $surface;
+      color: $text;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      background-color: $surface;
+      border-color: $border;
+      color: $text-2;
+      cursor: not-allowed;
+    }
+  }
+
+  /* Aktif sayfa dolu: kullanici nerede oldugunu bir bakista gormeli. */
+  & &__page--active {
+    background-color: $blue;
+    border-color: $blue;
+    color: $on-action;
+
+    &:hover:not(:disabled),
+    &:active:not(:disabled) {
+      background-color: $blue-text;
+      border-color: $blue-text;
+      color: $on-action;
+    }
+  }
+
+  &__gap {
+    display: inline-flex;
+    align-items: flex-end;
+    justify-content: center;
+    min-width: 24px;
+    height: 40px;
+    color: $text-3;
+    user-select: none;
+  }
+
+  /*
+   * Dar ekranda hucreler daralir; yukseklik (ve IconButton'in 44 px'lik
+   * gorunmez dokunma ortusu) korunur. Yine sigmayan dizi sarilir — sayfa
+   * govdesi HICBIR genislikte yatay kaymaz.
+   */
+  @include for-mobile {
+    & &__arrow,
+    & &__page,
+    &__page {
+      min-width: 36px;
+      padding-inline: $space-1;
+    }
+
+    &__gap {
+      min-width: 16px;
+    }
+  }
+}

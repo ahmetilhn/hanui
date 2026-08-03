@@ -1,0 +1,135 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.panel {
+  @include panel;
+
+  display: flex;
+  flex-direction: column;
+
+  &__header {
+    @include panel-header;
+  }
+
+  &__heading {
+    @include row($space-3, flex-start);
+
+    min-width: 0;
+  }
+
+  /*
+   * Baslik ikonu: kare bir madalyon icinde. Yalin bir ikon basligin yaninda
+   * asili kaliyor ve dikey hizasi punto degistikce kayiyordu.
+   */
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: $radius-sm;
+    background-color: $surface-2;
+    color: $text-2;
+    font-size: $font-size-base;
+  }
+
+  &__headingText {
+    @include stack(2px);
+
+    min-width: 0;
+  }
+
+  &__title {
+    @include heading($font-size-base, $weight-semibold);
+
+    margin: 0;
+  }
+
+  &__description {
+    @include muted($font-size-xs);
+
+    margin: 0;
+    max-width: $measure;
+  }
+
+  &__actions {
+    @include wrap-row($space-2);
+
+    flex-shrink: 0;
+  }
+
+  &__body {
+    @include panel-body;
+
+    flex: 1;
+
+    &--sm {
+      gap: $space-3;
+    }
+
+    &--lg {
+      gap: $space-5;
+    }
+
+    /* Tablo ve tam genislikte listeler kendi dolgusunu tasir. */
+    &--flush {
+      padding: 0;
+      gap: 0;
+    }
+  }
+
+  /*
+   * Dip seridi: gomulu yuzey. Govdeyle ayni beyaz kalirsa kaydet dugmesi
+   * formun icindeymis gibi gorunuyordu.
+   */
+  &__footer {
+    @include wrap-row($space-3);
+
+    justify-content: flex-end;
+    padding: $space-4 $space-5;
+    border-top: 1px solid $border;
+    background-color: $surface-2;
+
+    @include for-mobile {
+      padding: $space-3 $space-4;
+
+      /* Dar ekranda dip dugmeleri tam genislige yayilir. */
+      > * {
+        flex: 1 1 auto;
+      }
+    }
+  }
+}
+
+/*
+ * Form izgarasi.
+ *
+ * Genislik SINIRI burada, panelde degil: 900 px genisliginde bir metin kutusu
+ * doldurulmasi zor gorunur ama panelin kendisini daraltmak sayfa duzenini
+ * bozuyordu.
+ */
+.form {
+  display: grid;
+  gap: $space-4;
+  max-width: $measure-narrow;
+
+  &--2 {
+    grid-template-columns: 1fr 1fr;
+    max-width: $measure;
+
+    @include for-mobile {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-4;
+
+  @include for-mobile {
+    grid-template-columns: 1fr;
+  }
+}

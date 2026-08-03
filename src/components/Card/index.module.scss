@@ -1,0 +1,155 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.card {
+  @include card;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Izgarada satirin en uzun kartina uyar; alt seritler hizali kalir. */
+  height: 100%;
+
+  &--interactive {
+    transition:
+      border-color $duration-fast $ease-out,
+      box-shadow $duration-fast $ease-out,
+      transform $duration-fast $ease-out;
+
+    &:hover {
+      border-color: $border-strong;
+      box-shadow: $shadow-md;
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: $shadow-sm;
+    }
+
+    /*
+     * Gorsel hover'da hafifce buyur.
+     *
+     * Kural burada, kart ilkelerinde durur: her kart bunu kendi modulunde
+     * yeniden yazdiginda farkli kartlarin hover davranisi zamanla
+     * ayrisiyordu. Yalnizca TIKLANABILIR kartlarda calisir — tiklanamayan bir
+     * kartin gorseli buyudugunde yanlis bir davet oluyor.
+     */
+    &:hover .media__frame > img {
+      transform: scale(1.04);
+    }
+
+    @include reduced-motion {
+      transition: none;
+
+      &:hover,
+      &:active {
+        transform: none;
+      }
+
+      &:hover .media__frame > img {
+        transform: none;
+      }
+    }
+  }
+}
+
+.media {
+  position: relative;
+
+  &__link {
+    display: block;
+  }
+
+  &__frame {
+    display: block;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+
+    > img {
+      width: 100%;
+      height: 100%;
+      transition: transform $duration-slow $ease-out;
+
+      @include reduced-motion {
+        transition: none;
+      }
+    }
+  }
+
+  /*
+   * Seffaf zeminli ve degisik oranlarda gelen gorseller; `cover` onlari
+   * kirpip kenarlarini kesiyordu. `contain` + ic bosluk her gorseli ayni
+   * cerceve icinde nefes alarak gosterir.
+   */
+  &__frame--contained {
+    padding: $space-4;
+
+    > img {
+      object-fit: contain;
+    }
+  }
+}
+
+/*
+ * Bindirme katmani.
+ *
+ * `pointer-events: none`: rozet yigini altindaki gorsel baglantisini
+ * kapatmamali. Icindeki gercek dugmeler olaylari geri acar.
+ */
+.overlay {
+  position: absolute;
+  z-index: $z-raised;
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+  pointer-events: none;
+
+  > button,
+  > a {
+    pointer-events: auto;
+  }
+
+  &--top-left {
+    top: $space-3;
+    left: $space-3;
+    align-items: flex-start;
+  }
+
+  &--top-right {
+    top: $space-3;
+    right: $space-3;
+    align-items: flex-end;
+  }
+
+  &--bottom-left {
+    bottom: $space-3;
+    left: $space-3;
+    align-items: flex-start;
+  }
+
+  &--bottom-right {
+    bottom: $space-3;
+    right: $space-3;
+    align-items: flex-end;
+  }
+}
+
+.body {
+  @include stack($space-2);
+
+  padding: $space-4 $space-4 $space-3;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Eylem seridi dipte: yan yana kartlarin alt satiri ayni hizada olur. */
+.footer {
+  @include stack($space-2);
+
+  padding: $space-3 $space-4 $space-4;
+  border-top: 1px solid $border;
+  margin-top: auto;
+}

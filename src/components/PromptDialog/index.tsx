@@ -1,0 +1,207 @@
+'use client';
+
+import { type FC, memo, type ReactNode, useEffect, useId, useRef, useState } from 'react';
+
+import UISize from '../../enums/ui-size.enum';
+import UIVariant from '../../enums/ui-variant.enum';
+import Button from '../Button';
+import Field, { type FieldChildProps } from '../Field';
+import Input from '../Input';
+import Modal from '../Modal';
+import Textarea from '../Textarea';
+
+import styles from './index.module.scss';
+
+type BaseProps = {
+  isOpen: boolean;
+  /** Vazgeçme ve perde/Escape kapanışı. Başarı kapanışını bileşen kendisi yapar. */
+  onClose: () => void;
+  /**
+   * Girilen değerle çalışır (değer kırpılmış gönderilir). Reddederse pencere
+   * AÇIK kalır ve metin korunur; hata bildirimi çağıranın işi — bildirimi
+   * gösterip hatayı yeniden fırlatın ya da hiç yakalamayın.
+   */
+  onSubmit: (value: string) => void | Promise<void>;
+  title: string;
+  /** Girdi alanının etiketi. */
+  label: string;
+  submitLabel: string;
+  cancelLabel: string;
+  /** Kapatma düğmesinin erişilebilir adı. */
+  closeLabel: string;
+  /** Başlığın altındaki bir cümlelik bağlam. */
+  description?: ReactNode;
+  hint?: string;
+  placeholder?: string;
+  defaultValue?: string;
+  /**
+   * `text` tek satır, `multiline` gerekçe gibi uzun metin, `number` adet/fark
+   * gibi sayılar. Değer her durumda dize döner; ayrıştırmak çağıranın işi
+   * (bir stok farkı `-5` gibi işaretli olabiliyor).
+   */
+  inputMode?: 'text' | 'multiline' | 'number';
+  maxLength?: number;
+  rows?: number;
+};
+
+/** Zorunluluk işareti ve ekran okuyucu karşılığı birlikte (bkz. {@link Field}). */
+type RequiredProps =
+  { isRequired: true; requiredLabel: string } | { isRequired?: false; requiredLabel?: never };
+
+type Props = BaseProps & RequiredProps;
+
+/**
+ * Metin isteyen pencere — `window.prompt()` yerine.
+ *
+ * <h3>Neden</h3>
+ * Tarayıcı istemi tek satırlık, biçimlenemiyor, ana iş parçacığını
+ * kilitliyor ve bazı tarayıcılarda sayfayı engelliyor. Bu bileşen aynı işi
+ * `Modal` + `Field` + girdi ile yapar ve pencere kapanma kuralını
+ * (aşağıda) getirir.
+ *
+ * <h3>Pencere yalnızca BAŞARIDA kapanır</h3>
+ * `onSubmit` reddederse pencere açık kalır ve yazılan metin korunur — istek
+ * patlarsa kullanıcının yazdığı gerekçe geri dönüşsüz silinmemeli. Değer
+ * yalnızca pencere <em>yeniden açılırken</em> `defaultValue`dan tazelenir.
+ *
+ * <h3>Enter gönderir</h3>
+ * Girdi bir `<form>` içinde; dip düğmesi `form` özniteliğiyle ona bağlanır
+ * (`Modal` dip şeridi formun dışında çizer). `multiline` kipinde Enter satır
+ * başı yapar, gönderme düğmeden.
+ */
+const PromptDialog: FC<Props> = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  title,
+  label,
+  submitLabel,
+  cancelLabel,
+  closeLabel,
+  description,
+  hint,
+  placeholder,
+  defaultValue = '',
+  isRequired,
+  requiredLabel,
+  inputMode = 'text',
+  maxLength,
+  rows = 4,
+}) => {
+  const formId = useId();
+  const [value, setValue] = useState(defaultValue);
+  const [isBusy, setIsBusy] = useState(false);
+
+  /*
+   * Deger yalnizca ACILIS kenarinda tazelenir. `isOpen`'a bagli duz bir etki,
+   * pencere acikken gelen her ust render'da yazilani ezebilirdi; hatada acik
+   * kalan penceredeki metin de korunmali.
+   */
+  const wasOpenRef = useRef(false);
+  useEffect(() => {
+    if (isOpen && !wasOpenRef.current) setValue(defaultValue);
+    wasOpenRef.current = isOpen;
+  }, [isOpen, defaultValue]);
+
+  const trimmed = value.trim();
+  const isSubmitDisabled = Boolean(isRequired) && trimmed === '';
+
+  /** Girdi, `Field`in urettigi erisilebilirlik baglariyla cizilir. */
+  const renderControl = (props: FieldChildProps) =>
+    inputMode === 'multiline' ? (
+      <Textarea
+        {...props}
+        value={value}
+        onChange={event => setValue(event.target.value)}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        rows={rows}
+      />
+    ) : (
+      <Input
+        {...props}
+        type={inputMode === 'number' ? 'number' : 'text'}
+        value={value}
+        onChange={event => setValue(event.target.value)}
+        placeholder={placeholder}
+        maxLength={maxLength}
+      />
+    );
+
+  const handleSubmit = async () => {
+    if (isSubmitDisabled || isBusy) return;
+
+    setIsBusy(true);
+    try {
+      await onSubmit(trimmed);
+      // Yalnizca basarida: hata durumunda pencere acik, metin yerinde kalir.
+      onClose();
+    } catch {
+      // Bildirim cagiranin isi; burada yalnizca pencere acik tutulur.
+    } finally {
+      setIsBusy(false);
+    }
+  };
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={title}
+      closeLabel={closeLabel}
+      description={description}
+      size="sm"
+      // Istek surerken kapanmaz: kapanis "islem iptal oldu" gibi gorunuyordu.
+      isDismissable={!isBusy}
+      footer={
+        <>
+          <Button
+            variant={UIVariant.SECONDARY}
+            size={UISize.MEDIUM}
+            onClick={onClose}
+            disabled={isBusy}
+          >
+            {cancelLabel}
+          </Button>
+          <Button
+            type="submit"
+            form={formId}
+            variant={UIVariant.PRIMARY}
+            size={UISize.MEDIUM}
+            disabled={isSubmitDisabled}
+            isLoading={isBusy}
+          >
+            {submitLabel}
+          </Button>
+        </>
+      }
+    >
+      <form
+        id={formId}
+        className={styles.form}
+        onSubmit={event => {
+          event.preventDefault();
+          handleSubmit();
+        }}
+      >
+        {/*
+          `Field` iki ayri kolda ciziliyor, kosullu yayilimla (`{...(cond ? … )}`)
+          degil: `isRequired`/`requiredLabel` ikilisi bir ayrik birlesim
+          (discriminated union) ve kosullu bir nesne yayilimi o birlesimin
+          hangi koluna dustugunu TypeScript'e anlatamiyor.
+        */}
+        {isRequired ? (
+          <Field label={label} hint={hint} isRequired requiredLabel={requiredLabel}>
+            {renderControl}
+          </Field>
+        ) : (
+          <Field label={label} hint={hint}>
+            {renderControl}
+          </Field>
+        )}
+      </form>
+    </Modal>
+  );
+};
+
+export default memo(PromptDialog) as typeof PromptDialog;

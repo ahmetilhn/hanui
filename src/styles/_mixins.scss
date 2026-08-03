@@ -1,0 +1,872 @@
+@use 'variables' as *;
+
+// =====================================================================
+// HANUI — PAYLASILAN KURALLAR
+//
+// Bir kural iki yerde tekrar ediyorsa buraya tasinir. Amac gorsel
+// tutarliliktan once DISIPLIN: ayni isi yapan iki bilesen ayni mixin'i
+// cagirdiginda kendiliginden ayni gorunur.
+//
+// RENK FONKSIYONU (rgba/darken/mix) KULLANILMAZ — renkler CSS degiskenidir.
+// Gerekli saydam degerler `_colors.generated.scss` icinde hazir token olarak
+// duruyor ($scrim, $glass, $ring, $track, $glow-1…).
+// =====================================================================
+
+// --- Kirilma noktalari ------------------------------------------------
+
+@mixin for-mobile {
+  @media (max-width: #{$breakpoint-mobile}) {
+    @content;
+  }
+}
+
+/// PORTRE TABLET VE ALTI (<= 768 px).
+///
+/// `for-mobile` (640) ile `for-tablet` (1024) arasindaki bosluk gercek
+/// cihazlarin en kalabalik oldugu yerdi: dikey iPad 768 px'te masaustu
+/// yerlesimini aliyordu. Iki kolonun TEK kolona dustugu esik burasidir;
+/// `for-mobile` ise "tek elle, bas parmakla" olcusu olarak kalir.
+@mixin for-tablet-portrait {
+  @media (max-width: #{$breakpoint-tablet-portrait}) {
+    @content;
+  }
+}
+
+@mixin for-tablet {
+  @media (max-width: #{$breakpoint-tablet}) {
+    @content;
+  }
+}
+
+@mixin for-desktop-up {
+  @media (min-width: #{$breakpoint-tablet + 1px}) {
+    @content;
+  }
+}
+
+/// DOKUNMATIK CIHAZ (birincil isaretci parmak, imlec yok).
+///
+/// iOS Safari, odaklanan form kontrolunun yazi boyu 16 px'in ALTINDAYSA
+/// sayfayi otomatik yakinlastirir ve geri cikmaz: kip pencere acilip icindeki
+/// kutuya odak gelince sayfa zoom'lu kaliyor ve pencerenin yarisi ekran
+/// disinda kaliyordu. Metin girilen her kontrol bu sorgu altinda
+/// `$font-size-base`e cikarilir.
+///
+/// Ekran genisligi DEGIL isaretci turu esas alinir: ayni davranis iPad'de de
+/// var ve iPad `for-mobile`a (640) girmiyor.
+@mixin for-touch {
+  @media (hover: none) and (pointer: coarse) {
+    @content;
+  }
+}
+
+/// Hareket azaltma tercihi olan kullanicilar (WCAG 2.3.3).
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+// --- Yerlesim ---------------------------------------------------------
+
+/// Yatay guvenli alan dolgusu.
+///
+/// `viewport-fit=cover` ile icerik centikli cihazlarda (yatay telefon)
+/// ekranin TAMAMINA yayilir; bu mixin verilen dolguyu centik payinin altina
+/// dusurmez. Centiksiz cihazda `env()` 0 doner ve olcu aynen kalir.
+@mixin safe-inline($padding: $space-4) {
+  padding-left: max(#{$padding}, env(safe-area-inset-left));
+  padding-right: max(#{$padding}, env(safe-area-inset-right));
+}
+
+/// Dikey guvenli alan dolgusu — alt sayfalarin DIP seridi icin.
+///
+/// Ana ekran cubugunun payi (`env(safe-area-inset-bottom)`) yalnizca panel
+/// gercekten ekranin dibinde dururken gerekli. Klavye acildiginda panel
+/// klavyenin ustune tasiniyor (bkz. `bottom-sheet`) ve o pay artik hicbir
+/// seyin altinda degil: dolgu oldugu gibi birakildiginda dip dugmelerin
+/// altinda 34 px'lik bos bir serit kaliyor, panel klavyeden "kopuk"
+/// goruluyordu. Cikarma negatife dustugunde `max()` zaten tabani secer.
+@mixin safe-bottom($padding: $space-3) {
+  padding-bottom: max(#{$padding}, calc(env(safe-area-inset-bottom) - #{$sheet-inset-bottom}));
+}
+
+@mixin container($width: $container-max-width) {
+  width: 100%;
+  max-width: $width;
+  margin-inline: auto;
+
+  @include safe-inline($desktop-padding);
+
+  @include for-tablet {
+    @include safe-inline($tablet-padding);
+  }
+
+  @include for-mobile {
+    @include safe-inline($mobile-padding);
+  }
+}
+
+/// SAYFA KABUGU — her ekranin ayni dikey ritmi.
+///
+/// Sayfa disiplini bundan gelir: her sayfa ayni ust bosluga, ayni alt bosluga
+/// ve bloklari arasinda ayni araliga sahip olur. Once her container kendi
+/// `padding-block`'unu yaziyordu ve degerler 16 px ile 64 px arasinda
+/// dolasiyordu; sayfalar arasi gecis "baska bir siteye gectim" hissi
+/// veriyordu.
+@mixin page($width: $container-max-width, $gap: $space-6) {
+  @include container($width);
+
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+  padding-block: $space-6 $space-9;
+
+  @include for-tablet {
+    gap: $space-5;
+    padding-block: $space-5 $space-8;
+  }
+
+  @include for-mobile {
+    gap: $space-4;
+    padding-block: $space-4 $space-7;
+  }
+}
+
+/// Dikey yigin. Bosluk olcegini tek yerden degistirilebilir kilar.
+@mixin stack($gap: $space-4) {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
+
+@mixin row($gap: $space-3, $align: center) {
+  display: flex;
+  align-items: $align;
+  gap: $gap;
+}
+
+/// Sarilabilen satir: dar ekranda alt satira duser, `justify-content` bozulmaz.
+@mixin wrap-row($gap: $space-3, $align: center) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: $align;
+  gap: $gap;
+}
+
+/// Duyarli izgara: sutun sayisi degil ASGARI sutun genisligi verilir.
+/// Kirilma noktasi basina ayri kural yazmaya gerek kalmaz.
+@mixin auto-grid($min: 240px, $gap: $space-4) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax($min, 1fr));
+  gap: $gap;
+}
+
+/// Kenar cubugu + icerik.
+///
+/// Cubuk SABIT genislikte, icerik `minmax(0, 1fr)`: cubuga da `1fr` vermek,
+/// genis bir tablo icerik sutununu sisirdiginde cubugu eziyordu.
+@mixin sidebar-layout($width: $sidebar-width, $gap: $space-5) {
+  display: grid;
+  grid-template-columns: $width minmax(0, 1fr);
+  gap: $gap;
+  align-items: start;
+
+  @include for-tablet {
+    grid-template-columns: minmax(0, 1fr);
+    gap: $space-4;
+  }
+}
+
+/// Yapiskan bandin ALTINA yapisan oge.
+///
+/// Offset `--hanui-header-height`ten gelir ve VARSAYILANI 0: kutuphane bandi
+/// olcmez, cunku band tuketicinin. Tuketici gercek olcuyu (ResizeObserver ile
+/// olculmus) bu degiskene yazdiginda buradan gecen her yapiskan oge
+/// kendiliginden dogru yere kayar.
+///
+/// SAYFA kaydirmasina yapisan ogeler icindir. Kendi kaydirma alani olan bir
+/// kapsayicinin (`overflow: auto`) icindeki baslik `top: 0` kalir: orada
+/// referans bant degil kapsayicinin kendisidir.
+///
+/// YAPISKANLIGI KAPATAN HER GECERSIZ KILMA `top: auto` YAZMAK ZORUNDA.
+/// `static` bunu kendiliginden yapar (`top` yok sayilir) ama `relative`
+/// yapmaz: orada `top` bir yapisma esigi degil GORSEL KAYDIRMA olur ve oge
+/// bant yuksekligi kadar asagi kayar.
+@mixin sticky-below-header($gap: $space-4) {
+  position: sticky;
+
+  /*
+   * Bosluk sifirken `calc` KURULMAZ: `calc(0px + 0)` gecersizdir (birimsiz
+   * sifir bir uzunlukla toplanamaz) ve tarayici bildirimin TAMAMINI duser —
+   * oge yapiskanligini kaybetmis gibi degil, `top: auto` ile rastgele bir
+   * yerde duruyormus gibi gorunur.
+   */
+  @if $gap == 0 or $gap == 0px {
+    top: $header-offset;
+  } @else {
+    top: calc(#{$header-offset} + #{$gap});
+  }
+}
+
+/// Bandin altinda kalan gorunur yukseklik. Kendi icinde kayan yapiskan
+/// panellerin (`max-height`) olcusu: `100dvh` bandi hesaba katmaz ve panelin
+/// alt ucu gorunum alaninin disinda kaliyordu.
+@mixin sticky-viewport-height($gap: $space-4) {
+  max-height: calc(100dvh - #{$header-offset} - #{$gap} * 2);
+}
+
+/// Yapiskan sutun. Uzun listelerde yan panel erisimde kalir.
+@mixin sticky-column($gap: $space-5) {
+  @include sticky-below-header($gap);
+
+  align-self: start;
+
+  @include for-tablet {
+    position: static;
+  }
+}
+
+// --- Yuzey ------------------------------------------------------------
+
+/// Temel kart yuzeyi.
+///
+/// @param $interactive Tiklanabilir kartlarda hover geri bildirimi ekler.
+///   Tiklanamayan bir kartin hover'da yukselmesi yanlis bir davet olur.
+@mixin card($interactive: false, $radius: $radius-lg) {
+  background-color: $surface;
+  border: 1px solid $border;
+  border-radius: $radius;
+  box-shadow: $shadow-sm;
+
+  @include for-mobile {
+    border-radius: $radius-md;
+  }
+
+  @if $interactive {
+    transition:
+      border-color $duration-fast $ease-out,
+      box-shadow $duration-fast $ease-out,
+      transform $duration-fast $ease-out;
+
+    &:hover {
+      border-color: $border-strong;
+      box-shadow: $shadow-md;
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: $shadow-sm;
+    }
+
+    @include reduced-motion {
+      transition: none;
+
+      &:hover,
+      &:active {
+        transform: none;
+      }
+    }
+  }
+}
+
+/// ALT SAYFA (bottom sheet) — dar ekranda dipten acilan kipsel panel.
+///
+/// Yerel `<dialog>` icindir ve YALNIZCA `&[open]` altinda cagrilir. Kapali bir
+/// dialog'u gizleyen kural (`dialog:not([open])`) TARAYICI katmanindadir ve
+/// bir sinif secicisine ozgullukte yenilir: `display` kosulsuz yazildiginda
+/// panel kapaliyken de ciziliyor ve gorunum alaninin dibinde, icerigin
+/// arkasinda duran sabit bir serit gibi goruniyordu.
+///
+/// ACILIS ANIMASYONU BURADA, PERDESIYLE BIRLIKTE. Perde animasyonsuz
+/// birakildiginda sayfa bir anda kararip panel onun ustune "dusuyor" gibi
+/// goruntu veriyordu; ikisi birlikte hareket ettiginde panel sayfadan
+/// YUKSELIYOR gibi okunuyor.
+///
+/// GORUNEN ALANA yaslanir, yerlesim gorunum alanina degil. `bottom: 0` iOS'ta
+/// panelin dibini adres cubugunun ve KLAVYENIN altina birakiyordu: kisa bir
+/// panel neredeyse yarisini kaybediyor, arama kutusu olan bir panelde klavye
+/// acilinca liste erisilemez oluyordu. Olcum `useSheetViewport` icinde;
+/// degiskenler yoksa yedek deger eski davranistir, yani panel hicbir kosulda
+/// kaybolmaz.
+///
+/// @param $max-height Panelin en fazla kaplayacagi yukseklik. Ustunde bir
+///   parca sayfa gorunur kalmali: kullanici neyin ustunde durdugunu bilmeli.
+@mixin bottom-sheet($max-height: 88dvh, $duration: $duration-normal) {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  inset: auto 0 #{$sheet-inset-bottom} 0;
+  width: 100%;
+  max-width: none;
+  /* Gorunen alanin tamamini kaplamaz: kullanici panelin ustunde ne oldugunu
+     gorebilmeli — klavye acikken bile. */
+  max-height: min(#{$max-height}, calc(#{$sheet-height} - #{$space-5}));
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: $radius-xl $radius-xl 0 0;
+  background-color: $surface;
+  color: $text;
+  box-shadow: $shadow-xl;
+  overflow: hidden;
+  animation: hanui-slide-up $duration $ease-out;
+
+  &::backdrop {
+    background-color: $scrim;
+    animation: hanui-fade-in $duration $ease-out;
+  }
+
+  @include reduced-motion {
+    animation: none;
+
+    &::backdrop {
+      animation: none;
+    }
+  }
+}
+
+/// PANEL — basligi olan icerik kutusu.
+@mixin panel($radius: $radius-lg) {
+  background-color: $surface;
+  border: 1px solid $border;
+  border-radius: $radius;
+  box-shadow: $shadow-sm;
+  overflow: hidden;
+
+  @include for-mobile {
+    border-radius: $radius-md;
+  }
+}
+
+/// Panel basligi seridi: baslik solda, eylem sagda.
+@mixin panel-header {
+  @include wrap-row($space-3);
+
+  justify-content: space-between;
+  padding: $space-4 $space-5;
+  border-bottom: 1px solid $border;
+  background-color: $surface;
+
+  @include for-mobile {
+    padding: $space-3 $space-4;
+  }
+}
+
+@mixin panel-body($gap: $space-4) {
+  @include stack($gap);
+
+  padding: $space-5;
+
+  @include for-mobile {
+    padding: $space-4;
+  }
+}
+
+/// VURGU BLOGU — sayfadan ayrilan bant (kahraman, kampanya, guvence).
+///
+/// TEMAYI IZLER: acik temada acik bir yuzey, koyu temada koyu. Once bu mixin
+/// grafit bir blok cizerdi ve acik temada sayfanin ortasinda koyu bir bant
+/// birakiyordu — sayfa iki farkli siteden birlestirilmis gorunuyordu.
+///
+/// Derinlik artik renk kontrastiyla degil KENARLIK ve hafif isik lekeleriyle
+/// kuruluyor ($glow-1 / $glow-2).
+@mixin accent-section($radius: $radius-xl) {
+  background-color: $nav-bg;
+  border: 1px solid $nav-line;
+  border-radius: $radius;
+  color: $nav-fg;
+
+  @include for-mobile {
+    border-radius: $radius-lg;
+  }
+}
+
+/// DURUM TINTI — zemin + metin + eslesen hairline birlikte.
+///
+/// Uc degeri elle yazmak kacinilmaz olarak birini atliyordu: tint zemin
+/// uzerinde varsayilan gri kenarlik kalinca kutu kirli gorunuyordu.
+///
+/// @param $tone success | warning | neutral | danger | oem | alt | info
+@mixin tint($tone: neutral) {
+  @if $tone == success {
+    background-color: $ok-bg;
+    border: 1px solid $ok-line;
+    color: $ok-fg;
+  } @else if $tone == warning {
+    background-color: $warn-bg;
+    border: 1px solid $warn-line;
+    color: $warn-fg;
+  } @else if $tone == danger {
+    background-color: $bad-bg;
+    border: 1px solid $bad-line;
+    color: $bad-fg;
+  } @else if $tone == oem {
+    background-color: $oem-bg;
+    border: 1px solid $oem-line;
+    color: $oem-fg;
+  } @else if $tone == alt {
+    background-color: $alt-bg;
+    border: 1px solid $alt-line;
+    color: $alt-fg;
+  } @else if $tone == info {
+    background-color: $blue-tint;
+    border: 1px solid $blue-line;
+    color: $blue-text;
+  } @else {
+    background-color: $off-bg;
+    border: 1px solid $off-line;
+    color: $off-fg;
+  }
+}
+
+/// Renkli bilgi kutusu. Renk TEK BASINA anlam tasimaz (WCAG 1.4.1) —
+/// cagiran taraf ikon veya metin de ekler.
+@mixin notice($tone: info) {
+  @include tint($tone);
+  @include row($space-3, flex-start);
+
+  border-radius: $radius-md;
+  padding: $space-3 $space-4;
+  font-size: $font-size-sm;
+  line-height: $leading-normal;
+}
+
+// --- Tipografi --------------------------------------------------------
+
+/// Baslik olcegi.
+///
+/// Buyuk puntolarda harf araligi DARALTILIR: genis aralik buyuk basligi
+/// dagitir ve zayif gosterir. 19 px altinda baslik fontu yerine arayuz fontu
+/// kullanilir — o boyutta grotesk baslik yuzleri sikisip okunurlugu dusuruyor.
+@mixin heading($size: $font-size-xl, $weight: $weight-semibold) {
+  font-size: $size;
+  font-weight: $weight;
+  line-height: $leading-tight;
+  color: $text;
+
+  @if $size >= $font-size-lg {
+    font-family: $font-heading;
+  } @else {
+    font-family: $font-ui;
+    line-height: $leading-snug;
+  }
+
+  @if $size >= $font-size-2xl {
+    letter-spacing: $tracking-tight;
+  } @else if $size >= $font-size-lg {
+    letter-spacing: $tracking-snug;
+  } @else {
+    letter-spacing: normal;
+  }
+}
+
+/// Sayfa basligi. Akiskan: 640-1360 px arasinda kademesiz buyur, boylece
+/// tablette ne kirilir ne de gereksiz yer kaplar.
+@mixin page-title {
+  font-family: $font-heading;
+  font-size: clamp(#{$font-size-2xl}, 2.2vw + 1rem, #{$font-size-3xl});
+  font-weight: $weight-bold;
+  line-height: $leading-tight;
+  letter-spacing: $tracking-tight;
+  color: $text;
+  text-wrap: balance;
+}
+
+/// Kucuk buyuk-harf etiket: "MARKA", "DURUM" gibi ustyazilar.
+@mixin overline {
+  font-family: $font-ui;
+  font-size: $font-size-2xs;
+  font-weight: $weight-semibold;
+  letter-spacing: $tracking-wide;
+  text-transform: uppercase;
+  color: $text-2;
+}
+
+/// Form etiketi ve tablo basligi.
+@mixin label {
+  font-family: $font-ui;
+  font-size: $font-size-sm;
+  font-weight: $weight-medium;
+  line-height: $leading-snug;
+  color: $text;
+}
+
+/// Ikincil aciklama metni. `$text-3` DEGIL `$text-2` kullanir: 12-14 px
+/// aciklama metninde `$text-3` kontrasti 3.1:1'de kaliyor ve okunmuyordu.
+/// `$text-3` yalnizca yer tutucu ve ustu cizili deger icin.
+@mixin muted($size: $font-size-sm) {
+  font-size: $size;
+  line-height: $leading-normal;
+  color: $text-2;
+}
+
+/// Teknik veri gorunumu: kod, SKU, seri numarasi, kart numarasi.
+/// `tabular-nums` sayilarin sutun halinde hizalanmasini saglar.
+@mixin technical-text($size: $font-size-sm) {
+  font-family: $font-mono;
+  font-size: $size;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/// UZUN OKUMA — makale, sozlesme, rehber, SSS cevabi.
+///
+/// Satir uzunlugu 68ch ile sinirli ve punto 17 px: 16 px'te tam genislikte
+/// akan metin satir sonunda goz kaybina yol aciyordu.
+@mixin prose {
+  max-width: $measure;
+  font-size: $font-size-body;
+  line-height: $leading-relaxed;
+  color: $text;
+
+  > * + * {
+    margin-top: 1em;
+  }
+
+  h2,
+  h3,
+  h4 {
+    margin-top: 1.8em;
+    margin-bottom: 0.6em;
+    color: $text;
+    text-wrap: balance;
+  }
+
+  h2 {
+    @include heading($font-size-xl, $weight-bold);
+  }
+
+  h3 {
+    @include heading($font-size-lg, $weight-semibold);
+  }
+
+  h4 {
+    @include heading($font-size-base, $weight-semibold);
+  }
+
+  strong {
+    font-weight: $weight-semibold;
+  }
+
+  a {
+    color: $blue-text;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+
+    &:hover {
+      text-decoration-thickness: 2px;
+    }
+  }
+
+  ul,
+  ol {
+    padding-left: $space-5;
+    list-style: revert;
+
+    li + li {
+      margin-top: 0.4em;
+    }
+  }
+
+  code {
+    @include technical-text($font-size-sm);
+
+    background-color: $surface-2;
+    border-radius: $radius-xs;
+    padding: 2px 5px;
+  }
+
+  blockquote {
+    margin: 1.4em 0;
+    padding: $space-4 $space-5;
+    border-left: 3px solid $blue;
+    background-color: $surface-2;
+    border-radius: 0 $radius-md $radius-md 0;
+    color: $text-2;
+  }
+
+  img {
+    border-radius: $radius-md;
+    border: 1px solid $border;
+  }
+}
+
+/// Para / tutar gosterimi: sayilar hizali, satir kirilmasi yok.
+///
+/// Tutar `$text` kalir. Kirmizi fiyat ucuz durur ve kirmiziyi olumsuzluk
+/// anlamindan koparir.
+@mixin money($size: $font-size-lg) {
+  font-family: $font-heading;
+  font-size: $size;
+  font-weight: $weight-bold;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: $tracking-tight;
+  white-space: nowrap;
+  color: $text;
+}
+
+/// Cok satirli metin kirpma.
+@mixin line-clamp($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/// Tek satir kirpma. `line-clamp(1)` yerine bunu kullanin: `-webkit-box`
+/// satir yuksekligini bozuyor ve alt kirpma paylari kesiliyordu.
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+// --- Etkilesim --------------------------------------------------------
+
+/// Klavye odagi her zaman gorunur olmali (WCAG 2.4.7).
+///
+/// `:focus-visible` kullanilir, `:focus` degil: fare ile tiklandiginda halka
+/// gostermek gorsel gurultu yaratir ve kullanicilar onu hata sanir.
+///
+/// Halka MAVI: odak bir gezinme olayidir, bir donusum degil. Amber halka her
+/// odaklanan ogeyi bir donusum eylemi gibi gosteriyordu.
+@mixin focus-ring($color: $ring-color, $offset: 2px) {
+  &:focus-visible {
+    outline: 2px solid $color;
+    outline-offset: $offset;
+  }
+}
+
+/// DOKUNMA HEDEFI — gorsel kutuyu BUYUTMEDEN tiklanabilir alani buyutur.
+///
+/// WCAG 2.5.8 en az 44x44 px ister; ama bir kopyalama simgesini 44 px'lik bir
+/// kareye cevirmek satiri bozuyor. Cozum gorunmez bir orte: oge kendi
+/// olcusunde cizilir, `::after` onu 44 px'e tamamlar. Sik yapilan hata bunu
+/// `padding` ile denemek — orada gorsel kutu da buyuyor.
+@mixin tap-target($size: 44px) {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: max(100%, #{$size});
+    height: max(100%, #{$size});
+  }
+}
+
+/// Girdi alani temel gorunumu.
+@mixin input-base {
+  width: 100%;
+  font-family: $font-ui;
+  font-size: $font-size-base;
+  line-height: $leading-snug;
+  color: $text;
+  background-color: $surface;
+  border: 1px solid $border-strong;
+  border-radius: $radius-md;
+  padding: $space-3 $space-4;
+  min-height: 44px;
+  transition:
+    border-color $duration-fast $ease-out,
+    box-shadow $duration-fast $ease-out;
+
+  &::placeholder {
+    color: $text-3;
+  }
+
+  &:hover:not(:disabled):not([aria-invalid='true']) {
+    border-color: $text-3;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $ring-color;
+    box-shadow: $ring;
+  }
+
+  &:disabled {
+    background-color: $surface-2;
+    border-color: $border;
+    color: $text-3;
+    cursor: not-allowed;
+  }
+
+  // Hata durumu renkle DEGIL, kenarlik + mesajla birlikte bildirilir.
+  &[aria-invalid='true'] {
+    border-color: $danger-solid;
+
+    &:focus {
+      box-shadow: $ring-danger;
+    }
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+}
+
+// --- Veri tablosu -----------------------------------------------------
+
+/// Yogun veri seridi (filtre cubugu).
+@mixin filter-surface {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: $space-3;
+  background-color: $surface;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  padding: $space-3;
+}
+
+/// Operasyon tablosu gorunumu.
+@mixin data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: $font-ui;
+  font-size: $font-size-sm;
+
+  th,
+  td {
+    padding: $space-3;
+    text-align: left;
+    border-bottom: 1px solid $border;
+    vertical-align: middle;
+  }
+
+  /*
+   * Tablo basligi `$surface-2`, `$graphite` DEGIL.
+   *
+   * Grafit dolgu yalnizca EYLEMDE kullanilir: koyu bir baslik seridi,
+   * altindaki satirlari degil kendini one cikariyor ve goz her taramada
+   * yeniden asagiya iniyordu.
+   */
+  thead th {
+    background-color: $surface-2;
+    font-weight: $weight-semibold;
+    color: $text-2;
+    white-space: nowrap;
+  }
+
+  /*
+   * Satir vurgusu HAZIR TOKEN ile. `rgba($action, 0.04)` yazilamaz:
+   * `$action` bir CSS degiskeni ve Sass onu cozemeyip
+   * `rgba(var(--hanui-action), 0.04)` olarak geciriyor — gecersiz CSS,
+   * tarayici sessizce duser ve satir vurgusu HIC calismaz.
+   */
+  tbody tr:hover {
+    background-color: $surface-inset;
+  }
+}
+
+// --- Yardimcilar ------------------------------------------------------
+
+/// Yalnizca ekran okuyucuya gorunur.
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/// Kaydirma cubugunu gizler ama kaydirmayi korur.
+@mixin hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/// Temali ince kaydirma cubugu. `scrollbar-width: thin` tek basina WebKit'te
+/// isletim sistemi rengini biraktigi icin koyu temada beyaz bir cubuk
+/// kaliyordu.
+@mixin custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: $border-strong transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $border-strong;
+    border-radius: $radius-pill;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: $text-3;
+  }
+}
+
+/// Yatay kayan serit (mobil sekmeler, logo serisi).
+/// Kaydirma cubugu gizlenir ama klavye ve dokunma ile kaydirma calisir.
+///
+/// `padding-block` ZORUNLU: `overflow-x` tasiyan bir kapsayicida `overflow-y`
+/// de otomatik `auto` olur ve odak halkasi kesiliyordu.
+@mixin scroll-row($gap: $space-4) {
+  display: flex;
+  gap: $gap;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  padding-block: $space-1 $space-3;
+
+  @include hide-scrollbar;
+
+  > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+}
+
+/// Iskelet yukleme parlamasi. Animasyon `base.scss` icinde tanimli.
+@mixin skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--hanui-skeleton-a) 0%,
+    var(--hanui-skeleton-b) 50%,
+    var(--hanui-skeleton-a) 100%
+  );
+  background-size: 200% 100%;
+  animation: hanui-shimmer 1.4s ease-in-out infinite;
+  border-radius: $radius-sm;
+
+  @include reduced-motion {
+    animation: none;
+  }
+}
+
+/// Gorsel oranini sabitler; yukleme sirasinda yerlesim kaymasini onler (CLS).
+@mixin aspect($ratio: 1) {
+  position: relative;
+  aspect-ratio: #{$ratio};
+  overflow: hidden;
+  background-color: $media-bg;
+
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}

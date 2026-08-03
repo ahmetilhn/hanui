@@ -1,0 +1,16 @@
+node_modules/
+build/
+coverage/
+
+# Token üretici çıktısı — kaynak `src/theme/*.ts`, bu dosyalar derlemede üretilir.
+src/styles/_tokens.generated.scss
+src/styles/_colors.generated.scss
+
+*.log
+npm-debug.log*
+.DS_Store
+.idea/
+.vscode/
+!.vscode/settings.json
+.env
+.env.local

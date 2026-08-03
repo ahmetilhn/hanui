@@ -1,0 +1,61 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Ipucu balonu.
+ *
+ * Balon BANT tonlarini kullanir ($nav-*), $graphite + $text degil: aksi halde
+ * koyu temada koyu metin koyu zemine dusuyordu.
+ */
+.tooltip {
+  position: relative;
+  display: inline-flex;
+
+  &__trigger {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+.bubble {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: $z-dropdown;
+
+  /*
+   * Genislik SINIRLI: ipucu bir paragraf degil bir aciklama. Sinirsiz
+   * birakildiginda tek satirda ekrani asiyor ve dar ekranda gorunum alaninin
+   * disina tasiyordu.
+   */
+  width: max-content;
+  max-width: min(280px, calc(100vw - #{$space-6}));
+
+  padding: $space-2 $space-3;
+  border-radius: $radius-sm;
+  background-color: $nav-bg;
+  border: 1px solid $nav-line-strong;
+  box-shadow: $shadow-lg;
+  color: $nav-fg;
+  font-size: $font-size-xs;
+  font-weight: $weight-regular;
+  line-height: $leading-normal;
+  text-align: left;
+
+  /* Fare balona giderken tetikleyiciden cikmasin diye tiklama gecirilmez. */
+  pointer-events: none;
+
+  animation: hanui-fade-in-up $duration-fast $ease-out;
+
+  @include reduced-motion {
+    animation: none;
+  }
+
+  &--top {
+    bottom: calc(100% + #{$space-2});
+  }
+
+  &--bottom {
+    top: calc(100% + #{$space-2});
+  }
+}

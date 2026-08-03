@@ -1,0 +1,11 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.textarea {
+  @include input-base;
+
+  /* Yalnizca dikey buyutulur; yatayda tasma yerlesimi bozuyordu. */
+  resize: vertical;
+  min-height: 96px;
+  line-height: $leading-normal;
+}

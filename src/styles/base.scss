@@ -1,0 +1,117 @@
+@use 'mixins' as *;
+@use 'tokens.generated';
+
+/*
+ * HANUI TABAN KATMANI.
+ *
+ * `src/index.ts` bunu import eder; derleme sonucunda tek bir
+ * `@ahmetilhn/hanui/styles.css` cikar. Tuketici onu bir kez import eder.
+ *
+ * BURASI BIR CSS SIFIRLAMASI DEGIL. Bir bilesen kutuphanesi tuketicinin
+ * `<body>`sine, basliklarina ve baglantilarina karismaz — o sayfa
+ * tuketicinin. Yalnizca uc sey var:
+ *
+ *   1. Token yayini (`tokens.generated`) — bilesenlerin okudugu her renk.
+ *   2. Paylasilan `@keyframes` — mixin'ler ve bilesenler bunlara ADLA
+ *      basvuruyor; her modulde ayri tanimlamak ayni animasyonun onlarca
+ *      kopyasini uretirdi.
+ *   3. Bilesenlerin ICINDE gecerli olan iki varsayilan (kutu modeli ve
+ *      `accent-color`) — ikisi de `[data-hanui-scope]` ile SINIRLI.
+ */
+
+/*
+ * Kutu modeli: yalnizca kutuphanenin KENDI ogeleri.
+ *
+ * Global `*, *::before, *::after { box-sizing: border-box }` yazmak
+ * tuketicinin sayfasindaki her ogeyi degistirmek demek — bir bagimlilik bunu
+ * yapamaz. Ama bilesenlerimizin dolgu + genislik hesaplari `border-box`a
+ * dayaniyor: `content-box` varsayilanina birakilmis bir sayfada
+ * `width: 100%` + `padding` tasiyan her girdi kapsayicisindan tasiyordu.
+ *
+ * Secici sinif ONEKINE bakar (`generateScopedName: 'hanui-[local]-…'`) ve
+ * TORUNLARA INMEZ: bir kartin govdesine tuketicinin koydugu icerik onun
+ * kendi kutu modelini korumali.
+ */
+[class^='hanui-'],
+[class*=' hanui-'],
+[class^='hanui-']::before,
+[class^='hanui-']::after,
+[class*=' hanui-']::before,
+[class*=' hanui-']::after {
+  box-sizing: border-box;
+}
+
+/*
+ * PAYLASILAN ANIMASYONLAR.
+ *
+ * Adlar `hanui-` onekli: tuketicinin kendi `@keyframes fade-in`i ile ayni ada
+ * dusen bir tanim, hangisinin kazandigini kaynak sirasina birakiyordu.
+ */
+@keyframes hanui-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes hanui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hanui-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hanui-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Alt sayfa (bottom sheet): asagidan yukari kayar. */
+@keyframes hanui-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+/*
+ * Tema gecisi sirasinda gecici olarak `<html>` uzerinde durur.
+ *
+ * Acik→koyu gecisinde her yuzey ayni anda ama FARKLI surelerde animasyon
+ * yapiyordu (kart golgesi 140 ms, zemin 200 ms) ve gecis dalgali
+ * gorunuyordu. Bu sinif tum gecisleri tek bir kare boyunca kapatir; tema
+ * ANINDA doner. Ani gecis, dalgali gecisten iyi. `useHanuiTheme` yazar.
+ */
+.hanui-theme-switching,
+.hanui-theme-switching *,
+.hanui-theme-switching *::before,
+.hanui-theme-switching *::after {
+  transition: none !important;
+}
+
+/// Ekran okuyucuya birakilan metin — tuketicinin de kullanabilecegi tek sinif.
+.hanui-visually-hidden {
+  @include visually-hidden;
+}

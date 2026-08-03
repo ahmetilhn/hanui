@@ -1,0 +1,47 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+
+  /*
+   * Yildizlar DONUSUM RENGINDE DEGIL, kendi token'inda: `$star`.
+   *
+   * Doygun turuncu yalnizca donusum eyleminde. Her kartta bes turuncu yildiz,
+   * "ekranda tek doygun turuncu" kuralini dogrudan bozuyordu.
+   *
+   * Once uyari metni tonu kullaniliyordu (#7a3e02) — kahverengiye calan koyu
+   * bir amber. Bes yildiz yan yana dizildiginde puan "kirli kirmizi"
+   * gorunuyordu. `$star` sicakligi korur, doygun turuncuyla yarismaz ve tema
+   * basina ayri ayarlanir (acik temada koyu altin, koyu temada parlak altin).
+   */
+  &__stars {
+    display: inline-flex;
+    gap: 1px;
+    color: $star;
+  }
+
+  &__empty {
+    color: $border-strong;
+  }
+
+  &__count {
+    font-size: $font-size-xs;
+    color: $text-2;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__srOnly {
+    @include visually-hidden;
+  }
+
+  &--sm .rating__stars {
+    font-size: 14px;
+  }
+
+  &--md .rating__stars {
+    font-size: 16px;
+  }
+}

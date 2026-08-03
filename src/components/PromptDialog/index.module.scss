@@ -1,0 +1,12 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Metin isteyen pencere.
+ *
+ * Gorunum Modal + Field'dan gelir; buradaki tek karar formun kendi dikey
+ * ritmi (alan + olasi gelecek alanlar arasi bosluk).
+ */
+.form {
+  @include stack($space-4);
+}

@@ -1,0 +1,96 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Bos durum.
+ *
+ * Kullaniciyi cikmaz sokakta BIRAKMAZ: her bos durum en az bir ileri yol
+ * gosterir. Bu yuzden bilesende `action` ve `secondaryAction` var ve yerlesim
+ * onlarin varligina gore degil, HER ZAMAN ortalanmis duruyor — eylem
+ * eklendiginde blok yerinden kaymasin.
+ */
+.empty {
+  @include stack($space-3);
+
+  align-items: center;
+  text-align: center;
+  padding: $space-8 $space-5;
+
+  @include for-mobile {
+    padding: $space-7 $space-4;
+  }
+
+  /*
+   * Ikon madalyonu.
+   *
+   * `$surface-2` daire — doygun dolgu degil: bos durum bir HATA degil, bir
+   * bilgi. Renkli bir madalyon kullaniciya bir sey ters gitmis gibi
+   * okunuyordu.
+   */
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: $radius-pill;
+    background-color: $surface-2;
+    border: 1px solid $border;
+    color: $text-2;
+    font-size: 26px;
+    margin-bottom: $space-1;
+  }
+
+  &__title {
+    @include heading($font-size-lg);
+
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  /*
+   * Aciklama `$text-2` ve 48ch: ortalanmis metinde satir uzunlugu daha da
+   * kritik — goz her satirin basini yeniden bulmak zorunda ve uzun satirlar
+   * ortalanmis blokta okunamaz hale geliyor.
+   */
+  &__description {
+    @include muted($font-size-sm);
+
+    margin: 0;
+    max-width: 48ch;
+    text-wrap: pretty;
+  }
+
+  &__actions {
+    @include wrap-row($space-2);
+
+    justify-content: center;
+    margin-top: $space-2;
+
+    /* Dar ekranda eylemler alt alta ve tam genislikte. */
+    @include for-mobile {
+      width: 100%;
+      max-width: 320px;
+      flex-direction: column;
+
+      > * {
+        width: 100%;
+      }
+    }
+  }
+
+  /* Panel ve kart icinde kullanilan kucuk surum. */
+  &--sm {
+    padding: $space-6 $space-4;
+
+    .empty__icon {
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+    }
+
+    .empty__title {
+      @include heading($font-size-base);
+    }
+  }
+}

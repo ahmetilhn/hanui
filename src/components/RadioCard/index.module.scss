@@ -1,0 +1,116 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Secilebilir kart.
+ *
+ * Durum matrisi: varsayilan → hover → odak → secili → pasif. Gorsel dil, iki
+ * ayri secicinin ortak paydasindan cikti: kenarlik + ic golge + tint zemin
+ * secimden, dolan isaret radyodan geliyor.
+ */
+.radioCard {
+  @include row($space-3);
+
+  min-height: 44px; /* dokunma hedefi (WCAG 2.5.8) */
+  padding: $space-3 $space-4;
+  background-color: $surface;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition:
+    border-color $duration-fast $ease-out,
+    background-color $duration-fast $ease-out;
+
+  &:hover {
+    border-color: $border-strong;
+  }
+
+  /*
+   * Odak halkasi KARTIN uzerinde: girdi gizli, halkayi tasiyabilecek tek
+   * gorunur kutu kart. `:focus-visible` — fare tiklamasinda halka yok.
+   */
+  &:has(.radioCard__input:focus-visible) {
+    outline: 2px solid $ring-color;
+    outline-offset: 2px;
+  }
+
+  &--selected {
+    border-color: $blue;
+    background-color: $blue-tint;
+    box-shadow: inset 0 0 0 1px $blue;
+
+    &:hover {
+      border-color: $blue;
+    }
+
+    .radioCard__indicator {
+      border-color: $blue;
+
+      &::after {
+        background-color: $blue;
+      }
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    &:hover {
+      border-color: $border;
+    }
+  }
+
+  &__input {
+    @include visually-hidden;
+  }
+
+  /*
+   * Cizilen radyo isareti: 18 px halka, secilince 8 px dolgu. Yerel daire
+   * gizlendi ama duyurusu ve klavye akisi girdiden geliyor.
+   */
+  &__indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    background-color: $surface;
+    border: 1px solid $border-strong;
+    border-radius: $radius-pill;
+    transition: border-color $duration-fast $ease-out;
+
+    &::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: $radius-pill;
+      background-color: transparent;
+      transition: background-color $duration-fast $ease-out;
+    }
+  }
+
+  /*
+   * Govde tek satirlik esnek serit: cagri yerlerinin ikisi de "sol icerik +
+   * sag uc" istiyor (ad/tutar, hesap/kopyala). Cok satirli icerik cagiranin
+   * kendi yigini ile kurulur.
+   */
+  &__body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-3;
+    flex: 1;
+    min-width: 0;
+  }
+
+  @include reduced-motion {
+    transition: none;
+
+    .radioCard__indicator,
+    .radioCard__indicator::after {
+      transition: none;
+    }
+  }
+}

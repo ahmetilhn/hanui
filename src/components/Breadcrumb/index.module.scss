@@ -1,0 +1,66 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: $space-1;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: $font-size-xs;
+
+  /*
+   * DAR EKRANDA SARMAZ, KAYAR.
+   *
+   * Sarmali yol derin hiyerarsilerde uc satira ciktiginda (olculdu: 71 px)
+   * sayfanin en degerli bolgesini yiyordu. Yol ikincil bir gezinme aracidir;
+   * tek satirda kalir ve gerekirse kaydirilir.
+   *
+   * Baslangic SOLDA kalir (kokten yapraga): son ogeyi gostermek icin serit
+   * saga kaydirilabilirdi ama bulundugun sayfanin adi zaten hemen altta
+   * `<h1>` olarak duruyor. Kaydirilmis bir yol ise "yukari cikma"
+   * baglantilarini — yolun tek ise yarar kismini — gizliyordu.
+   */
+  @include for-tablet-portrait {
+    @include scroll-row($space-1);
+
+    flex-wrap: nowrap;
+    padding-block: 0;
+  }
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-1;
+    white-space: nowrap;
+  }
+
+  &__link {
+    color: $text-2;
+    text-decoration: none;
+    transition: color $duration-fast $ease-out;
+
+    &:hover {
+      color: $blue;
+      text-decoration: underline;
+    }
+
+    @include focus-ring;
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  &__current {
+    color: $text-2;
+    font-weight: $weight-medium;
+  }
+
+  &__separator {
+    color: $text-3;
+    font-size: 12px;
+  }
+}

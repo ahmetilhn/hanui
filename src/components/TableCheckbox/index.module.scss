@@ -1,0 +1,21 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Tablo hucresindeki secim kutusu — `Checkbox`in girdi kutusuyla ayni olcu ve
+ * renk, `<label>` sarmalayicisi olmadan (bkz. index.tsx).
+ */
+.checkbox {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  display: block;
+  accent-color: $blue;
+  cursor: pointer;
+
+  @include focus-ring;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}

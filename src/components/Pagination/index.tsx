@@ -1,0 +1,178 @@
+'use client';
+
+import { type FC, memo, useMemo } from 'react';
+
+import { cx } from '../../helpers/class-name.helper';
+import UISize from '../../enums/ui-size.enum';
+import UIVariant from '../../enums/ui-variant.enum';
+import { ChevronLeftIcon, ChevronRightIcon } from '../../icons';
+import type { HanuiLinkExtraProps } from '../../types/link.type';
+import Button from '../Button';
+import IconButton from '../IconButton';
+import HanuiLink from '../Link';
+
+import styles from './index.module.scss';
+
+type BaseProps = {
+  page: number;
+  totalPages: number;
+  /** Gezinme bölgesinin erişilebilir adı ("Sayfalar"). */
+  label: string;
+  previousLabel: string;
+  nextLabel: string;
+  className?: string;
+  testId?: string;
+};
+
+type LinkProps = BaseProps & {
+  /**
+   * Sayfa numarasının adresini üretir.
+   *
+   * <p>Verildiğinde numaralar `<a>` olur — ve olması gerekir. Düğmenin `href`i
+   * yok: arama motoru bir tıklama olayını çalıştırmaz ve ikinci sayfaya HİÇ
+   * geçemez; kullanıcı da orta tuşla yeni sekmede açamaz, adresi kopyalayamaz,
+   * durum çubuğunda hedefi göremez.
+   */
+  buildHref: (page: number) => string;
+  onPageChange?: never;
+  /** Yönlendiriciye geçirilecek ek props (`{ scroll: false }` gibi). */
+  linkProps?: HanuiLinkExtraProps;
+};
+
+type ButtonProps = BaseProps & {
+  /**
+   * Sayfa değişimi adres çubuğu YERİNE buraya bildirilir.
+   *
+   * <p>Yalnızca sayfalamanın adrese yazılmadığı listeler için: kişiye özel,
+   * `noindex` ekranlarda kimse "ikinci sayfa" bağlantısını paylaşmıyor ve orada
+   * adresi kirletmek geri tuşunu kullanılamaz hâle getiriyordu. Bağlantı
+   * verilebilecek bir hedef olmadığı için numaralar düğme kalır.
+   */
+  onPageChange: (page: number) => void;
+  buildHref?: never;
+  linkProps?: never;
+};
+
+type Props = LinkProps | ButtonProps;
+
+/** Kenarlarda 1 ve son sayfa her zaman gorunur; arasi kisaltilir. */
+const buildPageList = (page: number, totalPages: number): (number | 'gap')[] => {
+  if (totalPages <= 7) return Array.from({ length: totalPages }, (_, index) => index + 1);
+
+  const pages = new Set<number>([1, totalPages, page]);
+  if (page - 1 > 1) pages.add(page - 1);
+  if (page + 1 < totalPages) pages.add(page + 1);
+
+  const sorted = [...pages].sort((left, right) => left - right);
+  const result: (number | 'gap')[] = [];
+
+  sorted.forEach((value, index) => {
+    if (index > 0 && value - sorted[index - 1] > 1) result.push('gap');
+    result.push(value);
+  });
+
+  return result;
+};
+
+/**
+ * Sayfalama.
+ *
+ * <h3>Sayfa numaraları BAĞLANTI, düğme değil</h3>
+ * `buildHref` verildiğinde numaralar `<a>` olur. Düğme olarak bırakıldığında
+ * iki bedeli vardı:
+ * <ul>
+ *   <li><strong>Tarayıcı (crawler) ikinci sayfaya geçemiyordu.</strong> Düğmenin
+ *       `href`i yok; arama motoru bir tıklama olayını çalıştırmaz. Derin
+ *       sayfalardaki kayıtlar yalnızca sitemap'te göründükleri kadar
+ *       keşfedilebiliyordu.</li>
+ *   <li><strong>Kullanıcı yeni sekmede açamıyordu.</strong> Orta tık, Cmd+tık ve
+ *       "bağlantıyı kopyala" çalışmıyor, durum çubuğunda hedef görünmüyordu.</li>
+ * </ul>
+ *
+ * <p>Oklar her iki kipte de `IconButton`: devre dışı kalabildikleri için düğme
+ * kalırlar — `<a>` etiketinin "devre dışı" hâli yok, `aria-disabled` ise
+ * tıklamayı engellemez. Sayfa numaraları tarayıcıya zaten tam listeyi veriyor.
+ */
+const Pagination: FC<Props> = ({
+  page,
+  totalPages,
+  label,
+  previousLabel,
+  nextLabel,
+  buildHref,
+  onPageChange,
+  linkProps,
+  className,
+  testId,
+}) => {
+  const pages = useMemo(() => buildPageList(page, totalPages), [page, totalPages]);
+
+  if (totalPages <= 1) return null;
+
+  const goTo = (target: number) => {
+    if (onPageChange) onPageChange(target);
+  };
+
+  return (
+    <nav className={cx(styles.pagination, className)} aria-label={label} data-testid={testId}>
+      <IconButton
+        className={styles.pagination__arrow}
+        icon={<ChevronLeftIcon />}
+        label={previousLabel}
+        variant="outline"
+        disabled={page <= 1}
+        onClick={() => goTo(page - 1)}
+      />
+
+      <ul className={styles.pagination__list}>
+        {pages.map((value, index) =>
+          value === 'gap' ? (
+            <li key={`gap-${index}`} className={styles.pagination__gap} aria-hidden>
+              …
+            </li>
+          ) : (
+            <li key={value}>
+              {buildHref ? (
+                <HanuiLink
+                  href={buildHref(value)}
+                  className={cx(
+                    styles.pagination__page,
+                    value === page && styles['pagination__page--active'],
+                  )}
+                  aria-current={value === page ? 'page' : undefined}
+                  {...linkProps}
+                >
+                  {value}
+                </HanuiLink>
+              ) : (
+                <Button
+                  variant={UIVariant.SECONDARY}
+                  size={UISize.SMALL}
+                  className={cx(
+                    styles.pagination__page,
+                    value === page && styles['pagination__page--active'],
+                  )}
+                  aria-current={value === page ? 'page' : undefined}
+                  onClick={() => goTo(value)}
+                >
+                  {value}
+                </Button>
+              )}
+            </li>
+          ),
+        )}
+      </ul>
+
+      <IconButton
+        className={styles.pagination__arrow}
+        icon={<ChevronRightIcon />}
+        label={nextLabel}
+        variant="outline"
+        disabled={page >= totalPages}
+        onClick={() => goTo(page + 1)}
+      />
+    </nav>
+  );
+};
+
+export default memo(Pagination) as typeof Pagination;

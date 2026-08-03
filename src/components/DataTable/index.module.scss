@@ -1,0 +1,76 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Veri tablosu kabugu.
+ *
+ * Gorunum `data-table` mixin'inden gelir; burada yalnizca kabuk (yuzey,
+ * hairline, kaydirma) ve durum satirlari var.
+ */
+.wrapper {
+  /*
+   * `overflow: auto` (yalniz `-x` degil): cok sutunlu tablolar yatay kayar,
+   * sayfa kaymaz. Dikey eksen sinirsizken zaten kaymaz; `--capped` ile
+   * sinirlaninca ayni alan dikey kaydirmayi ve yapiskan basligin referansini
+   * saglar.
+   */
+  overflow: auto;
+  background-color: $surface;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+
+  /*
+   * Olcu gorunum alanindan ust bandin payi ve sayfa dolgusu dusulerek
+   * hesaplanir. Sinirsiz yukseklikte `position: sticky` HIC calismiyordu —
+   * kaydirma alani ekrandan uzun olunca baslik yukari cikip gidiyordu.
+   */
+  &--capped {
+    max-height: calc(100dvh - #{$header-offset} - #{$space-8});
+
+    /*
+     * `top: 0` DOGRU olan: referans ust bant degil tablonun kendi kaydirma
+     * alani. `z-index`: govde hucrelerindeki konumlanmis ogeler (eylem
+     * dugmeleri) kaynak sirasiyla basligin ustunden gecerdi.
+     */
+    .table thead th {
+      position: sticky;
+      top: 0;
+      z-index: $z-raised;
+    }
+  }
+}
+
+.table {
+  @include data-table;
+}
+
+/* Yukleniyor / hata / bos — uc durum tek hucrede, colSpan otomatik. */
+.state {
+  text-align: center;
+  color: $text-2;
+  padding-block: $space-6;
+
+  &--error {
+    color: $bad-fg;
+  }
+
+  /* Ikon + metin; renk tek basina anlam tasiyamaz (WCAG 1.4.1). */
+  &__message {
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+  }
+}
+
+/*
+ * Uyari tinti — TEK desen: tint zemin + ilk hucrede sol kenar isareti.
+ * Zemin hover vurgusuna yenilir (`data-table` `tbody tr:hover`); sol isaret
+ * hover'da da yerinde kalir, satirin "is bekliyor" bilgisi kaybolmaz.
+ */
+.row--warning {
+  background-color: $warn-bg;
+
+  td:first-child {
+    box-shadow: inset 3px 0 0 $warn-fg;
+  }
+}

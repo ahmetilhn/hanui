@@ -1,0 +1,133 @@
+@forward 'colors.generated';
+
+// =====================================================================
+// HANUI — TASARIM DEGISKENLERI
+//
+// Bilesenlerin gordugu TEK sozlesme bu dosyadir. Her SCSS modulu bastan
+// `@use '../../styles/variables' as *;` yazar — bundler'a bagli otomatik
+// enjeksiyon (Next'in `sassOptions.additionalData`si gibi) YOK: bir
+// kutuphane tuketicisinin bundler'ini yapilandirmasini bekleyemez.
+//
+// RENKLER BU DOSYADA DEGIL: `_colors.generated.scss` icinde ve o dosya
+// `src/theme/tokens.ts`ten uretiliyor (bkz. scripts/build-tokens.mjs).
+// Buradaki her sey TEMADAN BAGIMSIZ: olcu, punto, bosluk, yaricap, sure,
+// katman. Bunlar tema degistiginde degismez ve SCSS aritmetigi
+// (`$space-8 - $space-2`) modullerin her yerinde kullaniliyor.
+// =====================================================================
+
+// --- Tipografi olcegi -------------------------------------------------
+// Font AILELERI `_colors.generated.scss` icinde ($font-heading, $font-body,
+// $font-ui, $font-mono): onlar da CSS degiskeni, cunku tuketici degistirebilir.
+
+$tracking-logo: 0.13em;
+$tracking-tight: -0.022em; // buyuk basliklar; genis aralik onlari dagitir
+$tracking-snug: -0.011em; // orta boy basliklar
+$tracking-wide: 0.045em; // kucuk buyuk-harf etiketler
+
+/*
+ * OLCEK BIR KADEME YUKSELTILDI.
+ *
+ * OLCULDU: kaynak tasarim sisteminde `font-size` bildirimlerinin %67'si
+ * 14 px ve altindaydi. Arayuz varsayilani 14 px, uzun sure ekrana bakan
+ * bir kullanicida "okunabilir ama yorucu" esiginde duruyordu.
+ *
+ * Duzeltme TOKEN duzeyinde yapildi: yuzlerce dosyaya tek tek girmek yerine
+ * olcek kaydirildi, boylece oranlar ve ritim korundu. Ust basamaklar
+ * (19/23/29…) DEGISMEDI — onlar zaten yeterince buyuktu ve buyutmek sayfayi
+ * dagitirdi.
+ */
+$font-size-2xs: 12px; // yalnizca overline (buyuk harf + tracking)
+$font-size-xs: 13px; // adet, yardim metni
+$font-size-sm: 15px; // arayuz varsayilani: dugme, etiket, tablo
+$font-size-base: 16px; // govde
+$font-size-body: 17px; // uzun okuma
+$font-size-lg: 19px;
+$font-size-xl: 23px;
+$font-size-2xl: 29px;
+$font-size-3xl: 37px;
+$font-size-4xl: 47px;
+
+// Satir yuksekligi: baslikta siki, metinde rahat.
+// `$leading-normal` 1.55'ten 1.62'ye cikti — 16 px govde metninde en belirgin
+// okunurluk kazanimi burada.
+$leading-none: 1;
+$leading-tight: 1.16;
+$leading-snug: 1.35;
+$leading-normal: 1.62;
+$leading-relaxed: 1.75;
+
+$weight-regular: 400;
+$weight-medium: 500;
+$weight-semibold: 600;
+$weight-bold: 700;
+
+// Okunabilir satir uzunlugu. 75ch'nin otesinde goz satir basina donerken
+// yerini kaybediyor.
+$measure: 68ch;
+$measure-narrow: 56ch;
+
+// --- Olcu ve bosluk ---------------------------------------------------
+$space-0: 0;
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-5: 24px;
+$space-6: 32px;
+$space-7: 48px;
+$space-8: 64px;
+$space-9: 96px;
+
+$desktop-padding: 32px;
+$tablet-padding: 24px;
+$mobile-padding: 16px;
+
+// Yaricap olcegi. Kucuk ogeler ile buyuk yuzeyler ayni yaricapi PAYLASMAZ:
+// kucuk bir ogede 12px onu sisman gosterir, buyuk bir kartta 6px keskin ve
+// ucuz gorunur.
+$radius-xs: 4px;
+$radius-sm: 6px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+$radius-pill: 999px;
+
+$container-max-width: 1360px;
+$container-narrow: 880px;
+$container-split: 1000px;
+$container-prose: 720px;
+
+$sidebar-width: 272px;
+
+// --- Hareket ----------------------------------------------------------
+// 200 ms uzerindeki gecisler tiklama ile sonuc arasinda gorunur bir gecikme
+// yaratir ve arayuz yavas hissedilir.
+$duration-instant: 80ms;
+$duration-fast: 140ms;
+$duration-normal: 200ms;
+$duration-slow: 320ms;
+
+$ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+$ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+$ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+// --- Kirilma noktalari ------------------------------------------------
+//
+// 640 ile 1024 ARASI BOSTU ve bosluk pahaliya mal oldu: 768 px'lik tablet
+// (dikey iPad, en yaygin tablet olcusu) "mobil degil" sayilip masaustu
+// yerlesimini aliyordu. Iki kolonun tek kolona dustugu esik kendi kirilma
+// noktasina sahip.
+$breakpoint-mobile: 640px;
+$breakpoint-tablet-portrait: 768px;
+$breakpoint-tablet: 1024px;
+$breakpoint-desktop: 1360px;
+
+// --- Katman -----------------------------------------------------------
+$z-base: 1;
+$z-raised: 10;
+$z-header: 100;
+$z-dropdown: 200;
+$z-sticky-bar: 300;
+$z-overlay: 380;
+$z-modal: 400;
+$z-toast: 500;

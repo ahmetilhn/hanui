@@ -1,0 +1,114 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Bilgi / uyari kutusu.
+ *
+ * TAM KENARLIK + ikon madalyonu. Once yalnizca sol kenarda 3px'lik bir cizgi
+ * vardi ve iki sorunu vardi: koyu temada o cizgi tint zeminin uzerinde
+ * kaybolup kutu kenarliksiz kaliyordu, ayrica soldan isaretlenmis bir kutu
+ * `@mixin notice` ile ayni gorunup ikisi karisiyordu. Tam kenarlik
+ * `@include tint()` ile geliyor: zemin, metin ve kenarlik her zaman birlikte
+ * degisir.
+ */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-4;
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+
+  /*
+   * Ikon MADALYON icinde.
+   *
+   * Yalin bir ikon metnin yaninda asili kaliyor ve iki satirlik basliklarda
+   * dikey hizasi kayiyordu.
+   */
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border-radius: $radius-sm;
+    font-size: $font-size-sm;
+  }
+
+  &__body {
+    @include stack($space-1);
+
+    flex: 1;
+    min-width: 0;
+    /* Ikon 28px; govde onun optik merkezine hizalanir. */
+    padding-top: 3px;
+  }
+
+  &__title {
+    font-family: $font-ui;
+    font-size: $font-size-sm;
+    font-weight: $weight-semibold;
+    /* Ton metin rengini kutudan miras alir. */
+    color: inherit;
+  }
+
+  /*
+   * Govde metni tonun metin rengini MIRAS ALIR.
+   *
+   * Once notr gri bir sabitti: tint zeminin uzerinde notr gri metin kirli
+   * duruyor ve koyu temada kontrasti 3:1'e dusuyordu. Tint ciftleri (zemin +
+   * metin) birlikte tasarlandi; ayirmak ikisini de bozuyor.
+   */
+  &__content {
+    line-height: $leading-normal;
+    color: inherit;
+    /* Uzun uyari metni okunabilir satir uzunlugunda kalir. */
+    max-width: $measure;
+
+    a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      font-weight: $weight-semibold;
+    }
+
+    strong {
+      font-weight: $weight-semibold;
+    }
+  }
+
+  /*
+   * Eylem: dar ekranda govdenin ALTINA duser. Sagda kalmaya zorlandiginda
+   * 360 px'de metni 12 karaktere sikistiriyordu.
+   */
+  &__action {
+    flex-shrink: 0;
+
+    @include for-mobile {
+      width: 100%;
+      margin-top: $space-2;
+    }
+  }
+
+  @include for-mobile {
+    flex-wrap: wrap;
+  }
+
+  // --- Tonlar: zemin + metin + kenarlik birlikte ---
+  &--info {
+    @include tint(info);
+  }
+
+  &--success {
+    @include tint(success);
+  }
+
+  &--warning {
+    @include tint(warning);
+  }
+
+  &--danger {
+    @include tint(danger);
+  }
+}

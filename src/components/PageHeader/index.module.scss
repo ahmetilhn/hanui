@@ -1,0 +1,90 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/*
+ * Sayfa basligi.
+ *
+ * Bosluk olcegi burada SABITLENIR: her sayfa ayni giris ritmini alir.
+ * Container kendi `padding-block`'unu yazmaz (bkz. `@mixin page`).
+ */
+.header {
+  @include stack($space-4);
+
+  @include for-mobile {
+    gap: $space-3;
+  }
+
+  /*
+   * Baslik solda, eylemler sagda. `align-items: baseline` DEGIL `flex-end`:
+   * iki satirlik basliklarda taban cizgisi hizalamasi dugmeyi basligin ilk
+   * satirina cekiyordu.
+   */
+  &__top {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: $space-5;
+    flex-wrap: wrap;
+  }
+
+  &__text {
+    @include stack($space-2);
+
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  &__eyebrow {
+    @include overline;
+  }
+
+  /* Baslik ve sayac AYNI SATIRDA: kullanici sayiyi baslikla okur. */
+  &__titleRow {
+    display: flex;
+    align-items: baseline;
+    gap: $space-3;
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    @include page-title;
+
+    margin: 0;
+  }
+
+  /*
+   * Sayac. Basliktan bir kademe kucuk ve $text-2: rakam basligi
+   * golgelememeli ama okunmali.
+   */
+  &__meta {
+    font-family: $font-ui;
+    font-size: $font-size-sm;
+    font-weight: $weight-medium;
+    color: $text-2;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* Aciklama 68ch'de durur; tam genislikte akan satirda goz kayboluyor. */
+  &__description {
+    @include muted($font-size-base);
+
+    margin: 0;
+    max-width: $measure;
+  }
+
+  &__actions {
+    @include wrap-row($space-2);
+
+    flex-shrink: 0;
+
+    /* Dar ekranda eylemler tam genislige yayilir; kenarda asili kalmaz. */
+    @include for-mobile {
+      width: 100%;
+
+      > * {
+        flex: 1 1 auto;
+      }
+    }
+  }
+}
