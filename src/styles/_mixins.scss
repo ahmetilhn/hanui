@@ -157,6 +157,123 @@
   }
 }
 
+// =====================================================================
+// GORSEL DIL — yukseklik, yaricap, durum katmanlari
+//
+// Bu bolumdeki uc kural OLCULMUS bir dagilmanin karsiligi.
+// =====================================================================
+
+/// YUKSEKLIK MERDIVENI — hangi yuzey hangi kademede durur.
+///
+/// Bes golge token'i vardi ama "hangi yuzey hangisini kullanir" YAZILI
+/// DEGILDI ve sonucu dagilmaydi: ayni kademedeki iki yuzey farkli golge
+/// tasiyor, goz hangisinin daha "yukarida" oldugunu okuyamiyordu.
+///
+///   flat      golge YOK          sayfa uzerindeki dolgu, tablo satiri
+///   raised    $shadow-xs         cip, rozet, kucuk madalyon
+///   card      $shadow-sm         kart, panel — sayfadan BIR kademe yukari
+///   overlay   $shadow-lg         acilir liste, popover, menu, ipucu
+///   modal     $shadow-xl         kip pencere, cekmece, alt sayfa
+///
+/// KOYU TEMADA DERINLIK GOLGEYLE DEGIL KENARLIKLA kurulur ve bu zaten
+/// dogruydu: koyu zeminde golge okunmuyor. Golgeler korunuyor (kip pencere
+/// yuzeyin uzerinde durmali) ama ayirt edici olan kenarlik.
+@mixin elevation($level: card) {
+  @if $level == flat {
+    box-shadow: none;
+  } @else if $level == raised {
+    box-shadow: $shadow-xs;
+  } @else if $level == card {
+    box-shadow: $shadow-sm;
+  } @else if $level == overlay {
+    box-shadow: $shadow-lg;
+  } @else if $level == modal {
+    box-shadow: $shadow-xl;
+  } @else {
+    @error 'elevation(): bilinmeyen kademe `#{$level}`. flat|raised|card|overlay|modal.';
+  }
+}
+
+/// IC YARICAP = DIS YARICAP - DOLGU.
+///
+/// Ic ice duran iki yuzey ayni yaricapi PAYLASMAZ: bir `Panel` (12px) icindeki
+/// bir `Input` da 12px tasidiginda ic kutunun kosesi dis kutunun kosesinden
+/// optik olarak KACIK duruyor — iki egri es merkezli degil. Dogru olan farki
+/// dolgu kadar dusurmek.
+///
+/// `max()` tabani: cikarma negatife dustugunde (dolgu yaricaptan buyuk) koseyi
+/// tamamen duzlestirmek yerine en kucuk kademede birakir.
+@mixin nested-radius($outer, $padding) {
+  border-radius: max(#{$radius-xs}, calc(#{$outer} - #{$padding}));
+}
+
+/// ETKILESIMLI YUZEY — hover / active / selected TEK kural kumesi.
+///
+/// OLCULDU: hover geri bildirimi 28 bilesen dosyasinda ALTI farkli ozellik
+/// yolundan veriliyordu — `background-color` (30 kez), `color` (18),
+/// `border-color` (16), `transform` (7), `box-shadow` (3), `opacity` (2).
+/// Ayni jest iki bilesende iki farkli sey yapiyor, kullanici "bu tiklanabilir
+/// mi" sorusunu her yuzeyde yeniden soruyordu.
+///
+/// KURAL:
+///   hover     zemin BIR KADEME degisir (baska hicbir sey)
+///   active    1px BASILIR — dokunsal bir geri bildirim, renk degil
+///   selected  kenarlik + zemin BIRLIKTE anlatir (renk tek sinyal degil)
+///
+/// `opacity` ile soluklastirma YASAK: metni de soluklastiriyor ve kontrast
+/// esigini sessizce dusuruyordu.
+///
+/// TEK ISTISNA — YUKSELEN YUZEY (`Card`, `Tile`):
+/// Tiklanabilir bir kart hover'da bir kademe YUKSELIR (golge + 2px kalkma),
+/// zemin degistirmez. Sebep olculebilir: kart zaten `$surface` ve sayfa
+/// `$page`; bir kademe zemin degisimi beyaz kartta neredeyse GORUNMEZ
+/// (1,05:1). Yukselme ayni bilgiyi tasiyip her temada okunuyor. Bu istisna
+/// YUZEYLERE ozgudur — satir, menu ogesi ve dugme icin gecerli degil.
+///
+/// @param $rest Dinlenme zemini.
+/// @param $hover Hover zemini — `$rest`in bir kademe komsusu.
+/// @param $pressed `active` icin ek koyulasma; verilmezse hover zemini kalir.
+@mixin interactive-surface($rest: transparent, $hover: $surface-2, $pressed: $surface-3) {
+  background-color: $rest;
+  transition:
+    background-color $duration-fast $ease-out,
+    translate $duration-instant $ease-out;
+
+  &:hover:not(:disabled):not([aria-disabled='true']) {
+    background-color: $hover;
+  }
+
+  /* 1px BASILMA: tiklamanin dokunsal karsiligi. `transform` degil `translate`
+     — ayri bir ozellik oldugu icin baska bir donusumu (RTL aynalamasi) ezmez. */
+  &:active:not(:disabled):not([aria-disabled='true']) {
+    background-color: $pressed;
+    translate: 0 1px;
+  }
+
+  @include reduced-motion {
+    transition: none;
+
+    &:active:not(:disabled):not([aria-disabled='true']) {
+      translate: none;
+    }
+  }
+}
+
+/// SECILI DURUM — kenarlik + zemin BIRLIKTE.
+///
+/// Renk tek basina anlam tasimaz (WCAG 1.4.1) ve zorlanmis renk kipinde zemin
+/// tinti tamamen kayboluyor; kenarlik orada tek tasiyici kaliyor.
+@mixin selected-surface($tint: $blue-tint, $line: $blue) {
+  background-color: $tint;
+  border-color: $line;
+
+  @media (forced-colors: active) {
+    background-color: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+}
+
 /// PERDE GECISI — `::backdrop` icin AYRI mixin.
 ///
 /// `surface-transition` burada KULLANILAMAZ ve denendi: mixin `&[open]`

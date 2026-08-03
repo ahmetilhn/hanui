@@ -1,6 +1,15 @@
 'use client';
 
-import { type FC, type KeyboardEvent, memo, type ReactNode, useId, useState } from 'react';
+import {
+  type FC,
+  type KeyboardEvent,
+  memo,
+  type ReactNode,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from 'react';
 
 import { isDefined } from '@ahmetilhn/handy-utils';
 
@@ -38,6 +47,16 @@ type Props = {
   onChange?: (id: string) => void;
   /** Sekme çubuğunun erişilebilir adı. */
   ariaLabel?: string;
+  /**
+   * Ok tuşu yalnızca ODAĞI taşır; seçim `Enter`/`Space` ile yapılır.
+   *
+   * <p>Varsayılan OTOMATİK etkinleştirme (ok tuşu odakla birlikte seçimi de
+   * taşır) ve APG panel içeriği hazır olduğu sürece onu öneriyor. Ama panel
+   * PAHALIYSA — her sekme bir istek atıyorsa — otomatik etkinleştirme,
+   * kullanıcı beşinci sekmeye giderken dört istek atıyor. Manuel kipte
+   * kullanıcı hedefine varıp `Enter`a basıyor: tek istek.
+   */
+  isManualActivation?: boolean;
   className?: string;
   testId?: string;
 };
@@ -66,9 +85,10 @@ type Props = {
  *   <tr><td>`Tab`</td><td>çubuktan panele çıkar — çubuk TEK durak</td></tr>
  * </table>
  * Ok tuşu odakla birlikte seçimi de taşır (otomatik etkinleştirme). Panel
- * içeriği hazır ve ucuz olduğu sürece APG'nin önerdiği budur; pahalı panelli
- * bir kullanım manuel etkinleştirme ister ve o seçenek HENÜZ YOK. Nöbetçi:
- * `components/__tests__/keyboard.test.tsx`.
+ * içeriği hazır ve ucuz olduğu sürece APG'nin önerdiği budur; her sekmesi bir
+ * istek atan pahalı bir panelde `isManualActivation` verilir — orada otomatik
+ * etkinleştirme, kullanıcı beşinci sekmeye giderken dört istek atıyordu.
+ * Nöbetçi: `components/__tests__/keyboard.test.tsx`.
  */
 const Tabs: FC<Props> = ({
   items,
@@ -76,6 +96,7 @@ const Tabs: FC<Props> = ({
   activeId: controlledId,
   onChange,
   ariaLabel,
+  isManualActivation,
   className,
   testId,
 }) => {
@@ -86,21 +107,58 @@ const Tabs: FC<Props> = ({
   const activeId = isControlled ? controlledId : uncontrolledId;
 
   const activeIndex = items.findIndex(item => item.id === activeId);
+  /* Manuel kipte ODAKLANAN sekme ile SECILI sekme ayrisir. */
+  const [focusIndex, setFocusIndex] = useState(activeIndex < 0 ? 0 : activeIndex);
+  const listRef = useRef<HTMLDivElement>(null);
   const active = items[activeIndex] ?? items[0];
+
+  /*
+   * SECILI SEKME GORUNURE KAYDIRILIR.
+   *
+   * Cubuk tasabiliyor (`scroll-row`) ve secim adres cubugundan ya da baska bir
+   * denetimden de gelebiliyor: on sekmeli bir cubukta yedinci sekme secili
+   * gelen bir sayfa, kullaniciya hicbir sekme secili degilmis gibi
+   * gorunuyordu.
+   *
+   * `block: 'nearest'` — dikey kaydirma YOK: cubuk sayfanin ortasindayken
+   * `scrollIntoView` bütün sayfayi zipliyordu.
+   */
+  useEffect(() => {
+    listRef.current
+      ?.querySelector(`[aria-selected="true"]`)
+      ?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }, [activeId]);
 
   const select = (id: string) => {
     if (!isControlled) setUncontrolledId(id);
     onChange?.(id);
   };
 
-  /** Ok tuşlarıyla sekme değiştirme; başta/sonda döner. */
+  /**
+   * Ok tuşlarıyla gezinme; başta/sonda döner.
+   *
+   * <p>Otomatik kipte ok tuşu odakla birlikte SEÇİMİ de taşır; manuel kipte
+   * yalnızca odağı taşır ve seçim `Enter`/`Space` ile yapılır. İkisi de APG
+   * içinde geçerli — ayrım panelin pahalı olup olmadığında.
+   */
   const handleKeyDown = (event: KeyboardEvent) => {
+    if (isManualActivation && (event.key === 'Enter' || event.key === ' ')) {
+      event.preventDefault();
+      select(items[focusIndex].id);
+      return;
+    }
+
     const offset = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
     if (offset === 0) return;
 
     event.preventDefault();
-    const next = (activeIndex + offset + items.length) % items.length;
-    select(items[next].id);
+    const next = ((isManualActivation ? focusIndex : activeIndex) + offset + items.length) % items.length;
+
+    setFocusIndex(next);
+    if (!isManualActivation) select(items[next].id);
+
+    /* Odak HER IKI kipte de tasinir: manuel kipte seciliyle odaklanan sekme
+       ayrisiyor ve `tabindex` odaklanani izlemek zorunda. */
     document.getElementById(`${baseId}-tab-${items[next].id}`)?.focus();
   };
 
@@ -118,6 +176,7 @@ const Tabs: FC<Props> = ({
   return (
     <div className={cx(styles.tabs, className)} data-testid={testId}>
       <div
+        ref={listRef}
         className={styles.tabs__list}
         role="tablist"
         aria-label={ariaLabel}
@@ -135,7 +194,10 @@ const Tabs: FC<Props> = ({
               aria-selected={isActive}
               aria-controls={hasPanel ? `${baseId}-panel-${item.id}` : undefined}
               // Yalnızca seçili sekme sekme sırasında; gezinme ok tuşlarıyla.
-              tabIndex={isActive ? 0 : -1}
+              /* Donen `tabindex` ODAKLANANI izler: manuel kipte secili sekme
+                 ile odaklanan sekme ayri ve Tab'in geri donecegi yer
+                 odaklanan olmali. */
+              tabIndex={(isManualActivation ? items[focusIndex]?.id === item.id : isActive) ? 0 : -1}
               className={cx(styles.tabs__tab, isActive && styles['tabs__tab--active'])}
               onClick={() => select(item.id)}
             >

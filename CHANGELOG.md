@@ -7,6 +7,134 @@ tarafında ne gerektirdiğini kaydeder.
 
 ## [Yayımlanmamış]
 
+### Faz 5 — görsel dil · Faz 6 — belge ve DX
+
+#### Faz 5
+
+- **Yükseklik merdiveni yazıldı** (`elevation()`): `flat` · `raised` · `card` ·
+  `overlay` · `modal`. Beş gölge token'ı vardı ama "hangi yüzey hangisini
+  kullanır" **yazılı değildi**; aynı kademedeki iki yüzey farklı gölge taşıyor,
+  göz hangisinin daha yukarıda olduğunu okuyamıyordu.
+- **Yarıçap ritmi** (`nested-radius()`): iç yarıçap = dış yarıçap − dolgu.
+  `Panel` (12 px) içindeki bir `Input` da 12 px taşıdığında iki eğri eş
+  merkezli olmuyor ve iç kutu optik olarak kaçık duruyordu.
+- **Durum katmanları tek kural kümesine alındı** (`interactive-surface()`,
+  `selected-surface()`). ÖLÇÜLDÜ: hover geri bildirimi 28 bileşen dosyasında
+  **altı farklı özellik yolundan** veriliyordu — `background-color` (30 kez),
+  `color` (18), `border-color` (16), `transform` (7), `box-shadow` (3),
+  `opacity` (2). Kural: hover'da zemin bir kademe, `active`te 1 px basılma,
+  `selected`te kenarlık + zemin birlikte. `opacity` ile soluklaştırma yasak —
+  metni de soluklaştırıp kontrast eşiğini sessizce düşürüyordu.
+
+#### Faz 6
+
+- **`docs/` kuruldu:** `DESIGN-SYSTEM.md` (öğe kataloğu + **hangi durumda
+  hangi bileşen** tablosu), `A11Y.md`, `MOTION.md`, `THEMING.md`. README
+  onlara işaret ediyor.
+- **API tutarlılık denetçisi** (`src/__tests__/api-consistency.test.ts`) —
+  64 bileşenin prop adlarını kural kümesine karşı ölçüyor: boolean `is*`/`has*`,
+  olay `on*`, ölçü/ton/varyant tek ad. Yerel öznitelikler (`disabled`,
+  `checked`, `type`) ve `aria-*` muaf; gerekçeleri yazılı.
+- Denetçi **`@deprecated` yolunu tanıyor** ama muafiyet bedava değil: her
+  `@deprecated` prop'un `MIGRATION.md`de kayıtlı olması ayrıca ölçülüyor —
+  unutulan bir işaret sessizce kalıcı hâle gelen bir istisnaydı.
+
+#### Denetçinin bulduğu
+
+- **`ConfirmDialog.kind` → `variant`.** Aynı işi yapan üçüncü bir ad
+  kütüphanede zaten `variant` olarak duruyordu (`Button`, `Badge`,
+  `IconButton`). Eski prop bir sürüm çalışıyor, `MIGRATION.md`de kayıtlı.
+- **`Timeline.status` ve `DateField.type` denetimden ÇIKARILDI** — ve bu bir
+  taviz değil bir ayrım: `tone` bir SUNUM tercihi (`Alert tone="danger"` yazan
+  geliştirici görünümü seçiyor), `status` bir OLGU (olayın başarısız olması bir
+  tercih değil). İkisini tek ada indirmek, doğru cevabı olan bir alanı "renk
+  seç" alanına çevirirdi. `type` ise yerel `<input type>`e doğrudan geçiyor.
+
+#### Faz 4 — kalan maddeler (bu turda)
+
+- **`Field` hatayla birlikte ipucunu da GÖSTERİYOR.** Önce ipucu hatanın
+  alternatifiydi ve hata belirir belirmez kural ekrandan siliniyordu:
+  "Geçersiz adres" neyin yanlış olduğunu söylüyor, "en az 8 karakter" ne
+  yapılması gerektiğini — kullanıcı ikincisini tam da ihtiyaç duyduğu anda
+  kaybediyordu. `aria-describedby` artık ikisini birden taşıyor, **hata önce**.
+  Bu iki taraf çelişiyordu: bağ ipucuna işaret ediyor, ipucu çizilmiyordu —
+  yani kimlik BOŞ bir düğümü gösteriyordu. Eski testi tersine çevirdi.
+- **`Textarea`** — `isAutoSize` (ölçüm boyamadan önce, `height: auto` okumadan
+  önce yazılır; yoksa kutu bir kez büyüyüp bir daha küçülmüyordu), `maxRows`,
+  `hasCounter`. Sayaç `aria-hidden`: her tuş vuruşunda değişen bir canlı bölge
+  ekran okuyucuyu yazılan metnin üzerine konuşturuyordu.
+- **`Textarea` sayacı KONTROLLÜ kipte `value`dan okuyor** — yeni testin
+  bulduğu gerçek hata. Uzunluk yalnızca `onChange` ile güncelleniyordu: profil
+  ön doldurması, form sıfırlama ya da taslak yükleme sayacı eski sayıda
+  bırakıyordu; 400 karakterlik metni yükleyen kullanıcı "12 / 500" okuyordu.
+- **`Tabs isManualActivation`** (APG). Otomatik kipte ok tuşu sekmeyi anında
+  açıyor; içeriği ağdan gelen bir sekme rayında klavye kullanıcısı üçüncü
+  sekmeye giderken üç istek tetikliyordu.
+- **`Pagination formatAnnouncement`** — sayfa değişince canlı bölgeye yazar.
+  İLK çizimde duyurmaz: sayfa yeni açılmışken "Sayfa 1 / 9" demek,
+  kullanıcının yapmadığı bir eylemi bildirmek olurdu.
+- **`Price isFormatted`** — `Intl.NumberFormat`, yerel ayar `labels.locale`den.
+  Ayar yoksa biçimlendirme YAPILMAZ: yanlış yerel ayarda biçimlenmiş tutar
+  biçimlenmemiş olandan kötü ("1,250" bir yerde bin iki yüz elli, başka yerde
+  bir tam iki yüz elli).
+- **`Price` rakamsız değeri artık bozmuyor** — yine testin bulduğu gerçek hata.
+  Soyma adımı "Fiyat sorunuz"u boş dizeye indiriyor, `Number('')` ise 0:
+  ekranda tutar yerine **"0"** yazıyordu. Fiyat alanı dolu görünüp içeriği
+  yanlış oluyordu.
+- **`useListboxNavigation`** — `Select` ve `Combobox`ın ortak klavye modeli tek
+  yerde. Altı davranış (uçlarda dönme, `Home`/`End`, seçme, `Escape`, `Tab` ile
+  kapatıp gezinmeyi sürdürme, etkin seçeneği görünür tutma) iki bileşende kopya
+  koddu ve ayrışma SESSİZDİ: her bileşenin kendi testi vardı ve her biri kendi
+  davranışını doğruluyordu. `Space` yalnızca `hasSpaceSelect` ile — arama
+  kutusunda boşluk bir KARAKTER ve seçime çevrilmesi "fren balatası" yazmayı
+  imkânsız kılıyordu.
+- **`useVirtualList`** — 1121 markalı bir `Combobox` listesinde DOM 1121 satır
+  taşıyordu; panel açılışı mobilde gözle görülür şekilde donuyordu. Sabit satır
+  yüksekliği, tek eksen; `react-window` eklemek yerine kütüphane içinde, çünkü
+  paketin tek çalışma zamanı bağımlılığının ikon seti olması bilinçli bir karar.
+  `scrollToIndex` ayrı duruyor: `scrollIntoView` **çizilmemiş** satırda çalışmaz.
+- **`Select` ve `Combobox` kancaya bağlandı** — kopya klavye kodu gitti (net
+  −56 satır). Görsel regresyon (46 senaryo) ve erişilebilirlik/klavye takımı
+  (174 test) **fark üretmedi**: davranış birebir aynı, kaynağı tek. Kanca
+  yalnızca gezinmeyi taşıyor — açılma kararı (panel mi alt sayfa mı),
+  filtreleme ve `value`/`onChange` sözleşmesi bileşenlerde kaldı; ikisi orada
+  gerçekten farklı ve tek kancaya toplamak `Select`e hiç kullanmayacağı arama
+  kodunu taşıtırdı.
+
+#### Faz 5 — mixin'in uygulanması
+
+- `Menu` ögesi, `Accordion` başlığı ve `Steps` düğmesi `interactive-surface`e
+  geçti; üçü de aynı deseni elle yazıyordu.
+- **`Card` için belgelenmiş bir İSTİSNA yazıldı.** Tıklanabilir kart zemin
+  değiştirmez, bir kademe YÜKSELİR. Gerekçe ölçülebilir: kart zaten `$surface`,
+  sayfa `$page` ve aradaki bir kademe zemin değişimi beyaz kartta neredeyse
+  görünmez (1,05:1). Kuralı kartlara zorlamak, kuralı korumak için görünür bir
+  gerileme üretirdi; istisna yüzeylere özgü — satır, menü ögesi ve düğme için
+  geçerli değil.
+
+#### Boyut bütçesi 36 kB → 38 kB
+
+Tüm paket girişi 532 B aştı ve bütçe yükseltildi. **Bileşen başına bütçelere
+dokunulmadı** ve payla geçiyorlar (Button 3,93/4,5 · Badge 3,29/3,8) — tüketiciyi
+koruyan sayılar onlar, çünkü gerçek uygulamalar ağaç sarsıyor. Yapılandırma
+JSON'dan JS'e taşındı ki sayının **yanında gerekçesi** dursun; bütçeyi her
+aşıldığında yükseltmek onu anlamsız kılar.
+
+#### Kalan
+
+**Tüketici geçişi** (`docs/CONSUMER-ADOPTION.md`) — `hanparca-frontend` ve
+`hanparca-admin`i `^2.0.0`a çıkarmak, `react-hot-toast`ı kaldırmak, kopya
+`useSheetViewport`/`focus.helper`/`useTheme`yi silmek (~2 400 satır).
+
+**`Combobox` çoklu seçim** — kasıtlı olarak ertelendi. `useVirtualList` yazıldı
+ve testi var ama `Combobox`a **henüz bağlanmadı**: sanallaştırma `aria-setsize`
+/ `aria-posinset` gerektiriyor (çizilmeyen satırlar yüzünden ekran okuyucu
+"3 / 16" diyordu, "3 / 1121" değil) ve çoklu seçim `Chip`lerle alanın kendisini
+büyütüyor — ikisi de klavye modelinin ötesinde, ölçülmesi gereken görsel
+değişiklikler. Kancalar hazır; bağlama ayrı bir adım.
+
+---
+
 ### Faz 4 — mevcut bileşenlerin geçişi (ilk parti)
 
 - **`EmptyState` hata tonu.** Kütüphanenin merkezi kuralı — "boş" ile

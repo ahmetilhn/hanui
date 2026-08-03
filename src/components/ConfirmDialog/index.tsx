@@ -60,6 +60,16 @@ type Props = {
   cancelLabel?: string;
   /** Verilmezse `labels.close`. */
   closeLabel?: string;
+  /**
+   * Onayın türü — ikon, ton ve onay düğmesinin varyantını birlikte belirler.
+   *
+   * <p>Ad `kind`ten `variant`a taşındı: aynı işi yapan üçüncü bir ad
+   * kütüphanede zaten `variant` olarak duruyordu (`Button`, `Badge`) ve
+   * tüketici her bileşende hangisinin geçerli olduğunu hatırlamak zorunda
+   * kalıyordu. Nöbetçi: `src/__tests__/api-consistency.test.ts`.
+   */
+  variant?: ConfirmKind;
+  /** @deprecated `variant` kullanın. Bir sonraki büyük sürümde kalkacak. */
   kind?: ConfirmKind;
   /** Ek bağlam: silinecek kaydın özeti, uyarı kutusu. */
   children?: ReactNode;
@@ -113,11 +123,15 @@ const ConfirmDialog: FC<Props> = ({
   confirmLabel,
   cancelLabel,
   closeLabel,
-  kind = 'neutral',
+  variant,
+  kind,
   children,
 }) => {
   const { labels } = useHanui();
   const [isRunning, setIsRunning] = useState(false);
+
+  /* Eski prop bir surum boyunca calisir; `variant` verilmisse o kazanir. */
+  const resolvedVariant: ConfirmKind = variant ?? kind ?? 'neutral';
 
   const handleConfirm = async () => {
     setIsRunning(true);
@@ -140,8 +154,8 @@ const ConfirmDialog: FC<Props> = ({
       title={title}
       closeLabel={closeLabel ?? labels?.close}
       description={description}
-      icon={KIND_ICON[kind]}
-      tone={KIND_TONE[kind]}
+      icon={KIND_ICON[resolvedVariant]}
+      tone={KIND_TONE[resolvedVariant]}
       size="sm"
       // Islem surerken kapanmaz: kapanma, islem iptal edilmis gibi gorunuyordu.
       isDismissable={!isRunning}
@@ -160,7 +174,7 @@ const ConfirmDialog: FC<Props> = ({
             {resolveLabel('ConfirmDialog.cancelLabel', cancelLabel, labels?.cancel)}
           </Button>
           <Button
-            variant={KIND_VARIANT[kind]}
+            variant={KIND_VARIANT[resolvedVariant]}
             size={UISize.MEDIUM}
             onClick={handleConfirm}
             isLoading={isRunning}

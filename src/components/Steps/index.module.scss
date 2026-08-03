@@ -64,18 +64,11 @@
 }
 
 button.steps__button {
-  cursor: pointer;
-  transition: background-color $duration-fast $ease-out;
+  @include interactive-surface($rest: transparent, $hover: $surface-2, $pressed: $surface-3);
 
-  &:hover {
-    background-color: $surface-2;
-  }
+  cursor: pointer;
 
   @include focus-ring($ring-color, -1px);
-
-  @include reduced-motion {
-    transition: none;
-  }
 }
 
 /*

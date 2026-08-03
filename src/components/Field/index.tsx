@@ -101,20 +101,41 @@ const Field: FC<Props> = ({
         id,
         required: isRequired || undefined,
         'aria-invalid': error ? true : undefined,
-        'aria-describedby': error ? errorId : hint ? hintId : undefined,
+        /*
+         * HATA VE YARDIM BIRLIKTE baglanir, biri digerini EZMEZ.
+         *
+         * Once hata varken yalnizca hata baglaniyordu ve yardim metni ekran
+         * okuyucudan DUSUYORDU: "telefon gecersiz" duyan kullanici, bir satir
+         * yukarida duran "05XX XXX XX XX" bicim ipucunu hic duymuyor ve neyi
+         * yanlis yazdigini bilmiyordu. Goren kullanici ikisini de aliyor;
+         * ayrim sebepsizdi.
+         *
+         * Sira ONEMLI: once hata, sonra yardim. Ekran okuyucu bagli metinleri
+         * yazildiklari sirayla okuyor ve once "ne yanlis" duyulmali.
+         */
+        'aria-describedby': [error && errorId, hint && hintId].filter(Boolean).join(' ') || undefined,
       })}
 
-      {error ? (
+      {/*
+        HATA VE IPUCU BIRLIKTE cizilir.
+
+        Ipucu eskiden hatanin ALTERNATIFIYDI: hata belirir belirmez kural
+        ekrandan siliniyordu. Yani kullanici tam olarak kurali okumasi gereken
+        anda onu kaybediyordu — "Cok kisa" diyor ama neye gore kisa oldugunu
+        artik hicbir yer yazmiyor. `aria-describedby` de ikisini birden
+        gosteriyor; biri cizilmediginde bag BOS bir dugume isaret ediyordu.
+      */}
+      {error && (
         <p id={errorId} className={styles.field__error} role="alert">
           <ExclamationCircleFill aria-hidden className={styles.field__errorIcon} />
           {error}
         </p>
-      ) : (
-        hint && (
-          <p id={hintId} className={styles.field__hint}>
-            {hint}
-          </p>
-        )
+      )}
+
+      {hint && (
+        <p id={hintId} className={styles.field__hint}>
+          {hint}
+        </p>
       )}
     </div>
   );

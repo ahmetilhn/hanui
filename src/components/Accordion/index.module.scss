@@ -46,14 +46,11 @@
   font-size: $font-size-sm;
   font-weight: $weight-semibold;
   color: $text;
-  transition: background-color $duration-fast $ease-out;
+
+  @include interactive-surface($rest: transparent, $hover: $surface-2, $pressed: $surface-3);
 
   &::-webkit-details-marker {
     display: none;
-  }
-
-  &:hover {
-    background-color: $surface-2;
   }
 
   @include focus-ring($ring-color, -2px);

@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  type KeyboardEvent,
   memo,
   type ReactNode,
   useCallback,
@@ -18,6 +17,7 @@ import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { matchesSearch } from '../../helpers/text.helper';
+import useListboxNavigation from '../../hooks/useListboxNavigation';
 import { useHanui } from '../../theme/context';
 import BottomSheet from '../BottomSheet';
 import Spinner from '../Spinner';
@@ -194,7 +194,6 @@ const Combobox = <T extends string>({
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
 
   /*
    * Panel NEREDE acilir: masaustunde tetikleyicinin altinda, dar ekranda
@@ -204,7 +203,6 @@ const Combobox = <T extends string>({
   const [openMode, setOpenMode] = useState<'popover' | 'sheet' | null>(null);
   const isOpen = openMode !== null;
   const [query, setQuery] = useState('');
-  const [activeIndex, setActiveIndex] = useState(0);
 
   // Sunucu araması sırasında seçili kayıt listeden düşebilir; etiketi
   // hatırlarız ki tetikleyici yer tutucuya dönmesin.
@@ -254,12 +252,10 @@ const Combobox = <T extends string>({
   const open = useCallback(() => {
     if (isDisabled) return;
     setOpenMode(window.matchMedia(ABOVE_MOBILE_MEDIA_QUERY).matches ? 'popover' : 'sheet');
+    /* Panel acilinca etkin secenek SECILI olan olur (kancanin `initialIndex`i);
+       kullanici listeyi bastan taramak zorunda kalmaz. */
     setQuery('');
-    // Panel açılınca etkin seçenek seçili olan olur; kullanıcı listeyi baştan
-    // taramak zorunda kalmaz.
-    const index = options.findIndex(option => option.value === value);
-    setActiveIndex(index >= 0 ? index : 0);
-  }, [isDisabled, options, value]);
+  }, [isDisabled]);
 
   /*
    * Disari tiklamada kapanir. `mousedown` kullanilir: `click` beklerken
@@ -296,14 +292,6 @@ const Combobox = <T extends string>({
     if (openMode === 'popover') inputRef.current?.focus({ preventScroll: true });
   }, [openMode]);
 
-  // Etkin seçenek görünür alanın dışına çıkmamalı.
-  useEffect(() => {
-    if (!isOpen) return;
-    listRef.current
-      ?.querySelector(`[data-index="${activeIndex}"]`)
-      ?.scrollIntoView({ block: 'nearest' });
-  }, [activeIndex, isOpen, visibleOptions.length]);
-
   const selectOption = (option: ComboboxOption<T>) => {
     if (option.isDisabled) return;
     setCachedLabel(option.label);
@@ -326,52 +314,35 @@ const Combobox = <T extends string>({
     wasOpenRef.current = isOpen;
   }, [isOpen]);
 
-  const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    const lastIndex = visibleOptions.length - 1;
-
-    switch (event.key) {
-      case 'ArrowDown':
-        event.preventDefault();
-        setActiveIndex(current => (current >= lastIndex ? 0 : current + 1));
-        break;
-
-      case 'ArrowUp':
-        event.preventDefault();
-        setActiveIndex(current => (current <= 0 ? lastIndex : current - 1));
-        break;
-
-      case 'Home':
-        event.preventDefault();
-        setActiveIndex(0);
-        break;
-
-      case 'End':
-        event.preventDefault();
-        setActiveIndex(lastIndex);
-        break;
-
-      case 'Enter': {
-        event.preventDefault();
-        const option = visibleOptions[activeIndex];
+  /*
+   * KLAVYE MODELI `useListboxNavigation`da — `Select`le AYNI kanca.
+   *
+   * Alti davranis (uclarda donme, `Home`/`End`, secme, `Escape`, `Tab` ile
+   * kapatip gezinmeyi surdurme, etkin secenegi gorunur tutma) iki bilesende
+   * KOPYA koddu ve ayrisma SESSIZDI: her bilesenin kendi testi vardi ve her
+   * biri kendi davranisini dogruluyordu.
+   *
+   * `Space` BURADA secmez (`hasSpaceSelect` verilmiyor): arama kutusunda
+   * bosluk bir KARAKTER ve secime cevrilmesi "fren balatasi" yazmayi imkansiz
+   * kilardi. `Select`te oyle bir kutu yok ve orada da tetiklenmiyor.
+   */
+  const { activeIndex, setActiveIndex, listRef, handleKeyDown } =
+    useListboxNavigation<HTMLUListElement>({
+      count: visibleOptions.length,
+      isOpen,
+      initialIndex: Math.max(
+        options.findIndex(option => option.value === value),
+        0,
+      ),
+      onSelect: index => {
+        const option = visibleOptions[index];
         if (option) selectOption(option);
-        break;
-      }
+      },
+      /* Odagi geri vermek kapanisi izleyen etkinin isi (bkz. `wasOpenRef`). */
+      onClose: close,
+    });
 
-      case 'Escape':
-        event.preventDefault();
-        // Odagi geri vermek kapanisi izleyen etkinin isi (bkz. `wasOpenRef`).
-        close();
-        break;
-
-      case 'Tab':
-        // Tab paneli kapatır ama varsayılan gezinme sürer.
-        close();
-        break;
-
-      default:
-        break;
-    }
-  };
+  const handleInputKeyDown = handleKeyDown;
 
   const clearSelection = () => {
     onChange(null);

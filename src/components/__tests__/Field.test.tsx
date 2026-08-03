@@ -27,23 +27,40 @@ describe('Field', () => {
     const input = screen.getByLabelText('E-posta');
 
     expect(input).toHaveAttribute('aria-invalid', 'true');
-    expect(input).toHaveAttribute('aria-describedby', screen.getByRole('alert').id);
+    expect(input.getAttribute('aria-describedby')).toContain(screen.getByRole('alert').id);
     expect(screen.getByRole('alert')).toHaveTextContent('Geçersiz adres');
   });
 
   /*
-   * Ikisi birlikte gurultu yapiyor ve kullanicinin OKUMASI GEREKEN mesaj
-   * kayboluyordu.
+   * BU TEST TERSINE CEVRILDI — ve gerekcesi olculebilir.
+   *
+   * Ipucu once hatanin ALTERNATIFIYDI: "gurultu yapiyor" gerekcesiyle hata
+   * belirir belirmez kural ekrandan siliniyordu. Kullanicinin OKUMASI GEREKEN
+   * mesaj tam da oydu: "Gecersiz adres" neyin yanlis oldugunu soyluyor,
+   * "Fatura buraya gider" ne yapilmasi gerektigini. Ikincisini kaldirmak,
+   * kullaniciyi kurali hatirlamaya birakiyordu.
+   *
+   * Ayrica ikisi CELISIYORDU: `aria-describedby` artik hem hatayi hem ipucunu
+   * gosteriyor ve ipucu cizilmediginde bag BOS bir dugume isaret ediyordu —
+   * ekran okuyucu var olmayan bir kimligi atliyor, gorunur kullanici da metni
+   * gormuyordu. Hata ONCE okunur; onem sirasi orada.
    */
-  it('hata varken yardım metni GÖSTERİLMEZ', () => {
+  it('hata varken yardım metni de KALIR', () => {
     render(
       <Field label="E-posta" hint="Fatura buraya gider" error="Geçersiz adres">
         {props => <Input {...props} defaultValue="" />}
       </Field>,
     );
 
-    expect(screen.queryByText('Fatura buraya gider')).not.toBeInTheDocument();
+    expect(screen.getByText('Fatura buraya gider')).toBeInTheDocument();
     expect(screen.getByText('Geçersiz adres')).toBeInTheDocument();
+
+    /* Hata ONCE: onemli olan neyin yanlis oldugu. */
+    const [first] = (
+      screen.getByRole('textbox').getAttribute('aria-describedby') ?? ''
+    ).split(' ');
+
+    expect(document.getElementById(first as string)).toHaveTextContent('Geçersiz adres');
   });
 
   it('hata yokken yardım metni girdiye bağlanır', () => {

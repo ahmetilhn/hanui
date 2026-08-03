@@ -13,6 +13,8 @@ import {
 
 import { CaretDownFill, CheckLg } from 'react-bootstrap-icons';
 
+import useListboxNavigation from '../../hooks/useListboxNavigation';
+
 import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
@@ -134,10 +136,7 @@ const Select = <T extends string>({
 
   const rootRef = useRef<HTMLSpanElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
-
   const [openMode, setOpenMode] = useState<OpenMode | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
 
   const isOpen = openMode !== null;
   const selectedIndex = options.findIndex(option => option.value === value);
@@ -148,10 +147,10 @@ const Select = <T extends string>({
   const open = useCallback(() => {
     if (isDisabled || options.length === 0) return;
 
+    /* Etkin secenek SECILI olandan baslar (kancanin `initialIndex`i);
+       kullanici listeyi bastan taramaz. */
     setOpenMode(window.matchMedia(ABOVE_MOBILE_MEDIA_QUERY).matches ? 'popover' : 'sheet');
-    // Etkin seçenek seçili olandan başlar; kullanıcı listeyi baştan taramaz.
-    setActiveIndex(selectedIndex >= 0 ? selectedIndex : 0);
-  }, [isDisabled, options.length, selectedIndex]);
+  }, [isDisabled, options.length]);
 
   const selectOption = (option: SelectOption<T>) => {
     if (option.isDisabled) return;
@@ -197,17 +196,32 @@ const Select = <T extends string>({
     if (openMode === 'sheet') listRef.current?.focus({ preventScroll: true });
   }, [openMode]);
 
-  // Etkin seçenek görünür alanın dışına çıkmamalı.
-  useEffect(() => {
-    if (!isOpen) return;
-    listRef.current
-      ?.querySelector(`[data-index="${activeIndex}"]`)
-      ?.scrollIntoView({ block: 'nearest' });
-  }, [activeIndex, isOpen]);
+  /*
+   * KLAVYE MODELI `useListboxNavigation`da — `Combobox`la AYNI kanca.
+   *
+   * Alti davranis (uclarda donme, `Home`/`End`, secme, `Escape`, `Tab` ile
+   * kapatip gezinmeyi surdurme, etkin secenegi gorunur tutma) iki bilesende
+   * KOPYA koddu ve ayrisma sessizdi: her bilesenin kendi testi vardi ve her
+   * biri kendi davranisini dogruluyordu.
+   */
+  const { activeIndex, setActiveIndex, listRef, handleKeyDown } =
+    useListboxNavigation<HTMLUListElement>({
+      count: options.length,
+      isOpen,
+      initialIndex: selectedIndex >= 0 ? selectedIndex : 0,
+      onSelect: index => {
+        const option = options[index];
+        if (option) selectOption(option);
+      },
+      onClose: close,
+    });
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    const lastIndex = options.length - 1;
-
+  /*
+   * KAPALIYKEN ok/Enter/Space paneli ACAR. Bu adim kancada DEGIL: acilma
+   * karari bilesenin (panel mi alt sayfa mi) ve kanca yalnizca gezinmeyi
+   * tasiyor.
+   */
+  const onKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (!isOpen) {
       if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) {
         event.preventDefault();
@@ -216,48 +230,7 @@ const Select = <T extends string>({
       return;
     }
 
-    switch (event.key) {
-      case 'ArrowDown':
-        event.preventDefault();
-        setActiveIndex(current => (current >= lastIndex ? 0 : current + 1));
-        break;
-
-      case 'ArrowUp':
-        event.preventDefault();
-        setActiveIndex(current => (current <= 0 ? lastIndex : current - 1));
-        break;
-
-      case 'Home':
-        event.preventDefault();
-        setActiveIndex(0);
-        break;
-
-      case 'End':
-        event.preventDefault();
-        setActiveIndex(lastIndex);
-        break;
-
-      case 'Enter':
-      case ' ': {
-        event.preventDefault();
-        const option = options[activeIndex];
-        if (option) selectOption(option);
-        break;
-      }
-
-      case 'Escape':
-        event.preventDefault();
-        close();
-        break;
-
-      case 'Tab':
-        // Tab paneli kapatir ama varsayilan gezinme surer.
-        close();
-        break;
-
-      default:
-        break;
-    }
+    handleKeyDown(event);
   };
 
   const renderList = (isSheet: boolean) => (
@@ -273,7 +246,7 @@ const Select = <T extends string>({
       aria-activedescendant={isSheet && options[activeIndex] ? optionId(activeIndex) : undefined}
       tabIndex={isSheet ? 0 : -1}
       className={cx(styles.list, isSheet && styles['list--sheet'])}
-      onKeyDown={isSheet ? handleKeyDown : undefined}
+      onKeyDown={isSheet ? onKeyDown : undefined}
     >
       {options.map((option, index) => {
         const isChosen = option.value === value;
@@ -329,7 +302,7 @@ const Select = <T extends string>({
         aria-describedby={describedBy}
         aria-invalid={isInvalid}
         onClick={() => (isOpen ? close() : open())}
-        onKeyDown={handleKeyDown}
+        onKeyDown={onKeyDown}
       >
         {icon && (
           <span className={styles.trigger__icon} aria-hidden>

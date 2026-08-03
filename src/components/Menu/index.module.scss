@@ -60,9 +60,10 @@
   font-family: $font-ui;
   font-size: $font-size-sm;
   color: $text;
-  transition: background-color $duration-fast $ease-out;
+  /* Durum katmani TEK kural kumesinden: hover'da zemin bir kademe,
+     `active`te 1px basilma (bkz. `interactive-surface`). */
+  @include interactive-surface($rest: transparent, $hover: $surface-2, $pressed: $surface-3);
 
-  &:hover:not(:disabled),
   &:focus-visible {
     background-color: $surface-2;
   }

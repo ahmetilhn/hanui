@@ -42,6 +42,19 @@ export { resolveTokens, buildThemeCss } from './helpers/theme.helper';
 // --- Kancalar ---------------------------------------------------------
 export { default as useAnnounce, type AnnouncePoliteness } from './hooks/useAnnounce';
 export { default as useHanuiTheme } from './hooks/useHanuiTheme';
+export {
+  default as useListboxNavigation,
+  type ListboxNavigation,
+  type ListboxNavigationOptions,
+} from './hooks/useListboxNavigation';
+export {
+  default as usePositioning,
+  type PositionAlign,
+  type PositionSide,
+  type PositioningOptions,
+  type PositioningState,
+} from './hooks/usePositioning';
+export { default as useVirtualList, type VirtualRange } from './hooks/useVirtualList';
 export { default as useScrollLock } from './hooks/useScrollLock';
 export { default as useSheetViewport } from './hooks/useSheetViewport';
 

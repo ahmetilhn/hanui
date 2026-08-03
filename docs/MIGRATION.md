@@ -10,6 +10,25 @@ Sessiz kırılma yok.
 
 ## Yayımlanmamış
 
+### `ConfirmDialog.kind` → `ConfirmDialog.variant`
+
+```diff
+- <ConfirmDialog kind="destructive" …>
++ <ConfirmDialog variant="destructive" …>
+```
+
+**Eski prop çalışmaya devam ediyor**; `variant` verilmediğinde okunuyor. Bir
+sonraki büyük sürümde kalkacak.
+
+**Ad neden değişti:** aynı işi yapan üçüncü bir ad kütüphanede zaten `variant`
+olarak duruyordu (`Button`, `Badge`, `IconButton`) ve tüketici her bileşende
+hangisinin geçerli olduğunu hatırlamak zorunda kalıyordu. Tutarsızlığı
+`src/__tests__/api-consistency.test.ts` buldu — elle gözden geçirme değil.
+
+---
+
+## 2.0.0
+
 ### `Tooltip.position` → `Tooltip.side`
 
 ```diff

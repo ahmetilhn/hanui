@@ -1,11 +1,12 @@
 'use client';
 
-import { type FC, memo, useMemo } from 'react';
+import { type FC, memo, useEffect, useMemo, useRef } from 'react';
 
 import { CaretLeftFill, CaretRightFill } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
+import useAnnounce from '../../hooks/useAnnounce';
 import { useHanui } from '../../theme/context';
 import UISize from '../../enums/ui-size.enum';
 import UIVariant from '../../enums/ui-variant.enum';
@@ -25,6 +26,16 @@ type BaseProps = {
   previousLabel?: string;
   /** Verilmezse `labels.pagination.next`. */
   nextLabel?: string;
+  /**
+   * Sayfa değiştiğinde ekran okuyucuya duyurulacak metin
+   * ("3. sayfa · 1.248 sonuç").
+   *
+   * <p>Verilmediğinde duyuru YAPILMAZ. Görsel tarafta sayfa numarası
+   * `aria-current` ile zaten işaretli ama o yalnızca ODAK oraya geldiğinde
+   * okunuyor: bağlantıya basıp listenin başına dönen kullanıcı, kaçıncı
+   * sayfada olduğunu ve kaç sonuç kaldığını hiç duymuyordu.
+   */
+  formatAnnouncement?: (page: number, totalPages: number) => string;
   className?: string;
   testId?: string;
 };
@@ -107,10 +118,26 @@ const Pagination: FC<Props> = ({
   buildHref,
   onPageChange,
   linkProps,
+  formatAnnouncement,
   className,
   testId,
 }) => {
   const { labels } = useHanui();
+  const announce = useAnnounce();
+
+  /*
+   * Sayfa DEGISTIGINDE duyurulur, ilk cizimde degil: acilista "1. sayfa"
+   * demek, kullanicinin sormadigi bir soruyu cevaplamak ve ekran okuyucunun
+   * sayfa basligini okumasini kesmek olurdu.
+   */
+  const previousPage = useRef(page);
+
+  useEffect(() => {
+    if (previousPage.current === page) return;
+    previousPage.current = page;
+
+    if (formatAnnouncement) announce(formatAnnouncement(page, totalPages));
+  }, [page, totalPages, formatAnnouncement, announce]);
   const pages = useMemo(() => buildPageList(page, totalPages), [page, totalPages]);
 
   if (totalPages <= 1) return null;

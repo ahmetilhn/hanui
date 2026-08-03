@@ -17,6 +17,14 @@
       box-shadow $duration-fast $ease-out,
       transform $duration-fast $ease-out;
 
+    /*
+     * YUKSELEN YUZEY — `interactive-surface`in belgelenmis ISTISNASI.
+     *
+     * Kart zemin DEGISTIRMEZ, bir kademe YUKSELIR. Sebep olculebilir: kart
+     * zaten `$surface`, sayfa `$page` ve aradaki bir kademe zemin degisimi
+     * beyaz kartta neredeyse gorunmez (1,05:1). Yukselme ayni bilgiyi tasiyip
+     * her temada okunuyor.
+     */
     &:hover {
       border-color: $border-strong;
       box-shadow: $shadow-md;
