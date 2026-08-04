@@ -323,3 +323,162 @@ uyar / uymaz / bilinmiyor. `Stat` bir sayı gösterir ve `trend`/`delta` ile
 değişimini anlatır; üç durumlu bir bilgiyi oraya sokmak, doğru cevabı olan bir
 alanı "kaç" sorusuna çevirirdi. Uyumluluk kutusu `CompatibilityBox` olarak
 kalıyor ve "bilinmiyor" ≠ "uymuyor" ayrımı orada kodlu.
+
+---
+
+## 8. Kapanış turu — kalan bileşenler ve dört düzeltme
+
+Bu turda 3. ve 4. aşamaların kalanı uygulandı. Sonuç: **70/71 bileşen** iki
+uygulamanın birleşiminde kullanılıyor (frontend 61, admin 43). Tek istisna
+`TagInput` ve nedeni aşağıda.
+
+### `TagInput` TAŞINMADI — üç bağımsız gerekçe
+
+Her biri tek başına yeterli:
+
+1. **Admin şemasında dizi türü yok.** `ColumnType` birleşimi
+   `TEXT|LONG_TEXT|RICH_TEXT|INTEGER|MONEY_MINOR|BOOLEAN|DATE|DATETIME|ENUM|REFERENCE|JSON|EMAIL|PHONE|URL|IMAGE|SLUG`.
+   Tek aday `JSON` ve `resource.helper` onu **parse edilmiş** gönderiyor —
+   bir `JSON` kolonu meşru olarak `{"anahtar":"değer"}` tutuyor. `string[]`e
+   zorlamak nesne şekilli her JSON kolonunu bozardı ve ikisini ayıran bir
+   şema bayrağı yok.
+2. **Tarayıcı serbest metin bayraklarını bilinçli kaldırmış**
+   (`crawler.type.ts`): *"Serbest metin türü YOKTUR … panelden gelen bir
+   değerin dosya yolu olması artık yapısal olarak imkânsız."* Virgülle
+   ayrılmış bir etiket alanı, kapatılmış bir deliği yeniden açardı.
+3. **Storefront'ta serbest etiket yüzeyi yok**; her çoklu seçim sunucudan
+   sayılıyor (`FacetGroup.values`), yani bilinen bir kümeden seçim — bu
+   `ChipGroup`/`Checkbox` işi.
+
+Sahte adopsiyon "birden çok OEM kodunu birlikte ara" olurdu; dizi kabul eden
+bir uç yok ve bir bileşeni kullanmak için backend alanı uydurulmaz.
+
+### `data-hanui-density="compact"` — panelde, `<html>` üzerinde
+
+Panel bir operasyon aracı: ekrana sığan satır sayısı doğrudan iş hızına
+dönüyor. Öznitelik `src/app/layout.tsx`'te `<html>` üzerinde duruyor,
+`(panel)/layout.tsx`'te **değil**: `Modal`, `Drawer`, `Tooltip` ve
+`CommandPalette` gövdeye portal ediliyor ve daha aşağı bir düğüme yazılan
+yoğunluk o yüzeyleri varsayılan boşlukta bırakır — aynı ekranda iki farklı
+yoğunluk görünürdü. `initHanui({ density })` de kullanılmadı: mount sonrası
+çalışıp her yüklemede yeniden akış üretiyor.
+
+**Sıra önemliydi.** Yoğunluk, `calc(-#{$space-4} - 7px)` gibi piksel-kırılgan
+hizalamaları bozar. İki elle çizilmiş zaman çizelgesi `Timeline`a taşındıktan
+**sonra** açıldı; o geometri zaten silinmişti. Storefront varsayılan
+yoğunlukta kalıyor — iki yoğunluk sözleşmesinin amacı tam olarak bu ayrım.
+
+### Paylaşılan SCSS kilidi hakkındaki iddia YANLIŞTI
+
+Belge ve `hanparca-admin/scripts/check-styles.mjs` çevresinde "iki repo
+byte-özdeş tutulur" varsayımı dolaşıyordu. Ölçüldü:
+
+| dosya | frontend | admin |
+| --- | --- | --- |
+| `_variables.scss` | `7ffcbb47…` | `7ffcbb47…` (aynı) |
+| `_mixins.scss` | `0179fc54…` | `971faed0…` (**farklı**) |
+
+Denetçi admin'in *kendi* dosyalarını hash'leyip admin'in *kendi* lock
+dosyasıyla karşılaştırıyor — yani repolar arası eşitlik denetimi değil, admin
+kopyası üzerinde bir **kurcalama dedektörü**. Frontend'de böyle bir denetim
+hiç yok. Yani `_mixins.scss` zaten ayrışmış ve nöbetçi bunu hiç görmedi.
+Gerçekten ortak olan tek dosya `_variables.scss`.
+
+### `normalizeSearchTerm` — kütüphaneye geçiş bir SÖZLEŞMEYİ ONARDI
+
+Frontend'in yerel kopyası kaldırılıp `@ahmetilhn/hanui`ye bağlandı. Bu bir
+sadeleştirme değil, bir **düzeltme**: sunucudaki `TextHelper.toAscii` Türkçe
+harfleri eşledikten sonra NFD ayrıştırması + birleştirici işaret temizliği
+yapıyor (`é` → `e`). Yerel kopyada NFD adımı **yoktu** ve `é` olduğu gibi
+kalıyordu — `Citroën`, `Škoda` gibi adlarda istemci eşleşmiyor, sunucu
+eşleşiyordu. Kütüphane sürümü sunucunun adım sırasını birebir uyguluyor.
+
+### Bileşenin YANLIŞ olduğu üç yer — kayda geçsin
+
+Bu turda planlanmış ama **uygulanmamış** üç takas; gerekçeleri ileride aynı
+öneri tekrar gelmesin diye burada:
+
+| Öneri | Neden yapılmadı |
+| --- | --- |
+| Admin `TopBar` ayırıcısı → `Divider` | `Divider` bilinçli olarak YATAY: `<hr>` + `border-top` + `width: 100%`, `orientation` prop'u yok. Dikey ayırıcı yerine kullanmak satırın ortasına tam genişlikte bir çizgi çizerdi. `Divider` storefront `Header` çekmecesinde yatay bölme olarak kullanıldı — doğru yeri orası. |
+| Admin `DashboardContainer` kartları → `Tile` | Kartın birincil içeriği SAYI; `Tile` etiketi birincil yapar ve sayıyı `meta` yuvasına iter, yani hiyerarşiyi ters çevirir. Mevcut `<Link><Stat/></Link>` sarmalayıcısı zaten gerekçesiyle yazılmış. |
+| Admin `Sidebar` 77 tablosu → `Directory` | `Directory` bir İÇERİK indeksi (marka A–Z); satırları ≥44px ve geniş. Yoğun bir gezinme rayında 77 satırı o yükseklikte çizmek rayı kullanılamaz hale getirirdi. `Directory` storefront'ta `BrandListContainer`/`CategoryIndexContainer` içinde zaten kendi işini yapıyor. |
+| Admin `ModerationContainer` satırları → `Card` | Satırlar zaten bir `Panel`in içinde ve bilinçli olarak `$surface-2` (tek kademe) kullanıyor. `Card` orada kart-içinde-kart üretirdi — yükseklik merdiveninin uyardığı durum. |
+
+### Bulunan ve düzeltilen bir hata — `useFavorites` 24 istek
+
+Kapsam turu için yazılan `useFavorites` testi gerçek bir hata buldu: kanca
+yalnızca `isInitialized` bayrağına bakıyordu ve 24 ürünlü katalog sayfasında
+her `FavoriteButton` aynı karede mount olup hepsi bayrağı `false` gördüğü
+için **24 ayrı `GET /favorites/ids`** gidiyordu. `useCart` ve `useGarage`
+aynı sorunu modül düzeyinde bir "uçuşta" kilidiyle çözmüş, `useFavorites`
+korumasız kalmıştı. Aynı kilit eklendi; test 24 → 1 isteği kilitliyor.
+
+---
+
+## 9. Girdi ergonomisi — `PasswordInput` ve `MaskedInput`
+
+Kütüphanede karşılığı **olmayan** iki girdi deseni uygulama katmanında yazıldı.
+İkisi de hanui'ye taşınmaya aday; bu bölüm taşınırken gerekecek kararları
+kaydediyor.
+
+### `PasswordInput` — göz düğmesi neden `Input suffix` değil
+
+`Input`un `suffix` yuvası bilinçli olarak `aria-hidden` **ve**
+`pointer-events: none`: orası bir birim işareti ("TL", "kg") için. Tıklanan bir
+denetim oraya konsaydı ne fareyle basılabilir ne de ekran okuyucuya görünürdü.
+Bu yüzden düğme girdinin üzerine konumlanıyor ve girdiye sağdan yer açılıyor.
+
+Durum `aria-pressed` ile değil düğmenin **adıyla** taşınıyor ("Şifreyi göster"
+↔ "Şifreyi gizle"): düğme bir kip açmıyor, doğrudan bir eylem yapıyor.
+Görünürlük her alanın kendi durumu — "yeni şifre" ile "tekrar" birlikte
+açılmaz.
+
+**Testlerde tuzak:** düğmenin erişilebilir adı "Şifre" ile başladığı için
+`getByLabelText(/Şifre/i)` artık iki öğe buluyor. Kullanıcı için belirsizlik
+yok (biri metin kutusu, biri düğme) ama testin hangisini istediğini söylemesi
+gerekiyor: `{ selector: 'input' }`.
+
+### `MaskedInput` — şablon görünür, "yazdıkça dolar"
+
+Alanlar zaten yazılırken biçimleniyordu; eksik olan, kullanıcının **kaç hane
+kaldığını yazmadan önce** görmesiydi. Kalan şablon girdinin üzerine bindirilen
+soluk bir katmanla çiziliyor: yazılan kısım saydam (yalnızca genişliği kadar
+yer tutar), kalanı `$text-3`.
+
+Hizalama iki koşula bağlı ve bu bir **sözleşme**: girdi `isTechnical` (eş
+genişlikli yazı tipi) ve katman `input-base` ile aynı dolguyu kullanıyor.
+Orantılı bir yazı tipinde "1" ile "8" farklı genişlikte olduğu için katman
+kayardı. Kütüphaneye taşınırsa bu ikisi tek dosyada birleşir ve kuplaj biter.
+
+### Maske YALNIZCA biçimi sabit olan alana kondu
+
+Bu listenin kendisi kararın parçası:
+
+| Alan | Şablon | Neden |
+| --- | --- | --- |
+| Telefon | `+90 ### ### ## ##` | Ülke kodu sabit; "başına sıfır koyayım mı" sorusu tümüyle kalkıyor |
+| Şase (VIN) | 17 yuva | Uzunluk standart. `I`/`O`/`Q` dönüşümü maskede değil `normalize` kancasında — o bir VERİ kuralı |
+| Kart numarası | aileye göre | 15 haneli aileler (Amex) `4-6-5`; sabit 16 hanelik şablon Amex'te dört fazla yuva gösteriyordu |
+| Son kullanma | `##/##` | Kartın üzerindeki biçimin aynısı |
+
+**Şablon KONMAYAN alanlar** — üçü de biçimi değişken olduğu için:
+
+- **Plaka**: `34 A 1234`, `34 AB 123` ve `34 ABC 12` üçü de geçerli
+  (`validation.helper` `PLATE`). Sabit şablon ikisini reddederdi.
+- **Parça / stok numarası**: üreticiye göre değişiyor; `isValidPartNumber`
+  bu yüzden yalnızca "en az bir rakam içeren alfanümerik" diyor.
+- **Sipariş numarası**: önek bir **ayardan** geliyor
+  (`order.number_prefix`, en fazla dört harf) ve `order-number.helper` bunu
+  bilerek sabitlemiyor. Rigid bir şablon, ayar değiştiği gün hiçbir müşterinin
+  kendi numarasını yazamaması demekti. Alan yazarken biçimlenmeye devam ediyor,
+  yalnızca şablonu gösterilmiyor.
+
+### `applyMask`te bulunan hata
+
+İlk sürüm sabit karakteri "girdi bitmediyse yaz" kuralıyla yazıyordu ve
+girdinin kalanı şablona uymayan çöpten ibaretse ayraç yine de çıkıyordu:
+`applyMask('5a3b2c', PHONE_MASK)` → `"+90 532 "`. Boşluk göze çarpmıyor ama
+`maskRemainder` onu yazılmış saydığı için kalan şablon bir karakter kayıyordu.
+Sabitler artık **bekletiliyor** ve ancak arkasından gerçek bir karakter
+geldiğinde yazılıyor. Nöbetçi: `helpers/__tests__/mask.helper.test.ts`.
