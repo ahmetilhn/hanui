@@ -66,9 +66,27 @@
 .range__summary {
   font-size: $font-size-xs;
   color: $text-2;
+
+  /*
+   * OZET DE `Field`IN MESAJ SOZLESMESINE GIRER.
+   *
+   * `Field` ipucunu/hatasini kapsayicinin verdigi siraya gore ciziyor ve
+   * `FilterBar` onu denetimin USTUNE aliyor (yoksa serit alanlari alt
+   * kenardan hizaladigi icin denetim komsularindan yukari kaciyor). Ozet
+   * satiri bir `Field` mesaji DEGIL, kendi kutusunun cocugu — ve tam bu
+   * yuzden duzeltmenin disinda kalmisti.
+   *
+   * OLCULDU (panel /rapor/ciro): ozet acikken "Uygula" dugmesi tarih
+   * girdilerinden 26 px asagida kaliyordu. Ayni degiskeni okuyunca serit
+   * icinde ozet tarihlerin ustune cikar, alanin en alt ogesi yine denetim
+   * olur ve satir kapanir. Serit disinda deger yazilmaz: yedek `0`, yani
+   * ozet DOM sirasinda oldugu gibi altta kalir.
+   */
+  order: var(--hanui-field-message-order, 0);
 }
 
 .range__error {
   font-size: $font-size-xs;
   color: $bad-fg;
+  order: var(--hanui-field-message-order, 0);
 }

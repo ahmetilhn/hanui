@@ -60,6 +60,13 @@ type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
  * Seçili çip pasifleştirilmez: kullanıcı seçimini geri alabilmeli. Basılı
  * düğme semantiği (`aria-pressed`) ekran okuyucuya "seçili, kapatılabilir"
  * bilgisini verir.
+ *
+ * <h3>Native `title` YAZILMAZ</h3>
+ * Görünür metni olmayan çip `label`ı yalnızca `aria-label`a koyar. Önce
+ * ikisini birden yazıyordu; tarayıcının balonu dokunmatikte hiç görünmez,
+ * klavyede gecikmeli çıkar ve biçimi işletim sistemine bağlıdır — yani
+ * "üzerine gelince ne olduğu yazar" sözü kullanıcıların çoğunda tutmuyordu.
+ * Açıklama isteyen çağıran çipi {@link Tooltip} ile sarar.
  */
 const Chip = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
   (
@@ -113,7 +120,6 @@ const Chip = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
           className={classNames}
           aria-label={children ? undefined : label}
           aria-current={isSelected ? 'page' : undefined}
-          title={children ? undefined : label}
           data-testid={testId}
           {...linkProps}
         >
@@ -128,7 +134,6 @@ const Chip = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
         role={role}
         className={classNames}
         aria-label={children ? undefined : label}
-        title={children ? undefined : label}
         data-testid={testId}
         // Tek seçimli grupta radyo semantiği, aksi halde basılı düğme.
         {...(role === 'radio'

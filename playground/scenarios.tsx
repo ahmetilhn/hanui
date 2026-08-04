@@ -477,6 +477,27 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         Gövde
       </Panel>
     ),
+    /*
+     * NOBETCI: dip seridi `PanelForm`un sutununda bitmeli.
+     *
+     * Bu bilesim defterde yoktu ve tam da burada bozuluyordu: form 565 px'lik
+     * sutununu bitirirken kaydet dugmesi panelin obur ucunda duruyordu.
+     * Yukaridaki `withFooter` (formsuz) karsilastirma icin: orada dugmenin
+     * saga yaslanmasi DOGRU davranis.
+     */
+    /*
+     * Ad `Wide` ile BITIYOR: hucre satirin tamamini alir (bkz.
+     * `playground.css`). Dar bir hucrede `PanelForm`un 565 px'lik siniri hic
+     * baglamaz ve nobetci hicbir sey olcmez.
+     */
+    formWithFooterWide: (
+      <Panel title="Fatura adresi" footer={<Button>Kaydet</Button>}>
+        <PanelForm>
+          <Field label="Adres başlığı">{props => <Input {...props} />}</Field>
+          <Field label="Şehir">{props => <Input {...props} />}</Field>
+        </PanelForm>
+      </Panel>
+    ),
   },
   PanelForm: {
     default: (
@@ -739,7 +760,9 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       />
     ),
     flat: <Stat label="Aktif kullanıcı" value="1.204" delta="0" trend="flat" />,
-    plain: <Stat label="Toplam ürün" value="12.480" unit="adet" />,
+    valueOnly: <Stat label="Toplam ürün" value="12.480" unit="adet" />,
+    /* Kutusuz olcum: kendi zemini olan bandin uzerinde kullanilir. */
+    plain: <Stat variant="plain" label="Toplam ürün" value="12.480" unit="adet" />,
   },
   Timeline: {
     default: (
@@ -1006,6 +1029,29 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         </FilterBarField>
         <FilterBarField>
           <Select options={OPTIONS} value="a" onChange={noop} label="Durum" size="sm" />
+        </FilterBarField>
+      </FilterBar>
+    ),
+    /*
+     * KARISIK YUKSEKLIKLER — seridin en zor hali ve tek gorsel nobetcisi.
+     *
+     * Ucu bir arada: etiketsiz alan, etiketli alan ve etiketi + ALTINDA
+     * yardim metni olan alan. Serit `align-items: flex-end` tasidigi surece
+     * ucuncusunun yardim metni digerlerinin GIRDISIYLE ayni hizaya oturuyor
+     * ve girdinin kendisi yukari kaciyordu. Senaryo bu yuzden defterde.
+     */
+    mixed: (
+      <FilterBar onSubmit={noop} actions={<Button>Uygula</Button>}>
+        <FilterBarField isWide>
+          <Input aria-label="Ara" placeholder="Kod ya da ad" />
+        </FilterBarField>
+        <FilterBarField>
+          <Select options={OPTIONS} value="a" onChange={noop} label="Durum" size="sm" />
+        </FilterBarField>
+        <FilterBarField>
+          <Field label="Depo kodu" hint="Örn. IST-01">
+            {props => <Input {...props} placeholder="IST-01" />}
+          </Field>
         </FilterBarField>
       </FilterBar>
     ),

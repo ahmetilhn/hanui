@@ -87,9 +87,11 @@
       background-color: $action-hover;
     }
 
+    /* Metin/simge `$on-action-soft`: beyaz bu dolguda 1,55:1'de kalıyordu
+       (bkz. Button ve `theme/tokens.ts`). */
     &:disabled {
       background-color: $action-soft;
-      color: $surface;
+      color: $on-action-soft;
     }
   }
 

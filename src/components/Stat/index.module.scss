@@ -13,6 +13,32 @@
   &--sm {
     padding: $space-3;
   }
+
+  /*
+   * KUTUSUZ OLCUM.
+   *
+   * Kendi zemini olan bir bandin (kahraman, guvence seridi) uzerinde kart
+   * istenmiyor. Tuketicinin elindeki tek arac kapsayicida
+   * `--hanui-surface: transparent` yazmakti; dolgu o zaman GORUNMEZ oluyor
+   * ama YER KAPLIYOR. Olculdu (vitrin ana sayfa, 390 px): 2x2 izgarada kutu
+   * yuksekligi 93 px, satir araligi 16 px izgara boslugu + 2x16 px gorunmez
+   * dolgu = 48 px bos alan; dort sayi tek bir grup gibi okunmuyordu.
+   *
+   * Dolgu ve kenarlik yuzeyle BIRLIKTE duser — CSS bir degiskenin
+   * "saydam mi" oldugunu soramaz, o yuzden karar bir varyant.
+   */
+  &--plain {
+    padding: 0;
+    border: 0;
+    background: none;
+
+    /* Madalyon kutuyla birlikte kosede duruyordu; dolgu gidince etiketin
+       ustune biniyor. */
+    .stat__icon {
+      inset-block-start: 0;
+      inset-inline-end: 0;
+    }
+  }
 }
 
 /* Ikon madalyonu sag UST kosede: degerin solunda dururken uc haneli bir

@@ -82,24 +82,70 @@
   /*
    * Dip seridi: gomulu yuzey. Govdeyle ayni beyaz kalirsa kaydet dugmesi
    * formun icindeymis gibi gorunuyordu.
+   *
+   * BANT tam genislikte kalir; hizalama isi ICERIDE (`__footerInner`).
    */
   &__footer {
-    @include wrap-row($space-3);
-
-    justify-content: flex-end;
     padding: $space-4 $space-5;
     border-top: 1px solid $border;
     background-color: $surface-2;
 
     @include for-mobile {
       padding: $space-3 $space-4;
+    }
+  }
 
+  &__footerInner {
+    @include wrap-row($space-3);
+
+    justify-content: flex-end;
+
+    @include for-mobile {
       /* Dar ekranda dip dugmeleri tam genislige yayilir. */
       > * {
         flex: 1 1 auto;
       }
     }
   }
+}
+
+/*
+ * DIP SERIDI `PanelForm`UN SUTUNUNDA BITER.
+ *
+ * OLCULDU (vitrin /kargo-takip, 1440 px): `PanelForm` icerigi 97-662 px
+ * arasinda (`max-width` 565 px) dururken dip seridi panelin tam genisligine
+ * (1294 px) hizaliyor ve "Sorgula" dugmesi 1238 px'te cikiyordu — GONDERDIGI
+ * formdan 576 px uzakta. Goz formu bitirip dugmeyi ariyor, dugme ekranin obur
+ * ucunda.
+ *
+ * `PanelForm` zaten bir olcu sozlesmesi: "genislik panele degil izgaraya
+ * verilir". Dip seridi o sozlesmenin disinda kalmisti; artik ayni sutunu
+ * paylasiyor. `$measure-narrow` iki yerde de AYNI yazi tipiyle cozuluyor
+ * (`ch` mirasla gelir; `panel-body` de `__footer` de `.panel`in fontunu
+ * miras alir), yoksa iki kutu bir kac piksel kacik durur.
+ *
+ * `PanelForm`SUZ kullanimda kural hic uygulanmaz ve bugunku davranis
+ * (bandin sagina yasli) korunur — orada sinirlanacak bir sutun yok.
+ *
+ * `:has()` panelin KENDI govdesine bakar; baslikta ya da dip seritte duran
+ * bir izgara sayilmaz. Ic ice panellerde dis panel de eslesir; bu bilincli
+ * kabul edilen kenar durum — ic ice panel zaten kullanilmiyor ve sonucu
+ * bozuk degil, yalnizca daha dar bir hizalama.
+ */
+.panel:has(> .panel__body .form) .panel__footerInner {
+  max-width: $measure-narrow;
+
+  /*
+   * `margin-inline-end: auto` — LTR'de zaten varsayilan davranis ama RTL'de
+   * DEGIL: yazilmadiginda tasan bosluk yon degistirince sutun bandin karsi
+   * ucuna kaciyor ve gorsel regresyon `dir="rtl"` senaryosunda cikiyordu.
+   */
+  margin-inline-end: auto;
+}
+
+/* Iki sutunlu izgara daha genis; serit onu izler. */
+.panel:has(> .panel__body .form--2) .panel__footerInner {
+  max-width: $measure;
 }
 
 /*

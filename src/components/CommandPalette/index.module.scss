@@ -9,7 +9,27 @@
  * dogru buyudukce yerinden kayiyordu.
  */
 .palette {
-  display: flex;
+  /*
+   * KAPALI `<dialog>` CIZILMEZ.
+   *
+   * Buraya dogrudan `display: flex` yaziliyordu ve bu, tarayicinin
+   * `dialog:not([open]) { display: none }` varsayilanini EZIYORDU: pencere
+   * kapaliyken de yerlesime giriyor, gercek bir kutu kapliyor ve icindeki
+   * tiklanabilir ogeler etkin kaliyordu.
+   *
+   * OLCULDU (panel, 1440x900, `/stok`): kapali palet `x 576-1136, y -150-330`
+   * kutusunu kapliyordu — yani icerigin tam ustunde. Bos sanilan (900, 250)
+   * noktasina tiklamak `/kaynak/bank-transfer-notifications` sayfasina
+   * goturuyordu; kullanici "gorunmez linkler var" diye bildirdi. Ayni hata
+   * `Drawer`da da vardi ve orada kutu 77+ gezinme bagi tasiyor.
+   *
+   * `display` ARTIK `[open]` altinda. Kapanis animasyonu bundan etkilenmiyor:
+   * `surface-transition` zaten `display … allow-discrete` tasiyor, yani
+   * `display: none` gecise KATILIYOR. `BottomSheet` bu kalibi zaten
+   * kullaniyordu; simdi ucu de ayni.
+   */
+  display: none;
+
   flex-direction: column;
 
   width: min(92vw, 560px);
@@ -26,6 +46,10 @@
 
   @include surface-transition;
   @include backdrop-transition;
+
+  &[open] {
+    display: flex;
+  }
 
   &::backdrop {
     background-color: $scrim;

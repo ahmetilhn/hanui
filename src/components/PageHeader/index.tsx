@@ -57,7 +57,14 @@ const PageHeader: FC<Props> = ({
   testId,
 }) => (
   <header className={cx(styles.header, className)} data-testid={testId}>
-    {breadcrumb}
+    {/*
+      Yuva KENDI kutusunda: `header` bir dikey esnek kutu ve yuvanin cocugu
+      dogrudan ona dustugunde `align-items: stretch` aliyordu. `Breadcrumb`
+      zaten tam genislikte akan bir seritti, fark etmiyordu; icine bir dugme
+      konunca (bir kayit formunun "Geri"si) dugme baslik genisligine yayilip
+      ortalanmis metinle cikiyordu. Yuva artik icerigi kadar.
+    */}
+    {breadcrumb && <div className={styles.header__breadcrumb}>{breadcrumb}</div>}
 
     <div className={styles.header__top}>
       <div className={styles.header__text}>

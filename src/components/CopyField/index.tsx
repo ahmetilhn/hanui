@@ -14,7 +14,7 @@ type Props = {
   /** Gösterilecek ve panoya kopyalanacak değer. */
   value: string;
   /**
-   * Kopyalama düğmesinin erişilebilir adı ve `title`ı.
+   * Kopyalama düğmesinin erişilebilir adı.
    *
    * <p>Verilmezse `labels.copyField.copy(value)` çağrılır. Config bir DİZE
    * değil biçimlendirici tutar: ad değeri İÇERMELİ — bir listede on beş
@@ -61,6 +61,12 @@ const COPIED_FEEDBACK_MS = 1600;
  * Bir bildirim (toast) da olurdu ama listelerde on beş satır var; ekranın
  * dibinde "kopyalandı" yazması <em>hangisinin</em> kopyalandığını
  * söylemiyordu. İkon yerinde tike dönünce cevap tıklanan yerde.
+ *
+ * <h3>Düğmede native `title` YOK</h3>
+ * Ad yalnızca `aria-label`da. `title` aynı metni bir kez daha yazıyordu ve
+ * tarayıcı balonu dokunmatikte hiç görünmediği için hiçbir şey kazandırmıyor,
+ * bazı ekran okuyucularda adı iki kez okutuyordu. Simgenin kendisi zaten bir
+ * pano ve kopyalandığında tikli panoya dönüyor.
  *
  * <h3>Pano erişimi reddedilirse</h3>
  * `navigator.clipboard` güvenli olmayan bağlamda (HTTP) ve izin verilmediğinde
@@ -125,13 +131,6 @@ const CopyField: FC<Props> = ({
           className={cx(styles.copy__button, isCopied && styles['copy__button--done'])}
           onClick={handleCopy}
           aria-label={
-            isCopied
-              ? (copiedLabel ??
-                resolveFormatter('CopyField.copiedLabel', labels?.copyField?.copied, value))
-              : (copyLabel ??
-                resolveFormatter('CopyField.copyLabel', labels?.copyField?.copy, value))
-          }
-          title={
             isCopied
               ? (copiedLabel ??
                 resolveFormatter('CopyField.copiedLabel', labels?.copyField?.copied, value))

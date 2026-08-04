@@ -15,6 +15,23 @@
    * saglar.
    */
   overflow: auto;
+
+  /*
+   * KAYDIRMA KABI KONUMLANMIS OLMAK ZORUNDA.
+   *
+   * `overflow` yalnizca KENDI kapsayici blogunun icindeki mutlak konumlanmis
+   * torunlari kirpar. Kap konumlanmamisken `srLabel` ile cizilen gorunmez
+   * sutun basligi (`visually-hidden` → `position: absolute`) kabin degil
+   * daha yukaridaki bir atanin blogunda cozuluyor, dolayisiyla kirpilmiyor
+   * ve SAYFAYI yana kaydiriyordu.
+   *
+   * OLCULDU (panel /tarayici, 390 px): `documentElement.scrollWidth` 503 —
+   * sayfa 113 px yatay kayiyor. Hata yalnizca `hasViewportCap` VERILMEYEN
+   * tablolarda gorunuyordu: sinirli olanlar tesadufen bagisik, cunku
+   * yapiskan `thead th` orada konumlanmis bir ata uretiyor. Yani bagisiklik
+   * bir karar degil kazaydi ve tam olarak o yuzden fark edilmedi.
+   */
+  position: relative;
   background-color: $surface;
   border: 1px solid $border;
   border-radius: $radius-md;

@@ -40,15 +40,40 @@
  *
  * Doygun dolgu yalnizca EYLEM tonlarinda (`action`, `link`) anlamli.
  */
+/*
+ * NOTR TON — TEK yeniden baglanabilir tondur.
+ *
+ * OLCULDU: panel kenar cubugu her iki temada da koyu (`$rail-*`) ve oradaki
+ * "okuma" rozetleri ACIK temada `#f1f2f5` zeminle cikiyordu — koyu rayin
+ * uzerinde bembeyaz bir yapiskan etiket. Tuketici zaten dogru olani yapmisti
+ * (`--hanui-surface-2` / `--hanui-text-2` / `--hanui-border` ucluusunu o alt
+ * agac icin yeniden baglamak) ama rozet o ucluyu HIC OKUMUYORDU: notr ton
+ * `@include tint(neutral)` ile ayri bir aileden (`$off-*`) geliyor. Sozlesme
+ * yaziya dokulmedigi surece tuketici bunu ancak deneyerek bulabilirdi.
+ *
+ * Cozum ic siniflara selector uzatmak DEGIL — o siniflar kutuphanenin bir
+ * sonraki yayininda degisir ve kural sessizce duser. Notr rozet artik kendi
+ * ucluusunu okuyor; yedek degerler bugunku tint, yani hicbir cagiran yerde
+ * gorunum degismiyor:
+ *
+ *   --hanui-badge-bg · --hanui-badge-fg · --hanui-badge-line
+ *
+ * Yalnizca NOTR ton yeniden baglanabilir. "Notr" zaten "durum yok" demek ve
+ * rengi bulundugu yuzeyin isi. Durum tonlari (`success`, `danger`, `warning`,
+ * `info`) ANLAM tasir; onlari kapsayicidan ezilebilir birakmak, koyu bir
+ * bandin icindeki bir hata rozetini sessizce notrlestirirdi.
+ */
 .badge--neutral {
   &.badge--soft,
   &.badge--solid {
-    @include tint(neutral);
+    background-color: var(--hanui-badge-bg, #{$off-bg});
+    border: 1px solid var(--hanui-badge-line, #{$off-line});
+    color: var(--hanui-badge-fg, #{$off-fg});
   }
 
   &.badge--outline {
-    border-color: $border-strong;
-    color: $text-2;
+    border-color: var(--hanui-badge-line, #{$border-strong});
+    color: var(--hanui-badge-fg, #{$text-2});
   }
 }
 

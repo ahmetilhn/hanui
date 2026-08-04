@@ -155,10 +155,16 @@
      * `opacity` ile soluklastirildiginda altindaki zemin sizip rengi
      * kirletiyordu — koyu bir bant uzerinde pasif dugme yesilimsi
      * gorunuyordu. Kendi soluk dolgusu her zeminde ayni gorunur.
+     *
+     * METIN `$on-action-soft`, `$surface` DEGIL. Beyaz metin bu dolgunun
+     * uzerinde acik temada 1,55:1'de kaliyordu (koyuda 1,93) — etiket
+     * okunmuyor, yani dugmenin NEYI engelledigi de okunmuyordu. Pasiflik
+     * dolgunun geri cekilmesiyle bildirilir; gerekcenin tamami
+     * `theme/tokens.ts` `on-action-soft` altinda.
      */
     &:disabled {
       background-color: $action-soft;
-      color: $surface;
+      color: $on-action-soft;
     }
   }
 

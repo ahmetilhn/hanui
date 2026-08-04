@@ -1,6 +1,25 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
+/*
+ * MESAJIN YERI KAPSAYICIDAN GELEBILIR.
+ *
+ * Varsayilan sira DOM sirasidir — etiket, denetim, hata, ipucu — ve
+ * `order: 0` yedegi onu aynen korur. Yogun bir filtre seridinde ise denetimin
+ * ALTINA yazilan metin satiri bozuyor: serit denetimleri alt kenardan
+ * hizaliyor (`FilterBar`, `align-items: flex-end`) ve alt kenar artik
+ * denetimin degil ipucunun kenari oluyor.
+ *
+ * OLCULDU (panel /iadeler, 1440 px): "Ara" girdisi 33-77 px'te, yanindaki
+ * "Durum" secicisi 57-101 px'te ciziliyordu — yan yana duran iki denetim 24 px
+ * kacik ve etiketleri de ayri hizada. `FilterBar` bu yuzden asagidaki
+ * degiskenleri yeniden baglayip mesaji denetimin USTUNE alir; alanin alt
+ * kenari yine denetimin kenari olur ve satir kapanir.
+ *
+ * DOM sirasi ve `aria-describedby` bagi DEGISMEZ: yer degistiren ogeler
+ * odaklanabilir degil, yalnizca metin. Ekran okuyucu sirasi "etiket, denetim,
+ * hata, ipucu" olarak kalir.
+ */
 .field {
   @include stack($space-2);
 
@@ -17,6 +36,7 @@
     display: flex;
     align-items: center;
     gap: 2px;
+    order: var(--hanui-field-label-order, 0);
 
     &--hidden {
       @include visually-hidden;
@@ -42,6 +62,7 @@
     font-size: $font-size-xs;
     color: $text-2;
     line-height: $leading-normal;
+    order: var(--hanui-field-message-order, 0);
   }
 
   /* Hata mesaji ikonla birlikte: renk tek basina anlam tasimaz. */
@@ -54,6 +75,7 @@
     color: $bad-fg;
     line-height: $leading-normal;
     margin: 0;
+    order: var(--hanui-field-message-order, 0);
   }
 
   /*

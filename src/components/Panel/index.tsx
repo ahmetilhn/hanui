@@ -43,6 +43,15 @@ type Props = {
  * sayfanın üçte biri kadar kalıp yanındaki boşluğa bakıyordu; sorun formun
  * değil PANELİN daraltılmasıydı.
  *
+ * <h3>Dip şeridi o sütunu izler</h3>
+ * Panelde bir `PanelForm` varsa `footer` içeriği <strong>aynı sütunda</strong>
+ * biter. Şeridin kendisi (zemin + üst çizgi) tam genişlikte kalır; hizalanan
+ * yalnızca içeriği. Ölçüldü: form 565 px'lik sütununu bitirirken kaydet
+ * düğmesi panelin öbür ucunda, formdan 576 px uzakta duruyordu — göz formu
+ * bitiriyor, düğmeyi arıyordu. `PanelForm` kullanılmayan panelde kural
+ * uygulanmaz: orada sınırlanacak bir sütun yok ve şeridin sağa yaslanması
+ * doğru davranış.
+ *
  * @example
  * <Panel title="Profil bilgileri" description="Fatura bu bilgilerle kesilir">
  *   <PanelForm>…alanlar…</PanelForm>
@@ -89,7 +98,21 @@ const Panel: FC<Props> = ({
       {children}
     </div>
 
-    {footer && <div className={styles.panel__footer}>{footer}</div>}
+    {/*
+      Dip şeridi İKİ kutu: dış bant ile iç sütun.
+
+      Bant panelin tamamını kaplamak zorunda — kendi zemini ve üst çizgisi
+      var, daraltıldığında panelin dibinde yarım bir şerit kalır. Ama şeridin
+      İÇERİĞİ, panelde bir {@link PanelForm} varsa onun sütununda bitmeli;
+      genişlik kararını taşıyan tek kutu iç olan. Ölçüldü: form 97-662 px
+      arasında dururken "Sorgula" düğmesi 1238 px'te, yani gönderdiği formdan
+      576 px uzakta çiziliyordu.
+    */}
+    {footer && (
+      <div className={styles.panel__footer}>
+        <div className={styles.panel__footerInner}>{footer}</div>
+      </div>
+    )}
   </Tag>
 );
 

@@ -34,6 +34,15 @@ type Props = {
  * (birden çok alanı olan formda tarayıcının örtük gönderimi ancak bir gönderme
  * düğmesi varsa çalışır).
  *
+ * <h3>Denetimler tek hizada</h3>
+ * Şerit alanları alt kenardan hizalar; etiketli ve etiketsiz alanın yan yana
+ * durması bunu bozmaz. Bozan şey denetimin <strong>altına</strong> yazılan
+ * yardım/hata metniydi: alanın alt kenarı artık denetimin değil metnin kenarı
+ * oluyor ve denetim komşularından yukarı kaçıyordu (ölçüldü: bir ekranda 24 px
+ * kaçık iki girdi). Şeridin içindeki `Field` mesajı denetimin
+ * <em>üstüne</em> alır — etiket, ipucu, denetim. DOM sırası değişmez, yani
+ * ekran okuyucu yine "etiket, denetim, hata, ipucu" duyar.
+ *
  * <h3>320px'te taşma yok</h3>
  * Alanlar `min-width: 240–280px` taşıyordu ve en dar ekranda şerit sayfayı yana
  * kaydırıyordu. Genişlik artık `flex-basis` ile istenir, `min-width: 0` ile

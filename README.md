@@ -427,7 +427,7 @@ npm run playground # bileşen galerisi → http://localhost:5273
 | `npm run test`            | Jest + Testing Library + `jest-axe`                              |
 | `npm run test:coverage`   | kapsam kapısı — `helpers`/`hooks`/`theme` satır ≥ %80            |
 | `npm run test:visual`     | görsel regresyon (Playwright); `verify` İÇİNDE DEĞİL, aşağı bkz. |
-| `npm run check:contrast`  | WCAG kontrast ölçümü, iki temada 118 çift                        |
+| `npm run check:contrast`  | WCAG kontrast ölçümü, iki temada 120 çift                        |
 | `npm run size`            | paket boyutu bütçesi (`size-limit`)                              |
 | `npm run playground`      | bileşen galerisi (tema · RTL · yoğunluk anahtarı)                |
 | `npm run lint`            | ESLint (TS) + stylelint (SCSS)                                    |

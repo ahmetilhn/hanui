@@ -49,6 +49,24 @@ type Props = {
  * <p>Doygun dolgu yalnızca <strong>miktar</strong> tonlarında (`action`,
  * `link`) anlamlı: onlar bir durumu değil bir sayıyı bildirir ve tıklanabilir
  * bir öğenin parçasıdır.
+ *
+ * <h3>Koyu bandın üzerinde: `neutral` yeniden bağlanır</h3>
+ * Nötr rozet üç CSS özel özelliği okur — `--hanui-badge-bg`,
+ * `--hanui-badge-fg`, `--hanui-badge-line`. Kapsayıcıda tanımlanmadıklarında
+ * varsayılan tint çizilir; koyu bir gezinme rayının içinde ise kapsayıcı
+ * üçünü kendi tonlarına bağlayarak rozeti oraya taşır. İç sınıflara kural
+ * yazmak bir sonraki yayında sessizce düşerdi.
+ *
+ * ```scss
+ * .rail__badge {
+ *   --hanui-badge-bg: #{$rail-hover};
+ *   --hanui-badge-fg: #{$rail-fg-2};
+ *   --hanui-badge-line: #{$rail-line};
+ * }
+ * ```
+ *
+ * <p>Durum tonları bilinçli olarak ezilemez: bir hata rozetini kapsayıcının
+ * sessizce nötrleştirmesi, rengin taşıdığı anlamı yok ederdi.
  */
 const Badge: FC<Props> = ({
   children,

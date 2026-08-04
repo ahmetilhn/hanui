@@ -35,6 +35,12 @@
  * <p>Advisory olanlar yine de RAPORLANIR: bir gün `border` gerçekten tek
  * taşıyıcı hâline gelirse (kenarlıklı ama zeminsiz bir girdi) sayı elde
  * duruyor.
+ *
+ * <h3>Pasif denetimde tek istisna: ETİKET</h3>
+ * Pasif DOLGU advisory kalır (`action-soft` / `surface`), ama dolgunun
+ * ÜZERİNDEKİ METİN zorunlu listede: `on-action-soft` / `action-soft`, 4,5:1.
+ * WCAG bunu istemiyor ve tam da bu yüzden çift hiç ölçülmüyordu; ölçüldüğünde
+ * açık temada 1,55:1 çıktı. Gerekçe `docs/A11Y.md`de.
  */
 import { contrast, round } from './lib/contrast.mjs';
 import { loadTokens } from './lib/load-tokens.mjs';
@@ -79,6 +85,18 @@ const buildPairs = () => {
   // --- Dolgu üzerindeki metin: her etkileşim durumu ayrı ölçülür ---
   for (const fill of ['action', 'action-hover', 'action-active']) add('on-action', fill, 'text');
   for (const fill of ['amber', 'amber-hover', 'amber-active']) add('on-amber', fill, 'text');
+
+  /*
+   * PASİF DOLGU ÜZERİNDEKİ METİN — WCAG'in muaf tuttuğu ama kütüphanenin
+   * kendine ŞART KOŞTUĞU tek çift.
+   *
+   * 1.4.3 de 1.4.11 de "inactive user interface component"i açıkça kapsam
+   * dışı bırakıyor. Muafiyet bu çiftin listede hiç olmamasına yol açmıştı ve
+   * sonuç ölçüldüğünde görüldü: pasif düğme etiketi açık temada 1,55:1,
+   * koyuda 1,93:1 — okunmuyordu. Pasiflik dolgunun geri çekilmesiyle
+   * bildirilir; etiketin silinmesiyle değil.
+   */
+  add('on-action-soft', 'action-soft', 'text');
   for (const fill of ['danger-solid', 'danger-solid-hover']) add('on-danger', fill, 'text');
 
   /*

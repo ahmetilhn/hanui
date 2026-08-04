@@ -91,6 +91,27 @@ export const LIGHT_THEME = {
   'on-action': NEUTRAL.n0,
   /** Pasif dolgu; saydamlık DEĞİL kendi rengi (bkz. Button `:disabled`). */
   'action-soft': NEUTRAL.n300,
+  /**
+   * PASİF DOLGU ÜZERİNDEKİ METİN.
+   *
+   * <p>ÖLÇÜLDÜ: pasif düğme `action-soft` zeminine `on-action` (beyaz) metin
+   * yazıyordu — açık temada <strong>1,55:1</strong>, koyu temada 1,93:1.
+   * Ekranda "Ara", "Sorgula", "Giriş yap" yıkanmış duruyor; etiketin ne
+   * dediği okunmuyordu.
+   *
+   * <p>WCAG pasif denetimleri hem 1.4.3'te hem 1.4.11'de açıkça muaf tutuyor,
+   * yani bu bir İHLAL DEĞİLDİ — ve tam da bu yüzden hiçbir katman uyarmadı:
+   * çift denetçinin listesinde de yoktu. Ama okunamayan bir etiket, düğmenin
+   * neyi engellediğini de söylemez; kullanıcı "neden pasif" sorusunu
+   * soramadan önce "bu neydi" sorusunda takılıyor. Pasiflik dolgunun
+   * geri çekilmesiyle bildirilir, metnin silinmesiyle değil — `opacity` ile
+   * soluklaştırma yasağının (`A11Y.md`) aynı gerekçesi.
+   *
+   * <p>Ton merdivenin kendisinden: açıkta `n700` (6,52:1), koyuda `n300`
+   * (5,76:1). Çift artık `check-contrast.mjs`te ve eşiği tutmayan bir tema
+   * derlemeyi kırar.
+   */
+  'on-action-soft': NEUTRAL.n700,
 
   // --- Dönüşüm eylemi: ekrandaki tek doygun turuncu ---
   amber: AMBER.base,
@@ -263,6 +284,8 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'action-active': NEUTRAL.n300,
   'on-action': NEUTRAL.n900,
   'action-soft': '#414a58',
+  /* Koyu temada pasif dolgu ortada bir gri: metin AÇIK olmali (bkz. LIGHT). */
+  'on-action-soft': NEUTRAL.n300,
 
   amber: AMBER.dark,
   'amber-hover': AMBER.darkHover,
@@ -497,10 +520,15 @@ export const METRIC_TOKENS = {
  * panelde kullanıcıyı kaydırmaya mahkûm ediyor; panel için doğru olan
  * sıkılık vitrinde ucuz duruyor. İkisini tek ölçekle karşılamanın yolu yok.
  *
- * <h3>Yalnızca boşluk ve punto iner — ÖLÇEĞİN TAMAMI DEĞİL</h3>
+ * <h3>Boşluk ve punto iner; yarıçap ve dokunma hedefi inmez</h3>
  * `space-0` ve `space-1` sabit kalır: 4 px'in altına inen bir boşluk kademesi
  * bir boşluk değil bir çizim hatası. Yarıçap da sabit kalır — yuvarlaklık
  * yoğunluğun değil markanın işi.
+ *
+ * <p>Punto ölçeğinin <strong>tamamı</strong> iner. Bir dönem yalnızca küçük
+ * uç (`2xs`–`body`) iniyordu ve bu ölçülebilir bir hataydı: gövde 15 px'e
+ * inerken başlıklar 29 px'te kaldığı için oran vitrindekinin çok üstüne
+ * çıkıyor, panelde başlıklar ekranı yiyordu.
  *
  * <h3>DOKUNMA HEDEFİ KÜÇÜLMEZ</h3>
  * `tap-target` görünmez bir örtü çiziyor ve ölçüsü (44 px) buraya girmiyor:
@@ -520,6 +548,26 @@ export const COMPACT_DENSITY = {
   'font-size-sm': '13px',
   'font-size-base': '15px',
   'font-size-body': '16px',
+
+  /*
+   * ÖLÇEĞİN ÜST UCU DA İNER — eksik olan buydu.
+   *
+   * Önce yalnızca `2xs`–`body` iniyordu ve büyük uç (`lg`…`4xl`) varsayılan
+   * kalıyordu. Sonuç ORANIN bozulması: panelde gövde 15 px'e inerken bir
+   * `<h2>` 29 px'te kalıyor, yani başlık gövdenin neredeyse iki katı. Aynı
+   * başlık vitrinde (gövde 17 px) 1,7 kat ve doğru duruyor — yoğun kipte
+   * "başlıklar devasa" diye bildirildi ve ölçüldü.
+   *
+   * Yoğunluk bir ORAN kararıdır, bir kırpma listesi değil: ölçeğin yarısını
+   * indirip yarısını bırakmak, iki ayrı ölçeği aynı ekranda karıştırmak
+   * demek. Kademe küçük uçla aynı oranda (~%15) ve tipografik ölçek
+   * korunuyor.
+   */
+  'font-size-lg': '18px',
+  'font-size-xl': '21px',
+  'font-size-2xl': '25px',
+  'font-size-3xl': '31px',
+  'font-size-4xl': '39px',
 
   'leading-normal': '1.5',
   'leading-relaxed': '1.6',

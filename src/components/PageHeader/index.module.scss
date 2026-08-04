@@ -27,6 +27,20 @@
     flex-wrap: wrap;
   }
 
+  /*
+   * Kirinti yolu yuvasi ICERIGI KADAR.
+   *
+   * `align-self: flex-start` olmadan yuva dikey esnek kutunun tam genisligine
+   * geriliyor: seride konan bir dugme baslik genisliginde ve ortalanmis metinle
+   * cikiyordu. `max-inline-size` + `min-inline-size` uzun bir yolun kendi
+   * tasma kuralini korur.
+   */
+  &__breadcrumb {
+    align-self: flex-start;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+  }
+
   &__text {
     @include stack($space-2);
 

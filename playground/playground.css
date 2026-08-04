@@ -88,6 +88,29 @@ body {
   flex: 0 1 auto;
 }
 
+/*
+ * `…Wide` ILE BITEN SENARYO SATIRIN TAMAMINI ALIR.
+ *
+ * Hücre normalde içeriği kadar. Bazı nöbetçiler ancak bileşen bir GENİŞLİK
+ * EŞİĞİNİN ötesindeyken bir şey ölçer: `Panel`in dip şeridi `PanelForm`un
+ * 565 px'lik sütununu izliyor mu sorusu, 260 px'lik bir hücrede duruma
+ * bakılmaksızın "evet" görünür — yani anlık görüntü düzeltme olsa da olmasa
+ * da aynı çıkar.
+ *
+ * Senaryoya sabit piksel yazmak DENENDI ve daha kötüsünü yaptı: telefon
+ * ölçüsünde galeriyi yana taşırıp sayfayı yatay kaydırıyor, `toHaveScreenshot`
+ * bölümleri görünüme kaydırırken yanlış dikdörtgeni yakalıyor ve bir bölümün
+ * karesine başka bir bileşenin içeriği düşüyordu. Karar hücrede, ölçü
+ * kabından geliyor: masaüstünde satırın tamamı, telefonda kabın genişliği.
+ */
+.gallery__state[data-state$='Wide'] {
+  flex: 1 0 100%;
+}
+
+.gallery__state[data-state$='Wide'] .gallery__stage {
+  width: 100%;
+}
+
 .gallery__label {
   font-size: 12px;
   letter-spacing: 0.04em;

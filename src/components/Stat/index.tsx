@@ -40,6 +40,20 @@ type Props = {
   description?: ReactNode;
   /** Sol üstte duran ikon madalyonu. */
   icon?: ReactNode;
+  /**
+   * `plain` KUTUYU kaldırır: zemin, kenarlık ve dolgu gider, yalnızca sayı
+   * kalır. Varsayılan `card`.
+   *
+   * <p>Kendi zemini olan bir bandın (kahraman, güvence şeridi) üzerinde
+   * ölçümler kart olarak istenmiyor. Bunun tek yolu kapsayıcıda
+   * `--hanui-surface: transparent` yazmaktı ve iki şeyi birden bozuyordu:
+   * dolgu <em>görünmez oluyor ama YER KAPLIYOR</em> — ölçüldü, telefonda 2×2
+   * ızgarada satır arası 48 px'e çıkıyor ve dört sayı tek bir grup gibi
+   * okunmuyordu — ayrıca o değişken kapsayıcıdaki <strong>her</strong> hanui
+   * yüzeyini birden düzleştiriyordu. `plain` niyeti tek yerde söyler ve
+   * yüzey değişkenine dokunmaya gerek bırakmaz.
+   */
+  variant?: 'card' | 'plain';
   size?: 'sm' | 'md';
   className?: string;
   testId?: string;
@@ -81,6 +95,24 @@ const TREND_TEXT: Record<StatTrend, string> = {
  * <h3>Rakamlar TABULAR</h3>
  * Alt alta duran ölçüm kutularında orantılı rakamlar sütunu tırtıklı
  * gösteriyor; `tabular-nums` her basamağı aynı genişlikte çiziyor.
+ *
+ * <h3>GENİŞLİK KARARI KAPSAYICININ</h3>
+ * `Stat` kendine `flex` ya da `width` yazmaz ve bu bilinçli. Esnek bir sırada
+ * içeriği kadar büzülür — yan yana dört kutu 148-177 px arasında tırtıklı
+ * çıkabilir — ama çözüm kutuya `flex: 1` yazmak DEĞİL: aynı bileşen bir
+ * ızgara hücresinde, bir kartın içinde ve tek başına da kullanılıyor ve orada
+ * `flex: 1` çağıranın kararını sessizce eziyor. Eşit genişlik isteniyorsa
+ * kapsayıcı söyler:
+ *
+ * ```scss
+ * .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+ * ```
+ *
+ * <h3>Kendi zemini olan bandın üzerinde: `variant="plain"`</h3>
+ * Kart görünümü (zemin + kenarlık + dolgu) sayfa yüzeyi için. Bir kahraman
+ * bandının içinde ölçümler kart olarak istenmediğinde `plain` verilir; zemini
+ * `transparent`a çevirmek dolguyu <em>görünmez</em> yapar ama kaldırmaz ve
+ * ızgara sessizce dağılır.
  */
 const Stat: FC<Props> = ({
   label,
@@ -91,6 +123,7 @@ const Stat: FC<Props> = ({
   isUpPositive = true,
   description,
   icon,
+  variant = 'card',
   size = 'md',
   className,
   testId,
@@ -99,7 +132,15 @@ const Stat: FC<Props> = ({
   const isPositive = trend === 'flat' ? undefined : (trend === 'up') === isUpPositive;
 
   return (
-    <div className={cx(styles.stat, styles[`stat--${size}`], className)} data-testid={testId}>
+    /*
+      `card` icin ayri bir sinif YOK: taban sinifin kendisi kart. Arama
+      `undefined` doner ve `cx` onu atar — varsayilan gorunum tek yerde kalir,
+      iki sinif arasinda bolunmez.
+    */
+    <div
+      className={cx(styles.stat, styles[`stat--${size}`], styles[`stat--${variant}`], className)}
+      data-testid={testId}
+    >
       {icon && (
         <span className={styles.stat__icon} aria-hidden>
           {icon}

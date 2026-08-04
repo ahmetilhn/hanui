@@ -47,6 +47,18 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
  * <p>Bağlantı kipinde `disabled` YOKTUR — `<a>` etiketinin devre dışı hâli
  * yok ve `aria-disabled` tıklamayı engellemez. Erişilemez olması gereken bir
  * eylem hiç çizilmez.
+ *
+ * <h3>Native `title` YAZILMAZ</h3>
+ * Düğme `label`ı yalnızca `aria-label`a koyar. Önce ikisi birlikte
+ * yazılıyordu (`title="Şifreyi göster" aria-label="Şifreyi göster"`) ve bu üç
+ * ayrı sorun üretiyordu: tarayıcının balonu <strong>dokunmatikte hiç
+ * görünmez</strong> — trafiğin ağırlığı mobil olan bir arayüzde açıklamanın
+ * hiç olmaması demek; klavyeyle gelen kullanıcıda gecikmeli çıkar ve biçimi
+ * işletim sistemine bağlıdır; bazı ekran okuyucular `aria-label` ile birlikte
+ * ikisini de okuyup adı <em>iki kez</em> söyler. Görünür bir açıklama isteyen
+ * çağıran düğmeyi {@link Tooltip} ile sarar — balon dokunmatikte uzun basmayla
+ * da açılır. Yine de `title` geçirmek isteyen `...rest` ile geçirebilir; karar
+ * artık çağıranın.
  */
 const IconButton = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
   (
@@ -77,7 +89,7 @@ const IconButton = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
           href={href}
           className={classNames}
           aria-label={label}
-          title={rest.title ?? label}
+          title={rest.title}
           data-testid={testId}
           {...linkProps}
         >
@@ -91,7 +103,6 @@ const IconButton = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
         type={type}
         className={classNames}
         aria-label={label}
-        title={label}
         data-testid={testId}
         {...rest}
       >
