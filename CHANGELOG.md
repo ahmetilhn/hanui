@@ -7,6 +7,30 @@ tarafında ne gerektirdiğini kaydeder.
 
 ## [Yayımlanmamış]
 
+### Düzeltildi — `Combobox` sonradan gelen seçeneklerle BOŞ açılıyordu
+
+Tüketicide ölçüldü (`hanparca-frontend`, araç seçici): marka listesi bir
+istekten sonra iniyor, model listesi marka seçilince. Panel açıldığında liste
+**tamamen boştu** — kullanıcı yalnızca arama kutusunu görüyordu. Kutuya bir
+harf yazmak seçenek sayısını değiştirdiği için liste o anda kendine geliyordu,
+yani davranış "arama yapmadan hiçbir seçenek yok" diye okunuyordu.
+
+**Kök neden `useVirtualList`te ve tek cümle:** ölçüm yalnızca `measure`
+kimliği değiştiğinde koşuyordu, kaydıran öğe ise bir **ref** — ona değer
+yazmak hiçbir etkiyi tetiklemez. Seçenekler bileşen kurulduktan sonra
+geldiğinde aralık `end: 0`da kalıyor ve liste açıldığında hiçbir satır
+çizilmiyordu.
+
+Uzun listelerde (>80 satır, marka) kusur **görünmüyordu**: orada panel
+açılışı `isEnabled`i değiştirdiği için ölçüm zaten yeniden koşuyor. Yani
+kırılan tam olarak kısa listelerdi — model, kasa, motor.
+
+Ölçüm artık her boyamadan sonra koşuyor; aralık değişmediyse **aynı nesne**
+geri veriliyor, yoksa ölçüm kendi kendini tetikleyen bir döngüye dönerdi.
+Nöbetçi: `Combobox.virtual.test.tsx` → "mount SONRASI gelen seçenekler".
+Seçeneklerin ilk çizimden sonra gelmesi şart; mount anında verilen liste bu
+yolu hiç geçmiyor ve diğer testlerin hepsi öyle kuruluyordu.
+
 ### Faz 5 — görsel dil · Faz 6 — belge ve DX
 
 #### Faz 5

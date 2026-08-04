@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import Combobox from '../Combobox';
@@ -129,6 +130,50 @@ describe('Combobox — sanallaştırma', () => {
     const drawn = screen.getAllByRole('option');
     expect(drawn.length).toBeLessThan(VIRTUAL_THRESHOLD_GUARD);
     expect(drawn[0]).not.toHaveAttribute('aria-setsize');
+  });
+
+  /*
+   * ═══ SECENEKLER SONRADAN GELIYORSA DA CIZILIR ═══
+   *
+   * Olculen kirilma: arac secicisinde marka listesi bir istekten sonra
+   * iniyor, model listesi de marka secilince. Bilesen KURULDUGUNDA liste
+   * bostu; olcum yalnizca `measure` kimligi degistiginde kosuyordu ve
+   * kaydiran ogeye deger yazmak bir etkiyi tetiklemedigi icin panel
+   * acildiginda aralik `end: 0`da kaliyordu — kullanici paneli aciyor,
+   * YALNIZCA ARAMA KUTUSUNU goruyor. Kutuya bir harf yazmak secenek sayisini
+   * degistirdigi icin liste o anda kendine geliyordu, yani "arama yapmadan
+   * hicbir secenek yok".
+   *
+   * Seceneklerin ILK cizimden sonra gelmesi sarttir; mount aninda verilen
+   * liste bu yolu hic gecmez ve digger testlerin hepsi oyle kuruluyor.
+   */
+  it('mount SONRASI gelen seçenekler açılışta çizilir', () => {
+    const Async = () => {
+      const [list, setList] = useState<ReturnType<typeof options>>([]);
+      useEffect(() => setList(options(12)), []);
+      return <Combobox options={list} value={null} onChange={() => {}} labels={LABELS} />;
+    };
+
+    render(<Async />);
+    open();
+
+    expect(screen.getAllByRole('option')).toHaveLength(12);
+  });
+
+  /* Ayni kirilmanin sanallastirilan hali: uzun liste de bos kalmamali. */
+  it('mount SONRASI gelen UZUN liste açılışta çizilir', () => {
+    const Async = () => {
+      const [list, setList] = useState<ReturnType<typeof options>>([]);
+      useEffect(() => setList(options(1121)), []);
+      return <Combobox options={list} value={null} onChange={() => {}} labels={LABELS} />;
+    };
+
+    render(<Async />);
+    open();
+
+    const drawn = screen.getAllByRole('option');
+    expect(drawn.length).toBeGreaterThan(0);
+    expect(drawn.length).toBeLessThan(60);
   });
 });
 

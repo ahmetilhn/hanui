@@ -66,25 +66,59 @@ const useVirtualList = (
      * doner ve sifir satir cizilirdi: liste bir kare boyunca BOS gorunuyor,
      * ekran okuyucu da o karede "0 secenek" diyordu.
      */
-    if (!isEnabled || !node || node.clientHeight === 0) {
-      setRange({ start: 0, end: count, totalHeight: count * rowHeight, offset: 0 });
-      return;
-    }
+    const next =
+      !isEnabled || !node || node.clientHeight === 0
+        ? { start: 0, end: count, totalHeight: count * rowHeight, offset: 0 }
+        : (() => {
+            const visibleCount = Math.ceil(node.clientHeight / rowHeight);
+            const first = Math.floor(node.scrollTop / rowHeight);
 
-    const visibleCount = Math.ceil(node.clientHeight / rowHeight);
-    const first = Math.floor(node.scrollTop / rowHeight);
+            const start = Math.max(0, first - overscan);
+            const end = Math.min(count, first + visibleCount + overscan);
 
-    const start = Math.max(0, first - overscan);
-    const end = Math.min(count, first + visibleCount + overscan);
+            return { start, end, totalHeight: count * rowHeight, offset: start * rowHeight };
+          })();
 
-    setRange({ start, end, totalHeight: count * rowHeight, offset: start * rowHeight });
+    /*
+     * DEGISMEDIYSE AYNI NESNE geri verilir.
+     *
+     * Olcum her boyamadan sonra kosuyor (asagidaki bagimliliksiz etki) ve her
+     * seferinde yeni bir nesne yazsaydi React'in cikis kapisi kapanir, olcum
+     * kendi kendini tetikleyen sonsuz bir donguye donerdi.
+     */
+    setRange(prev =>
+      prev.start === next.start &&
+      prev.end === next.end &&
+      prev.totalHeight === next.totalHeight &&
+      prev.offset === next.offset
+        ? prev
+        : next,
+    );
   }, [count, isEnabled, overscan, rowHeight]);
+
+  /*
+   * ═══ OLCUM HER BOYAMADAN SONRA — BAGIMLILIK LISTESI YOK ═══
+   *
+   * Kaydiran oge bir REF ve ref'e deger yazmak hicbir etkiyi tetiklemez:
+   * liste ILK cizildiginde (acilir panel acildiginda) asagidaki etki
+   * kosmuyordu, cunku `measure` kimligi degismemisti.
+   *
+   * Olculen kirilma: secenekler bilesen KURULDUKTAN SONRA geliyorsa
+   * (arac secicisinde marka listesi bir istekten sonra iniyor, model listesi
+   * marka secilince) baslangic araligi `end: 0` ile donuyor ve panel
+   * acildiginda liste TAMAMEN BOS goruluyordu — yalnizca arama kutusu. Kutuya
+   * bir harf yazmak seceneklerin sayisini degistirdigi icin liste o an
+   * kendine geliyor, yani "arama yapmadan hicbir secenek yok" davranisi.
+   *
+   * Bedeli bir `clientHeight` okumasi; karsiliginda olcum, kaydiran ogenin ne
+   * zaman baglandigini bilmek zorunda kalmiyor.
+   */
+  useEffect(measure);
 
   useEffect(() => {
     const node = scrollRef.current;
     if (!node) return;
 
-    measure();
     node.addEventListener('scroll', measure, { passive: true });
 
     const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure);
