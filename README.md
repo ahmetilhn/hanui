@@ -427,6 +427,7 @@ npm run playground # bileşen galerisi → http://localhost:5273
 | `npm run test`            | Jest + Testing Library + `jest-axe`                              |
 | `npm run test:coverage`   | kapsam kapısı — `helpers`/`hooks`/`theme` satır ≥ %80            |
 | `npm run test:visual`     | görsel regresyon (Playwright); `verify` İÇİNDE DEĞİL, aşağı bkz. |
+| `npm run test:device`     | iOS (WebKit) + Android (Chromium) davranış nöbetçileri, aşağı bkz. |
 | `npm run check:contrast`  | WCAG kontrast ölçümü, iki temada 120 çift                        |
 | `npm run size`            | paket boyutu bütçesi (`size-limit`)                              |
 | `npm run playground`      | bileşen galerisi (tema · RTL · yoğunluk anahtarı)                |
@@ -450,6 +451,32 @@ npm run playground # bileşen galerisi → http://localhost:5273
   `outline` ve bileşen SCSS'inde ham süre değeri (`0.7s`) yazılmasını
   engelliyor. Üç bileşen kendi halkasını, iki bileşen kendi süresini
   yazıyordu.
+
+### Cihaz nöbetçileri — `npm run test:device`
+
+```bash
+npm run test:device:install   # WebKit + Chromium ikilileri (bir kez)
+npm run test:device           # ios (iPhone 14 · WebKit) + android (Pixel 7 · Chromium)
+```
+
+Bu depodaki en pahalı hatalar masaüstünde **görünmüyordu**: alt sayfanın gövdesi
+çöküyor, dip şerit klavyenin altında kalıyor, filtre seçenekleri maskenin
+altında siliniyordu. Üçü de yerleşim/boyama hatası ve üçü de yalnızca gerçek bir
+yerleşim motorunda ölçülebiliyor — jsdom bunları hiç hesaplamıyor.
+
+**İki motor, çünkü bir motor yetmiyor.** iOS'taki her tarayıcı (Chrome dahil)
+WebKit; Chromium'da doğru olan orada doğru olmak zorunda değil.
+
+**Ekran görüntüsü değil sayı.** Bu koşu piksel karşılaştırmaz — yükseklik,
+taşma, odak ve hesaplanmış CSS değeri ölçer. Yani platformdan bağımsız,
+referans dosyası yok, `--update-snapshots` gerektirmiyor ve `test:visual`in
+aksine **CI'da olduğu gibi koşabilir**.
+
+**Emülasyonun dürüst sınırı.** Playwright'ın WebKit'i iOS Safari değil; çentik
+payı (`env(safe-area-inset-*)` burada hep 0), ekran klavyesinin görünen alanı
+daraltması, adres çubuğunun kaybolup gelmesi ve momentum kaydırma
+yakalanmıyor. O sınırın altında kalanlar için savunma CSS'te taban değerlerde
+(bkz. `bottom-sheet` mixin'i) ve onların nöbetçisi `e2e/bottom-sheet.spec.ts`.
 
 **Görsel regresyon `verify` içinde değil**: ekran görüntüsü platforma bağlı
 (yazı tipi tarama, alt piksel yumuşatma) ve macOS'te üretilmiş bir referans

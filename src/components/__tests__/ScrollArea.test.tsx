@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 
 import ScrollArea from '../ScrollArea';
 
@@ -16,10 +16,14 @@ import ScrollArea from '../ScrollArea';
  */
 
 /** jsdom `scrollHeight`/`clientHeight` döndürmüyor; ölçüm taklit edilir. */
-const mockOverflow = (isOverflowing: boolean) => {
+const mockOverflow = (isOverflowing: boolean, scrollTop = 0) => {
   Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
     configurable: true,
     get: () => (isOverflowing ? 500 : 100),
+  });
+  Object.defineProperty(HTMLElement.prototype, 'scrollTop', {
+    configurable: true,
+    get: () => scrollTop,
   });
   Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
     configurable: true,
@@ -79,5 +83,77 @@ describe('ScrollArea', () => {
 
     expect(screen.queryByRole('region')).not.toBeInTheDocument();
     expect(container.firstElementChild).not.toHaveAttribute('tabindex');
+  });
+
+  /*
+   * KENAR SOLMASI BIR IDDIA: "bu ucun otesinde devam eden icerik var".
+   *
+   * Iki uca da kosulsuz yazildiginda iddia YANLIS oluyor ve bedeli dogrudan
+   * gorunurluk. Olculdu (Chromium + WebKit, filtre kenar cubugundaki
+   * `maxHeight: 280` kutusu): tek secenekli bir grupta kutu 33 px ve solma
+   * paylari 16+16 px oldugu icin TAM OPAK alan 1 px kaliyordu — secenek
+   * neredeyse tamamen silik ciziliyor, ustelik tasma olmadigi icin
+   * kaydirarak da kurtarilamiyordu. Kullanicinin bildirdigi hata buydu.
+   */
+  describe('kenar solması', () => {
+    const boxOf = (container: HTMLElement) => container.firstElementChild as HTMLElement;
+
+    it('taşma YOKSA hiçbir uç solmaz', () => {
+      mockOverflow(false);
+
+      const { container } = render(
+        <ScrollArea label="Kısa liste" hasFade>
+          <p>tek seçenek</p>
+        </ScrollArea>,
+      );
+
+      expect(boxOf(container)).not.toHaveAttribute('data-fade-start');
+      expect(boxOf(container)).not.toHaveAttribute('data-fade-end');
+    });
+
+    /* En ustteyken ust ucta gizli icerik YOK: orayi soldurmak ilk satiri
+       gosterecek bir sey olmadigi halde siliyordu. */
+    it('taşma varken en üstte YALNIZCA alt uç solar', () => {
+      mockOverflow(true, 0);
+
+      const { container } = render(
+        <ScrollArea label="Uzun liste" maxHeight={100} hasFade>
+          <p>içerik</p>
+        </ScrollArea>,
+      );
+
+      expect(boxOf(container)).not.toHaveAttribute('data-fade-start');
+      expect(boxOf(container)).toHaveAttribute('data-fade-end');
+    });
+
+    it('sona kaydırıldığında YALNIZCA üst uç solar', () => {
+      mockOverflow(true, 400);
+
+      const { container } = render(
+        <ScrollArea label="Uzun liste" maxHeight={100} hasFade>
+          <p>içerik</p>
+        </ScrollArea>,
+      );
+
+      act(() => boxOf(container).dispatchEvent(new Event('scroll')));
+
+      expect(boxOf(container)).toHaveAttribute('data-fade-start');
+      expect(boxOf(container)).not.toHaveAttribute('data-fade-end');
+    });
+
+    /* `hasFade` verilmediginde uc bayragi HIC yazilmaz: maske kurali da yok,
+       oznitelik oraya bir anlam tasimazdi. */
+    it('`hasFade` yokken uç bayrağı yazılmaz', () => {
+      mockOverflow(true, 400);
+
+      const { container } = render(
+        <ScrollArea label="Uzun liste" maxHeight={100}>
+          <p>içerik</p>
+        </ScrollArea>,
+      );
+
+      expect(boxOf(container)).not.toHaveAttribute('data-fade-start');
+      expect(boxOf(container)).not.toHaveAttribute('data-fade-end');
+    });
   });
 });

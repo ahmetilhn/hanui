@@ -65,6 +65,8 @@ const ScrollArea: FC<Props> = ({
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [isScrollable, setIsScrollable] = useState(false);
+  /* Solmanin HANGI ucta cizilecegi: yalnizca o yonde gizli icerik varken. */
+  const [hiddenEdges, setHiddenEdges] = useState({ start: false, end: false });
 
   /*
    * TASMA OLCULUR, varsayilmaz.
@@ -72,6 +74,11 @@ const ScrollArea: FC<Props> = ({
    * `tabindex="0"` kosulsuz verilseydi icerigi sigan her kutu gereksiz bir
    * Tab duragina donusuyordu: sekiz kutulu bir sayfada klavye kullanicisi
    * hicbir sey yapmayan sekiz durak geciyordu.
+   *
+   * AYNI OLCUM SOLMAYI DA SURUYOR. Solma bir IDDIA: "bu kenarin otesinde
+   * devam eden icerik var". Kutu kaydirilamiyorken ya da kullanici zaten
+   * ucundayken cizilirse iddia YANLIS olur ve bedeli gorunurluk — okunacak
+   * satirin ustune saydamlik biner.
    */
   useEffect(() => {
     const node = ref.current;
@@ -87,6 +94,16 @@ const ScrollArea: FC<Props> = ({
             ? vertical
             : vertical || horizontal,
       );
+
+      /* Solma tek eksende cizilir (`--fade` kurali `both`u kapsamiyor). */
+      const isRow = axis === 'horizontal';
+      const size = isRow ? node.clientWidth : node.clientHeight;
+      const total = isRow ? node.scrollWidth : node.scrollHeight;
+      /* RTL'de `scrollLeft` negatif olabiliyor; onemli olan UZAKLIK. */
+      const offset = Math.abs(isRow ? node.scrollLeft : node.scrollTop);
+
+      /* 1 px pay: kesirli yerlesimde `offset + size` toplami tam oturmuyor. */
+      setHiddenEdges({ start: offset > 1, end: offset + size < total - 1 });
     };
 
     measure();
@@ -96,7 +113,13 @@ const ScrollArea: FC<Props> = ({
     observer.observe(node);
     for (const child of node.children) observer.observe(child);
 
-    return () => observer.disconnect();
+    /* Kaydirma ucu degistiriyor; dinleyici `passive` — olcum cizimi bloklamaz. */
+    node.addEventListener('scroll', measure, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      node.removeEventListener('scroll', measure);
+    };
   }, [axis, children]);
 
   return (
@@ -109,6 +132,12 @@ const ScrollArea: FC<Props> = ({
         className,
       )}
       style={maxHeight === undefined ? undefined : { maxBlockSize: maxHeight }}
+      /*
+       * Solma UC BASINA ve YALNIZCA gizli icerik varken. Olcu CSS'te kaliyor;
+       * buradan yalnizca "bu ucun otesinde bir sey var mi" bildiriliyor.
+       */
+      data-fade-start={hasFade && hiddenEdges.start ? '' : undefined}
+      data-fade-end={hasFade && hiddenEdges.end ? '' : undefined}
       /*
        * Bolge YALNIZCA kaydirilabilirken odaklanabilir ve yalnizca o zaman bir
        * ROL tasiyor: sigmayan bir kutu bir "bolge" degil, siradan bir

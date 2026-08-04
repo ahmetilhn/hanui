@@ -34,13 +34,53 @@
    * `mask-image` kullanilir, ustune binen bir gradyan katmani DEGIL: katman
    * tiklama olaylarini yutuyor ve kutunun icindeki baglantilara
    * ulasilamiyordu. Maske yalnizca cizimi etkiler.
+   *
+   * ⚠ SOLMA BIR IDDIADIR: "bu kenarin otesinde devam eden icerik var". Iki
+   * uca da KOSULSUZ yazildiginda iddia yanlis oluyor ve bedeli dogrudan
+   * GORUNURLUK — okunacak satirin ustune saydamlik biniyor.
+   *
+   * OLCULDU (Chromium masaustu + WebKit iPhone 14, ayni sayilar; filtre
+   * kenar cubugundaki `maxHeight: 280` kutusu):
+   *
+   * | secenek | kutu   | tam opak alan |
+   * |---------|--------|---------------|
+   * | 1       |  33 px |   1 px (%3)   |
+   * | 2       |  68 px |  36 px (%53)  |
+   * | 3       | 103 px |  71 px (%69)  |
+   *
+   * Yani hic tasmayan bir grup — tek secenekli bir filtre — neredeyse
+   * TAMAMEN solmus ciziliyordu; iki-uc secenekli gruplarda ilk ve son satir
+   * yariya kadar siliniyordu. Kullanicinin bildirdigi "sikisiyorlar, bazen
+   * hic gozukmuyorlar" birebir buydu ve tasma OLMADIGI icin hicbir sey
+   * kaydirilarak da kurtarilamiyordu.
+   *
+   * Ikinci ve daha sinsi hali: tasma VARKEN bile, listenin en ustundeyken
+   * ust ucun solmasi icin bir sebep yok — orada gizli icerik yok. Maske o
+   * durumda ilk satiri, gosterecek bir sey olmadigi halde siliyordu.
+   *
+   * Pay artik UC BASINA ve olcume bagli (`data-fade-start` / `data-fade-end`,
+   * bkz. bilesen). Yazilmadiginda deger `0px`: rampa sifir uzunluga iner,
+   * kenar tam opak kalir. Kural tek yerde; JS yalnizca iki bayrak suruyor.
    */
+  &--fade {
+    --hanui-scroll-fade-start: 0px;
+    --hanui-scroll-fade-end: 0px;
+
+    &[data-fade-start] {
+      --hanui-scroll-fade-start: #{$space-4};
+    }
+
+    &[data-fade-end] {
+      --hanui-scroll-fade-end: #{$space-4};
+    }
+  }
+
   &--fade.scrollArea--vertical {
     mask-image: linear-gradient(
       to bottom,
       transparent 0,
-      #000 #{$space-4},
-      #000 calc(100% - #{$space-4}),
+      #000 var(--hanui-scroll-fade-start),
+      #000 calc(100% - var(--hanui-scroll-fade-end)),
       transparent 100%
     );
   }
@@ -49,8 +89,8 @@
     mask-image: linear-gradient(
       to right,
       transparent 0,
-      #000 #{$space-4},
-      #000 calc(100% - #{$space-4}),
+      #000 var(--hanui-scroll-fade-start),
+      #000 calc(100% - var(--hanui-scroll-fade-end)),
       transparent 100%
     );
   }

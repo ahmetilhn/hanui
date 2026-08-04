@@ -50,8 +50,32 @@
     @include safe-inline($space-3);
   }
 
+  /*
+   * TABAN OLCU ICERIK (`auto`), SIFIR DEGIL.
+   *
+   * `flex: 1` = `flex: 1 1 0%`, yani govdenin taban olcusu SIFIR. Panelin
+   * kendi yuksekligi ise ICERIKTEN geliyor: `<dialog>` varsayilani
+   * `height: fit-content` ve burada yalnizca `max-height` yaziliyor (kisa bir
+   * listede panel liste kadar boylanmali — bkz. `e2e/bottom-sheet.spec.ts`).
+   * Icerikten boylanan bir sutunda, taban olcusu sifir olan bir ogenin panelin
+   * yuksekligine ne kadar katkida bulundugu tarayicinin `min()`/`max-content`
+   * hesabina kalir; katki sifir sayildiginda panel BASLIK + DIP SERIT kadar
+   * kaliyor ve govde — icinde onlarca satir varken — bir yariga iniyordu.
+   * Gercek cihazda bildirilen hata buydu (iOS ve Android).
+   *
+   * OLCULDU: Playwright'in WebKit ve Chromium'unda (iPhone 14 / Pixel 7,
+   * duz liste, ic ice esnek sutun, `<details>` yigini, `height: 100%` cocuk)
+   * `flex: 1` ile `flex: 1 1 auto` AYNI sayilari veriyor — yani bu degisiklik
+   * olculebilen hicbir durumu degistirmiyor, yalnizca panelin yuksekligini
+   * tarayicinin bir tahminine birakmayi birakiyor. Cikarim: hatayi `grow`
+   * uretemez (buyume yalnizca ARTI bosluk dagitir), geriye `basis: 0` kaliyor.
+   *
+   * `1 1 auto` — `flex: 1`in kaldirilmasi DEGIL: panele bir gun kesin bir
+   * yukseklik verilirse govde yine boslugu doldurur; kaldirilsaydi (`0 1 auto`)
+   * doldurmazdi.
+   */
   &__body {
-    flex: 1;
+    flex: 1 1 auto;
     /* `min-height: 0` OLMADAN esnek oge icerigiyle birlikte buyur ve panelin
        `max-height`ini asar: klavye acikken liste kaydirilamiyor, panelin alti
        ekranin disina tasiyordu. */

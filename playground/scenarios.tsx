@@ -741,8 +741,23 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         <p>Satır beş</p>
       </ScrollArea>
     ),
+    /*
+     * Solma AÇIK. Galeride bunun bir karşılığı yoktu ve `hasFade` hiçbir
+     * yüzeyde çizilmiyordu — tam da bu yüzden, solmanın iki ucu da koşulsuz
+     * boyadığı hata gözden kaçtı: kısa bir listede içerik neredeyse tamamen
+     * siliniyordu. Nöbetçi `e2e/mobile.spec.ts` bu iki kutuyu ölçüyor.
+     */
+    faded: (
+      <ScrollArea label="Solmalı uzun metin" maxHeight={120} hasFade>
+        <p>Satır bir</p>
+        <p>Satır iki</p>
+        <p>Satır üç</p>
+        <p>Satır dört</p>
+        <p>Satır beş</p>
+      </ScrollArea>
+    ),
     fits: (
-      <ScrollArea label="Kısa metin" maxHeight={400}>
+      <ScrollArea label="Kısa metin" maxHeight={400} hasFade>
         <p>Tek satır</p>
       </ScrollArea>
     ),

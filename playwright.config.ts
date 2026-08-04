@@ -25,6 +25,9 @@ import { defineConfig, devices } from '@playwright/test';
  * <p>Referans güncelleme: `npm run test:visual -- --update-snapshots`. Diff'e
  * BAKILMADAN güncellenmez; nöbetçinin tek işi o diff.
  */
+/** Piksel karsilastiran tek dosya; cihaz projeleri onu dislar. */
+const VISUAL_SPEC = /visual\.spec\.ts/;
+
 export default defineConfig({
   testDir: './e2e',
   /* Bir bilesenin degismesi digerlerinin ciktisini etkilemiyor: tam paralel. */
@@ -60,14 +63,49 @@ export default defineConfig({
     },
   },
 
+  /*
+   * IKI AYRI KOSU, IKI AYRI PROJE KUMESI.
+   *
+   * `masaüstü` / `mobil` PIKSEL karsilastirir; referanslari platform basina
+   * saklaniyor ve `npm run test:visual` ile ayri kosuyorlar (yukaridaki not).
+   *
+   * `ios` / `android` ise SAYI olcer — yukseklik, tasma, odak, hesaplanmis CSS
+   * degeri. Platformdan bagimsizlar, referans dosyalari yok ve `npm run
+   * test:device` ile CI'da da kosabilirler.
+   *
+   * Ayrim `testMatch`/`testIgnore` ile: gorsel projeler YALNIZCA `visual.spec`i
+   * alir, cihaz projeleri onu DISLAR. Boylece yeni yazilan her davranis
+   * senaryosu cihaz kosusuna kendiliginden girer — dosya adini bir listeye
+   * eklemek gerekmiyor; unutuldugunda sessizce kosmayan bir nobetci kalirdi.
+   */
   projects: [
     {
       name: 'masaüstü',
+      testMatch: VISUAL_SPEC,
       use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } },
     },
     {
       name: 'mobil',
+      testMatch: VISUAL_SPEC,
       use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 } },
+    },
+
+    /*
+     * iOS = WEBKIT, ve bu bir tercih degil: App Store kurali geregi iOS'taki
+     * HER tarayici (Chrome dahil) WebKit kullaniyor. Chromium'da dogru olan
+     * orada dogru olmak zorunda degil — bu depoda kayitli iki hata da
+     * (`bottom-sheet` gorunen alan payi, `<dialog>` ust katman gecisleri)
+     * once gercek bir iPhone'da bildirildi.
+     */
+    {
+      name: 'ios',
+      testIgnore: VISUAL_SPEC,
+      use: { ...devices['iPhone 14'] },
+    },
+    {
+      name: 'android',
+      testIgnore: VISUAL_SPEC,
+      use: { ...devices['Pixel 7'] },
     },
   ],
 
