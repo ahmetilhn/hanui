@@ -1,9 +1,45 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
+/*
+ * ⚠ `min-height: min-content` — `overflow: hidden`in GERI ALDIGI seyi geri
+ * koyar. Suslemeye benziyor ama olculmus bir veri kaybinin karsiligi.
+ *
+ * Esnek bir ogenin kendiliginden gelen asgari olcusu (`min-height: auto`)
+ * ICERIGI kadardir — ama bu YALNIZCA `overflow: visible` iken boyle. Akordeon
+ * kendi kosesini yuvarlamak icin `overflow: hidden` yaziyor ve bunu yazdigi an
+ * asgari olcu SIFIRA duser: yukseklik sinirli bir sutunun icine konuldugunda
+ * tarayici onu serbestce EZER, ustelik `hidden` oldugu icin tasan kisim
+ * kaydirilamaz — sessizce KIRPILIR.
+ *
+ * Olculdu (Chromium + WebKit, ayni sayilar; `hanparca-frontend` filtre kenar
+ * cubugunun kural kumesi: `display:flex; flex-direction:column; max-height:
+ * calc(100dvh - …); overflow-y:auto`):
+ *
+ * | kenar cubugu | kirpilan | cubuk kayiyor mu |
+ * |---|---|---|
+ * | 900 px (icerik neredeyse siğiyor) |  18 px | HAYIR |
+ * | 400 px (icerik sigmiyor)          | 518 px | HAYIR |
+ *
+ * Ikinci satirda "Firsatlar" grubu 170 px isterken 70 px ciziliyor. Ve asil
+ * kotu olan son sutun: kenar cubugu KAYMIYOR. Cocuklar ezildigi icin tasma hic
+ * olusmuyor, yani kaydirma cubugu da cikmiyor — kullanicinin elinde kayip
+ * icerige ulasacak HICBIR yol kalmiyor. Gorunen sey "eksik liste" degil,
+ * "listenin tamami bu" yanilgisi.
+ *
+ * `min-content` bir sinir DEGIL bir TABAN: kisitsiz bir yerlesimde hicbir sey
+ * degistirmez (olculdu — galeri anlik goruntulerinin tamami degismedi), sinirli
+ * bir yerlesimde ise ezilme yerine tasma uretir ve tasmayi ust kutu kendi
+ * `overflow-y: auto`suyla kaydirir. Yani karar "kirp" degil "kaydir" olur.
+ *
+ * ⚠ Tuketici akordeonun KENDISINE `max-height` + `overflow: auto` verirse bu
+ * taban onu yener (`min-height` CSS'te `max-height`i ezer). Bilincli kabul:
+ * bilesenin kendi `overflow`u zaten `hidden` ve o kurulum bugun de kirpiyor.
+ */
 .accordion {
   @include stack($space-0);
 
+  min-height: min-content;
   border: 1px solid $border;
   border-radius: $radius-lg;
   background-color: $surface;
