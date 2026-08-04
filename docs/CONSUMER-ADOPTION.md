@@ -543,3 +543,55 @@ genişlik isteyen kaydırılabilir bir çip şeridi o yuvaya sokulunca 220px'lik
 bir pencereye sıkışıyor, `align-items: flex-end` yüzünden arama kutusuyla
 hizası kayıyor ve şerit sağa taşıyordu. **Alanların biçimi aynı değilse şerit
 de aynı değildir.**
+
+---
+
+## 11. Kapalı `<dialog>` çiziliyordu — "görünmez linkler"
+
+Tüketici "boş bir yere tıklayınca başka sayfaya gidiyor, DOM'da
+`hanui-palette__search` görünüyor" diye bildirdi. Kök neden kütüphanedeydi ve
+iki bileşeni birden etkiliyordu.
+
+`CommandPalette` ve `Drawer` kök kurallarında doğrudan `display: flex`
+yazıyordu. Bu, tarayıcının `dialog:not([open]) { display: none }`
+varsayılanını **ezer**: pencere kapalıyken de yerleşime girer, gerçek bir kutu
+kaplar ve içindeki tıklanabilir öğeler etkin kalır.
+
+**Ölçüldü** (panel, 1440×900, `/stok`): kapalı palet `x 576–1136, y −150–330`
+kutusunu kaplıyordu — içeriğin tam üstünde. Boş görünen `(900, 250)`
+noktasına tıklamak `/kaynak/bank-transfer-notifications` sayfasına götürdü.
+`Drawer`da aynı hata vardı ve orada kutu 77+ gezinme bağı taşıyor.
+
+`Modal` ve `PromptDialog` etkilenmiyordu (kökte `display` yazmıyorlar),
+`BottomSheet` zaten doğru kalıptaydı (`display: none` + `&[open]`). `display`
+artık üçünde de `[open]` altında. Kapanış animasyonu etkilenmiyor:
+`surface-transition` zaten `display … allow-discrete` taşıyor, yani
+`display: none` geçişe katılıyor.
+
+**Kural:** bir `<dialog>` kök kuralına `display` yazılacaksa `[open]` altına
+yazılır. Kapalı pencerenin görünmez ama tıklanabilir kalması sessiz bir
+hatadır — ekranda hiçbir iz bırakmaz.
+
+## 12. `compact` yoğunluk punto ölçeğinin yalnızca yarısını indiriyordu
+
+Tüketici "panelde bazı ekranlar büyük görünüyor" dedi. Ölçüldü:
+
+| token | varsayılan | compact (önce) | compact (şimdi) |
+| --- | --- | --- | --- |
+| `body` | 17px | 16px | 16px |
+| `base` | 16px | 15px | 15px |
+| `lg` | 19px | **19px** | 18px |
+| `xl` | 23px | **23px** | 21px |
+| `2xl` | 29px | **29px** | 25px |
+| `3xl` / `4xl` | 37 / 47px | **aynı** | 31 / 39px |
+
+Gövde 15 px'e inerken bir `<h2>` 29 px'te kalıyordu — başlık gövdenin
+neredeyse iki katı. Aynı başlık vitrinde (gövde 17 px) 1,7 kat ve doğru
+duruyor. Üst üste `h2`/`h3` yığan ekranlar (stok düzeltme, moderasyon,
+raporlar) bu yüzden "devasa" okunuyordu.
+
+**Yoğunluk bir ORAN kararıdır, bir kırpma listesi değil.** Ölçeğin yarısını
+indirip yarısını bırakmak, aynı ekranda iki farklı ölçek karıştırmaktır.
+Büyük uç da aynı oranda (~%15) indi. Görsel testler etkinin doğru yerde
+olduğunu doğruladı: yalnızca "yoğun kip" iki görüntüsü değişti, başka hiçbir
+bileşen sapmadı.
