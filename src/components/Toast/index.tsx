@@ -3,7 +3,6 @@
 import { memo, type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { isClient } from '@ahmetilhn/handy-utils';
 import {
   CheckCircleFill,
   ExclamationTriangleFill,
@@ -265,7 +264,30 @@ const ToastHub = ({ closeLabel, className }: HubProps) => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [toasts]);
 
-  if (!isClient()) return null;
+  /*
+   * ═══ HIDRASYON: `isClient()` RENDER İÇİNDE OKUNAMAZ ═══
+   *
+   * Burada `if (!isClient()) return null` yazıyordu ve bu, React'in
+   * hidrasyon uyuşmazlığı için listelediği ilk maddenin ta kendisiydi:
+   * sunucu/istemci dallanması. Sunucu `null` üretiyor, istemcinin İLK
+   * render'ı ise portalı üretiyordu; ağaç o noktada ayrıştığı için React
+   * "server rendered HTML didn't match" diyor ve alt ağacın tamamını
+   * yeniden çiziyordu.
+   *
+   * Etkisi büyüktü: `ToastHub` kök yerleşimde duruyor, yani uyuşmazlık
+   * uygulamanın HER sayfasında oluşuyordu (ölçüldü: tüketici uygulamada
+   * `<ToastHub />` kaldırılınca hata tümüyle kayboluyor).
+   *
+   * Doğru kalıp bir DURUM bayrağı: sunucu ve istemcinin ilk render'ı aynı
+   * şeyi (`null`) üretir, portal ancak montajdan SONRA açılır. Bildirimler
+   * zaten yalnızca kullanıcı etkileşimiyle çıkıyor; bir kare gecikmenin
+   * görünür bir bedeli yok.
+   */
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => setIsMounted(true), []);
+
+  if (!isMounted) return null;
 
   return createPortal(
     <div className={cx(styles.hub, className)}>

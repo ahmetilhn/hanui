@@ -482,3 +482,64 @@ girdinin kalanı şablona uymayan çöpten ibaretse ayraç yine de çıkıyordu:
 `maskRemainder` onu yazılmış saydığı için kalan şablon bir karakter kayıyordu.
 Sabitler artık **bekletiliyor** ve ancak arkasından gerçek bir karakter
 geldiğinde yazılıyor. Nöbetçi: `helpers/__tests__/mask.helper.test.ts`.
+
+---
+
+## 10. Tüketiciden gelen hata raporları — üçü kütüphanede
+
+Beş rapor geldi; **üçü kütüphane kusuru** çıktı ve hanui kaynağında
+düzeltildi. Bu bölüm nedenlerini kaydediyor.
+
+### `ToastHub` her sayfada hidrasyon uyuşmazlığı üretiyordu
+
+`if (!isClient()) return null;` render'ın **içindeydi** ve ardından portal
+açılıyordu — React'in hidrasyon uyuşmazlığı için saydığı ilk maddenin ta
+kendisi (sunucu/istemci dallanması). Sunucu `null`, istemcinin ilk render'ı
+portal üretiyordu.
+
+Yığın kök yerleşimde durduğu için uyuşmazlık **her sayfada** oluşuyordu.
+Ölçüldü: `<ToastHub />` kaldırılınca `/` ve `/sepet` temiz, geri konunca hata
+geri geliyor. `Tooltip` ve `Popover` aynı hatayı yapmıyor — onlar
+`isOpen && isClient() && createPortal(...)` yazıyor ve hidrasyon sırasında
+`isOpen` zaten `false`.
+
+Düzeltme: `isClient()` yerine bir **montaj bayrağı**. Sunucu ve istemcinin
+ilk render'ı aynı şeyi (`null`) üretir; portal montajdan sonra açılır.
+
+### `Combobox` paneli kip pencerede kırpılıyordu
+
+Panel `position: absolute` idi. `Modal` gövdesi `overflow: hidden` taşıyor
+(uzun formda başlık sabit kalsın diye) ve panel oraya girince kesiliyordu:
+"Aracınızı tanımlayın" penceresinde marka listesinin yalnızca ilk satırı
+görünüyordu. Ölçüldü: liste `y=615 h=280`, pencerenin alt kenarı `655`.
+
+Düzeltme: konum artık `usePositioning` ile — sabit konum kırpan atayı atlar
+ve aşağıda yer yoksa panel **yukarı çevrilir**. Aynı kanca `Popover` ve
+`Tooltip` içinde de kullanılıyor; konumlandırma tek yerden.
+
+### `Combobox` ok ve çarpı ikonları birbirine yapışıktı
+
+Üç ölçü birbiriyle çelişiyordu:
+
+| | değer | sorun |
+| --- | --- | --- |
+| `--clearable` dolgusu | `$space-3 + $icon-md + $space-2 + 22px` | caret bir **flex çocuğu** olduğu için bu dolgu onu da içeri itiyordu; rezervasyon yalnızca mutlak konumlu çarpı içindi |
+| çarpı ofseti | `$space-3 + $icon-md + $space-2` | caretin `$icon-md` (18px) genişliğinde olduğunu varsayıyordu |
+| caret ölçüsü | `$icon-xs` (14px) | varsayımdan 4px küçük |
+
+Ölçüldü: 199px'lik tetikleyicide caret sağ kenardan 60px, çarpı 38px içeride;
+aralarında hiç boşluk yok — yani birbirine yapışık ve kutunun ortasına kaymış.
+
+Düzeltme: caret de mutlak konumlu ve sağ kenara sabit; iki ofset de tek bir
+`$clear-size` değişkeninden türüyor; ikon ölçüsü `$icon-sm`'e çıkarıldı
+(14px çarpının yanında "yarım çizilmiş" görünüyordu).
+
+### Tüketici tarafında geri alınan bir taşıma
+
+**`AccountOrdersContainer` filtre şeridi `FilterBar`a çevrildi ve geri
+alındı.** `FilterBar` eşit ağırlıkta, DAR alanlar için: `filter-surface`
+yatay bir sarma satırı ve `FilterBarField` varsayılanı `flex: 0 1 220px`. Tam
+genişlik isteyen kaydırılabilir bir çip şeridi o yuvaya sokulunca 220px'lik
+bir pencereye sıkışıyor, `align-items: flex-end` yüzünden arama kutusuyla
+hizası kayıyor ve şerit sağa taşıyordu. **Alanların biçimi aynı değilse şerit
+de aynı değildir.**

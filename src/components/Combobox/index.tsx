@@ -18,6 +18,7 @@ import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { matchesSearch } from '../../helpers/text.helper';
 import useListboxNavigation from '../../hooks/useListboxNavigation';
+import usePositioning from '../../hooks/usePositioning';
 import useVirtualList from '../../hooks/useVirtualList';
 import { useHanui } from '../../theme/context';
 import BottomSheet from '../BottomSheet';
@@ -211,6 +212,7 @@ const Combobox = <T extends string>({
 
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   /*
@@ -344,6 +346,25 @@ const Combobox = <T extends string>({
    * bosluk bir KARAKTER ve secime cevrilmesi "fren balatasi" yazmayi imkansiz
    * kilardi. `Select`te oyle bir kutu yok ve orada da tetiklenmiyor.
    */
+  /*
+   * ═══ PANEL SABIT KONUMLU, MUTLAK DEGIL ═══
+   *
+   * Panel `position: absolute` idi ve tetikleyicinin kapsayicisina gore
+   * konumlaniyordu. Kip pencerenin govdesi `overflow: hidden` tasidigi icin
+   * (uzun formda basligin sabit kalmasi gerekiyor) panel oraya girdiginde
+   * KIRPILIYORDU: "Aracınızı tanımlayın" penceresinde marka listesinin
+   * yalnizca ilk satiri gorunuyor, gerisi pencerenin alt kenarinda kesiliyordu.
+   *
+   * `usePositioning` iki sorunu birden cozer: sabit konum kirpan atayi
+   * atlar ve asagida yer yoksa paneli YUKARI cevirir. Ayni kanca `Popover`
+   * ve `Tooltip` icinde de kullaniliyor — konumlandirma tek yerden.
+   */
+  const positioning = usePositioning(triggerRef, panelRef, {
+    side: 'bottom',
+    align: 'start',
+    isOpen: isOpen && openMode === 'popover',
+  });
+
   const { activeIndex, setActiveIndex, listRef, handleKeyDown } =
     useListboxNavigation<HTMLUListElement>({
       count: visibleOptions.length,
@@ -588,7 +609,18 @@ const Combobox = <T extends string>({
 
       {/* Masaüstü: tetikleyiciye yapışan panel. */}
       {openMode === 'popover' && (
-        <div className={styles.combobox__panel}>
+        <div
+          ref={panelRef}
+          className={styles.combobox__panel}
+          style={{
+            ...positioning.style,
+            /* Panel tetikleyiciyle AYNI genislikte: sabit konum onu
+               kapsayicidan kopardigi icin genislik artik miras alinmiyor. */
+            width: triggerRef.current?.offsetWidth,
+            /* Ilk karede olcu yok; yanlis yerde bir kare parlamasin. */
+            visibility: positioning.isPositioned ? undefined : 'hidden',
+          }}
+        >
           {search}
           {renderList(false)}
         </div>

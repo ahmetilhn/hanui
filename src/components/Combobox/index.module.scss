@@ -1,6 +1,13 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
+/*
+ * Temizleme dugmesinin dokunma hedefi. Caretin araligi, metnin rezervasyonu
+ * ve dugmenin kendi olcusu bu TEK degerden turetiliyor; uc yerde ayri ayri
+ * yazildiginda birbirinden ayrisip ikonlarin ust uste binmesine yol acmisti.
+ */
+$clear-size: 22px;
+
 .combobox {
   position: relative;
   width: 100%;
@@ -44,8 +51,20 @@
      * Ustune bindigi icin metnin altina kaymasini engelleyen yer burada
      * ayrilir: carpinin genisligi + caret + iki bosluk.
      */
+    /*
+     * TEMIZLEME DUGMESI VARKEN metne ayrilan yer daralir.
+     *
+     * Rezervasyon yalnizca METIN icin: caret artik mutlak konumlu (asagida),
+     * yani bu dolgudan ETKILENMIYOR. Once caret bir flex cocuguydu ve bu
+     * dolgu onu da iceri itiyordu — olculdu: 199px'lik bir tetikleyicide
+     * caret sag kenardan 60px, carpi 38px iceride kaliyor, ikisi arasinda
+     * hic bosluk kalmadigi icin birbirine yapisik ve kutunun ortasina
+     * kaymis gorunuyorlardi.
+     */
     &--clearable {
-      padding-inline-end: calc(#{$space-3} + #{$icon-md} + #{$space-2} + 22px);
+      padding-inline-end: calc(
+        #{$space-3} + #{$icon-sm} + #{$space-2} + #{$clear-size} + #{$space-2}
+      );
     }
   }
 
@@ -70,22 +89,22 @@
    */
   &__clear {
     position: absolute;
-    inset-inline-end: calc(#{$space-3} + #{$icon-md} + #{$space-2});
+    inset-inline-end: calc(#{$space-3} + #{$icon-sm} + #{$space-2});
     top: 50%;
     transform: translateY(-50%);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 22px;
-    height: 22px;
+    width: $clear-size;
+    height: $clear-size;
     padding: 0;
     border: none;
     background: none;
     border-radius: $radius-pill;
     color: $text-2;
-    /* 12 px'lik carpi, 22 px'lik dairenin ortasinda dokunulamayacak kadar
-       kucuk bir isaret gibi duruyordu. */
-    font-size: $icon-xs;
+    /* Carpi caretle AYNI olcude: iki isaret yan yana duruyor ve farkli
+       boyda olduklarinda ikisi de "yanlis cizilmis" gibi gorunuyordu. */
+    font-size: $icon-sm;
     flex-shrink: 0;
     cursor: pointer;
     transition:
@@ -104,14 +123,30 @@
     }
   }
 
+  /*
+   * Caret MUTLAK konumlu ve sag kenara sabit.
+   *
+   * Flex cocuguyken tetikleyicinin dolgusunun icinde kaliyordu; temizleme
+   * dugmesi varken dolgu buyudugu icin caret de birlikte iceri kayiyordu.
+   * Ikisi de ayni referansa (`.combobox`) gore konumlandiginda araliklari
+   * TEK yerden hesaplaniyor ve ayrisamiyor.
+   *
+   * Olcu `$icon-xs` (14px) idi ve carpinin yaninda "yarim cizilmis" gibi
+   * duruyordu; `$icon-sm` ikisini ayni ailede gosteriyor.
+   */
   &__chevron {
+    position: absolute;
+    inset-inline-end: $space-3;
+    top: 50%;
+    transform: translateY(-50%);
     color: $text-2;
-    font-size: $icon-xs;
+    font-size: $icon-sm;
     flex-shrink: 0;
+    pointer-events: none;
     transition: transform $duration-fast $ease-out;
 
     &--open {
-      transform: rotate(180deg);
+      transform: translateY(-50%) rotate(180deg);
     }
 
     @include reduced-motion {
@@ -126,10 +161,12 @@
    * uzun secenek adlarini kirpip kullaniciyi secmeden once tahmin etmeye
    * zorluyordu.
    */
+  /*
+   * Konum `usePositioning`den geliyor (sabit konum + yer yoksa yukari
+   * cevirme). Burada `position`/`top`/`inset-inline` YAZILMAZ: mutlak
+   * konumluyken kip pencerenin `overflow: hidden` govdesi paneli kirpiyordu.
+   */
   &__panel {
-    position: absolute;
-    top: calc(100% + #{$space-1});
-    inset-inline: 0;
     z-index: $z-dropdown;
     background-color: $surface;
     border: 1px solid $border;
