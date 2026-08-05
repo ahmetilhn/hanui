@@ -117,7 +117,14 @@ export { default as Alert, type AlertTone } from './components/Alert';
 export { default as Avatar } from './components/Avatar';
 export { default as Badge, type BadgeTone, type BadgeVariant } from './components/Badge';
 export { default as Breadcrumb, type Crumb } from './components/Breadcrumb';
-export { default as Card, CardBody, CardFooter, CardMedia, CardOverlay } from './components/Card';
+export {
+  default as Card,
+  CardBody,
+  CardFooter,
+  CardMedia,
+  type CardMediaFit,
+  CardOverlay,
+} from './components/Card';
 export { default as Carousel } from './components/Carousel';
 export { default as CopyField } from './components/CopyField';
 export { default as Divider } from './components/Divider';

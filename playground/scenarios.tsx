@@ -153,6 +153,33 @@ const COLUMNS: DataTableColumn[] = [
 
 const noop = () => {};
 
+/**
+ * MEDYA ÖRNEĞİ — gömülü, ağdan gelmeyen ve ÇERÇEVEDEN FARKLI oranda.
+ *
+ * <p>Oran kasten 2:1: `CardMedia`nın üç doldurma biçimi ancak görselin oranı
+ * çerçeveden farklı olduğunda birbirinden ayrılıyor. Kare bir örnekte üçü de
+ * aynı görünüyordu — yani anlık görüntü kuralı doğrulamış gibi durup hiçbir
+ * şeyi ayırt etmiyordu.
+ *
+ * <p>Beyaz çerçeve görselin kenarını görünür kılıyor: kırpılan kenar, kesik bir
+ * çizgi olarak okunuyor. Renkler bu SVG'nin içinde ham hex — veri URI'sinde CSS
+ * değişkeni çözülmüyor; bu bir örnek dosyası, tema yüzeyi değil.
+ *
+ * <p>ÖZ BOYUT 200 px ve bu ölçülmüş bir seçim: galeri sahnesinin tabanı
+ * `min-width: 240px` ve kart genişliği içeriğine göre büyüyor. 400 px'lik bir
+ * öz genişlik kartı 432 px'e çıkarıp bölümü 138 px uzatıyor, o da altındaki her
+ * bölümü başka bir kaydırma konumunda yakalatıp **doksanın üzerinde** referansı
+ * kirmiziya çeviriyordu. 200 px tabanın altında kalıyor: bölümün geometrisi
+ * değişmiyor, yalnızca çerçevenin İÇİ değişiyor.
+ */
+const MEDIA_SAMPLE = `data:image/svg+xml;utf8,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100">' +
+    '<rect width="200" height="100" fill="#4b5563"/>' +
+    '<circle cx="100" cy="50" r="42" fill="#f59e0b"/>' +
+    '<rect x="3" y="3" width="194" height="94" fill="none" stroke="#ffffff" stroke-width="2"/>' +
+    '</svg>',
+)}`;
+
 export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   HanuiProvider: {
     açıklama: (
@@ -386,13 +413,32 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       </Card>
     ),
   },
+  /*
+   * GERCEK bir `<img>` — ve TEK durum.
+   *
+   * Onceki senaryo bir `<div>` cizmisti; `object-fit` ve olcek kurallarinin
+   * tamami `> img` seciciyle yazili, yani doldurma bicimi gorsel regresyonun
+   * KOR NOKTASINDAYDI. Img artik gercek.
+   *
+   * Uc dali yan yana cizmek denendi ve OLCULDU: bolum ~500 px uzuyor,
+   * altindaki her bolum baska bir kaydirma konumunda yakalaniyor ve
+   * 2,625 aygit pikseli yogunlugunda yazi yumusatma degistigi icin
+   * **doksanin uzerinde** referans birden kirmiziya donuyordu. Bir seceneği
+   * gormek icin odenen bedel, bir daha okunamayan bir diff olurdu — ve bu
+   * nobetcinin tek isi o diff.
+   *
+   * `inset` seciliyor cunku hakkinda soylenecek sey en cok olan dal (%85).
+   * Uc dalin prop → sinif eslemesi `components/__tests__/CardMedia.test.tsx`
+   * icinde adiyla kilitli; piksel karsilastirmasi o soruyu zaten
+   * yanitlamiyor.
+   */
   CardMedia: {
-    default: (
+    inset: (
       <Card>
-        <CardMedia ratio={1.4}>
-          <div style={{ width: '100%', height: '100%', background: 'var(--hanui-media-bg)' }} />
+        <CardMedia ratio={1.4} fit="inset">
+          <img src={MEDIA_SAMPLE} alt="" />
         </CardMedia>
-        <CardBody>Görsel alanı</CardBody>
+        <CardBody>sığdırır, %85</CardBody>
       </Card>
     ),
   },

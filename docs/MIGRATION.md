@@ -10,6 +10,35 @@ Sessiz kırılma yok.
 
 ## Yayımlanmamış
 
+### `CardMedia` doldurma biçimi: `Card.isContained` → `fit`
+
+Görselin çerçeveyi nasıl doldurduğu artık **üç değerli** tek bir prop:
+
+| eski                       | yeni            | ne yapar                              |
+| -------------------------- | --------------- | ------------------------------------- |
+| `isContained={false}`      | `fit="cover"`   | çerçeveyi doldurur, taşanı **kırpar** |
+| `isContained` (varsayılan) | `fit="contain"` | kırpmadan sığdırır, dolgu bırakır     |
+| —                          | `fit="inset"`   | sığdırır + **%85**e çekip merkezler   |
+
+`isContained` **bir sürüm daha çalışır**, `@deprecated` işaretli; iki prop
+birlikte verilirse **`fit` kazanır**. Ters öncelik, `isContained`ın
+varsayılanı `true` olduğu için yeni prop'u sessizce etkisiz bırakırdı.
+Varsayılan davranış **değişmedi**: prop vermeyen çağıran `contain` alır.
+
+**Davranış değişikliği — `cover`:** bu dal eskiden hiç `object-fit`
+taşımıyordu, yani tarayıcı varsayılanı `fill` yürürlükteydi ve oranı
+çerçeveden farklı bir fotoğraf kırpılmıyor **eziliyordu**. `fit="cover"` artık
+`object-fit: cover` — kırpar, bozmaz. `isContained={false}` yazan bir çağıran
+görselin gerilmediğini, kenarlarının kırpıldığını görür.
+
+**Yeni `inset` niye gerekti:** `contain` görseli kırpmadan sığdırıyor ama uzun
+kenarı çerçeve dolgusuna dayanıyor; şeffaf zeminli ürün fotoğraflarında
+parçanın kenarı kartın kenarına değiyordu. Dolguyu büyütmek çözmüyor — o
+yalnızca çerçeve kutusunu daraltır, görsel yine o kutunun uzun kenarına
+yapışır. Ölçek kısmak gerekiyordu.
+
+Nöbetçi: `src/components/__tests__/CardMedia.test.tsx`.
+
 ### `DataTable` kaydırma kabı artık konumlanmış
 
 `.wrapper` `position: relative` aldı. **Tüketici tarafında değişiklik

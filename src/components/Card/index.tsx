@@ -51,6 +51,26 @@ const Card: FC<CardProps> = ({ children, isInteractive, as: Tag = 'div', classNa
   </Tag>
 );
 
+/**
+ * Görselin çerçeveyi NASIL doldurduğu.
+ *
+ * <p>Üçü de aynı soruyu yanıtlıyor — <em>kırpılsın mı, sığsın mı, yoksa
+ * içeriden mi dursun</em> — bu yüzden tek bir prop'un değerleri; ayrı ayrı
+ * boolean'lar olsalardı `isContained={false} isInset` gibi anlamsız
+ * bileşimler yazılabilir hâle gelirdi.
+ *
+ * <ul>
+ *   <li><b>`cover`</b> — çerçeveyi tamamen doldurur, taşan kenarları KIRPAR.
+ *       Kadraj kenara kadar anlamlı olan fotoğraflar (kampanya, kapak).</li>
+ *   <li><b>`contain`</b> — kırpmadan sığdırır; uzun kenarı çerçeve dolgusuna
+ *       dayanır. Karışık oranlarda gelen görseller.</li>
+ *   <li><b>`inset`</b> — sığdırır ve <b>%85</b>e çekip merkezler. Şeffaf
+ *       zeminli ürün fotoğrafları: parçanın kenarı kartın kenarına
+ *       değmiyor.</li>
+ * </ul>
+ */
+export type CardMediaFit = 'cover' | 'contain' | 'inset';
+
 type CardMediaProps = {
   children: ReactNode;
   /** Genişlik / yükseklik oranı. Sabit oran yükleme sırasında kaymayı önler. */
@@ -59,10 +79,29 @@ type CardMediaProps = {
   href?: string;
   /** Yönlendiriciye geçirilecek ek props. */
   linkProps?: HanuiLinkExtraProps;
-  /** İçeriği kırpmak yerine sığdırır (şeffaf zeminli ürün fotoğrafları gibi). */
+  /** Görsel çerçeveyi nasıl doldurur — bkz. {@link CardMediaFit}. */
+  fit?: CardMediaFit;
+  /**
+   * @deprecated `fit` kullanın: `isContained` → `fit="contain"`,
+   * `isContained={false}` → `fit="cover"`. Boolean yalnızca iki durumu
+   * anlatabiliyordu, üçüncüsü (`inset`) ona sığmadı. Eski yol bir sürüm daha
+   * çalışır; `docs/MIGRATION.md`.
+   */
   isContained?: boolean;
   className?: string;
 };
+
+/**
+ * `fit` ile eski `isContained` arasındaki köprü.
+ *
+ * <p>Sıra ÖNEMLİ: açıkça verilen `fit` her zaman kazanır. Tersi olsaydı
+ * (eskiyi öne almak) `isContained` varsayılanı `true` olduğu için yeni
+ * prop'un hiçbir etkisi olmazdı — sessizce çalışmayan bir API.
+ */
+const resolveFit = (
+  fit: CardMediaFit | undefined,
+  isContained: boolean | undefined,
+): CardMediaFit => fit ?? (isContained === false ? 'cover' : 'contain');
 
 /**
  * Kartın görsel alanı.
@@ -70,12 +109,17 @@ type CardMediaProps = {
  * <p>Oran <strong>sabittir</strong>: görsel yüklenene kadar yer tutar ve
  * yerleşim kaymasını (CLS) önler. Oransız bırakıldığında kartlar görseller
  * yüklendikçe zıplıyordu.
+ *
+ * <p>Görselin çerçeveyi doldurma biçimi ÇAĞIRANIN kararı ({@link CardMediaFit}):
+ * kütüphane "her ürün fotoğrafı içeriden dursun" gibi bir tercihi kendi
+ * varsayılanına gömmez. Varsayılan `contain` — kırpmayan, yani hiçbir bilgiyi
+ * sessizce yok etmeyen seçenek.
  */
 export const CardMedia: FC<CardMediaProps> = /*#__PURE__*/ named(
-  /*#__PURE__*/ memo(({ children, ratio = 1, href, linkProps, isContained = true, className }) => {
+  /*#__PURE__*/ memo(({ children, ratio = 1, href, linkProps, fit, isContained, className }) => {
     const content = (
       <span
-        className={cx(styles.media__frame, isContained && styles['media__frame--contained'])}
+        className={cx(styles.media__frame, styles[`media__frame--${resolveFit(fit, isContained)}`])}
         style={{ aspectRatio: ratio }}
       >
         {children}

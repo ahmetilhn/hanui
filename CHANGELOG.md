@@ -7,6 +7,45 @@ tarafında ne gerektirdiğini kaydeder.
 
 ## [Yayımlanmamış]
 
+### Eklendi — `CardMedia` doldurma biçimi ÇAĞIRANIN kararı (`fit`)
+
+`fit="cover" | "contain" | "inset"`. Kırpma, sığdırma ve **%85e çekip
+merkezleme** arasındaki seçim artık tek bir prop'ta; `isContained` boolean'ı
+`@deprecated` (bir sürüm daha çalışır) ve göç tablosu `docs/MIGRATION.md`de.
+
+**Neden boolean yetmedi.** İki durum anlatabiliyordu, üçüncüsü ona sığmadı.
+Ölçülen ihtiyaç `hanparca-frontend`ten geldi: şeffaf zeminli ürün
+fotoğraflarında `contain` görseli kırpmıyor ama uzun kenarını çerçeve
+dolgusuna dayıyor, parçanın kenarı kartın kenarına değiyordu. Dolguyu
+büyütmek bunu **çözmüyor** — o yalnızca çerçeve kutusunu daraltır, görsel
+yine o kutunun uzun kenarına yapışır; ölçeği kısmak gerekiyordu.
+
+**Varsayılan `contain` — yani görünüm değişmiyor.** `inset`i varsayılan
+yapmak, bir uygulamanın estetik tercihini (ürün fotoğrafı içeriden dursun)
+kütüphanenin her kartına dayatmak olurdu. Aynı gerekçeyle `%85` bir token
+değil: aralık ya da tipografi merdiveniyle ilgisi yok, çerçevenin iç ölçeği.
+
+**Yan bulgu, `cover` dalında ezilme.** O dal hiç `object-fit` taşımıyordu ve
+tarayıcı varsayılanı `fill`: oranı çerçeveden farklı bir fotoğraf kırpılmıyor
+**geriliyordu**. Bozulma "görsel biraz farklı" diye okunduğu için hata olarak
+bildirilmiyordu; artık açıkça `object-fit: cover`.
+
+**Merkezleme YALNIZ `inset` dalında** (`display: flex`) — ve bu kapsam iki
+ölçümün sonucu. Çerçevenin tamamına yazıldığında `aspect-ratio` ile gelen
+yükseklik flex yerleşiminde başka yuvarlanıyor, `cover` / `contain` kartları
+1 px uzuyor ve **16 galeri anlık görüntüsü** kırmızıya dönüyordu: yeni bir
+seçeneğin bedelini onu hiç istemeyen çağıranlar ödüyordu. Mutlak konum +
+`margin: auto` ise sessizce **yanlış**: mutlak konumlanmış öğede yüzde,
+konumlanmış atanın içerik kutusuna değil **dolgu** kutusuna göre çözülüyor —
+238×170 bir çerçevede görsel 175×117 yerine 202×144 çiziliyor, yani `%85` sözü
+tutulmuyor ve kenar boşluğu 33 px yerine 1,8 px kalıyordu.
+
+Nöbetçi: `src/components/__tests__/CardMedia.test.tsx` — prop → sınıf eşlemesi,
+eski köprünün iki yönü ve tek doldurma sınıfı çizilmesi. Galeri senaryosu üç
+dalı artık gerçek bir `<img>` ile çiziyor: eskiden bir `<div>` çiziyordu, yani
+`> img` seçicisiyle yazılı kuralların tamamı görsel regresyonun **kör
+noktasındaydı**.
+
 ### Düzeltildi — `Combobox` sonradan gelen seçeneklerle BOŞ açılıyordu
 
 Tüketicide ölçüldü (`hanparca-frontend`, araç seçici): marka listesi bir
@@ -603,8 +642,8 @@ bir yetenek değil, var olan bir davranışın **kilitlenmesi**.
 ### Eklendi
 
 - **Eksen taraması** (`jest-axe`). Dışa verilen 57 bileşenin tamamı, varsayılan
-  + hata + yükleme + boş durumlarıyla taranıyor (87 senaryo). Deftere girmeyen
-  yeni bir bileşen testi kırar — liste `index.ts`ten türetiliyor.
+  - hata + yükleme + boş durumlarıyla taranıyor (87 senaryo). Deftere girmeyen
+    yeni bir bileşen testi kırar — liste `index.ts`ten türetiliyor.
 - **Klavye sözleşmesi testleri** (34 test). `Combobox`, `Select`, `Tabs`,
   `ChipGroup`, `Modal`, `BottomSheet`, `RangeSlider`, `RatingInput`,
   `TableCheckbox` için WAI-ARIA APG desenlerine göre; tuş matrisleri ilgili
