@@ -92,7 +92,7 @@
   border-radius: $radius-lg;
   box-shadow: $shadow-lg;
   overflow: hidden;
-  animation: hanui-fade-in-up $duration-fast $ease-out;
+  animation: $anim-fade-in-up $duration-fast $ease-out;
 
   /* Seridin sag ucundaki kutuda `start` hizalama paneli ekranin disina
      tasiriyordu. */

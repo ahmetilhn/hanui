@@ -31,7 +31,7 @@
    */
   &--indeterminate .progress__fill {
     inline-size: 40%;
-    animation: hanui-progress-slide $duration-shimmer $ease-in-out infinite;
+    animation: $anim-progress-slide $duration-shimmer $ease-in-out infinite;
 
     @include reduced-motion {
       /* Hareket kapaliyken belirsizlik yine anlatilmali: cubuk yarim dolu
@@ -127,7 +127,7 @@
 
   /* Belirsiz kipte cember doner. */
   &--indeterminate &__svg {
-    animation: hanui-spin $duration-spin linear infinite;
+    animation: $anim-spin $duration-spin linear infinite;
 
     @include reduced-motion {
       animation: none;

@@ -53,6 +53,35 @@ mümkün değil: bir animasyon öğenin `display: none` olmasını geciktiremez.
 `::backdrop` için **ayrı** mixin (`backdrop-transition`): `&[open]` sözde
 öğeye uygulanamaz — `dialog::backdrop[open]` hiçbir zaman eşleşmez.
 
+## Paylaşılan `@keyframes` — ham ad YAZILMAZ
+
+`base.scss` yedi animasyon tanımlıyor (`hanui-spin`, `hanui-shimmer`,
+`hanui-fade-in`, `hanui-fade-in-up`, `hanui-fade-in-down`, `hanui-slide-up`,
+`hanui-progress-slide`). Bileşen bunlara **`_variables.scss` içindeki `$anim-*`
+ile** başvurur:
+
+```scss
+animation: $anim-spin $duration-spin linear infinite; // ✅
+animation: hanui-spin $duration-spin linear infinite; // ❌ sessizce düşer
+```
+
+**Neden.** CSS Modules `animation` kısayolundaki **adı da** yerelleştirir
+(`hanui-hanui-spin-wTV0a`), ama `@keyframes` global `base.scss` içinde ve
+hashlenmez. İki ad eşleşmez, tarayıcı var olmayan bir animasyona başvurur ve
+bildirimi **sessizce** düşürür — geçersiz CSS değil, yani ne Sass, ne stylelint,
+ne tarayıcı uyarır.
+
+Bu teorik bir risk değil: v2.0.9 ve öncesinde derlenmiş CSS'teki **18
+referansın 18'i de** kırıktı, yani kütüphanede çalışan tek bir animasyon yoktu.
+`$anim-*` değişkenleri adı bir özel özelliğe (`--hanui-anim-*`) taşır;
+yerelleştirme fonksiyon düğümlerine dokunmadığı için hiç devreye girmez.
+
+Yeni bir paylaşılan animasyon eklerken **üç yer birlikte** değişir:
+`base.scss`te `@keyframes` + `--hanui-anim-*`, `_variables.scss`te `$anim-*`.
+Nöbetçi `npm run check:animations` (`verify` içinde, `build`den sonra) —
+tanımsız bir ada başvuran ya da **hiç kullanılmayan** bir keyframe kalırsa
+düşer.
+
 ## Hareket azaltma
 
 Her animasyon ve geçiş `@include reduced-motion` karşılar. Kapatıldığında

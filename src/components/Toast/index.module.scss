@@ -48,7 +48,7 @@
   border: 1px solid $border;
   box-shadow: $shadow-lg;
 
-  animation: hanui-fade-in-up $duration-normal $ease-out;
+  animation: $anim-fade-in-up $duration-normal $ease-out;
 
   @include reduced-motion {
     animation: none;

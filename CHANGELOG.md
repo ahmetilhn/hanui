@@ -7,6 +7,49 @@ tarafında ne gerektirdiğini kaydeder.
 
 ## [Yayımlanmamış]
 
+### Düzeltildi — kütüphanedeki **hiçbir** animasyon çalışmıyordu
+
+`build/styles.css` içindeki **18 animasyon referansının 18'i de** var olmayan
+bir isme başvuruyordu; tanımlı 7 `@keyframes`in **hiçbiri** kullanılmıyordu.
+Spinner dönmüyor, popover/menu/tooltip süzülmüyor, iskelet parlamıyor, alt
+sayfa kaymadan beliriyor, belirsiz ilerleme çubuğu duruyordu.
+
+**Sebep tek ve derleme adımında.** Modüller `animation: hanui-spin …` yazıyor;
+CSS Modules `animation` kısayolundaki **adı da** yerelleştiriyor
+(`hanui-hanui-spin-wTV0a`), ama `@keyframes hanui-spin` global `base.scss`
+içinde tanımlı ve hashlenmiyor. İki ad eşleşmiyor, tarayıcı var olmayan bir
+animasyona başvuruyor ve bildirimi **sessizce** düşürüyor.
+
+**Neden bugüne kadar görülmedi.** Geçersiz CSS değil — Sass derliyor, stylelint
+susuyor, tarayıcı uyarmıyor. Galeri (`playground`) aynı boru hattını kullandığı
+için orada da kırıktı, yani geliştirme yüzeyi doğruyu göstermiyordu. e2e ise
+**statik ekran görüntüsü** karşılaştırıyor: duran bir spinner ile dönen bir
+spinner ilk karede aynı görünür. Kırık yayına kadar gitti ve tüketicide
+(`hanparca-frontend`) elle bir yeniden bağlama katmanı yazılması gerekti.
+
+**Çözüm: ad özel özellik olarak yayınlanır.** `base.scss` her paylaşılan
+animasyon için `--hanui-anim-*` yazıyor, bileşen `_variables.scss` içindeki
+`$anim-*` (yani `var(--hanui-anim-*)`) ile okuyor.
+`postcss-modules-local-by-default` animasyon değerindeki **fonksiyon
+düğümlerine dokunmuyor**, yerelleştirme hiç devreye girmiyor; ad, özel özellik
+ikamesinden sonra çözülüyor.
+
+> ⚠ Denendi ve olmadı: `animation: :global(hanui-spin) …`. CSS Modules'ün
+> belgelenmiş kaçışı bu, ama PostCSS 8.5'in kendi ayrıştırıcısı değerin
+> başındaki iki nokta üstüsteyi _Double colon_ diye reddediyor — dosya
+> derlenmiyor bile.
+
+**Nöbetçi eklendi:** `scripts/check-animations.mjs` (`npm run check:animations`,
+`verify` içinde `build`den sonra). Derlenmiş CSS'te tanımsız bir animasyon adı
+veya **hiç kullanılmayan** bir `@keyframes` kalırsa düşer; ham ad yazılarak
+kırıldığı doğrulandı.
+
+**Tüketici tarafında ne gerekiyor.** Hiçbir API değişmedi, kod değişikliği
+gerekmiyor. Bu kırık yüzünden kendi tarafında `animation-name` yeniden bağlayan
+bir katman yazdıysanız (hanparca-frontend'te
+`globals.scss` içinde vardı) bu sürümle birlikte **silinmelidir**: kurallar
+zararsız ama artık yanıltıcı.
+
 ### Eklendi — `CardMedia` doldurma biçimi ÇAĞIRANIN kararı (`fit`)
 
 `fit="cover" | "contain" | "inset"`. Kırpma, sığdırma ve **%85e çekip

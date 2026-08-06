@@ -173,7 +173,7 @@ $clear-size: 22px;
     border-radius: $radius-lg;
     box-shadow: $shadow-lg;
     overflow: hidden;
-    animation: hanui-fade-in-up $duration-fast $ease-out;
+    animation: $anim-fade-in-up $duration-fast $ease-out;
 
     @include reduced-motion {
       animation: none;

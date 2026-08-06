@@ -113,6 +113,52 @@
 }
 
 /*
+ * ═══ ANIMASYON ADLARI OZEL OZELLIK OLARAK YAYINLANIR ═══
+ *
+ * ⚠ Bir modul `animation: hanui-spin …` DIYE YAZAMAZ. CSS Modules `animation`
+ * kisayolundaki ADI da yerellestirir (`hanui-hanui-spin-wTV0a`), ama yukaridaki
+ * `@keyframes` bu GLOBAL dosyada tanimli ve hashlenmez. Iki ad eslesmez,
+ * tarayici var olmayan bir animasyona basvurur ve bildirimi SESSIZCE duser:
+ * gecerli CSS oldugu icin ne Sass, ne stylelint, ne tarayici uyarir.
+ *
+ * OLCULEN ZARAR (v2.0.9 ve oncesi): derlenmis `styles.css` icindeki 18
+ * animasyon referansinin **18'i de** kirikti — tanimli 7 keyframe'in HICBIRI
+ * kullanilmiyordu. Spinner donmuyor, popover suzulmuyor, iskelet parlamiyor,
+ * alt sayfa kaymadan beliriyordu. Galeri (`playground`) ayni boru hattini
+ * kullandigi icin orada da kirikti ve e2e statik ekran goruntusu
+ * karsilastirdigi icin gormedi: duran bir spinner ilk karede donen bir
+ * spinnerla ayni gorunur. Kirik yayina kadar gitti; tuketicide
+ * (`hanparca-frontend/src/styles/globals.scss`) elle bir yeniden baglama
+ * katmani yazilmasi gerekti.
+ *
+ * COZUM: ad bir OZEL OZELLIGE konur ve modul `var(...)` ile okur.
+ * `postcss-modules-local-by-default` animasyon degerindeki fonksiyon
+ * dugumlerine DOKUNMAZ (`if (node.type === 'function') return false`), yani
+ * yerellestirme hic devreye girmez. Ad, ozel ozellik ikamesinden SONRA
+ * cozulur — `animation-name: var(--x)` her guncel tarayicida gecerlidir.
+ *
+ * ⚠ DENENDI VE OLMADI: `animation: :global(hanui-spin) …`. CSS Modules'un
+ * belgelenmis kacisi bu, ama PostCSS 8.5'in kendi ayristiricisi degerin
+ * basindaki iki nokta ustusteyi "Double colon" diye reddediyor — dosya
+ * derlenmiyor bile.
+ *
+ * Bilesende kullanim `_variables.scss` icindeki `$anim-*` adlariyla; nobetci
+ * `scripts/check-animations.mjs` derlenmis CSS'te tanimsiz bir animasyon adi
+ * kalirsa `verify`i dusurur.
+ */
+:root {
+  --hanui-anim-shimmer: hanui-shimmer;
+  --hanui-anim-spin: hanui-spin;
+  --hanui-anim-fade-in-up: hanui-fade-in-up;
+  --hanui-anim-fade-in-down: hanui-fade-in-down;
+  --hanui-anim-fade-in: hanui-fade-in;
+  --hanui-anim-slide-up: hanui-slide-up;
+  /* `@keyframes hanui-progress-slide` bu dosyanin SONUNDA — tanimi ilerleme
+     cubugunun gerekcesiyle birlikte duruyor. */
+  --hanui-anim-progress-slide: hanui-progress-slide;
+}
+
+/*
  * Tema gecisi sirasinda gecici olarak `<html>` uzerinde durur.
  *
  * Acik→koyu gecisinde her yuzey ayni anda ama FARKLI surelerde animasyon

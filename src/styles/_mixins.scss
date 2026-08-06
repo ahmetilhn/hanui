@@ -634,11 +634,11 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
   color: $text;
   box-shadow: $shadow-xl;
   overflow: hidden;
-  animation: hanui-slide-up $duration $ease-out;
+  animation: $anim-slide-up $duration $ease-out;
 
   &::backdrop {
     background-color: $scrim;
-    animation: hanui-fade-in $duration $ease-out;
+    animation: $anim-fade-in $duration $ease-out;
   }
 
   @include reduced-motion {
@@ -1223,7 +1223,7 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
     var(--hanui-skeleton-a) 100%
   );
   background-size: 200% 100%;
-  animation: hanui-shimmer $duration-shimmer ease-in-out infinite;
+  animation: $anim-shimmer $duration-shimmer ease-in-out infinite;
   border-radius: $radius-sm;
 
   @include reduced-motion {

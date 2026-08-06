@@ -24,16 +24,16 @@
   @include custom-scrollbar;
 
   &--top {
-    animation: hanui-fade-in-up $duration-fast $ease-out;
+    animation: $anim-fade-in-up $duration-fast $ease-out;
   }
 
   &--bottom {
-    animation: hanui-fade-in-down $duration-fast $ease-out;
+    animation: $anim-fade-in-down $duration-fast $ease-out;
   }
 
   &--left,
   &--right {
-    animation: hanui-fade-in $duration-fast $ease-out;
+    animation: $anim-fade-in $duration-fast $ease-out;
   }
 
   @include reduced-motion {

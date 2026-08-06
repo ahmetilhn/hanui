@@ -101,3 +101,26 @@ $z-sticky-bar: 300;
 $z-overlay: 380;
 $z-modal: 400;
 $z-toast: 500;
+
+// --- Animasyon adlari -------------------------------------------------
+//
+// ⚠ Bilesen SCSS'inde ham `@keyframes` ADI YAZILMAZ — `animation: hanui-spin`
+// CSS Modules tarafindan yerellestirilir, global tanimla eslesmez ve animasyon
+// SESSIZCE duser. Gerekce, olculen zarar ve elenen alternatifler
+// `base.scss` icindeki "ANIMASYON ADLARI OZEL OZELLIK OLARAK YAYINLANIR"
+// bolumunde; oradaki `--hanui-anim-*` bu adlarin tek kaynagi.
+//
+// Sure ve egri ayri kalir ($duration-spin, $ease-out): ad hangi hareket
+// oldugunu, sure koreografinin neresinde durdugunu soyler.
+//
+//   animation: $anim-spin $duration-spin linear infinite;
+//
+// Nobetci: `scripts/check-animations.mjs`.
+
+$anim-shimmer: var(--hanui-anim-shimmer);
+$anim-spin: var(--hanui-anim-spin);
+$anim-fade-in-up: var(--hanui-anim-fade-in-up);
+$anim-fade-in-down: var(--hanui-anim-fade-in-down);
+$anim-fade-in: var(--hanui-anim-fade-in);
+$anim-slide-up: var(--hanui-anim-slide-up);
+$anim-progress-slide: var(--hanui-anim-progress-slide);
