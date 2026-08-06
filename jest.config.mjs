@@ -2,9 +2,10 @@
 export default {
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>/src', '<rootDir>/__tests__'],
   moduleNameMapper: {
-    '\\.(scss|css)$': '<rootDir>/src/test/style-stub.js',
+    '\\.(scss|css)$': '<rootDir>/__tests__/support/style-stub.js',
+    '^@tests/(.*)$': '<rootDir>/__tests__/$1',
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   transform: {
@@ -23,14 +24,13 @@ export default {
     ],
   },
   transformIgnorePatterns: ['/node_modules/(?!(@ahmetilhn)/)'],
-  testMatch: ['<rootDir>/src/**/__tests__/**/*.test.{ts,tsx}'],
+  testMatch: ['<rootDir>/__tests__/**/*.test.{ts,tsx}'],
 
   /* KAPSAM YALNIZ UC SAF-MANTIK KATMANINDA OLCULUR. */
   collectCoverageFrom: [
     'src/helpers/**/*.ts',
     'src/hooks/**/*.ts',
     'src/theme/**/*.{ts,tsx}',
-    '!src/**/__tests__/**',
   ],
 
   /*

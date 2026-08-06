@@ -5,7 +5,7 @@ import { defineConfig, devices } from '@playwright/test';
 const VISUAL_SPEC = /visual\.spec\.ts/;
 
 export default defineConfig({
-  testDir: './e2e',
+  testDir: './__tests__/e2e',
   /* Bir bilesenin degismesi digerlerinin ciktisini etkilemiyor: tam paralel. */
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),

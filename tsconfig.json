@@ -24,9 +24,10 @@
        tanımıyordu. `tsconfig.build.json` testleri zaten dışarıda bırakıyor. */
     "types": ["node", "jest", "@testing-library/jest-dom"],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@tests/*": ["./__tests__/*"]
     }
   },
-  "include": ["src", "scripts", "playground", "e2e", "vite.config.ts", "playwright.config.ts"],
+  "include": ["src", "scripts", "playground", "__tests__", "vite.config.ts", "playwright.config.ts"],
   "exclude": ["node_modules", "build"]
 }

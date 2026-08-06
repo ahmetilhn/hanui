@@ -489,16 +489,12 @@ yol, Playwright'ın resmi konteynerinde koşup `linux` referanslarını orada
 yükseltmeyi unutmayın**, aynı sürüm ikinci kez yayımlanamaz ve iş akışı kırmızı
 döner.
 
-## Belgeler
+## Tasarım sözleşmesi
 
-| | |
-| --- | --- |
-| [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md) | Öğe kataloğu · **hangi durumda hangi bileşen** |
-| [`docs/A11Y.md`](docs/A11Y.md) | Nöbetçiler, kontrast eşikleri, değişmez kurallar |
-| [`docs/MOTION.md`](docs/MOTION.md) | Hareket ölçeği ve koreografi |
-| [`docs/THEMING.md`](docs/THEMING.md) | Marka uyarlama, ezilebilir token listesi |
-| [`docs/MIGRATION.md`](docs/MIGRATION.md) | Kırıcı değişiklikler ve `@deprecated` yollar |
-| [`docs/CONSUMER-ADOPTION.md`](docs/CONSUMER-ADOPTION.md) | `hanparca-*` geçiş planı |
+Öğe seçimi (hangi durumda hangi bileşen), yüzey/yükseklik merdiveni, renk
+kararları, durum tintleri, tipografi rolleri, erişilebilirlik eşikleri, hareket
+ölçeği ve `@deprecated` göç yolları **`CLAUDE.md`** içindedir. O dosya
+`hanparca-frontend` ve `hanparca-admin` için de normatiftir.
 
 ## Lisans
 

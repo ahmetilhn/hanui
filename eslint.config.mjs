@@ -60,7 +60,7 @@ export default [
     },
   },
   {
-    files: ['src/**/__tests__/**/*.{ts,tsx}'],
+    files: ['__tests__/**/*.{ts,tsx}'],
     languageOptions: {
       globals: {
         describe: 'readonly',

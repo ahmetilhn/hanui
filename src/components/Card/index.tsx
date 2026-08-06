@@ -56,7 +56,7 @@ type CardMediaProps = {
    * @deprecated `fit` kullanın: `isContained` → `fit="contain"`,
    * `isContained={false}` → `fit="cover"`. Boolean yalnızca iki durumu
    * anlatabiliyordu, üçüncüsü (`inset`) ona sığmadı. Eski yol bir sürüm daha
-   * çalışır; `docs/MIGRATION.md`.
+   * çalışır; `CLAUDE.md` → Göç.
    */
   isContained?: boolean;
   className?: string;

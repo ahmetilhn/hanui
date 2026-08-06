@@ -24,7 +24,7 @@ export default defineConfig({
     dts({
       entryRoot: 'src',
       include: ['src'],
-      exclude: ['src/**/__tests__/**', 'src/**/*.test.*', 'src/test'],
+      exclude: ['src/**/*.test.*'],
       rollupTypes: true,
       tsconfigPath: resolve(__dirname, 'tsconfig.build.json'),
     }),
