@@ -93,46 +93,6 @@ const fits = (
 /**
  * ÇARPIŞMAYA DUYARLI KONUMLANDIRMA — `Tooltip`, `Popover`, `Menu` ve açılır
  * listelerin ortak temeli.
- *
- * <h3>Neden var: `position: absolute` yetmiyordu</h3>
- * `Tooltip` balonu tetikleyicinin içinde, `position: absolute` ile duruyordu.
- * Üç somut sonucu vardı:
- *
- * <ul>
- *   <li><b>Kırpılma.</b> `overflow: hidden` taşıyan her kapsayıcı (kart,
- *       tablo kaydırma kutusu, `Panel`) balonu kesiyordu. Bir tablo hücresinde
- *       ipucu görünmüyordu — hiç.</li>
- *   <li><b>Taşma.</b> Ekranın sağ kenarındaki bir tetikleyicinin balonu
- *       görünüm alanının dışına çıkıyor, yatay kaydırma açıyordu.</li>
- *   <li><b>Yığılma bağlamı.</b> `transform` taşıyan bir ata (`Card` hover
- *       animasyonu) yeni bir yığılma bağlamı açıyor ve `z-index` orada
- *       hapsoluyordu; balon kendi kartının altında kalıyordu.</li>
- * </ul>
- *
- * <p>Çözüm portal + `position: fixed`: yüzey gövdeye taşınır, koordinat
- * görünüm alanına göre hesaplanır. Kırpılacak bir kapsayıcı ve yarışılacak bir
- * yığılma bağlamı kalmaz.
- *
- * <h3>Neden yeni bir bağımlılık YOK</h3>
- * `floating-ui` bu işi yapıyor ve iyi yapıyor; ama paketin tek çalışma zamanı
- * bağımlılığının ikon seti olması bilinçli bir karar (bkz. README). Burada
- * ihtiyaç duyulan şey o kütüphanenin küçük bir alt kümesi: bir kenar, bir
- * hizalama ve karşıt kenara düşme. Ok konumlandırma, otomatik yerleşim
- * (`autoPlacement`), sanal öğe ve middleware zinciri gerekmiyor — ve
- * gerektiğinde eklenecek yer burası.
- *
- * <h3>CSS Anchor Positioning neden kullanılmıyor</h3>
- * Denendi ve BUGÜN kullanılamıyor: `anchor-name` / `position-anchor` yalnızca
- * Chromium'da var (Safari ve Firefox'ta bayrak arkasında bile değil). İki
- * kod yolu tutmak — biri modern tarayıcıda, biri yedekte — konumlandırmayı iki
- * kez yazmak ve ikisinin ayrışmasını beklemek demek. Ölçüm tabanlı yol her
- * yerde çalışıyor; tarayıcı desteği geldiğinde geçiş TEK dosyada.
- *
- * <h3>Ölçüm ne zaman yenileniyor</h3>
- * Açılışta, pencere yeniden boyutlandığında ve <em>herhangi bir atanın</em>
- * kaydırılmasında. Sonuncusu için `capture: true` ile belge düzeyinde tek bir
- * dinleyici: kaydırma olayı baloncuklanmıyor ve her ata için ayrı dinleyici
- * kurmak, derin bir ağaçta onlarca dinleyici demekti.
  */
 const usePositioning = (
   anchorRef: { current: HTMLElement | null },

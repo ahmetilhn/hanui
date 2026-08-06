@@ -14,40 +14,7 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   testId?: string;
 };
 
-/**
- * Tarih alanı — <strong>yerel</strong> `<input type="date">`.
- *
- * <h3>Neden taklit bir takvim YOK</h3>
- * Bu kütüphanenin kuralı: yerel öğe korunur, taklit yazmanın tek gerekçesi
- * ölçülmüş bir kusurdur ({@link Select} bunun tek istisnası ve gerekçesi
- * orada yazılı). Tarih alanında böyle bir kusur YOK — tersine, yerel öğenin
- * taklidin veremeyeceği dört şeyi var:
- *
- * <ul>
- *   <li><b>Mobilde işletim sisteminin seçicisi.</b> iOS'ta tekerlek, Android'de
- *       takvim — kullanıcının her gün kullandığı, alışkın olduğu arayüz. Hiçbir
- *       web takvimi 360 px'lik bir ekranda ona yaklaşamıyor.</li>
- *   <li><b>Klavyeyle YAZARAK giriş.</b> Doğum tarihini bilen biri "01.01.1980"i
- *       üç saniyede yazıyor; taklit takvimde aynı iş kırk yıl geriye tıklamak
- *       demek.</li>
- *   <li><b>Yerel biçim.</b> Tarayıcı kullanıcının işletim sistemi ayarına göre
- *       gg.aa.yyyy ya da mm/dd/yyyy gösteriyor; değer her zaman ISO
- *       (`YYYY-MM-DD`) kalıyor. İki biçimi elle yönetmek, kütüphanenin
- *       kullanıcının yerel ayarını TAHMİN etmesi demekti.</li>
- *   <li><b>Ekran okuyucu.</b> Alan üç ayrı bölüm (gün/ay/yıl) olarak okunuyor
- *       ve ok tuşlarıyla artırılıyor. APG'ye uygun bir takvim ızgarası bunu
- *       ancak taklit edebilir.</li>
- * </ul>
- *
- * <p>Bedeli: takvim açılışının görünüşü tarayıcıya ait ve tema token'larını
- * izlemiyor. Kabul edildi — açılan panelin rengi, yukarıdaki dördünün
- * yanında küçük bir bedel.
- *
- * <h3>`min` / `max` KULLANIN</h3>
- * İkisi de yerel öğede var ve tarayıcı doğrulamayı kendisi yapıyor. Geçersiz
- * bir tarihi yalnızca gönderimde yakalamak, kullanıcıyı formu doldurduktan
- * sonra geri gönderiyordu.
- */
+/** Tarih alanı — <strong>yerel</strong> `<input type="date">`. */
 const DateField = forwardRef<HTMLInputElement, Props>(
   ({ type = 'date', className, testId, ...rest }, ref) => (
     <input
@@ -87,30 +54,7 @@ type RangeProps = {
   testId?: string;
 };
 
-/**
- * Tarih aralığı — <strong>iki yerel alan</strong>, taklit takvim değil.
- *
- * <h3>Neden taklit bir aralık takvimi yazılmadı</h3>
- * Taklit bir ay ızgarasının tek gerçek üstünlüğü var: iki ucu AYNI ANDA
- * görmek. Bedeli ise {@link DateField} JSDoc'unda sayılan dört şeyin
- * tamamını kaybetmek — işletim sisteminin seçicisi, yazarak giriş, yerel
- * biçim ve ekran okuyucunun bölümlü okuması — artı APG'ye uygun bir ızgara
- * klavye modelini (`ArrowUp/Down` hafta, `PageUp/Down` ay, `Home/End` hafta
- * sınırı) sıfırdan yazmak.
- *
- * <p>Takas ölçüldüğünde iki uç arasında kalıyor ve karar <strong>henüz
- * verilmedi</strong>: bu bileşen bugün iki yerel alanı doğru şekilde
- * eşleştiriyor. Aynı ekranda ay ızgarası gerçekten gerekiyorsa (bir otel
- * rezervasyonu gibi, "boş günleri gör" ihtiyacı olan bir akış) o zaman
- * yazılır ve gerekçesi <em>o ihtiyaç</em> olur — "aralık seçimi" tek başına
- * yeterli bir gerekçe değil.
- *
- * <h3>İki uç birbirini KISITLAR</h3>
- * Başlangıç seçildiğinde bitiş alanının `min`i, bitiş seçildiğinde
- * başlangıcın `max`ı güncelleniyor: tarayıcı geçersiz aralığı en baştan
- * seçtirmiyor. Sonradan doğrulayıp hata göstermek, kullanıcıyı yaptığı bir
- * seçimden geri döndürüyordu.
- */
+/** Tarih aralığı — <strong>iki yerel alan</strong>, taklit takvim değil. */
 const DateRangeBase = ({
   value,
   onChange,
@@ -126,13 +70,7 @@ const DateRangeBase = ({
 }: RangeProps) => {
   const { labels } = useHanui();
 
-  /*
-   * OZET `Intl` ile ve `labels.locale`den.
-   *
-   * Iki ISO tarih kullanici icin bir aralik degil iki sayi. Yerel ayar
-   * KUTUPHANE tarafindan TAHMIN EDILMEZ; verilmediginde ozet hic cizilmez —
-   * yanlis bicimde bir tarih, hic tarih olmamasindan kotu.
-   */
+  /* OZET `Intl` ile ve `labels.locale`den. */
   const summary = (() => {
     if (!isSummaryVisible || !labels?.locale || value.start === '' || value.end === '') return null;
 

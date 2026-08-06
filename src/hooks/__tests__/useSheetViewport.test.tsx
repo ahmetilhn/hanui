@@ -2,17 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 
 import useSheetViewport from '../useSheetViewport';
 
-/**
- * Görünen alan ölçümü — iOS'ta klavye altında kalan panelin düzeltmesi.
- *
- * <h3>Neden bir test</h3>
- * Kancanın tuttuğu iki değişken MODÜL DÜZEYİNDE: açık panel sayacı ve
- * animasyon karesi. Modül düzeyi durum, aynı anda iki panel açıldığında
- * (filtre panelinin içindeki bir seçim kutusu) sessizce yanlış davranıyor:
- * üstteki panel kapandığında sayaç sıfırlanmadan dinleyiciler kaldırılırsa
- * alttaki panel ÖLÇÜLMEDEN kalır ve dibinden kırpılır. Testin ölçtüğü şey tam
- * olarak bu sayaç.
- */
+/** Görünen alan ölçümü — iOS'ta klavye altında kalan panelin düzeltmesi. */
 
 type ViewportStub = {
   height: number;
@@ -83,18 +73,7 @@ describe('useSheetViewport', () => {
     expect(readVar(INSET)).toBe('0px');
   });
 
-  /*
-   * GERCEK CIHAZDA BILDIRILEN HATA.
-   *
-   * `visualViewport.height` klavye acilip kapanirken, sayfa arka plandan
-   * donerken ve `<dialog>` ust katmana girerken bir kare boyunca absurt kucuk
-   * degerler raporluyor. Deger kosulsuz yaziliyordu ve panel o olcuye
-   * kilitleniyordu: 120 px olcum → 96 px panel → 57 px baslik + 39 px govde,
-   * yani listenin yarim satirinin gorundugu bir kaydirma yarigi.
-   *
-   * Olcum atlandiginda ONCEKI dogru deger yerinde kalir; hic olcum
-   * yapilmadiysa CSS yedegi (`100dvh`) devrede.
-   */
+  /* GERCEK CIHAZDA BILDIRILEN HATA. */
   it('ABSÜRT küçük ölçüm YAZILMAZ', () => {
     mockViewport(80);
 
@@ -120,14 +99,7 @@ describe('useSheetViewport', () => {
     act(() => first.unmount());
   });
 
-  /*
-   * KARE BAYRAGI TAKILI KALMAMALI.
-   *
-   * Bayrak yalnizca `requestAnimationFrame` geri cagrisinda sifirlaniyordu ve
-   * o geri cagri CALISMAYABILIR (sekme arka planda, iOS ust katman gecisi).
-   * Kare hic gelmediginde bayrak dolu kaliyor ve sonraki HER olcum sessizce
-   * atlaniyordu — panel, o an ne olculduyse orada donuyordu.
-   */
+  /* KARE BAYRAGI TAKILI KALMAMALI. */
   it('çalışmayan bir kare sonraki ölçümü ENGELLEMEZ', () => {
     const pending: FrameRequestCallback[] = [];
     const originalRequest = window.requestAnimationFrame;

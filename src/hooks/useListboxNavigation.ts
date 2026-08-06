@@ -18,47 +18,12 @@ export type ListboxNavigationOptions = {
 export type ListboxNavigation<T extends HTMLElement = HTMLElement> = {
   activeIndex: number;
   setActiveIndex: (index: number) => void;
-  /**
-   * Etkin seçeneği görünür alanda tutmak için LİSTEYE bağlanır.
-   *
-   * <p>Tip parametresi çağıran taraf için: `Select` bu referansı `<ul>`e
-   * veriyor ve panel açıldığında `focus()` çağırıyor. `HTMLElement`e sabitlense
-   * çağıran ikinci bir referans tutmak ve ikisini elle eşlemek zorunda kalırdı.
-   */
+  /** Etkin seçeneği görünür alanda tutmak için LİSTEYE bağlanır. */
   listRef: RefObject<T | null>;
   handleKeyDown: (event: KeyboardEvent<HTMLElement>) => void;
 };
 
-/**
- * LISTBOX KLAVYE GEZİNMESİ — `Select` ve `Combobox`ın ortak modeli.
- *
- * <h3>Neden bir kanca</h3>
- * İki bileşen aynı klavye modelini <strong>kopya kod</strong> olarak
- * taşıyordu: `ArrowDown`/`ArrowUp` uçlarda dönme, `Home`/`End`, `Enter` ile
- * seçme, `Escape` ile kapatma, `Tab` ile kapatıp gezinmeye devam etme ve
- * etkin seçeneği görünür alanda tutma. Altı davranış, iki yerde. Kopya kod
- * ayrışmaya açık ve ayrışma sessiz: bir bileşende `Home` çalışıp diğerinde
- * çalışmadığında hiçbir test kırılmıyordu — ikisinin de kendi testi vardı ve
- * ikisi de kendi davranışını doğruluyordu.
- *
- * <p>Kanca yalnızca <strong>gezinmeyi</strong> taşıyor. Açılma kararı (panel
- * mi alt sayfa mı), filtreleme ve seçim sözleşmesi (`value`/`onChange`) hâlâ
- * bileşenlerin: ikisi orada gerçekten farklı ve tek bir kancaya toplamak
- * `Select`e hiç kullanmayacağı arama koduna taşıtırdı.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`ArrowDown` / `ArrowUp`</td><td>etkin seçenek; uçlarda DÖNER</td></tr>
- *   <tr><td>`Home` / `End`</td><td>ilk / son</td></tr>
- *   <tr><td>`Enter` / `Space`</td><td>etkin seçeneği seçer</td></tr>
- *   <tr><td>`Escape`</td><td>kapatır</td></tr>
- *   <tr><td>`Tab`</td><td>kapatır, gezinme SÜRER (`preventDefault` yok)</td></tr>
- * </table>
- *
- * <p>`Space` yalnızca `hasSpaceSelect` ile: `Combobox`ın arama kutusunda boşluk
- * bir KARAKTER ve onu seçime çevirmek "fren balatası" yazmayı imkânsız
- * kılıyordu.
- */
+/** LISTBOX KLAVYE GEZİNMESİ — `Select` ve `Combobox`ın ortak modeli. */
 const useListboxNavigation = <T extends HTMLElement = HTMLElement>(
   { count, isOpen, initialIndex = 0, onSelect, onClose }: ListboxNavigationOptions,
   { hasSpaceSelect = false } = {},

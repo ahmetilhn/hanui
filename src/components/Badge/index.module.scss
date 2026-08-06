@@ -1,11 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Rozet.
- *
- * Arayuz fontunda ($font-ui): 12 px'te baslik fontu sikisip okunmuyordu.
- */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -21,48 +16,10 @@
 
   &__icon {
     display: flex;
-    /* Ikon metinden bir tik kucuk: esit puntoda ikon metni eziyor. */
     font-size: 0.95em;
   }
 }
 
-/*
- * DURUM TONLARI — hepsi tint zemin + koyu metin + eslesen hairline.
- *
- * Uc degeri ayri ayri yazmak yerine `@include tint(...)`: elle yazildiginda
- * kacinilmaz olarak biri atlaniyordu ve tint zemin uzerinde varsayilan gri
- * kenarlik kalinca kutu kirli gorunuyordu.
- *
- * `soft` ve `solid` DURUM TONLARINDA AYNI SEYI VERIR. Bu bilincli: "doygun
- * dolgu = tiklanabilir" kuralini bozmadan `solid` istenemez — dolu zeminli bir
- * durum etiketi dugmeye benziyor. Cagiran taraflari kirmamak icin prop
- * korundu, gorunum tint'e sabitlendi.
- *
- * Doygun dolgu yalnizca EYLEM tonlarinda (`action`, `link`) anlamli.
- */
-/*
- * NOTR TON — TEK yeniden baglanabilir tondur.
- *
- * OLCULDU: panel kenar cubugu her iki temada da koyu (`$rail-*`) ve oradaki
- * "okuma" rozetleri ACIK temada `#f1f2f5` zeminle cikiyordu — koyu rayin
- * uzerinde bembeyaz bir yapiskan etiket. Tuketici zaten dogru olani yapmisti
- * (`--hanui-surface-2` / `--hanui-text-2` / `--hanui-border` ucluusunu o alt
- * agac icin yeniden baglamak) ama rozet o ucluyu HIC OKUMUYORDU: notr ton
- * `@include tint(neutral)` ile ayri bir aileden (`$off-*`) geliyor. Sozlesme
- * yaziya dokulmedigi surece tuketici bunu ancak deneyerek bulabilirdi.
- *
- * Cozum ic siniflara selector uzatmak DEGIL — o siniflar kutuphanenin bir
- * sonraki yayininda degisir ve kural sessizce duser. Notr rozet artik kendi
- * ucluusunu okuyor; yedek degerler bugunku tint, yani hicbir cagiran yerde
- * gorunum degismiyor:
- *
- *   --hanui-badge-bg · --hanui-badge-fg · --hanui-badge-line
- *
- * Yalnizca NOTR ton yeniden baglanabilir. "Notr" zaten "durum yok" demek ve
- * rengi bulundugu yuzeyin isi. Durum tonlari (`success`, `danger`, `warning`,
- * `info`) ANLAM tasir; onlari kapsayicidan ezilebilir birakmak, koyu bir
- * bandin icindeki bir hata rozetini sessizce notrlestirirdi.
- */
 .badge--neutral {
   &.badge--soft,
   &.badge--solid {
@@ -125,7 +82,6 @@
   }
 }
 
-/* Birincil siniflandirma tinti. */
 .badge--oem {
   &.badge--soft,
   &.badge--solid {
@@ -138,7 +94,6 @@
   }
 }
 
-/* Ikincil siniflandirma tinti. */
 .badge--alt {
   &.badge--soft,
   &.badge--solid {
@@ -151,12 +106,6 @@
   }
 }
 
-/*
- * Indirim yuzdesi.
- *
- * Tutarin KENDISI notr kalir; renk yalnizca bu rozette. Kirmizi yerine YESIL:
- * kazanci kirmizi ile isaretlemek "uyari" gibi okunuyordu.
- */
 .badge--sale {
   &.badge--soft,
   &.badge--solid {
@@ -171,13 +120,6 @@
   }
 }
 
-/*
- * EYLEM TONLARI — doygun dolguya izin verilen tek yer.
- *
- * Sayac ve etiket rozetleri: sepet adedi, filtre sayisi. Bunlar bir durumu
- * degil bir MIKTARI bildirir ve tiklanabilir bir ogenin parcasidir; dolgu
- * burada yaniltmaz.
- */
 .badge--action {
   &.badge--soft {
     background-color: $surface-2;
@@ -200,15 +142,6 @@
     @include tint(info);
   }
 
-  /*
-   * Metin `$on-scrim` DEGILDI, oyle olmali. `$on-scrim` her iki temada da
-   * BEYAZ (orgusu: bir ortunun ustunde durur) ama bu rozetin zemini mavi ve
-   * mavi temaya gore degisiyor: koyu temada `$blue` acilip `#5b93ff` oluyor ve
-   * beyaz metin orada 2,97:1'e dusuyordu. `$on-action` maviye gore degil ama
-   * TEMAYA gore donuyor (acikta beyaz, koyuda murekkep) ve ayni dolgunun
-   * `Pagination`/`Tile` icindeki kullanimi zaten onu kullaniyordu — rozet tek
-   * basina ayrisiyordu.
-   */
   &.badge--solid {
     background-color: $blue;
     border-color: $blue;

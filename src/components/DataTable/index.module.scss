@@ -1,54 +1,17 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Veri tablosu kabugu.
- *
- * Gorunum `data-table` mixin'inden gelir; burada yalnizca kabuk (yuzey,
- * hairline, kaydirma) ve durum satirlari var.
- */
 .wrapper {
-  /*
-   * `overflow: auto` (yalniz `-x` degil): cok sutunlu tablolar yatay kayar,
-   * sayfa kaymaz. Dikey eksen sinirsizken zaten kaymaz; `--capped` ile
-   * sinirlaninca ayni alan dikey kaydirmayi ve yapiskan basligin referansini
-   * saglar.
-   */
   overflow: auto;
 
-  /*
-   * KAYDIRMA KABI KONUMLANMIS OLMAK ZORUNDA.
-   *
-   * `overflow` yalnizca KENDI kapsayici blogunun icindeki mutlak konumlanmis
-   * torunlari kirpar. Kap konumlanmamisken `srLabel` ile cizilen gorunmez
-   * sutun basligi (`visually-hidden` → `position: absolute`) kabin degil
-   * daha yukaridaki bir atanin blogunda cozuluyor, dolayisiyla kirpilmiyor
-   * ve SAYFAYI yana kaydiriyordu.
-   *
-   * OLCULDU (panel /tarayici, 390 px): `documentElement.scrollWidth` 503 —
-   * sayfa 113 px yatay kayiyor. Hata yalnizca `hasViewportCap` VERILMEYEN
-   * tablolarda gorunuyordu: sinirli olanlar tesadufen bagisik, cunku
-   * yapiskan `thead th` orada konumlanmis bir ata uretiyor. Yani bagisiklik
-   * bir karar degil kazaydi ve tam olarak o yuzden fark edilmedi.
-   */
   position: relative;
   background-color: $surface;
   border: 1px solid $border;
   border-radius: $radius-md;
 
-  /*
-   * Olcu gorunum alanindan ust bandin payi ve sayfa dolgusu dusulerek
-   * hesaplanir. Sinirsiz yukseklikte `position: sticky` HIC calismiyordu —
-   * kaydirma alani ekrandan uzun olunca baslik yukari cikip gidiyordu.
-   */
   &--capped {
     max-height: calc(100dvh - #{$header-offset} - #{$space-8});
 
-    /*
-     * `top: 0` DOGRU olan: referans ust bant degil tablonun kendi kaydirma
-     * alani. `z-index`: govde hucrelerindeki konumlanmis ogeler (eylem
-     * dugmeleri) kaynak sirasiyla basligin ustunden gecerdi.
-     */
     .table thead th {
       position: sticky;
       top: 0;
@@ -61,7 +24,6 @@
   @include data-table;
 }
 
-/* Yukleniyor / hata / bos — uc durum tek hucrede, colSpan otomatik. */
 .state {
   text-align: center;
   color: $text-2;
@@ -71,13 +33,6 @@
     color: $bad-fg;
   }
 
-  /*
-   * Ikon + metin; renk tek basina anlam tasiyamaz (WCAG 1.4.1).
-   *
-   * Ikon tablo puntosunu (15 px) degil ikon olcegini kullanir: bos ve hatali
-   * tablo, sayfadaki en genis bosluga cizilen tek satirdir ve orada 15 px'lik
-   * bir simge iliskisiz bir noktaya donusuyordu.
-   */
   &__message {
     display: inline-flex;
     align-items: center;
@@ -90,11 +45,6 @@
   }
 }
 
-/*
- * Uyari tinti — TEK desen: tint zemin + ilk hucrede sol kenar isareti.
- * Zemin hover vurgusuna yenilir (`data-table` `tbody tr:hover`); sol isaret
- * hover'da da yerinde kalir, satirin "is bekliyor" bilgisi kaybolmaz.
- */
 .row--warning {
   background-color: $warn-bg;
 
@@ -103,24 +53,10 @@
   }
 }
 
-/*
- * Gorsel basligi olmayan sutunun adi (`srLabel`).
- *
- * `aria-label` DEGIL gizlenmis METIN: eksen taramasi `<th aria-label>`i bos
- * baslik olarak bildiriyor ve ekran okuyucularin tablo gezinme kipi sutun adini
- * hucrenin icerigi uzerinden okuyor.
- */
 .srOnly {
   @include visually-hidden;
 }
 
-/*
- * SIRALAMA DUGMESI.
- *
- * Baslik hucresine `onClick` yazmak yetmiyordu: `<th>` odaklanabilir degil,
- * klavye kullanicisi siralamaya HIC ulasamiyor ve ekran okuyucu hucrenin
- * tiklanabilir oldugunu soylemiyordu. Dugme hucrenin tamamini kapliyor.
- */
 .sort {
   display: inline-flex;
   align-items: center;
@@ -141,10 +77,6 @@
   @include focus-ring($ring-color, -2px);
 }
 
-/*
- * Yon oku. Siralanabilir ama siralanmamis sutunda SOLUK duruyor: sutunun
- * siralanabildigi ancak uzerine gelince anlasiliyordu.
- */
 .sort__arrow {
   flex-shrink: 0;
   font-size: $font-size-2xs;
@@ -163,17 +95,6 @@
   }
 }
 
-/*
- * YAPISKAN ILK SUTUN.
- *
- * Genis bir tabloda saga kaydiran kullanici hangi satira baktigini
- * kaybediyordu. Zemin ZORUNLU: saydam bir hucrenin arkasindan kayan sutunlar
- * gecip okunamaz bir karisim birakiyordu.
- *
- * `inset-inline-start` DEGIL `left`: `position: sticky` yatay ofseti fiziksel
- * eksende olcuyor ve RTL'de mantiksal ozellik yapiskanligi sessizce
- * bozuyordu.
- */
 .sticky {
   position: sticky;
   left: 0;
@@ -185,8 +106,6 @@
     right: 0;
   }
 
-  /* Kayan sutunlarla arasindaki sinir: golge degil hairline — golge koyu
-     temada gorunmuyordu. */
   &::after {
     content: '';
     position: absolute;
@@ -201,12 +120,6 @@ thead .sticky {
   background-color: $surface-2;
 }
 
-/*
- * TOPLU EYLEM SERIDI — tablonun USTUNDE ve yapiskan.
- *
- * Kullanici yuzlerce satir arasinda secim yapip asagi kaydirdiginda serit
- * ekranin disinda kaliyor ve secimin ne ise yaradigi gorunmuyordu.
- */
 .bulkBar {
   @include row($space-3);
 

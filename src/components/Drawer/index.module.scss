@@ -1,46 +1,11 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * CEKMECE.
- *
- * `<dialog>` varsayilan olarak ORTALANIR ve kenarlik tasir; sifirlanip kendi
- * yuzeyimiz veriliyor. Panel gorunum alaninin tam yuksekliginde ve BIR
- * KENARDA duruyor.
- */
 .drawer {
-  /*
-   * KAPALI `<dialog>` CIZILMEZ.
-   *
-   * Buraya dogrudan `display: flex` yaziliyordu ve bu, tarayicinin
-   * `dialog:not([open]) { display: none }` varsayilanini EZIYORDU: pencere
-   * kapaliyken de yerlesime giriyor, gercek bir kutu kapliyor ve icindeki
-   * tiklanabilir ogeler etkin kaliyordu.
-   *
-   * OLCULDU (panel, 1440x900, `/stok`): kapali palet `x 576-1136, y -150-330`
-   * kutusunu kapliyordu — yani icerigin tam ustunde. Bos sanilan (900, 250)
-   * noktasina tiklamak `/kaynak/bank-transfer-notifications` sayfasina
-   * goturuyordu; kullanici "gorunmez linkler var" diye bildirdi. Ayni hata
-   * `Drawer`da da vardi ve orada kutu 77+ gezinme bagi tasiyor.
-   *
-   * `display` ARTIK `[open]` altinda. Kapanis animasyonu bundan etkilenmiyor:
-   * `surface-transition` zaten `display … allow-discrete` tasiyor, yani
-   * `display: none` gecise KATILIYOR. `BottomSheet` bu kalibi zaten
-   * kullaniyordu; simdi ucu de ayni.
-   */
   display: none;
 
   flex-direction: column;
   position: fixed;
-  /*
-   * Dikeyde TAM yukseklik; yatayda yalnizca BIR kenar sabit.
-   *
-   * `inset-block: 0` TEK BASINA YETMIYOR: tarayicinin `<dialog>` varsayilani
-   * `height: fit-content` ve o, `top`/`bottom` ile gelen gerilmeyi eziyor.
-   * Panel icerigi kadar boylaniyordu — gorsel referansta yakalandi: cekmece
-   * ekranin ustunde 200 px'lik bir kutu olarak duruyor, altinda perde
-   * gorunuyordu. Yukseklik ACIKCA yaziliyor.
-   */
   inset-block: 0;
   block-size: 100dvh;
   max-width: 100vw;
@@ -53,10 +18,6 @@
   box-shadow: $shadow-xl;
   overflow: hidden;
 
-  /*
-   * Genislik: `min()` ile gorunum alanina bagli. Sabit bir piksel, 1024 px'lik
-   * bir tablette ekranin yarisindan fazlasini kapliyordu.
-   */
   &--sm {
     width: min(92vw, 360px);
   }
@@ -69,12 +30,6 @@
     width: min(96vw, 720px);
   }
 
-  /*
-   * YON MANTIKSAL: `end` RTL'de sola acilir.
-   *
-   * `inset-inline-end: 0` + `auto` karsit kenar: iki kenari birden sifirlamak
-   * paneli gorunum alani genisligine yayiyordu.
-   */
   &--end {
     inset-inline: auto 0;
   }
@@ -87,10 +42,6 @@
     inset-inline: 0 auto;
   }
 
-  /*
-   * GIRIS VE CIKIS SIMETRIK. Panel kendi kenarindan gelir ve oraya doner;
-   * `BottomSheet`te bu mumkun degil (cagiran onu DOM'dan kaldiriyor).
-   */
   opacity: 0;
 
   &--end {
@@ -135,14 +86,6 @@
     transition: none;
   }
 
-  /*
-   * DAR EKRANDA TAM GENISLIK.
-   *
-   * Telefonda 480 px'lik bir panel zaten ekranin tamami; kalan 20 px'lik serit
-   * "arkada bir sey var" demiyor, yalnizca panelin kenarini kirpiyordu.
-   * Yatayda kayma yerine dipten gelme DEGIL — o `BottomSheet`in isi ve karar
-   * cagiranin.
-   */
   @include for-mobile {
     &,
     &--sm,
@@ -183,8 +126,6 @@
 
   &__body {
     flex: 1;
-    /* `min-height: 0` OLMADAN esnek oge icerigiyle buyur ve panelin
-       yuksekligini asar; dip serit ekranin disina tasiyordu. */
     min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;

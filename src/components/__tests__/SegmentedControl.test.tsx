@@ -3,14 +3,7 @@ import userEvent from '@testing-library/user-event';
 
 import SegmentedControl from '../SegmentedControl';
 
-/**
- * BÖLMELİ DENETİM — `ChipGroup`tan ayıran davranış.
- *
- * <p>İkisi de `radiogroup` ve tek seçim; ayrım seçili öğeye ikinci kez
- * basıldığında ne olduğunda. `ChipGroup` seçimi KALDIRIR (filtre: "hiçbiri"
- * geçerli bir durum), bölmeli denetim HİÇBİR ŞEY yapmaz (görünüm anahtarı:
- * ekranda bir şey çizilmek zorunda). Bu testler o farkı kilitliyor.
- */
+/** BÖLMELİ DENETİM — `ChipGroup`tan ayıran davranış. */
 
 const OPTIONS = [
   { value: 'list', label: 'Liste' },

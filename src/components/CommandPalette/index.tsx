@@ -49,38 +49,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Komut paleti — klavyeyle her şeye ulaşma.
- *
- * <h3>Neden `Combobox` + `Modal` bileşimi DEĞİL de ayrı bir bileşen</h3>
- * Denendi ve iki yerde kırıldı. `Combobox` bir DEĞER seçtiriyor: seçim
- * tetikleyicide kalıcı olarak görünüyor, `value`/`onChange` sözleşmesi var ve
- * kapanınca seçili öğe hatırlanıyor. Palet ise bir EYLEM çalıştırıyor —
- * hatırlanacak bir değer yok. İkincisi, `Combobox`ın tetikleyicisi var;
- * palette tetikleyici KLAVYE KISAYOLU ve o kısayolu bağlamak çağıranın işi
- * (hangi tuş, hangi sayfada — kütüphane bilemez).
- *
- * <h3>Kısayolu KÜTÜPHANE bağlamaz</h3>
- * `⌘K` yaygın ama evrensel değil ve belge düzeyinde bir tuş dinleyicisi
- * kurmak, tüketicinin kendi kısayollarıyla sessizce çakışmak demek. `shortcut`
- * alanı yalnızca GÖSTERİLİYOR; `isOpen` çağıranın.
- *
- * <h3>Arama `matchesSearch` ile — aksan duyarsız</h3>
- * "siparis" yazan kullanıcı "Sipariş"i bulmalı. Aynı normalizasyon
- * `Combobox`ın yerel filtresinde de kullanılıyor; iki yerde iki farklı arama
- * kuralı, aynı terimin iki farklı sonuç vermesi demekti.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`ArrowDown` / `ArrowUp`</td><td>etkin komut; uçlarda DÖNER</td></tr>
- *   <tr><td>`Home` / `End`</td><td>ilk / son komut</td></tr>
- *   <tr><td>`Enter`</td><td>etkin komutu çalıştırır ve kapatır</td></tr>
- *   <tr><td>`Escape`</td><td>kapatır, odak AÇAN öğeye döner</td></tr>
- * </table>
- * Odak arama kutusundan AYRILMAZ; etkin komut `aria-activedescendant` ile
- * bildiriliyor. Odağı listeye taşımak yazmaya devam etmeyi imkânsız
- * kılıyordu.
- */
+/** Komut paleti — klavyeyle her şeye ulaşma. */
 const CommandPalette = ({
   isOpen,
   onClose,

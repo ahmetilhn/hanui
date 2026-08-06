@@ -4,8 +4,6 @@
 .iconButton {
   position: relative;
   display: inline-flex;
-  /* Baglanti kipinde tarayicinin varsayilan alti cizgisi ve miras rengi
-     geliyordu; ikisi de dugme gorunumunu bozuyor. */
   text-decoration: none;
   align-items: center;
   justify-content: center;
@@ -30,22 +28,8 @@
     transition: none;
   }
 
-  /*
-   * Gorsel kutu kucuk olsa da dokunma hedefi 44 px korunur (WCAG 2.5.8).
-   * `tap-target` gorunmez ortuyu ogenin ORTASINA yerlestirir; elle yazilan
-   * bir ::after tamponu sol-uste demirlenip hedefi tek yone tasiyordu.
-   */
   @include tap-target;
 
-  /*
-   * IKON OLCUSU METIN PUNTOSUNDAN GELMEZ.
-   *
-   * Once `sm` 15 px, `md` 16 px metin puntosu tasiyordu: 40 px'lik bir kutunun
-   * ortasinda 16 px'lik bir simge, cevresinde 12 px bosluk birakip
-   * "yanlislikla kucuk kalmis" gibi duruyordu — dugmenin kendisi degil icindeki
-   * isaret tiklanabilir gorunmeli. Kutu olculeri DEGISMEDI (32/40) ve dokunma
-   * hedefi hâlâ 44 px; buyuyen yalnizca simge.
-   */
   &--sm {
     width: 32px;
     height: 32px;
@@ -78,7 +62,6 @@
     }
   }
 
-  /* Notr dolgu: grafit. Ekranin birincil eylemi ama DONUSUM noktasi degil. */
   &--solid {
     background-color: $action;
     color: $on-action;
@@ -87,21 +70,12 @@
       background-color: $action-hover;
     }
 
-    /* Metin/simge `$on-action-soft`: beyaz bu dolguda 1,55:1'de kalıyordu
-       (bkz. Button ve `theme/tokens.ts`). */
     &:disabled {
       background-color: $action-soft;
       color: $on-action-soft;
     }
   }
 
-  /*
-   * DONUSUM EYLEMI — ekrandaki tek doygun turuncu.
-   *
-   * `solid` ile ayni gorunmemesi onemli: bir kart uzerindeki tek amber oge
-   * bu dugme olacak. Metin `$on-amber` (#291500), beyaz DEGIL — amber
-   * uzerinde beyaz 2.3:1'de kalip okunmuyor.
-   */
   &--cart {
     background-color: $amber;
     color: $on-amber;

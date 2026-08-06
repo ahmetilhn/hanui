@@ -2,20 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import { SOLO_ONLY } from '../playground/solo';
 
-/**
- * Her bileşen × {açık, koyu} × {masaüstü, mobil}.
- *
- * <h3>Liste SAYFADAN okunuyor, bir dosyadan değil</h3>
- * Izgaradaki bileşenler `[data-gallery]` özniteliğinden toplanıyor. Galeri
- * defterini (`playground/scenarios.tsx`) buradan import etmek mümkün değil: o
- * dosya kütüphane kaynağını, o da SCSS'i çekiyor ve Playwright'ın Node
- * tarafındaki dönüştürücüsü SCSS'i ayrıştıramıyor. Ama sonuç daha da doğru —
- * çekilen şey GERÇEKTEN çizilmiş olan; deftere girip de bir hata yüzünden
- * çizilmeyen bir bileşen sessizce atlanmaz, `toHaveScreenshot` onu bulamaz.
- *
- * <p>Defterin eksiksizliğini ayrı bir nöbetçi ölçüyor:
- * `src/__tests__/gallery-coverage.test.ts`.
- */
+/** Her bileşen × {açık, koyu} × {masaüstü, mobil}. */
 
 const THEMES = ['light', 'dark'] as const;
 
@@ -79,14 +66,7 @@ for (const theme of THEMES) {
       await expect(page).toHaveScreenshot(`compact-${theme}.png`, { fullPage: false });
     });
 
-    /*
-     * ZORLANMIS RENK KIPI (Windows Yuksek Kontrast).
-     *
-     * Chromium `forcedColors` emulasyonunu destekliyor; isletim sistemi
-     * gerekmiyor. Kutuphanede bu kip icin sifir kural vardi ve sonucu somut:
-     * tint zeminli rozetler tek tip bir kutuya dusuyor, `box-shadow` ile
-     * cizilen odak halkasi TAMAMEN kayboluyordu.
-     */
+    /* ZORLANMIS RENK KIPI (Windows Yuksek Kontrast). */
     test(`zorlanmış renk kipi — ${theme}`, async ({ page }) => {
       await page.emulateMedia({ forcedColors: 'active', colorScheme: theme });
       await page.goto(`/?theme=${theme}`);

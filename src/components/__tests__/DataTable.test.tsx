@@ -10,13 +10,7 @@ const COLUMNS: DataTableColumn[] = [
 
 const LABELS = { emptyMessage: 'Kayıt bulunamadı.', loadingMessage: 'Yükleniyor…' };
 
-/**
- * <strong>"Yüklenemedi" ile "boş" AYRI durumlardır.</strong>
- *
- * <p>Bir ağ hatasını "kayıt kalmamış" diye okutmak kullanıcıya yanlış karar
- * verdirir: listenin gerçekten boşaldığını sanıp yeni kayıt oluşturmaya
- * başlıyor. Bu dosya o ayrımın nöbetçisi.
- */
+/** <strong>"Yüklenemedi" ile "boş" AYRI durumlardır.</strong> */
 describe('DataTable durum öncelikleri', () => {
   it('hata varken BOŞ mesajı asla çizilmez', () => {
     render(<DataTable columns={COLUMNS} {...LABELS} error="Liste yüklenemedi." />);

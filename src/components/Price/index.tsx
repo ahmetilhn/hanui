@@ -11,19 +11,7 @@ type Props = {
   value: string;
   /** Para birimi simgesi ya da kodu. Verilmezse `labels.currency`. */
   currency?: string;
-  /**
-   * Değeri `Intl.NumberFormat` ile biçimlendirir.
-   *
-   * <p>`value` bu kipte de bir DİZE olarak kalıyor ve sayıya çevriliyor —
-   * bileşen hâlâ HESAP YAPMIYOR, yalnızca ayırıcıları ve para birimi
-   * konumunu yerel ayardan alıyor. Yerel ayar `labels.locale`den; verilmezse
-   * biçimlendirme YAPILMAZ ve değer olduğu gibi yazılır. Yanlış yerel ayarda
-   * biçimlendirilmiş bir tutar, biçimlendirilmemiş olandan kötü: "1,250" bir
-   * yerde bin iki yüz elli, başka bir yerde bir tam iki yüz elli.
-   *
-   * <p>Para birimi simgesinin ÖN/ARKA konumu da yerel ayara bağlı ve şu anda
-   * her zaman arkada — `Intl` açıldığında doğru konumu o veriyor.
-   */
+  /** Değeri `Intl.NumberFormat` ile biçimlendirir. */
   isFormatted?: boolean;
   /** Üstü çizili liste fiyatı; indirim varsa verilir (biçimlenmiş). */
   listValue?: string;
@@ -36,21 +24,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Tutar gösterimi.
- *
- * <h3>Bileşen HESAP YAPMAZ</h3>
- * Tutar biçimlenmiş gelir. Kuruşu istemcide çevirmek kayan nokta hatası riski
- * taşır ve biçimlendirme iki yerde ayrışır: aynı ürün listede "1.299,90",
- * detayda "1299.9" çıkıyordu. İndirim oranı da dışarıdan gelir — burada
- * `(1 - fiyat/liste)` hesaplamak için biçimlenmiş metni sayıya çevirmek
- * gerekirdi ve o kırılgan bir iş.
- *
- * <h3>Tutar NÖTR kalır</h3>
- * Güncel tutar `$text`; üstü çizili eski tutar `$text-3`; indirim yüzdesi
- * küçük bir yeşil rozet. Kırmızı fiyat ucuz durur ve kırmızıyı "olumsuz"
- * anlamından koparır.
- */
+/** Tutar gösterimi. */
 const Price: FC<Props> = ({
   value,
   currency,
@@ -65,16 +39,7 @@ const Price: FC<Props> = ({
   const { labels } = useHanui();
   const symbol = resolveLabel('Price.currency', currency, labels?.currency);
 
-  /*
-   * BICIMLENDIRME OPSIYONEL ve yerel ayara BAGLI.
-   *
-   * Yerel ayar verilmediginde deger olduğu gibi yaziliyor: yanlis yerel ayarda
-   * bicimlendirilmis bir tutar, bicimlendirilmemis olandan kotu — "1,250" bir
-   * yerde bin iki yuz elli, baska bir yerde bir tam iki yuz elli.
-   *
-   * Cevrilemeyen bir deger de oldugu gibi kalir. Bir bicimlendirme hatasi
-   * FIYATI gizleyemez; ekranda bir sey olmamasindan iyisi ham degerdir.
-   */
+  /* BICIMLENDIRME OPSIYONEL ve yerel ayara BAGLI. */
   const format = (raw: string): string => {
     if (!isFormatted || !labels?.locale) return raw;
 

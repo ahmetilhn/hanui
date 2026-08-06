@@ -3,28 +3,7 @@ import { resolve } from 'node:path';
 
 import { COMPACT_DENSITY, DARK_THEME, DEFAULT_FONTS, LIGHT_THEME, METRIC_TOKENS } from '../tokens';
 
-/**
- * TOKEN SÖZLEŞMESİ — üç tarafın aynı listeyi görmesi.
- *
- * <p>Token listesi üç yerde yaşıyor: `LIGHT_THEME`, `DARK_THEME` ve üretilmiş
- * SCSS. Üçü ayrıştığında hiçbir katman uyarmıyor:
- *
- * <ul>
- *   <li>Bir token yalnızca açık temada varsa, koyu temada `var(--hanui-x)`
- *       tanımsız kalır. CSS bildirimi SESSİZCE düşer — kural geçersiz sayılır,
- *       öğe rengini kaybeder ve derleme yeşil döner.</li>
- *   <li>SCSS `npm run tokens` koşulmadan commit edilirse bileşenler var
- *       olmayan bir `$ad` okur (Sass hatası) ya da — daha kötüsü — ESKİ değeri
- *       okur ve tema ezmesi hiçbir yere ulaşmaz.</li>
- * </ul>
- *
- * <h3>Neden `npm run tokens` çağrılıp diff alınmıyor</h3>
- * Bir testin çalışma ağacına dosya YAZMASI kabul edilemez: test koşan
- * geliştiricinin `git status`u testin kendisi yüzünden kirlenir ve CI'da
- * "üretilmiş dosya değişti" hatası testin kendi yan etkisinden mi yoksa
- * kaynaktan mı geldiği anlaşılamaz. Test bunun yerine üretilmiş dosyayı OKUR
- * ve kaynakla karşılaştırır — aynı güvence, yan etkisiz.
- */
+/** TOKEN SÖZLEŞMESİ — üç tarafın aynı listeyi görmesi. */
 
 const STYLES = resolve(__dirname, '../../styles');
 

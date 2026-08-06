@@ -1,16 +1,7 @@
 import { DENSITY_ATTRIBUTE, THEME_ATTRIBUTE, THEME_STYLE_ID } from '../../helpers/theme.helper';
 import initHanui from '../initHanui';
 
-/**
- * React ağacının DIŞINDAN yapılandırma.
- *
- * <p>Bu fonksiyonun tek varlık sebebi ZAMANLAMA: `HanuiProvider` ağaç monte
- * olduktan sonra yazıyor ve koyu tema seçmiş bir kullanıcı o ana kadar beyaz
- * ekran görüyor. `<head>` içindeki satır içi bir betikten çağrıldığında ezmeler
- * ilk boyamadan önce yerinde olur. Test o sözleşmeyi kilitliyor: çağrı, tek bir
- * `<style>` etiketi ve isteğe bağlı olarak `<html>` özniteliği bırakır — başka
- * hiçbir şeye dokunmaz.
- */
+/** React ağacının DIŞINDAN yapılandırma. */
 describe('initHanui', () => {
   beforeEach(() => {
     document.getElementById(THEME_STYLE_ID)?.remove();
@@ -52,14 +43,7 @@ describe('initHanui', () => {
     expect(document.getElementById(THEME_STYLE_ID)).toBeNull();
   });
 
-  /*
-   * OLCU EZMESI BELGEYE GERCEKTEN INIYOR MU.
-   *
-   * `buildThemeCss` ayrica test ediliyor ama o yalnizca METIN uretiyor; bu
-   * test zinciri sonuna kadar izliyor: cagri → `<style>` etiketi → belge.
-   * Aradaki `applyThemeConfig` yolu kopsaydi CSS dogru uretilir ve hicbir
-   * yere yazilmazdi.
-   */
+  /* OLCU EZMESI BELGEYE GERCEKTEN INIYOR MU. */
   it('ölçü ezmesi belgeye yazılır', () => {
     initHanui({ theme: { metrics: { 'radius-md': '2px' } } });
 

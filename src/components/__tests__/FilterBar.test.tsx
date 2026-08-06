@@ -3,15 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import FilterBar, { FilterBarField } from '../FilterBar';
 import Input from '../Input';
 
-/**
- * Filtre şeridi HER ZAMAN bir formdur.
- *
- * <p>Beş ekran şeridi elle kuruyordu ve yalnızca üçü `<form>` kullanıyordu:
- * arama kutusunda Enter üç ekranda filtreyi uyguluyor, ikisinde hiçbir şey
- * yapmıyordu. Tarayıcının örtük gönderimi (Enter) birden çok alanlı bir formda
- * ancak bir gönderme düğmesi varsa çalışır; şerit bu yüzden görünmez bir yedek
- * düğme taşır.
- */
+/** Filtre şeridi HER ZAMAN bir formdur. */
 describe('FilterBar — Enter tutarlılığı', () => {
   const renderBar = (onSubmit: () => void) =>
     render(

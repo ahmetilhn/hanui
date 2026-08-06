@@ -17,16 +17,9 @@
   }
 
   &__label {
-    /* Alt cizgi yalnizca metinde; ok altinda cizgi kirik gorunuyordu. */
     text-underline-offset: 3px;
   }
 
-  /*
-   * Ok metinle birlikte olceklenir (`em`) ama METINDEN KUCUK DEGIL: 0.9em
-   * kucuk boyda (13 px) oku 11.7 px'e dusuruyor ve okun govdesi tek piksele
-   * inip yariml pikselde bulaniklasiyordu. 1em ayni ritmi korur, hizalama
-   * `align-items: center` ile zaten dogru.
-   */
   &__arrow {
     @include mirror-in-rtl;
 
@@ -44,14 +37,6 @@
       text-decoration: underline;
     }
 
-    /*
-     * Ok, gidilecek yonu fiziksel olarak sezdirir.
-     *
-     * RTL'de ok zaten `scaleX(-1)` ile aynalanmis durumda ve `transform` TEK
-     * bir ozellik: burada yeniden yazmak aynalamayi EZER — ok bir anda ileriyi
-     * degil geriyi gosterir ve hover'da yanlis yone kayar. Iki donusum
-     * birlikte yazilir.
-     */
     .link__arrow {
       transform: translateX(3px);
 
@@ -69,11 +54,6 @@
     font-size: $font-size-sm;
   }
 
-  /*
-   * Vurgulu baglanti MAVI: baglanti bir gezinme ogesi. Doygun turuncu tek bir
-   * donusum noktasina ayrildi ve her sayfada onlarca turuncu metin o
-   * tekilligi yok ediyordu.
-   */
   &--brand {
     color: $blue-text;
 

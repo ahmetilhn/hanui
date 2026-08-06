@@ -1,39 +1,4 @@
-/**
- * ARAYÜZ METİNLERİ.
- *
- * <h3>Kütüphane hiçbir dilde metin UYDURMAZ</h3>
- * Bir bileşen kütüphanesi "Kapat" yazamaz: hangi dilde, hangi üslupta
- * ("Kapat" mı "Vazgeç" mi), hangi terimle (kayıt / ürün / talep) yazacağını
- * bilmez. Bu yüzden kullanıcıya görünen her metin dışarıdan gelir.
- *
- * <h3>Ama her ÇAĞRI YERİNDE değil, bir KEZ</h3>
- * Metinleri prop olarak zorunlu tutmak doğruydu ama yeri yanlıştı: aynı
- * "Kapat" dizesi yüz çağrı yerine dağılıyor ve biri değiştiğinde
- * doksan dokuzu eski kalıyordu. Uygulamanın dili tek; karar da tek yerde
- * verilmeli.
- *
- * <pre>
- * &lt;HanuiProvider labels={{ close: 'Kapat', cancel: 'Vazgeç' }}&gt;
- * </pre>
- *
- * <h3>Çözümleme sırası: prop → config → uyarı</h3>
- * Bir prop verilmişse o kazanır (bir pencerenin kapatma düğmesi bağlama göre
- * "Kapat" yerine "Daha sonra" olabilir). Verilmemişse config'ten okunur.
- * İkisi de yoksa öğe erişilebilir adını kaybeder — bu bir hata ve geliştirme
- * kipinde konsola yazılır (bkz. `helpers/label.helper`).
- *
- * <h3>Neden derleme zamanında zorlanamıyor</h3>
- * TypeScript, çalışma zamanında bir sağlayıcının olup olmadığını göremez.
- * Prop'ları zorunlu tutmak config'i işe yaramaz kılardı; isteğe bağlı yapmak
- * derleme güvencesini bırakıp geliştirme uyarısına indiriyor. Bilinçli bir
- * takas: metnin tek yerde durması, derleyicinin bunu görmesinden daha değerli.
- *
- * <h3>Neye metin VERİLMEZ</h3>
- * Öğeye ÖZGÜ olan hiçbir şey buraya girmez: `Modal.title`,
- * `ConfirmDialog.confirmLabel` ("Sil" — eylemi tekrarlamak zorunda),
- * `IconButton.label`, `Select.label`, `TableCheckbox.label`. Bunlar prop
- * olarak zorunlu kalır çünkü her çağrı yerinde farklıdır.
- */
+/** ARAYÜZ METİNLERİ. */
 
 /** Sayı biçimlendiricileri: değere bağlı metinler dizeyle verilemez. */
 type Formatter<TArgs extends unknown[]> = (...args: TArgs) => string;
@@ -58,12 +23,7 @@ export type HanuiLabels = Partial<{
   /** Seçim yokken `Select` tetikleyicisinde görünen metin. */
   selectPlaceholder: string;
 
-  /**
-   * Baş harf büyütmesinde kullanılacak dil etiketi. `Avatar`.
-   *
-   * <p>Türkçede ZORUNLU: `toUpperCase()` "i" harfini "I" yapıyor ve
-   * "İlhan"ın baş harfi "I" çıkıyor.
-   */
+  /** Baş harf büyütmesinde kullanılacak dil etiketi. `Avatar`. */
   locale: string;
 
   /** Para birimi simgesi ya da kodu. `Price`. */

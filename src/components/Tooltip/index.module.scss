@@ -1,12 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Ipucu balonu.
- *
- * Balon BANT tonlarini kullanir ($nav-*), $graphite + $text degil: aksi halde
- * koyu temada koyu metin koyu zemine dusuyordu.
- */
 .tooltip {
   display: inline-flex;
 
@@ -16,21 +10,9 @@
   }
 }
 
-/*
- * Balon GOVDEDE (portal) ve `position: fixed`.
- *
- * Koordinati `usePositioning` yaziyor; buradaki hicbir kural konum
- * belirlemez. Once tetikleyicinin icinde `position: absolute` ile duruyordu
- * ve `overflow: hidden` tasiyan her kapsayicida kirpiliyordu.
- */
 .bubble {
   z-index: $z-toast;
 
-  /*
-   * Genislik SINIRLI: ipucu bir paragraf degil bir aciklama. Sinirsiz
-   * birakildiginda tek satirda ekrani asiyor ve dar ekranda gorunum alaninin
-   * disina tasiyordu.
-   */
   width: max-content;
   max-width: min(280px, calc(100vw - #{$space-6}));
 
@@ -45,19 +27,8 @@
   line-height: $leading-normal;
   text-align: start;
 
-  /*
-   * Fare balona giderken tetikleyiciden cikiyor; balon TIKLAMAYI GECIRMEZ ama
-   * imleci ALIR — `pointer-events: none` olsaydi `onPointerEnter` hic
-   * calismaz ve kapanis toleransi ise yaramazdi. Icinde etkilesimli oge
-   * olmadigi icin tiklamanin gecmesi de gerekmiyor.
-   */
   user-select: text;
 
-  /*
-   * Yon: balon hangi kenarda acildiysa oradan gelir. Yer yoksa `usePositioning`
-   * karsit kenara dusuyor ve sinif da onunla birlikte degisiyor — animasyon
-   * yonu her zaman gercek konumu izliyor.
-   */
   &--top {
     animation: $anim-fade-in-up $duration-fast $ease-out;
   }
@@ -75,8 +46,6 @@
     animation: none;
   }
 
-  /* Zorlanmis renk kipinde golge ve tint kayboluyor; kutu sinirini sistem
-     rengiyle cizmek balonun sayfadan ayrilmasinin TEK yolu. */
   @media (forced-colors: active) {
     border-color: CanvasText;
   }

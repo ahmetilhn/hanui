@@ -1,40 +1,13 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * KOMUT PALETI.
- *
- * Ekranin USTUNE yakin duruyor, ortalanmis degil: palet acildiginda goz zaten
- * yukariya bakiyor ve dikeyde ortalanmis bir kutu, uzun bir listede asagi
- * dogru buyudukce yerinden kayiyordu.
- */
 .palette {
-  /*
-   * KAPALI `<dialog>` CIZILMEZ.
-   *
-   * Buraya dogrudan `display: flex` yaziliyordu ve bu, tarayicinin
-   * `dialog:not([open]) { display: none }` varsayilanini EZIYORDU: pencere
-   * kapaliyken de yerlesime giriyor, gercek bir kutu kapliyor ve icindeki
-   * tiklanabilir ogeler etkin kaliyordu.
-   *
-   * OLCULDU (panel, 1440x900, `/stok`): kapali palet `x 576-1136, y -150-330`
-   * kutusunu kapliyordu — yani icerigin tam ustunde. Bos sanilan (900, 250)
-   * noktasina tiklamak `/kaynak/bank-transfer-notifications` sayfasina
-   * goturuyordu; kullanici "gorunmez linkler var" diye bildirdi. Ayni hata
-   * `Drawer`da da vardi ve orada kutu 77+ gezinme bagi tasiyor.
-   *
-   * `display` ARTIK `[open]` altinda. Kapanis animasyonu bundan etkilenmiyor:
-   * `surface-transition` zaten `display … allow-discrete` tasiyor, yani
-   * `display: none` gecise KATILIYOR. `BottomSheet` bu kalibi zaten
-   * kullaniyordu; simdi ucu de ayni.
-   */
   display: none;
 
   flex-direction: column;
 
   width: min(92vw, 560px);
   max-height: min(70dvh, 480px);
-  /* Ust bosluk: kutu ekranin tepesine yapismasin. */
   margin: 12vh auto auto;
   padding: 0;
   border: 1px solid $border;
@@ -56,8 +29,6 @@
     backdrop-filter: blur(3px);
   }
 
-  /* Dar ekranda tam genislige yakin: 560 px sabit genislik 360 px'lik bir
-     telefonda kutuyu ekranin disina tasiriyordu. */
   @include for-mobile {
     width: 94vw;
     margin-top: $space-5;
@@ -91,7 +62,6 @@
       color: $text-3;
     }
 
-    /* Odak halkasi kutunun KENDISINDE degil: pencere zaten acik ve vurgulu. */
     &:focus {
       outline: none;
     }
@@ -99,8 +69,6 @@
 
   &__list {
     flex: 1;
-    /* `min-height: 0` OLMADAN esnek oge icerigiyle buyur ve pencerenin
-       yuksekligini asar. */
     min-height: 0;
     overflow-y: auto;
     margin: 0;
@@ -126,13 +94,8 @@
     padding: $space-2 $space-3;
     border-radius: $radius-sm;
     cursor: pointer;
-    /* 40px: yogun bir listede parmakla secim 38px'te iskalaniyordu. */
     min-height: 40px;
 
-    /*
-     * Etkin komut: klavye ve fare TEK bir vurgu paylasir. Iki ayri vurgu
-     * (biri odak halkasi, biri hover zemini) kullaniciyi sasirtiyordu.
-     */
     &--active {
       background-color: $blue-tint;
     }

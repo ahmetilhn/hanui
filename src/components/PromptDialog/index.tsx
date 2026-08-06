@@ -51,35 +51,11 @@ type BaseProps = {
 type Props = BaseProps & {
   /** Boş (yalnızca boşluk dahil) değer gönderilemez. */
   isRequired?: boolean;
-  /**
-   * Zorunluluk yıldızının ekran okuyucu karşılığı ("(zorunlu)").
-   *
-   * <p>Yıldız yalnızca GÖRSEL bir kısayol; renk ve şekil tek başına anlam
-   * taşıyamaz (WCAG 1.4.1), o yüzden yanında okunabilir bir metin olmak
-   * zorunda. Verilmezse `labels.required` okunur.
-   */
+  /** Zorunluluk yıldızının ekran okuyucu karşılığı ("(zorunlu)"). */
   requiredLabel?: string;
 };
 
-/**
- * Metin isteyen pencere — `window.prompt()` yerine.
- *
- * <h3>Neden</h3>
- * Tarayıcı istemi tek satırlık, biçimlenemiyor, ana iş parçacığını
- * kilitliyor ve bazı tarayıcılarda sayfayı engelliyor. Bu bileşen aynı işi
- * `Modal` + `Field` + girdi ile yapar ve pencere kapanma kuralını
- * (aşağıda) getirir.
- *
- * <h3>Pencere yalnızca BAŞARIDA kapanır</h3>
- * `onSubmit` reddederse pencere açık kalır ve yazılan metin korunur — istek
- * patlarsa kullanıcının yazdığı gerekçe geri dönüşsüz silinmemeli. Değer
- * yalnızca pencere <em>yeniden açılırken</em> `defaultValue`dan tazelenir.
- *
- * <h3>Enter gönderir</h3>
- * Girdi bir `<form>` içinde; dip düğmesi `form` özniteliğiyle ona bağlanır
- * (`Modal` dip şeridi formun dışında çizer). `multiline` kipinde Enter satır
- * başı yapar, gönderme düğmeden.
- */
+/** Metin isteyen pencere — `window.prompt()` yerine. */
 const PromptDialog: FC<Props> = ({
   isOpen,
   onClose,

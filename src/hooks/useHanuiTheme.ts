@@ -11,11 +11,7 @@ import type { HanuiColorPreference, HanuiColorScheme } from '../theme/tokens';
 const readSystemScheme = (): HanuiColorScheme =>
   isClient() && window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
-/**
- * `<html>` üzerindeki AÇIK seçim; öznitelik yoksa `system`.
- *
- * <p>Özniteliğin yokluğu bir eksiklik değil bir DEĞER: "sistemi izle".
- */
+/** `<html>` üzerindeki AÇIK seçim; öznitelik yoksa `system`. */
 const readPreference = (): HanuiColorPreference => {
   if (!isClient()) return 'system';
 
@@ -39,39 +35,15 @@ type ThemeState = {
   setScheme: (preference: HanuiColorPreference) => void;
   /** Açık ↔ koyu. `system` iken ÇÖZÜLMÜŞ değerin tersine geçer. */
   toggle: () => void;
-  /**
-   * Sunucu çıktısında ve hidrasyondan önceki ilk karede `false`.
-   *
-   * <p>Tema anahtarı bunu bekler: sunucu hangi temanın seçili olduğunu
-   * bilmiyor ve bir tahminle çizilen anahtar, doğru tahmin edilse bile
-   * hidrasyonda uyuşmazlık üretiyordu. Anahtar hazır olana kadar
-   * `aria-hidden` bir yer tutucu çizilir.
-   */
+  /** Sunucu çıktısında ve hidrasyondan önceki ilk karede `false`. */
   isReady: boolean;
 };
 
 /**
  * Açık/koyu seçimini okur ve değiştirir.
  *
- * <h3>KALICILIK BU KANCANIN İŞİ DEĞİL</h3>
- * Seçimi nereye yazacağı tüketicinin kararı: `localStorage`, bir çerez (SSR'da
- * okunabilmesi için), kullanıcı profili. Kütüphane `localStorage`a yazsaydı
- * sunucu tarafı onu okuyamayacağı için ilk boyama yine yanlış temada
- * olurdu — ve tüketici kendi çerezini kullanmak istediğinde iki kaynak
- * çatışırdı.
- *
- * <h3>Geçiş tek karede kapatılır</h3>
- * Şema değişirken `<html>` bir kare boyunca `hanui-theme-switching` sınıfını
- * taşır. Sınıfsız hâlde her yüzey aynı anda ama FARKLI sürelerde animasyon
- * yapıyordu (kart gölgesi 140 ms, sayfa zemini 200 ms) ve geçiş dalgalı
- * görünüyordu. Ani geçiş, dalgalı geçişten iyi.
- *
  * @example
  * const { scheme, toggle, isReady } = useHanuiTheme();
- *
- * useEffect(() => {
- *   if (isReady) localStorage.setItem('theme', scheme);
- * }, [scheme, isReady]);
  */
 const useHanuiTheme = (): ThemeState => {
   /*
@@ -90,15 +62,7 @@ const useHanuiTheme = (): ThemeState => {
     setIsReady(true);
   }, []);
 
-  /*
-   * Sistem tercihi HER ZAMAN izlenir, `preference` ne olursa olsun.
-   *
-   * Once dinleyici `preference === 'system'` iken yaziyordu ve kullanici
-   * "Koyu"dan "Sistem"e dondugunde elde guncel bir sistem degeri yoktu: kanca
-   * ilk montajdaki degeri hatirliyor, aradaki degisimi kacirmis oluyordu.
-   * Olcum ucuz (tek bir medya sorgusu dinleyicisi); karar ise cozumleme
-   * sirasinda veriliyor.
-   */
+  /* Sistem tercihi HER ZAMAN izlenir, `preference` ne olursa olsun. */
   useEffect(() => {
     if (!isClient() || !window.matchMedia) return;
 

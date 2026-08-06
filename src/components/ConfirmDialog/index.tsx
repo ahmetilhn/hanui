@@ -38,36 +38,19 @@ type Props = {
   /**
    * Onaylandığında çalışır. `Promise` dönerse düğme beklerken yükleme
    * durumuna geçer ve pencere <strong>kapanmaz</strong>.
-   *
-   * <p>İşlem başarılıysa pencereyi kapatmak çağıranın işi: hata durumunda
-   * pencerenin açık kalması gerekiyor ki kullanıcı tekrar deneyebilsin.
    */
   onConfirm: () => void | Promise<void>;
   /** Soru cümlesi. Eylem odaklı yazılır: "…silinsin mi?". */
   title: string;
   /** Sonucu açıklar: neyin geri alınamaz olduğu burada yazılır. */
   description?: ReactNode;
-  /**
-   * Onay düğmesinin etiketi — ZORUNLU, config'ten okunmaz.
-   *
-   * <p>Eylemi TEKRARLAR: "Sil", "İptal et". Her pencerede farklı olduğu için
-   * uygulama düzeyinde bir varsayılanı olamaz; "Tamam" gibi bir varsayılan
-   * kullanıcıya neyi onayladığını söylemez ve `window.confirm()`ten kaçmamızın
-   * sebeplerinden biri tam olarak buydu.
-   */
+  /** Onay düğmesinin etiketi — ZORUNLU, config'ten okunmaz. */
   confirmLabel: string;
   /** Verilmezse `labels.cancel`. */
   cancelLabel?: string;
   /** Verilmezse `labels.close`. */
   closeLabel?: string;
-  /**
-   * Onayın türü — ikon, ton ve onay düğmesinin varyantını birlikte belirler.
-   *
-   * <p>Ad `kind`ten `variant`a taşındı: aynı işi yapan üçüncü bir ad
-   * kütüphanede zaten `variant` olarak duruyordu (`Button`, `Badge`) ve
-   * tüketici her bileşende hangisinin geçerli olduğunu hatırlamak zorunda
-   * kalıyordu. Nöbetçi: `src/__tests__/api-consistency.test.ts`.
-   */
+  /** Onayın türü — ikon, ton ve onay düğmesinin varyantını birlikte belirler. */
   variant?: ConfirmKind;
   /** @deprecated `variant` kullanın. Bir sonraki büyük sürümde kalkacak. */
   kind?: ConfirmKind;
@@ -78,41 +61,8 @@ type Props = {
 /**
  * Onay penceresi.
  *
- * <h3>Neden `window.confirm()` yerine bu</h3>
- * Yerel `confirm()`in dört sorunu var:
- * <ul>
- *   <li>Görünümü işletim sisteminin — sitenin diliyle hiç ilgisi yok, üstünde
- *       tarayıcının alan adı yazıyor.</li>
- *   <li><strong>Ana iş parçacığını kilitler.</strong></li>
- *   <li>Yıkıcı eylemi vurgulayamaz: "Tamam" ile "İptal" aynı ağırlıkta ve
- *       hangisinin sildiğini yalnızca metinden anlıyorsun.</li>
- *   <li>İstek sürerken geri bildirim veremez; kullanıcı silme düğmesine ikinci
- *       kez basıyordu.</li>
- * </ul>
- *
- * <h3>Yükleme durumu pencerede kalır</h3>
- * Onaya basıldığında pencere hemen kapanmaz: düğme yükleniyor durumuna geçer
- * ve pencere kapanmaz hâle gelir (`isDismissable={false}`). İstek bittiğinde
- * kapatma kararı çağırana ait — hata varsa pencere açık kalmalı ki kullanıcı
- * tekrar deneyebilsin.
- *
  * @example
  * const [target, setTarget] = useState<Address | null>(null);
- *
- * <ConfirmDialog
- *   isOpen={target !== null}
- *   onClose={() => setTarget(null)}
- *   kind="destructive"
- *   title="Adres silinsin mi?"
- *   description="Bu işlem geri alınamaz."
- *   confirmLabel="Sil"
- *   cancelLabel="Vazgeç"
- *   closeLabel="Kapat"
- *   onConfirm={async () => {
- *     await remove(target!.id);
- *     setTarget(null);
- *   }}
- * />
  */
 const ConfirmDialog: FC<Props> = ({
   isOpen,

@@ -1,13 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Cip.
- *
- * Notr kenarlik -> vurgu kenarligi gecisi tum sistemin secim dilidir.
- * Zemin DOLDURULMAZ: dolu zemin cipi birincil dugmeye benzetiyordu ve
- * kullanicilar secili filtreyi "gonder" dugmesi sanip tikliyordu.
- */
 .chip {
   display: inline-flex;
   align-items: center;
@@ -48,7 +41,6 @@
     display: inline-flex;
     align-items: center;
     flex-shrink: 0;
-    /* Ikon metinden bir tik kucuk: esit puntoda ikon metni eziyor. */
     font-size: 0.92em;
     color: $text-2;
     transition: color $duration-fast $ease-out;
@@ -59,12 +51,10 @@
   }
 
   &__label {
-    /* Uzun etiketler cipi satira sigmayacak kadar uzatmamali. */
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  /* Sonuc adedi: tabular-nums alt alta gelen cipleri hizali tutar. */
   &__count {
     font-size: $font-size-2xs;
     font-weight: $weight-semibold;
@@ -73,8 +63,6 @@
     flex-shrink: 0;
   }
 
-  // --- Boyutlar ---
-  // Yalniz ikon tasiyan cip kare olur; asagida `--iconOnly` ile ezilir.
   &--sm {
     font-size: $font-size-xs;
     padding: $space-2 $space-3;
@@ -105,10 +93,6 @@
     }
   }
 
-  /*
-   * Secili durum: kenarlik + metin + ikon AYNI ANDA vurgu rengine gecer.
-   * Uc sinyal birlikte verilir; renk tek basina anlam tasimaz (WCAG 1.4.1).
-   */
   &--selected {
     border-color: $blue;
     color: $blue-hover;

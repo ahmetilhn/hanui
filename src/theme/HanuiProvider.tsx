@@ -13,11 +13,6 @@ type Props = {
   /**
    * Tema ezmeleri. Yalnızca DEĞİŞTİRİLEN token'lar verilir; verilmeyen her
    * token varsayılanında kalır.
-   *
-   * <p>Nesne referansı her render'da yeniden üretilirse (satır içi nesne
-   * literali) `<style>` etiketi de her render'da yeniden yazılır. Bileşen
-   * bunu içerik karşılaştırmasıyla engeller ama yine de sabit bir referans
-   * (modül düzeyinde tanımlı bir nesne) tercih edilmeli.
    */
   theme?: HanuiThemeConfig;
   /**
@@ -28,46 +23,16 @@ type Props = {
    * <HanuiProvider linkComponent={NextLink}>…</HanuiProvider>
    */
   linkComponent?: HanuiLinkComponent;
-  /**
-   * Arayüz metinleri — bir kez, burada.
-   *
-   * <p>Kütüphane hiçbir dilde metin uydurmaz ama aynı "Kapat" dizesini yüz
-   * çağrı yerine dağıtmak da doğru değildi: biri değiştiğinde doksan dokuzu
-   * eski kalıyordu. Çözümleme sırası prop → buradaki config; ikisi de yoksa
-   * geliştirme kipinde konsola uyarı düşer.
-   *
-   * <p>Öğeye ÖZGÜ metinler buraya girmez (`Modal.title`,
-   * `ConfirmDialog.confirmLabel`, `IconButton.label`); onlar prop olarak
-   * zorunlu kalır çünkü her çağrı yerinde farklıdır.
-   */
+  /** Arayüz metinleri — bir kez, burada. */
   labels?: HanuiLabels;
 };
 
 /**
  * Kütüphane sağlayıcısı.
  *
- * <h3>İki iş yapar, üçüncüsünü YAPMAZ</h3>
- * <ol>
- *   <li>Tema ezmelerini belgeye yazar (`<style id="hanui-theme-overrides">`).</li>
- *   <li>Yönlendirici bileşenini bileşen ağacına dağıtır.</li>
- *   <li><strong>Açık/koyu seçimini YÖNETMEZ.</strong></li>
- * </ol>
- *
- * <h3>Neden tema seçimi burada değil</h3>
- * Seçim `<html data-hanui-theme>` üzerinde taşınır ve o özniteliğin
- * <em>boyamadan önce</em> yazılması gerekir: React ağacı monte olduktan sonra
- * yazıldığında koyu tema seçmiş kullanıcı bir kare beyaz ekran görüyor. Doğru
- * yer, sunucudan gelen HTML'in `<head>`ine konan satır içi bir betik — ve
- * oraya yazmak tüketicinin çatısının işi (Next'te `app/layout.tsx`, Vite'ta
- * `index.html`). Sağlayıcı ondan sonra monte oluyor; oraya koymak sorunu
- * çözmüyor, gizliyor.
- *
- * <p>`useHanuiTheme` kancası seçimi <em>değiştirmek</em> için var; ilk değeri
- * yazmak için değil. README "Tema" bölümünde hazır betik duruyor.
- *
  * @example
  * <HanuiProvider linkComponent={NextLink} theme={{ light: { blue: '#0d6efd' } }}>
- *   <App />
+ * <App />
  * </HanuiProvider>
  */
 const HanuiProvider: FC<Props> = ({ children, theme, linkComponent, labels }) => {
@@ -84,15 +49,7 @@ const HanuiProvider: FC<Props> = ({ children, theme, linkComponent, labels }) =>
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [themeKey]);
 
-  /*
-   * `theme` bir REFERANSTAN okunur, bagimliliktan degil.
-   *
-   * Cagiran taraf neredeyse her zaman satir ici bir nesne literali veriyor ve
-   * referans her render'da degisiyor; `theme`i bagimliliga koymak memo'yu ise
-   * yaramaz hale getirip tuketicideki her bileseni bos yere yeniden cizerdi.
-   * Kimlik yerine ICERIK izleniyor (`themeKey`) — ve memo'nun icinde `theme`e
-   * dogrudan dokunulmadigi icin denetci de dogru: eksik bir bagimlilik yok.
-   */
+  /* `theme` bir REFERANSTAN okunur, bagimliliktan degil. */
   const themeRef = useRef(theme);
   themeRef.current = theme;
 

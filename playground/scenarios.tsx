@@ -90,20 +90,7 @@ import {
 
 import { SOLO_ONLY } from './solo';
 
-/**
- * GALERİ DEFTERİ — görsel dilin tek görüldüğü yer.
- *
- * <p>İki işi var ve ikisi de görsel: tasarım kararı burada bir arada görülür
- * (bir token değişiminin hangi on iki bileşeni etkilediği yalnızca yan yana
- * bakınca anlaşılır) ve görsel regresyon anlık görüntülerinin kaynağı budur.
- *
- * <p>Bu defter `components/__tests__/a11y.test.tsx` içindeki senaryo
- * defterinin KOPYASI DEĞİL: orada soru "erişilebilir mi", burada "nasıl
- * duruyor". Bir bileşenin taranmaya değer durumu (hata metni bağlı mı) ile
- * bakmaya değer durumu (üç varyant yan yana) aynı şey değil. Ama İKİSİNİN de
- * eksiksiz olması gerekiyor; kapsamı `src/__tests__/gallery-coverage.test.ts`
- * ölçüyor.
- */
+/** GALERİ DEFTERİ — görsel dilin tek görüldüğü yer. */
 
 export const LABELS: HanuiLabels = {
   close: 'Kapat',
@@ -153,25 +140,7 @@ const COLUMNS: DataTableColumn[] = [
 
 const noop = () => {};
 
-/**
- * MEDYA ÖRNEĞİ — gömülü, ağdan gelmeyen ve ÇERÇEVEDEN FARKLI oranda.
- *
- * <p>Oran kasten 2:1: `CardMedia`nın üç doldurma biçimi ancak görselin oranı
- * çerçeveden farklı olduğunda birbirinden ayrılıyor. Kare bir örnekte üçü de
- * aynı görünüyordu — yani anlık görüntü kuralı doğrulamış gibi durup hiçbir
- * şeyi ayırt etmiyordu.
- *
- * <p>Beyaz çerçeve görselin kenarını görünür kılıyor: kırpılan kenar, kesik bir
- * çizgi olarak okunuyor. Renkler bu SVG'nin içinde ham hex — veri URI'sinde CSS
- * değişkeni çözülmüyor; bu bir örnek dosyası, tema yüzeyi değil.
- *
- * <p>ÖZ BOYUT 200 px ve bu ölçülmüş bir seçim: galeri sahnesinin tabanı
- * `min-width: 240px` ve kart genişliği içeriğine göre büyüyor. 400 px'lik bir
- * öz genişlik kartı 432 px'e çıkarıp bölümü 138 px uzatıyor, o da altındaki her
- * bölümü başka bir kaydırma konumunda yakalatıp **doksanın üzerinde** referansı
- * kirmiziya çeviriyordu. 200 px tabanın altında kalıyor: bölümün geometrisi
- * değişmiyor, yalnızca çerçevenin İÇİ değişiyor.
- */
+/** MEDYA ÖRNEĞİ — gömülü, ağdan gelmeyen ve ÇERÇEVEDEN FARKLI oranda. */
 const MEDIA_SAMPLE = `data:image/svg+xml;utf8,${encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100">' +
     '<rect width="200" height="100" fill="#4b5563"/>' +
@@ -413,25 +382,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       </Card>
     ),
   },
-  /*
-   * GERCEK bir `<img>` — ve TEK durum.
-   *
-   * Onceki senaryo bir `<div>` cizmisti; `object-fit` ve olcek kurallarinin
-   * tamami `> img` seciciyle yazili, yani doldurma bicimi gorsel regresyonun
-   * KOR NOKTASINDAYDI. Img artik gercek.
-   *
-   * Uc dali yan yana cizmek denendi ve OLCULDU: bolum ~500 px uzuyor,
-   * altindaki her bolum baska bir kaydirma konumunda yakalaniyor ve
-   * 2,625 aygit pikseli yogunlugunda yazi yumusatma degistigi icin
-   * **doksanin uzerinde** referans birden kirmiziya donuyordu. Bir seceneği
-   * gormek icin odenen bedel, bir daha okunamayan bir diff olurdu — ve bu
-   * nobetcinin tek isi o diff.
-   *
-   * `inset` seciliyor cunku hakkinda soylenecek sey en cok olan dal (%85).
-   * Uc dalin prop → sinif eslemesi `components/__tests__/CardMedia.test.tsx`
-   * icinde adiyla kilitli; piksel karsilastirmasi o soruyu zaten
-   * yanitlamiyor.
-   */
+  /* GERCEK bir `<img>` — ve TEK durum. */
   CardMedia: {
     inset: (
       <Card>
@@ -523,14 +474,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         Gövde
       </Panel>
     ),
-    /*
-     * NOBETCI: dip seridi `PanelForm`un sutununda bitmeli.
-     *
-     * Bu bilesim defterde yoktu ve tam da burada bozuluyordu: form 565 px'lik
-     * sutununu bitirirken kaydet dugmesi panelin obur ucunda duruyordu.
-     * Yukaridaki `withFooter` (formsuz) karsilastirma icin: orada dugmenin
-     * saga yaslanmasi DOGRU davranis.
-     */
+    /* NOBETCI: dip seridi `PanelForm`un sutununda bitmeli. */
     /*
      * Ad `Wide` ile BITIYOR: hucre satirin tamamini alir (bkz.
      * `playground.css`). Dar bir hucrede `PanelForm`un 565 px'lik siniri hic
@@ -1093,14 +1037,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         </FilterBarField>
       </FilterBar>
     ),
-    /*
-     * KARISIK YUKSEKLIKLER — seridin en zor hali ve tek gorsel nobetcisi.
-     *
-     * Ucu bir arada: etiketsiz alan, etiketli alan ve etiketi + ALTINDA
-     * yardim metni olan alan. Serit `align-items: flex-end` tasidigi surece
-     * ucuncusunun yardim metni digerlerinin GIRDISIYLE ayni hizaya oturuyor
-     * ve girdinin kendisi yukari kaciyordu. Senaryo bu yuzden defterde.
-     */
+    /* KARISIK YUKSEKLIKLER — seridin en zor hali ve tek gorsel nobetcisi. */
     mixed: (
       <FilterBar onSubmit={noop} actions={<Button>Uygula</Button>}>
         <FilterBarField isWide>

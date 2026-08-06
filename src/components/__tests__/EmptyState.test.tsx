@@ -3,12 +3,7 @@ import { render, screen } from '@testing-library/react';
 import Avatar from '../Avatar';
 import EmptyState from '../EmptyState';
 
-/**
- * FAZ 4 — durum üçlüsü ve kimlik tonu.
- *
- * <p>İki ayrı düzeltmenin nöbetçisi. Ortak yanları: ikisi de "görünüşte küçük"
- * ama kullanıcının VARDIĞI SONUCU değiştiriyor.
- */
+/** FAZ 4 — durum üçlüsü ve kimlik tonu. */
 
 describe('EmptyState — boş ile yüklenemedi', () => {
   /*

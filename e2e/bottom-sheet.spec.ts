@@ -1,26 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-/**
- * ALT SAYFA ÖLÇÜ NÖBETÇİSİ — gerçek cihazda bildirilen hatanın karşılığı.
- *
- * <h3>Bildirilen hata</h3>
- * Mobil gerçek cihazda sıralama ve araç seçimi panelleri açılıyor ama
- * <strong>gövde neredeyse yok</strong>: listede onlarca seçenek varken tek bir
- * satırın yarısı görünüyor ve o yarıkta kaydırma yapılabiliyordu.
- *
- * <h3>Sebep</h3>
- * Panelin `max-height` değeri JavaScript'in ölçtüğü `--hanui-sheet-height`
- * değişkenine bağlıydı ve o değişkenin bir TABANI yoktu. Gerçek cihazda
- * `visualViewport.height` klavye geçişlerinde, sayfa arka plandan dönerken ve
- * `<dialog>` üst katmana girerken bir kare boyunca absürt küçük değerler
- * raporluyor; tek bir kötü ölçüm paneli kullanılamaz hâle getiriyordu.
- *
- * <h3>Neden bu test tarayıcıda</h3>
- * jsdom yerleşim yapmıyor: `max-height`, `min()`, `max()` ve `dvh` orada hiç
- * hesaplanmıyor. Hatanın kendisi bir YERLEŞİM hatası ve yalnızca gerçek bir
- * yerleşim motorunda görülebilir. Bu dosya ekran görüntüsü DEĞİL SAYI
- * karşılaştırıyor — platform bağımsız, `--update-snapshots` gerektirmiyor.
- */
+/** ALT SAYFA ÖLÇÜ NÖBETÇİSİ — gerçek cihazda bildirilen hatanın karşılığı. */
 
 /** Panelin gövdesi bu değerin altına inerse liste kullanılamaz sayılır. */
 const MIN_USABLE_BODY = 120;

@@ -16,31 +16,7 @@ type Props = {
   children: ReactNode;
 } & CommonElementProps;
 
-/**
- * Seçilebilir kart — zengin gövdeli radyo.
- *
- * <h3>Neden ayrı bir öğe</h3>
- * Varyant seçici ve hesap seçici aynı deseni elle kuruyordu: `<label>` + gizli
- * radyo + gövde + seçili/pasif durum matrisi. İki kopya çoktan ayrışmıştı —
- * biri odak halkasını metnin üstüne, diğeri hiç çizmiyordu; biri seçili zemini
- * boyuyor, diğeri boyamıyordu.
- *
- * <h3>Radyo GERÇEK, daire çizim</h3>
- * `<input type="radio">` görsel olarak gizlenir ama DOM'da kalır: ok
- * tuşlarıyla grup içinde gezinme, `Space` ile seçim ve ekran okuyucu duyurusu
- * tarayıcıdan gelir. Yerel daire bu boyutta bir kartta görsel olarak
- * kaybolduğu için işaret ayrıca çizilir (`__indicator`).
- *
- * <h3>Seçim üç sinyalle</h3>
- * Kenarlık + zemin tinti + dolan işaret aynı anda değişir. İşaretin dolu / boş
- * hâli bir BİÇİM farkıdır — renk tek başına anlam taşımaz (WCAG 1.4.1).
- *
- * <p>Odak halkası kartın kendisinde (`:has(:focus-visible)`): gizli girdiye
- * çizilen halka görünmüyor, yalnızca metne çizilen halka da kartın nerede
- * bittiğini söylemiyordu.
- *
- * <p>{@link Radio} yalın satır içindir, gövde taşıyamaz — ikisi karışmaz.
- */
+/** Seçilebilir kart — zengin gövdeli radyo. */
 const RadioCard: FC<Props> = ({
   name,
   value,

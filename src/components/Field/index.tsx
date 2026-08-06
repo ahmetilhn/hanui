@@ -29,34 +29,16 @@ type BaseProps = {
 
 type Props = BaseProps & {
   isRequired?: boolean;
-  /**
-   * Zorunluluk yıldızının ekran okuyucu karşılığı ("(zorunlu)").
-   *
-   * <p>Yıldız yalnızca GÖRSEL bir kısayol; renk ve şekil tek başına anlam
-   * taşıyamaz (WCAG 1.4.1), o yüzden yanında okunabilir bir metin olmak
-   * zorunda. Verilmezse `labels.required` okunur.
-   */
+  /** Zorunluluk yıldızının ekran okuyucu karşılığı ("(zorunlu)"). */
   requiredLabel?: string;
 };
 
 /**
  * Form alanı sarmalayıcısı.
  *
- * <h3>Neden render-prop</h3>
- * Etiket, hata mesajı ve yardım metni girdiye `id` / `aria-describedby` /
- * `aria-invalid` ile <strong>bağlanmak zorunda</strong> — yoksa ekran okuyucu
- * hatayı okumaz. Bu bağları her form alanında elle yazmak kaçınılmaz olarak
- * bir yerde atlanıyor.
- *
- * <p>Render-prop kalıbı bağları bileşene ürettirir: çağıran taraf yalnızca
- * aldığı props'ları girdiye yayar ve erişilebilirlik kendiliğinden doğru olur.
- *
- * <p>Hata varken yardım metni gösterilmez: ikisi birlikte gürültü yapar ve
- * kullanıcının okuması gereken mesaj kaybolur.
- *
  * @example
  * <Field label="E-posta" isRequired requiredLabel="(zorunlu)" error={emailError}>
- *   {props => <Input {...props} type="email" value={email} onChange={onChange} />}
+ * {props => <Input {...props} type="email" value={email} onChange={onChange} />}
  * </Field>
  *
  * @example
@@ -101,18 +83,7 @@ const Field: FC<Props> = ({
         id,
         required: isRequired || undefined,
         'aria-invalid': error ? true : undefined,
-        /*
-         * HATA VE YARDIM BIRLIKTE baglanir, biri digerini EZMEZ.
-         *
-         * Once hata varken yalnizca hata baglaniyordu ve yardim metni ekran
-         * okuyucudan DUSUYORDU: "telefon gecersiz" duyan kullanici, bir satir
-         * yukarida duran "05XX XXX XX XX" bicim ipucunu hic duymuyor ve neyi
-         * yanlis yazdigini bilmiyordu. Goren kullanici ikisini de aliyor;
-         * ayrim sebepsizdi.
-         *
-         * Sira ONEMLI: once hata, sonra yardim. Ekran okuyucu bagli metinleri
-         * yazildiklari sirayla okuyor ve once "ne yanlis" duyulmali.
-         */
+        /* HATA VE YARDIM BIRLIKTE baglanir, biri digerini EZMEZ. */
         'aria-describedby': [error && errorId, hint && hintId].filter(Boolean).join(' ') || undefined,
       })}
 

@@ -15,25 +15,7 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'aria-label'> 
   testId?: string;
 };
 
-/**
- * Tablo hücresindeki toplu seçim kutusu.
- *
- * <h3>Neden `Checkbox` değil</h3>
- * Seçim sütununda etiket sütun başlığıdır ve `Checkbox` bileşeninin ürettiği
- * `<label>` sarmalayıcısı (yan yana kutu + metin yerleşimi) hücreyi bozar.
- * Doğru olan yalın `<input type="checkbox">` + `aria-label` — bu bileşen o
- * deseni resmileştirir ki ekranlar çıplak `<input>` yazmak zorunda kalmasın.
- *
- * <p>Renk `Checkbox` ile aynı kaynaktan: `accent-color` mavi — onay kutusu bir
- * seçimdir, bir dönüşüm değil.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`Space`</td><td>seçimi değiştirir</td></tr>
- * </table>
- * Yerel öğe: `Space`, `indeterminate` durumu ve form gönderimine katılma
- * platformdan gelir. Nöbetçi: `components/__tests__/keyboard.test.tsx`.
- */
+/** Tablo hücresindeki toplu seçim kutusu. */
 const TableCheckbox = /*#__PURE__*/ forwardRef<HTMLInputElement, Props>(
   ({ label, className, testId, ...rest }, ref) => (
     <input

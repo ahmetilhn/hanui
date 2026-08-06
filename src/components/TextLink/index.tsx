@@ -19,23 +19,7 @@ type Props = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
   linkProps?: HanuiLinkExtraProps;
 };
 
-/**
- * Metin bağlantısı.
- *
- * <h3>Ok bir süs değil</h3>
- * Sondaki ok yalnızca <em>gezinme</em> bağlantılarında kullanılır ("Tümünü gör
- * →"). Bir eylemi tetikleyen bağlantıya ok koymak, kullanıcıya başka bir
- * sayfaya gideceğini söyler ve beklentiyi yanıltır.
- *
- * <p>Ok, üzerine gelindiğinde <strong>ilerler</strong>: hareket, bağlantının
- * götürdüğü yönü fiziksel olarak sezdirir.
- *
- * <h3>Alt çizgi hover'da eklenir, kaldırılmaz</h3>
- * Sürekli altı çizili bağlantılar yoğun bir liste sayfasında görsel gürültü
- * yaratıyordu. Ama alt çizginin <em>hiç</em> olmaması bağlantıyı düz metinden
- * ayırt edilemez kılar; renk tek başına yeterli değil (WCAG 1.4.1). Çözüm:
- * renk her zaman, alt çizgi etkileşimde.
- */
+/** Metin bağlantısı. */
 const TextLink = ({
   href,
   children,

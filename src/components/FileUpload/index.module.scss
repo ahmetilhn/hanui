@@ -5,10 +5,6 @@
   @include stack($space-3);
 }
 
-/*
- * SURUKLE-BIRAK ALANI bir `<label>`: tiklama ve klavye YEREL girdiye
- * yonleniyor ve ekran okuyucu alani dogru duyuruyor.
- */
 .upload__drop {
   @include stack($space-1);
 
@@ -28,16 +24,10 @@
     background-color: $blue-tint;
   }
 
-  /*
-   * Odak halkasi ALANDA: girdi gorsel olarak gizli ve ona cizilen halka
-   * gorunmuyor.
-   */
   &:has(.upload__input:focus-visible) {
     @include focus-ring-shape;
   }
 
-  /* Surukleme sirasinda: kesikli cerceve dolu cerceveye doner — "birakabilirsin"
-     bilgisi renkle DEGIL bicimle de veriliyor. */
   &--dragging {
     border-style: solid;
     border-color: $ring-color;

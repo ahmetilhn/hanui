@@ -1,65 +1,21 @@
 @forward 'colors.generated';
 @forward 'metrics.generated';
 
-// =====================================================================
-// HANUI — TASARIM DEGISKENLERI
-//
-// Bilesenlerin gordugu TEK sozlesme bu dosyadir. Her SCSS modulu bastan
-// `@use '../../styles/variables' as *;` yazar — bundler'a bagli otomatik
-// enjeksiyon (Next'in `sassOptions.additionalData`si gibi) YOK: bir
-// kutuphane tuketicisinin bundler'ini yapilandirmasini bekleyemez.
-//
-// BURADA NE YOK:
-//   * RENKLER      -> `_colors.generated.scss`
-//   * OLCULER      -> `_metrics.generated.scss` (yaricap, bosluk, punto,
-//                     satir yuksekligi, ikon olcusu, sure, egri)
-// Ikisi de `src/theme/tokens.ts`ten URETILIYOR ve ikisi de CSS degiskeni:
-// tuketici calisma zamaninda ezebiliyor.
-//
-// BURADA KALANLAR ve NEDENLERI — hepsi "ezilemez olmasi GEREKEN" degerler:
-//
-//   * Kirilma noktalari: `@media (max-width: var(--x))` GECERSIZ CSS. Medya
-//     sorgusu ozel ozellik okuyamaz.
-//   * Katman (`z-*`): yigilma baglami sirasi, marka karari degil. Tuketici
-//     ezerse kip pencere perdenin altinda kalir.
-//   * Agirlik, harf araligi, kapsayici genislikleri, sayfa dolgusu: olcek
-//     degil tekil deger; ezme ihtiyaci olculmedi. Buraya tasinabilirler,
-//     ters yon (geri alma) kiricidir.
-// =====================================================================
-
-// --- Tipografi: olcek DISINDA kalanlar --------------------------------
-// Font AILELERI `_colors.generated.scss` icinde ($font-heading, $font-body,
-// $font-ui, $font-mono); punto ve satir yuksekligi `_metrics.generated.scss`.
-
 $tracking-logo: 0.13em;
-$tracking-tight: -0.022em; // buyuk basliklar; genis aralik onlari dagitir
-$tracking-snug: -0.011em; // orta boy basliklar
-$tracking-wide: 0.045em; // kucuk buyuk-harf etiketler
+$tracking-tight: -0.022em;
+$tracking-snug: -0.011em;
+$tracking-wide: 0.045em;
 
 $weight-regular: 400;
 $weight-medium: 500;
 $weight-semibold: 600;
 $weight-bold: 700;
 
-/*
- * TIPOGRAFI KADEMELERI — `heading()` mixin'inin gordugu SIRA.
- *
- * Punto degerleri artik calisma zamaninda ezilebiliyor ve bu, derleme
- * aninda yapilan her SAYISAL karsilastirmayi gecersiz kilar:
- * `@if $size >= $font-size-lg` bir `var()` ile calismaz — calissaydi bile
- * tuketici olcegi kaydirdiginda yanlis cevap verirdi. Karar bu yuzden
- * KADEME ADI uzerinden veriliyor; sira burada, tek yerde duruyor.
- */
 $font-steps: 2xs, xs, sm, base, body, lg, xl, 2xl, 3xl, 4xl;
 
-// Okunabilir satir uzunlugu. 75ch'nin otesinde goz satir basina donerken
-// yerini kaybediyor.
 $measure: 68ch;
 $measure-narrow: 56ch;
 
-// --- Sayfa dolgusu ----------------------------------------------------
-// Bosluk OLCEGI degil sayfa kabugunun kenar payi; kirilma noktalariyla
-// birlikte kullaniliyor ve onlar zaten SCSS.
 $desktop-padding: 32px;
 $tablet-padding: 24px;
 $mobile-padding: 16px;
@@ -71,28 +27,13 @@ $container-prose: 720px;
 
 $sidebar-width: 272px;
 
-/*
- * DOKUNMA HEDEFI — WCAG 2.5.8.
- *
- * Olcu token DEGIL: yogun kip dahil hicbir yapilandirmada kucumemeli.
- * `--hanui-space-*` ezilebilir olduğu icin bu deger oradan tureseydi, ölçegi
- * daraltan bir tuketici dokunma hedefini de daraltirdi — ve bunu istemedigini
- * bilmeden yapardi.
- */
 $tap-target-size: 44px;
 
-// --- Kirilma noktalari ------------------------------------------------
-//
-// 640 ile 1024 ARASI BOSTU ve bosluk pahaliya mal oldu: 768 px'lik tablet
-// (dikey iPad, en yaygin tablet olcusu) "mobil degil" sayilip masaustu
-// yerlesimini aliyordu. Iki kolonun tek kolona dustugu esik kendi kirilma
-// noktasina sahip.
 $breakpoint-mobile: 640px;
 $breakpoint-tablet-portrait: 768px;
 $breakpoint-tablet: 1024px;
 $breakpoint-desktop: 1360px;
 
-// --- Katman -----------------------------------------------------------
 $z-base: 1;
 $z-raised: 10;
 $z-header: 100;
@@ -101,21 +42,6 @@ $z-sticky-bar: 300;
 $z-overlay: 380;
 $z-modal: 400;
 $z-toast: 500;
-
-// --- Animasyon adlari -------------------------------------------------
-//
-// ⚠ Bilesen SCSS'inde ham `@keyframes` ADI YAZILMAZ — `animation: hanui-spin`
-// CSS Modules tarafindan yerellestirilir, global tanimla eslesmez ve animasyon
-// SESSIZCE duser. Gerekce, olculen zarar ve elenen alternatifler
-// `base.scss` icindeki "ANIMASYON ADLARI OZEL OZELLIK OLARAK YAYINLANIR"
-// bolumunde; oradaki `--hanui-anim-*` bu adlarin tek kaynagi.
-//
-// Sure ve egri ayri kalir ($duration-spin, $ease-out): ad hangi hareket
-// oldugunu, sure koreografinin neresinde durdugunu soyler.
-//
-//   animation: $anim-spin $duration-spin linear infinite;
-//
-// Nobetci: `scripts/check-animations.mjs`.
 
 $anim-shimmer: var(--hanui-anim-shimmer);
 $anim-spin: var(--hanui-anim-spin);

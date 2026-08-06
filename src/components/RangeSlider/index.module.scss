@@ -1,14 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Cift kulplu aralik kaydirici.
- *
- * Iki yerel `input[type=range]` ust uste bindirilir. Girdilerin RAYI seffaf ve
- * tiklanamaz; goruntudeki ray ve dolgu ayri ogeler. Boylece iki kulp da ayri
- * ayri yakalanabilir — tek bir ray uzerinde iki kulp cizmenin yerel girdilerle
- * baska yolu yok.
- */
 .range {
   @include stack($space-2);
 
@@ -17,8 +9,6 @@
     pointer-events: none;
   }
 
-  /* Secili aralik, kaydirmadan ONCE okunur: kullanici degeri gormeden kulbu
-     birakmak zorunda kalmamali. */
   &__readout {
     @include row($space-2);
 
@@ -41,7 +31,6 @@
     display: flex;
     align-items: center;
 
-    /* Gorunen ray. */
     &::before {
       content: '';
       position: absolute;
@@ -59,13 +48,6 @@
     background-color: $blue;
   }
 
-  /*
-   * Yerel aralik girdisi.
-   *
-   * Ray seffaf ve `pointer-events: none`; yalnizca KULUP tiklanabilir. Ray
-   * tiklanabilir kalsaydi ustteki girdi alttakinin kulbunu tamamen orterek onu
-   * erisilemez kiliyordu.
-   */
   &__input {
     position: absolute;
     inset-inline-start: 0;
@@ -134,11 +116,6 @@
       box-shadow: $ring;
     }
 
-    /*
-     * Odak halkasi KULBUN uzerinde olmali, girdinin kutusunda degil: girdi tum
-     * rayi kapladigi icin `outline` butun serit boyunca cizilip hangi kulbun
-     * odakli oldugunu gizliyordu.
-     */
     &:focus {
       outline: none;
     }

@@ -51,41 +51,7 @@ type Props = {
 const enabledIndexes = (items: MenuItem[]): number[] =>
   items.map((item, index) => (item.isDisabled ? -1 : index)).filter(index => index >= 0);
 
-/**
- * Menü — bir listeden EYLEM seçme.
- *
- * <h3>{@link Select} ile farkı: seçim mi eylem mi</h3>
- * Görsel olarak benzerler; ayrım seçilen şeyin ne olduğunda:
- *
- * <ul>
- *   <li>`Select` bir DEĞER seçer. Seçim kalıcıdır, tetikleyicide görünür ve
- *       geri alınabilir. ARIA rolü `listbox`.</li>
- *   <li><b>`Menu` bir EYLEM çalıştırır.</b> "Sil", "Kopyala", "Dışa aktar".
- *       Seçilen şey hatırlanmaz; menü kapanır ve iş yapılır. ARIA rolü
- *       `menu`.</li>
- * </ul>
- *
- * <p>Ayrım ekran okuyucuda duyuluyor: `listbox` "3 seçenekten 2.'si seçili"
- * der, `menu` "menü, 3 öğe" der. Eylem listesini `listbox` olarak sunmak,
- * kullanıcıya kalıcı bir seçim yaptığını söylüyordu.
- *
- * <h3>Odak GERÇEKTEN taşınır</h3>
- * `Select` odağı tetikleyicide tutup etkin seçeneği `aria-activedescendant`
- * ile bildiriyor; menüde bu YANLIŞ olurdu. APG menü deseni gerçek odak
- * istiyor çünkü menü öğeleri düğme gibi davranıyor — ve harfe atlama
- * (type-ahead) yalnızca odaklanmış bir öğe üzerinde anlamlı.
- *
- * <h3>Klavye (APG: menu button)</h3>
- * <table>
- *   <tr><td>`Enter` / `Space` / `ArrowDown`</td><td>tetikleyicide: açar, İLK öğeye odaklanır</td></tr>
- *   <tr><td>`ArrowUp`</td><td>tetikleyicide: açar, SON öğeye odaklanır</td></tr>
- *   <tr><td>`ArrowDown` / `ArrowUp`</td><td>öğeler arasında; uçlarda DÖNER</td></tr>
- *   <tr><td>`Home` / `End`</td><td>ilk / son öğe</td></tr>
- *   <tr><td>harf</td><td>o harfle başlayan ilk öğeye atlar</td></tr>
- *   <tr><td>`Enter` / `Space`</td><td>öğeyi çalıştırır ve menüyü kapatır</td></tr>
- *   <tr><td>`Escape` / `Tab`</td><td>kapatır, odak TETİKLEYİCİYE döner</td></tr>
- * </table>
- */
+/** Menü — bir listeden EYLEM seçme. */
 const Menu = ({
   trigger,
   items,

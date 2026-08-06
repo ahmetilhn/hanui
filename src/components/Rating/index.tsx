@@ -15,31 +15,14 @@ type Props = {
   value: number;
   /** Değerlendirme sayısı; verilirse yıldızların yanında gösterilir. */
   count?: number;
-  /**
-   * Ekran okuyucuya okunan metin.
-   *
-   * <p>Yıldızlar `aria-hidden`: beş ayrı ikonu tek tek duyurmak anlamsız.
-   * Yerine bir cümle okunur ("5 üzerinden 4,5 — 12 değerlendirme") ve o cümle
-   * hem dile hem sayı biçimine bağlı; kütüphane onu uyduramaz.
-   *
-   * <p>Verilmezse `labels.rating.srLabel(value, count)` çağrılır — cümle
-   * değere bağlı olduğu için config bir DİZE değil bir biçimlendirici tutar.
-   */
+  /** Ekran okuyucuya okunan metin. */
   srLabel?: string;
   size?: 'sm' | 'md';
   className?: string;
   testId?: string;
 };
 
-/**
- * Yıldız puanı — salt gösterim.
- *
- * <p>Ortalama sunucuda hesaplanır; burada yalnızca gösterilir. Puanı
- * istemcide hesaplamak, sayfalama yüzünden eksik veriyle yanlış ortalama
- * üretirdi.
- *
- * <p>Etkileşimli kardeşi {@link RatingInput}.
- */
+/** Yıldız puanı — salt gösterim. */
 const Rating: FC<Props> = ({ value, count, srLabel, size = 'sm', className, testId }) => {
   const { labels } = useHanui();
   const rounded = Math.round(value * 2) / 2;

@@ -3,19 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import Combobox from '../Combobox';
 
-/**
- * SANALLAŞTIRMA NÖBETÇİSİ.
- *
- * <h3>Ölçülen sorun</h3>
- * 1121 markalı bir listede DOM 1121 satır taşıyordu; panel açılışı mobilde
- * gözle görülür şekilde donuyor, her tuş vuruşunda liste yeniden çiziliyordu.
- *
- * <h3>Neden ÜÇ koşul birden</h3>
- * Kanca SABİT satır yüksekliği istiyor. Koşullardan biri düştüğünde
- * sanallaştırma sessizce YANLIŞ konumlandırma üretir — satırlar üst üste
- * biner ya da boşlukta durur. Bu yüzden her koşul ayrı ayrı ölçülüyor:
- * biri gevşetildiğinde test kırılmalı.
- */
+/** SANALLAŞTIRMA NÖBETÇİSİ. */
 
 /* jsdom düzen yapmıyor: `clientHeight` elle verilir, yoksa kanca ölçüm
    yokken tam listeye düşer ve sanallaştırma hiç sınanmazdı. */
@@ -132,21 +120,7 @@ describe('Combobox — sanallaştırma', () => {
     expect(drawn[0]).not.toHaveAttribute('aria-setsize');
   });
 
-  /*
-   * ═══ SECENEKLER SONRADAN GELIYORSA DA CIZILIR ═══
-   *
-   * Olculen kirilma: arac secicisinde marka listesi bir istekten sonra
-   * iniyor, model listesi de marka secilince. Bilesen KURULDUGUNDA liste
-   * bostu; olcum yalnizca `measure` kimligi degistiginde kosuyordu ve
-   * kaydiran ogeye deger yazmak bir etkiyi tetiklemedigi icin panel
-   * acildiginda aralik `end: 0`da kaliyordu — kullanici paneli aciyor,
-   * YALNIZCA ARAMA KUTUSUNU goruyor. Kutuya bir harf yazmak secenek sayisini
-   * degistirdigi icin liste o anda kendine geliyordu, yani "arama yapmadan
-   * hicbir secenek yok".
-   *
-   * Seceneklerin ILK cizimden sonra gelmesi sarttir; mount aninda verilen
-   * liste bu yolu hic gecmez ve digger testlerin hepsi oyle kuruluyor.
-   */
+  /* SECENEKLER SONRADAN GELIYORSA DA CIZILIR */
   it('mount SONRASI gelen seçenekler açılışta çizilir', () => {
     const Async = () => {
       const [list, setList] = useState<ReturnType<typeof options>>([]);

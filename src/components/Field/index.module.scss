@@ -1,35 +1,9 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * MESAJIN YERI KAPSAYICIDAN GELEBILIR.
- *
- * Varsayilan sira DOM sirasidir — etiket, denetim, hata, ipucu — ve
- * `order: 0` yedegi onu aynen korur. Yogun bir filtre seridinde ise denetimin
- * ALTINA yazilan metin satiri bozuyor: serit denetimleri alt kenardan
- * hizaliyor (`FilterBar`, `align-items: flex-end`) ve alt kenar artik
- * denetimin degil ipucunun kenari oluyor.
- *
- * OLCULDU (panel /iadeler, 1440 px): "Ara" girdisi 33-77 px'te, yanindaki
- * "Durum" secicisi 57-101 px'te ciziliyordu — yan yana duran iki denetim 24 px
- * kacik ve etiketleri de ayri hizada. `FilterBar` bu yuzden asagidaki
- * degiskenleri yeniden baglayip mesaji denetimin USTUNE alir; alanin alt
- * kenari yine denetimin kenari olur ve satir kapanir.
- *
- * DOM sirasi ve `aria-describedby` bagi DEGISMEZ: yer degistiren ogeler
- * odaklanabilir degil, yalnizca metin. Ekran okuyucu sirasi "etiket, denetim,
- * hata, ipucu" olarak kalir.
- */
 .field {
   @include stack($space-2);
 
-  /*
-   * Etiket BIRINCI SINIF metin (`$text`), ikincil degil.
-   *
-   * Once `$text-2` idi. Bir formda etiket "ne yazacagim" sorusunun cevabi;
-   * ipucu ve hata mesaji ikincil. Ucu de ayni gri tonda oldugunda kullanici
-   * hangisinin alan adi oldugunu taramak icin duruyordu.
-   */
   &__label {
     @include label;
 
@@ -43,13 +17,6 @@
     }
   }
 
-  /*
-   * Zorunlu yildizi.
-   *
-   * Renk TEK BASINA anlam tasimiyor: bilesen ayrica gorunmez bir
-   * `requiredLabel` metni yaziyor (`__srOnly`) ve girdi `required` ozniteligi
-   * tasiyor. Yildiz yalnizca gorsel bir kisayol.
-   */
   &__required {
     color: $bad-fg;
   }
@@ -65,7 +32,6 @@
     order: var(--hanui-field-message-order, 0);
   }
 
-  /* Hata mesaji ikonla birlikte: renk tek basina anlam tasimaz. */
   &__error {
     display: flex;
     align-items: center;
@@ -78,12 +44,6 @@
     order: var(--hanui-field-message-order, 0);
   }
 
-  /*
-   * Ikon mesajdan BUYUK (13 px metin, 14 px simge) ve kucultulemez.
-   * Mesaj puntosunu miras aldiginda simge 13 px'e dusup dolu dairenin
-   * icindeki unlem isareti okunmaz hale geliyordu; `flex-shrink` ise uzun
-   * mesajlarda ikonu eziyordu.
-   */
   &__errorIcon {
     font-size: $icon-xs;
     flex-shrink: 0;

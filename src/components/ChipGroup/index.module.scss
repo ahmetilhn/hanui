@@ -6,16 +6,10 @@
   flex-wrap: wrap;
   gap: $space-2;
 
-  /*
-   * Mobilde saran cip grubu dort satira cikip ekranin yarisini yiyordu.
-   * Kaydirilabilir seritte grup tek satirda kalir; kaydirma cubugu gizlenir
-   * ama dokunma ve klavye ile gezinme calisir.
-   */
   &--scrollable {
     @include scroll-row($space-2);
 
     flex-wrap: nowrap;
-    /* Odak halkasi seridin kenarindan kirpilmasin diye ic bosluk. */
     padding-block: 2px;
   }
 }

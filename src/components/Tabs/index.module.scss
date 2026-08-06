@@ -32,12 +32,6 @@
 
     @include focus-ring($ring-color, -2px);
 
-    /*
-     * Aktif isaret alt kenarda 2px cizgi.
-     *
-     * `border-bottom` yerine `::after` kullanilir: kenarlik, sekmenin
-     * yuksekligini degistirip aktif sekmeyi 2px kaydiriyordu.
-     */
     &::after {
       content: '';
       position: absolute;
@@ -78,7 +72,6 @@
   }
 
   &__panel {
-    /* Panel klavyeyle odaklanabilir; odak halkasi icerigi sarmamali. */
     &:focus-visible {
       @include focus-ring-shape($ring-color, 4px);
 

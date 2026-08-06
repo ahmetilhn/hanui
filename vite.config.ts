@@ -5,16 +5,7 @@ import hanuiLayer from './scripts/lib/postcss-hanui-layer.mjs';
 import { defineConfig, type Plugin } from 'vite';
 import dts from 'vite-plugin-dts';
 
-/**
- * Dosya başındaki `'use client'` yönergelerini derlemeden ÖNCE söker.
- *
- * <p>Yönerge kaynakta doğru yerde: her dosya kendi başına "bu bir istemci
- * bileşeni" diyor ve bu bilgi okunurken değerli. Ama modüller tek bir bundle'a
- * toplanıyor ve orada yönerge modül düzeyinde anlamsız — Rollup her biri için
- * `MODULE_LEVEL_DIRECTIVE` uyarısı verip yirmi satır gürültü bırakıyordu.
- * Sınırı bundle'ın BAŞINDAKİ banner çiziyor (aşağıda); tüketici için sonuç
- * aynı, çıktı temiz.
- */
+/** Dosya başındaki `'use client'` yönergelerini derlemeden ÖNCE söker. */
 const stripUseClient = (): Plugin => ({
   name: 'hanui-strip-use-client',
   enforce: 'pre',
@@ -26,29 +17,7 @@ const stripUseClient = (): Plugin => ({
   },
 });
 
-/**
- * Kütüphane derlemesi.
- *
- * <h3>Neden tek bir CSS dosyası</h3>
- * `cssCodeSplit: false` bütün SCSS modüllerini tek bir `styles.css` içinde
- * toplar. Bileşen başına CSS parçası üretmek, tüketicinin bundler'ının CSS
- * sıralamasını belirlemesi demekti: `Pagination`ın `IconButton` üzerine
- * bindirdiği kurallar (özgüllük eşit) kaynak sırasına bağlı ve o sıra
- * tüketicide değişince düğmeler bağlantı komşularından farklı görünüyordu.
- * Tek dosyada sıra bizim.
- *
- * <h3>Neden `'use client'` banner</h3>
- * Paket Next.js App Router'da sunucu bileşeninden import edilebiliyor.
- * Buradaki bileşenlerin tamamı ya kanca kullanıyor ya da kanca kullanan bir
- * kardeşle aynı dosyada; sınır paketin kendisinde çizilir. Sunucu bileşeni
- * bunları yine render edebilir (children sunucuda çizilip aktarılır) —
- * yalnızca fonksiyon prop'u geçemez, ki o zaten React'in kuralı.
- *
- * <h3>`react/jsx-runtime` neden `external`</h3>
- * `react` external ama JSX dönüşümü ayrı bir giriş noktası kullanıyor;
- * listelenmediğinde React'in bir kopyası pakete gömülüyor ve tüketicide iki
- * React örneği oluşuyordu (kanca çağrıları patlar).
- */
+/** Kütüphane derlemesi. */
 export default defineConfig({
   plugins: [
     stripUseClient(),
@@ -66,24 +35,9 @@ export default defineConfig({
     },
   },
   /*
-   * AGAC SALLAMA — bu dosyada BIR AYAR YOK, ve olmamasi bilincli.
-   *
-   * OLCULDU (`npm run size`, Faz 0): yalnizca `Badge` import eden bir uygulama
-   * 20,70 kB indiriyordu; paketin TAMAMI 21,82 kB. Yani hicbir sey
-   * silinmiyordu. Iki sebep vardi ve ikisi de KAYNAKTA:
-   *
-   *   1. `export default memo(X)` — modul duzeyindeki bir cagri ifadesi,
-   *      bundler icin yan etkisi olabilecek bir ifade. Cozum: kaynakta
-   *      `/*#__PURE__*` acilamasi.
-   *   2. `X.displayName = 'X'` — modul duzeyinde bir OZELLIK ATAMASI, yani
-   *      gercek bir yan etki; hedefini ve butun bagimlilik zincirini ayakta
-   *      tutuyordu. Cozum: `helpers/component.helper` icindeki `named()`.
-   *
-   * Vite'in `esbuild.pure` secenegi DENENDI ve bu boru hattinda cikisa
-   * acilama birakmiyor (uretilen `build/index.js` byte-ozdes kaldi). Acilama
-   * kaynakta duruyor; burada tekrarlanmasi yaniltici olurdu.
-   *
-   * Sonuc: `Badge` 2,71 kB, `Button` 3,38 kB. Nobetci `.size-limit.json`.
+   * ⚠ Agac sallama icin bu dosyada AYAR YOK ve olmamasi bilincli: cozum
+   * KAYNAKTA (`#__PURE__` acilamasi + `helpers/component.helper` `named()`).
+   * Vite'in `esbuild.pure` secenegi denendi, cikisa acilama birakmiyor.
    */
   css: {
     postcss: { plugins: [hanuiLayer()] },

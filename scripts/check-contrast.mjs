@@ -1,47 +1,4 @@
-/**
- * KONTRAST DENETÇİSİ — `npm run check:contrast`, `verify` içinde.
- *
- * <h3>Neden bir betik, neden gözle değil</h3>
- * Palet 88 token taşıyor ve her token iki temada ayrı bir değer. Bir tonu bir
- * kademe koyulaştırmak, o tonu zemin olarak kullanan altı çifti birden
- * etkiliyor; gözle bakan kişi ikisini görüp dördünü kaçırıyordu. Daha kötüsü,
- * kaçırılan çift EKRANDA GÖRÜNÜYOR ve yine de kimse fark etmiyor: 3,2:1 ile
- * 4,6:1 arasındaki fark "biraz soluk" gibi okunuyor, "okunamıyor" gibi değil —
- * ta ki güneş altında bir telefonda bakılana kadar.
- *
- * <h3>Eşikler</h3>
- * <ul>
- *   <li><b>text</b> — 4,5:1. Gövde metni (WCAG 1.4.3 AA).</li>
- *   <li><b>large</b> — 3:1. ≥19 px ya da ≥16 px kalın metin.</li>
- *   <li><b>graphic</b> — 3:1. İkon, odak halkası, denetimin sınırı
- *       (WCAG 1.4.11).</li>
- * </ul>
- *
- * <h3>Neyi ölçmüyor ve NEDEN</h3>
- * Hairline'lar (`*-line`, `border`, `border-strong`) ve pasif dolgu
- * (`action-soft`) <b>advisory</b> listede: ölçülür, yazdırılır, ama derlemeyi
- * kırmaz.
- *
- * <ul>
- *   <li>Durum rozetinin kenarlığı bilginin TEK taşıyıcısı değil — anlamı tint
- *       zemin + koyu metin + ikon taşıyor; çizgi yalnızca rozetin "kutu" olarak
- *       okunmasını sağlıyor. 1.4.11 "bilgiyi ayırt etmek için GEREKLİ" görsel
- *       bilgiyi kapsar; gerekli olmayanı 3:1'e zorlamak yan yana duran her
- *       rozeti çerçeveli bir etikete çevirir ve tint sistemini bitirir.</li>
- *   <li>Pasif denetimler 1.4.11'in kendi metninde açıkça KAPSAM DIŞI
- *       ("inactive user interface components").</li>
- * </ul>
- *
- * <p>Advisory olanlar yine de RAPORLANIR: bir gün `border` gerçekten tek
- * taşıyıcı hâline gelirse (kenarlıklı ama zeminsiz bir girdi) sayı elde
- * duruyor.
- *
- * <h3>Pasif denetimde tek istisna: ETİKET</h3>
- * Pasif DOLGU advisory kalır (`action-soft` / `surface`), ama dolgunun
- * ÜZERİNDEKİ METİN zorunlu listede: `on-action-soft` / `action-soft`, 4,5:1.
- * WCAG bunu istemiyor ve tam da bu yüzden çift hiç ölçülmüyordu; ölçüldüğünde
- * açık temada 1,55:1 çıktı. Gerekçe `docs/A11Y.md`de.
- */
+/** KONTRAST DENETÇİSİ — `npm run check:contrast`, `verify` içinde. */
 import { contrast, round } from './lib/contrast.mjs';
 import { loadTokens } from './lib/load-tokens.mjs';
 
@@ -62,7 +19,7 @@ const NAV_SURFACES = ['nav-bg', 'nav-bg-2', 'footer-bg'];
  * Ölçülecek çiftler.
  *
  * @returns `{ fg, bg, tier, base? }` — `base`, saydam bir ZEMİNİN arkasında
- *   duran opak yüzey (örtü `page` üzerine düşer).
+ * duran opak yüzey (örtü `page` üzerine düşer).
  */
 const buildPairs = () => {
   const pairs = [];
@@ -89,12 +46,6 @@ const buildPairs = () => {
   /*
    * PASİF DOLGU ÜZERİNDEKİ METİN — WCAG'in muaf tuttuğu ama kütüphanenin
    * kendine ŞART KOŞTUĞU tek çift.
-   *
-   * 1.4.3 de 1.4.11 de "inactive user interface component"i açıkça kapsam
-   * dışı bırakıyor. Muafiyet bu çiftin listede hiç olmamasına yol açmıştı ve
-   * sonuç ölçüldüğünde görüldü: pasif düğme etiketi açık temada 1,55:1,
-   * koyuda 1,93:1 — okunmuyordu. Pasiflik dolgunun geri çekilmesiyle
-   * bildirilir; etiketin silinmesiyle değil.
    */
   add('on-action-soft', 'action-soft', 'text');
   for (const fill of ['danger-solid', 'danger-solid-hover']) add('on-danger', fill, 'text');
@@ -171,19 +122,7 @@ const buildAdvisoryPairs = () => {
   add('nav-line', 'nav-bg');
   add('nav-line-strong', 'nav-bg');
 
-  /*
-   * Dolu düğmenin sayfaya karşı sınırı (`amber` beyaz üzerinde 2,14:1).
-   *
-   * 1.4.11 "bir denetimi TANIMAK İÇİN GEREKLİ" görsel bilgiyi kapsar; görünür
-   * metin etiketi taşıyan bir düğme kendi etiketiyle tanınır ve etiketin
-   * kontrastı ayrıca ölçülüyor (`on-amber` / `amber` = 8,58:1). Amber'i 3:1'e
-   * çekmek onu kahverengiye indirir ve paletin tek doygun turuncusunu —
-   * dönüşüm noktasının tamamını — kaybettirir.
-   *
-   * <p>Kural şu: ETİKETSİZ bir dolgu (yalnızca ikon taşıyan bir düğme, bir
-   * durum noktası) bu listede DEĞİL yukarıdaki `graphic` listesinde ölçülür.
-   * `green-accent` tam olarak o yüzden orada.
-   */
+  /* Dolu düğmenin sayfaya karşı sınırı (`amber` beyaz üzerinde 2,14:1). */
   for (const fill of ['action', 'amber', 'danger-solid', 'blue'])
     for (const surface of ['page', 'surface']) add(fill, surface);
 

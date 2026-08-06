@@ -1,24 +1,13 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Filtre seridi.
- *
- * Yerlesim `filter-surface` mixin'inden (yuzey, hairline, sarma, hizalama);
- * burada yalnizca alan genislik sozlesmesi ve uclar var.
- */
 .bar {
   @include filter-surface;
 
-  /* Enter'in yedegi (bkz. index.tsx). Gorunmez ama form icin var. */
   &__hiddenSubmit {
     display: none;
   }
 
-  /*
-   * Eylemler sag UCTA durur: `margin-inline-start: auto` alanlarla arasindaki boslugu
-   * yutar. Satir sarinca kendi satirinda yine saga yaslanir.
-   */
   &__actions {
     @include row($space-2);
 
@@ -26,38 +15,10 @@
   }
 }
 
-/*
- * Alan genisligi: TERCIH `flex-basis`, TABAN `min-width: 0`.
- *
- * `min-width: 240px` yazan alanlar 320px ekranda seridin dolgusuyla birlikte
- * tasiyordu — `min-width` flex daralmasinin katidir ve alan kutusundan buyuk
- * kalir. `flex-basis` ise yalnizca tercih: yer varsa 220px, yoksa alan kuculur
- * ve sayfa yatay kaymaz.
- */
 .field {
   flex: 0 1 220px;
   min-width: 0;
 
-  /*
-   * DENETIMLER TEK HIZADA — mesaj denetimin USTUNDE.
-   *
-   * Serit alanlari alt kenardan hizaliyor (`filter-surface`,
-   * `align-items: flex-end`); etiketli ve etiketsiz alanlarin yan yana
-   * durmasi bunu bozmuyor cunku ikisinin de en alt ogesi denetim. Bozan sey
-   * denetimin ALTINA gelen yardim/hata metni: alanin alt kenari artik
-   * denetimin degil metnin kenari oluyor ve denetim komsularindan yukari
-   * kaciyor.
-   *
-   * OLCULDU (panel /iadeler, 1440 px): ipuclu "Ara" girdisi 33-77 px'te,
-   * yanindaki "Durum" secicisi 57-101 px'te — iki denetim 24 px kacik, iki
-   * etiket de ayri hizada. `align-items: flex-start` cozmuyor: bu kez
-   * etiketsiz alan etiketli komsusundan bir satir yukari cikiyor.
-   *
-   * `Field` mesajin sirasini kapsayiciya biraktigi icin serit onu etiketin
-   * altina, denetimin ustune aliyor: etiket / ipucu / denetim. Alanin en alt
-   * ogesi yine denetim olur ve satir kapanir. DOM sirasi ve
-   * `aria-describedby` bagi degismez.
-   */
   --hanui-field-label-order: -2;
   --hanui-field-message-order: -1;
 
@@ -66,8 +27,6 @@
   }
 }
 
-/* Dar ekranda alanlar istiflenir; yarim kalan satirlar seridi kirpik
-   gosteriyordu. */
 @include for-mobile {
   .field,
   .field--wide {

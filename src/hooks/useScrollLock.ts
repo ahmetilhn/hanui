@@ -5,41 +5,6 @@ import { useEffect } from 'react';
 /**
  * SAYFA KAYDIRMA KİLİDİ — sayaçlı, tek yerde.
  *
- * <h3>Neden bir kanca, neden bileşenin içinde iki satır değil</h3>
- * `Modal` ve `BottomSheet` kilidi kendi başlarına yazıyordu:
- *
- * <pre>
- * const previous = document.body.style.overflow;
- * document.body.style.overflow = 'hidden';
- * return () => { document.body.style.overflow = previous; };
- * </pre>
- *
- * <p>Tek pencerede doğru; İÇ İÇE iki pencerede değil. `Select` bir kip
- * pencerenin içinde açıldığında (`Modal` → `BottomSheet`) sıra şu:
- * dış pencere `''` kaydeder ve `hidden` yazar; iç panel `'hidden'` kaydeder ve
- * `hidden` yazar; iç panel kapanınca kaydettiği `'hidden'`i geri yazar — buraya
- * kadar tesadüfen doğru. Ama React sökme sırası her zaman bu değil: iki panel
- * aynı commit'te kapandığında DIŞ pencerenin temizliği önce koşabiliyor ve
- * `''` yazıyor; iç panel hâlâ açıkken kilit AÇILIYOR ve kullanıcı panelin
- * arkasındaki listeyi kaydırıyordu.
- *
- * <p>Sayaç bunu yapısal olarak imkânsız kılıyor: kilit ilk açılışta yazılır,
- * SON kapanışta kaldırılır, arada kim ne yaparsa yapsın.
- *
- * <h3>Kaydırma çubuğu ve yatay sıçrama</h3>
- * `overflow: hidden` kaydırma çubuğunu da götürüyor ve sayfa o çubuğun
- * genişliği kadar (macOS dışında ~15 px) YATAY OLARAK SIÇRIYOR: pencere
- * açılınca arkadaki bütün içerik sağa kayıyor, kapanınca geri geliyordu.
- * `scrollbar-gutter: stable` çubuğun yerini kalıcı olarak ayırıyor —
- * desteklemeyen tarayıcıda ölçülen genişlik dolgu olarak yazılıyor.
- *
- * <h3>iOS</h3>
- * Safari'de `overflow: hidden` gövdeyi durdurmaya YETMİYOR: dokunmatik
- * kaydırma arkadaki belgeye sızıyor ("scroll chaining"). Gövde
- * `position: fixed` ile sabitlenir ve kaydırma konumu `top` ile korunur;
- * kilit kalkarken tam olarak aynı yere geri dönülür — korunmasaydı pencere
- * kapandığında kullanıcı sayfanın başına düşerdi.
- *
  * @param isLocked Kilit bu örnek için etkin mi.
  */
 

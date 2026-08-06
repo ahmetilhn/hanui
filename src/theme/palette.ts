@@ -1,20 +1,4 @@
-/**
- * HAM PALET — kütüphanenin TEK hex kaynağı.
- *
- * <p>Başka hiçbir dosyada birebir renk değeri yazılmaz. Zincir:
- *
- * <pre>
- *   theme/palette.ts   → ham hex (yalnızca burada)
- *   theme/tokens.ts    → anlamsal token adı → hex eşlemesi (açık + koyu)
- *   styles/_tokens.generated.scss → `:root` ve `[data-hanui-theme]` yayını
- *   styles/_colors.generated.scss → bileşenlerin gördüğü SCSS sözleşmesi
- * </pre>
- *
- * <p>Son iki dosya `scripts/build-tokens.mjs` tarafından ÜRETİLİR. Elle
- * yazıldıklarında TypeScript tarafındaki token listesiyle ayrışıyorlar ve
- * ayrışma sessiz: bir bileşen var olmayan bir değişkeni okuyup rengi
- * kaybediyor, derleme yine yeşil dönüyordu.
- */
+/** HAM PALET — kütüphanenin TEK hex kaynağı. */
 
 // --- Nötr eksen -------------------------------------------------------
 // Serin gri-mavi. Sıcak kum tonundan ayrıldık: ürün fotoğrafları ağırlıkla
@@ -31,27 +15,7 @@ export const NEUTRAL = {
   n300: '#c9d0da',
   n400: '#aab3c0',
   n500: '#8a94a3',
-  /**
-   * İkincil metnin okunur tabanı.
-   *
-   * ÖLÇÜLDÜ (birinci düzeltme): `text-3` `n500`'dü ve beyaz üzerinde 3,2:1
-   * veriyor; üstü çizili fiyat, yer tutucu ve yardım metni gövde metni
-   * sayıldığı için WCAG 1.4.3'ün 4,5:1 eşiğini GEÇMİYORDU. Aynı ton açısında
-   * aydınlık düşürüldü: `#6b7583`, beyaz üzerinde 4,67:1.
-   *
-   * ÖLÇÜLDÜ (ikinci düzeltme, `scripts/check-contrast.mjs`): o değer yalnızca
-   * BEYAZ üzerinde ölçülmüştü. Gerçekte aynı metin dört yüzeyin üzerine
-   * düşüyor ve beyaz onların en açığı: `page` üzerinde 4,36:1, `surface-2`
-   * üzerinde (cip sayacı, pasif girdi) 3,94:1 — yani ölçüm yapılan yer
-   * dışındaki her yerde ihlal. Yüzeylerin en KOYUSU (`surface-2`) eşiği
-   * belirler: `#626c7a` orada 4,67:1.
-   *
-   * <p>Bedeli açık: `n600` ile arasındaki fark daraldı (sayfa üzerinde 5,60'a
-   * karşı 4,97). Üç kademeli soluk metin merdiveni bu paletin taşıyabileceğinin
-   * sınırında; kademe sayısı bir tasarım kararıdır ve görsel dil fazında
-   * yeniden görülür. Ama "görünür ama okunmayan" bir ton, kademesi bol bir
-   * merdivenden kötüdür.
-   */
+  /** İkincil metnin okunur tabanı. */
   n550: '#626c7a',
   n600: '#5a6472',
   n700: '#3a424f',
@@ -105,12 +69,6 @@ export const BLUE = {
 /**
  * MARKA ANKORLARI: kırmızı ve yeşil.
  *
- * <p>Aşağıdaki iki hex, kendi ailelerinin TEK KAYNAĞIDIR. Ailedeki her ton
- * (tint zemini, kenarlık, metin, koyu tema karşılığı) HSL uzayında bu iki
- * değerden türetildi: ton açısı ve doygunluk korunur, yalnızca aydınlık
- * kaydırılır. Yeni bir kırmızı/yeşil ton gerektiğinde gözle seçilmez —
- * buradan türetilir, yoksa aile zamanla dağılır.
- *
  * <p>⚠ ANKORLAR METİN RENGİ DEĞİLDİR. `green` beyaz üzerinde 2,22:1 —
  * gövde metni olarak WCAG'i geçmez. Bu yüzden aile iki katmanlı: ankor
  * İKON ve DOLGU için, ondan türetilen koyu ton METİN için.
@@ -120,16 +78,7 @@ export const ANCHOR = {
   green: '#34c759',
 } as const;
 
-/**
- * DURUM RENKLERİ.
- *
- * <p>Kural: TINT ZEMİN + KOYU METİN + eşleşen hairline. Asla doygun dolgu —
- * doygun dolgu "tıklanabilir" demektir ve durum etiketi tıklanabilir değildir.
- *
- * <p>Kenarlık tonları bir kademe koyulaştırıldı: rozetler "kutu" olarak
- * okunmalı; daha açık çizgiler tint zeminin üzerinde kaybolup yan yana duran
- * iki rozeti tek bir lekeye çeviriyordu.
- */
+/** DURUM RENKLERİ. */
 export const STATUS = {
   /* Yeşil ailesi `ANCHOR.green`den türetildi (L +44 / S −24, L +33 / S −14). */
   okBg: '#e8f4eb',
@@ -187,13 +136,7 @@ export const STATUS = {
   altLineDark: '#332d56',
 } as const;
 
-/**
- * YIKICI EYLEM DOLGUSU (silme onayı).
- *
- * <p>Durum tinti DEĞİL, gerçek bir düğme. Ankorun kendisi: beyaz metinle
- * 4,83:1. Aynı kırmızıyı taşımaları kullanıcının uyarı etiketine tıklamayı
- * denemesine yol açıyordu.
- */
+/** YIKICI EYLEM DOLGUSU (silme onayı). */
 export const DANGER_SOLID = {
   base: '#dc2626',
   hover: '#bb1e1e',
@@ -203,32 +146,12 @@ export const DANGER_SOLID = {
 } as const;
 
 /**
- * İKON DOLGULARI — favori kalbi, kopyalandı tiki gibi METİN OLMAYAN,
- * doygun kalması gereken yerler. Eşik WCAG 1.4.11: grafik öğesi 3:1.
+ * İKON DOLGULARI — favori kalbi, kopyalandı tiki gibi metin olmayan ve doygun
+ * kalması gereken yerler. Eşik WCAG 1.4.11: grafik öğesi 3:1.
  *
- * <p>⚠ BU DOSYA BİR ZAMANLAR "hepsi geçiyor" DİYORDU VE GEÇMİYORLARDI.
- * `scripts/check-contrast.mjs` yazıldığında ölçüldü: ankorun kendisi
- * (`#34c759`) beyaz üzerinde 2,21:1, `surface-2` üzerinde 1,94:1 — grafik
- * eşiğinin yarısı. `CopyField`in "kopyalandı" tiki tam olarak bu tonda
- * çiziliyor ve tik, kopyalamanın başarılı olduğunu söyleyen TEK görsel
- * sinyaldi (metin `visually-hidden`). Yeşil ailesinin ikon katmanı bu yüzden
- * ankordan ayrıldı: ton açısı ve doygunluk korunarak aydınlık düşürüldü.
- *
- * <h3>Açık temada bu aile ESNEK DEĞİL</h3>
- * `green` iki eşiğin arasına sıkışır: bir ikon olarak açık yüzeyden ayrılmak
- * için KOYU olmalı (3:1), üzerine metin binecekse o metne yer bırakacak kadar
- * AÇIK kalmalı (4,5:1). Bant dar ve `#299d46` içinde duruyor: `surface-2`
- * üzerinde 3,06:1, `onGreen` ile 4,56:1.
- *
- * <p>Bunun bir sonucu var: <strong>metin taşıyan bir yeşil dolgunun hover'ı
- * dolguyu koyulaştıramaz.</strong> Bir kademe koyulaşan her ton `onGreen`i
- * 4,5'in altına düşürüyor (en koyu mürekkeple bile 4,47:1). `greenHover` bu
- * yüzden yalnızca İKON hover'ıdır; metin taşıyan bir yüzeyin hover'ı
- * kenarlıkta ya da gölgede anlatılır. Kütüphane bugün yeşil dolgu üzerine
- * metin çizmiyor; `onGreen` tüketici için duruyor ve sözleşmesi `green` ile.
- *
- * <p>Koyu tema sıkışık değil: orada zemin koyu, ikon açık ve iki eşik aynı
- * yöne çekiyor.
+ * <p>⚠ Ankorun kendisi eşiği GEÇMİYOR (`#34c759` beyaz üzerinde 2,21:1) ve
+ * `CopyField`in tiki, kopyalamanın başarısını söyleyen tek görsel sinyal. İkon
+ * katmanı bu yüzden ankordan ayrıldı; nöbetçi `scripts/check-contrast.mjs`.
  */
 export const ACCENT = {
   red: '#dc2626',
@@ -243,12 +166,7 @@ export const ACCENT = {
   onGreen: '#06280f',
 } as const;
 
-/**
- * İNDİRİM / OLUMLU DEĞİŞİM ETİKETİ.
- *
- * <p>Fiyat SİYAH kalır; rozet YEŞİL — kazancı kırmızı ile işaretlemek
- * "uyarı" gibi okunuyordu, oysa indirim iyi haber.
- */
+/** İNDİRİM / OLUMLU DEĞİŞİM ETİKETİ. */
 export const SALE = {
   bg: '#e8f4eb',
   fg: '#1d6e31',
@@ -256,14 +174,7 @@ export const SALE = {
   fgDark: '#34c759',
 } as const;
 
-/**
- * YILDIZ ALTINI.
- *
- * <p>Amber ailesinden AYRI kalır (amber yalnızca dönüşüm eylemi), ama eski
- * uyarı tonu (#7a3e02) bir kahverengiydi ve puan yıldızları kirli
- * görünüyordu. Bu ton sıcaklığı korur, doygun turuncuyla yarışmaz ve tek
- * başına bir dolgu olarak okunmaz.
- */
+/** YILDIZ ALTINI. */
 export const STAR = {
   /** 5,23:1 beyaz üzerinde. */
   light: '#9a5f04',

@@ -2,18 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 
 import ScrollArea from '../ScrollArea';
 
-/**
- * KAYDIRMA BÖLGESİ — klavyeyle erişilebilirlik (WCAG 2.1.1).
- *
- * <p>Kaydırılabilir bir kutuda odaklanabilir öğe yoksa (uzun metin, tablo, kod
- * bloğu) klavye kullanıcısı ona ULAŞAMIYOR: `Tab` atlıyor, ok tuşları sayfayı
- * kaydırıyor. Firefox `tabindex`i kendiliğinden veriyor, Chrome ve Safari
- * vermiyor.
- *
- * <p>Ama `tabindex="0"` KOŞULSUZ da verilemez: içerik sığdığında kutu
- * gereksiz bir Tab durağına dönüşüyor. Bileşen taşmayı ÖLÇÜYOR — ve jsdom
- * yerleşim yapmadığı için ölçüm burada taklit ediliyor.
- */
+/** KAYDIRMA BÖLGESİ — klavyeyle erişilebilirlik (WCAG 2.1.1). */
 
 /** jsdom `scrollHeight`/`clientHeight` döndürmüyor; ölçüm taklit edilir. */
 const mockOverflow = (isOverflowing: boolean, scrollTop = 0) => {
@@ -85,16 +74,7 @@ describe('ScrollArea', () => {
     expect(container.firstElementChild).not.toHaveAttribute('tabindex');
   });
 
-  /*
-   * KENAR SOLMASI BIR IDDIA: "bu ucun otesinde devam eden icerik var".
-   *
-   * Iki uca da kosulsuz yazildiginda iddia YANLIS oluyor ve bedeli dogrudan
-   * gorunurluk. Olculdu (Chromium + WebKit, filtre kenar cubugundaki
-   * `maxHeight: 280` kutusu): tek secenekli bir grupta kutu 33 px ve solma
-   * paylari 16+16 px oldugu icin TAM OPAK alan 1 px kaliyordu — secenek
-   * neredeyse tamamen silik ciziliyor, ustelik tasma olmadigi icin
-   * kaydirarak da kurtarilamiyordu. Kullanicinin bildirdigi hata buydu.
-   */
+  /* KENAR SOLMASI BIR IDDIA: "bu ucun otesinde devam eden icerik var". */
   describe('kenar solması', () => {
     const boxOf = (container: HTMLElement) => container.firstElementChild as HTMLElement;
 

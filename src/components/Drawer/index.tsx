@@ -35,12 +35,7 @@ type Props = {
   /** Kapatma düğmesinin erişilebilir adı. Verilmezse `labels.close`. */
   closeLabel?: string;
   children: ReactNode;
-  /**
-   * Panelin hangi kenardan geldiği. Mantıksal: `end` RTL'de sola açılır.
-   *
-   * <p>Varsayılan `end` — filtre ve ayrıntı panelleri okuma yönünün SONUNDAN
-   * gelir; `start` gezinme panelleri içindir.
-   */
+  /** Panelin hangi kenardan geldiği. Mantıksal: `end` RTL'de sola açılır. */
   side?: 'start' | 'end';
   size?: 'sm' | 'md' | 'lg';
   /** Dipte duran eylem şeridi; gövde kaydırılırken yerinde kalır. */
@@ -51,36 +46,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Çekmece (drawer) — kenardan açılan kipsel panel.
- *
- * <h3>{@link BottomSheet} ile farkı: EKRAN, tercih değil</h3>
- * İkisi de kipsel bir yan panel; ayrım hangi ekranda doğru olduklarında:
- *
- * <ul>
- *   <li>`BottomSheet` DAR ekran içindir. Baş parmağın erişebildiği yer
- *       ekranın dibi; kenardan gelen bir panel telefonda ekranın tamamını
- *       kaplıyor ve "panel" olmaktan çıkıyor.</li>
- *   <li><b>`Drawer` GENİŞ ekran içindir.</b> Filtre paneli ve ayrıntı
- *       incelemesi sayfanın yanında durur; kullanıcı listeyi görmeye devam
- *       eder. Aynı panel dipten gelseydi 1440 px'lik bir ekranda içeriğin
- *       tamamını örtüyordu.</li>
- * </ul>
- *
- * <h3>`isOpen` alır — ve bu {@link BottomSheet}ten bilinçli bir AYRILIK</h3>
- * `BottomSheet` "açıkken çizilir, kapatmak için kaldırılır" sözleşmesini
- * kullanıyor ve bunun bir bedeli var: React sökülen bir ağacı bekletmediği
- * için <strong>çıkış animasyonu çizilemiyor</strong>, panel bir karede yok
- * oluyor. Çekmece açık/kapalı durumu kendisi taşıyor; `<dialog>` kapanırken
- * `@starting-style` + `allow-discrete` ile geri kayıyor.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`Escape`</td><td>kapatır — üst üste açık panellerde YALNIZCA en üstteki</td></tr>
- *   <tr><td>`Tab`</td><td>odak panelin içinde döner (tarayıcı: `showModal()`)</td></tr>
- * </table>
- * Açılışta odak kapatma düğmesine DEĞİL ilk anlamlı öğeye gider.
- */
+/** Çekmece (drawer) — kenardan açılan kipsel panel. */
 const Drawer = ({
   isOpen,
   onClose,

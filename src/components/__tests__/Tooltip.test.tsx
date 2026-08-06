@@ -3,23 +3,7 @@ import userEvent from '@testing-library/user-event';
 
 import Tooltip from '../Tooltip';
 
-/**
- * İPUCU — konum, gecikme ve kapanma yolları.
- *
- * <h3>Neden konum burada ölçülmüyor</h3>
- * jsdom YERLEŞİM YAPMIYOR: `getBoundingClientRect` her öğe için sıfır
- * döndürüyor, yani çarpışma hesabının girdisi yok. Konumun doğruluğu görsel
- * regresyonun işi (`e2e/visual.spec.ts`); burada ölçülen şey KARARLAR —
- * balonun portala gitmesi, gecikmenin uygulanması, kapanma yollarının çalışması.
- *
- * <h3>Neden SAHTE zamanlayıcı yok</h3>
- * Denendi ve kararsız çıktı: `user-event` etkileşimleri asenkron ve zamanı
- * kendisi de ilerletiyor; bileşenin `setTimeout`u kimi koşuda `act`in dışında
- * ateşleniyor, kimi koşuda hiç ateşlenmiyordu. AYNI test, dosya içindeki
- * yerine göre geçip kalıyordu — yani ölçtüğü şey bileşen değil zamanlayıcı
- * kurulumuydu. Gerçek zamanlayıcı + `waitFor` bu belirsizliği kaldırıyor;
- * gecikmeler zaten 300 ms ve altında.
- */
+/** İPUCU — konum, gecikme ve kapanma yolları. */
 
 const LABEL = 'Kısa bir açıklama';
 

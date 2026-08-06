@@ -21,10 +21,6 @@ type Props = {
   /**
    * Puan açıklamaları. Hem ekran okuyucuya okunur hem de seçildiğinde
    * yıldızların altında yazar. Verilmezse `labels.rating.scale`.
-   *
-   * <p>Dolu yıldız sayısı tek başına bir renk/şekil sinyali. Yanına açıklama
-   * yazmak hem anlamı netleştirir hem de renk körü kullanıcıya ikinci bir ipucu
-   * verir (WCAG 1.4.1).
    */
   ratingLabels?: RatingLabels;
   /**
@@ -39,31 +35,7 @@ type Props = {
 
 const STARS = [1, 2, 3, 4, 5] as const;
 
-/**
- * Yıldızla puan girişi.
- *
- * <h3>Beş gerçek radyo düğmesi</h3>
- * Yıldızlar `<span>` ile çizilip tıklama JavaScript'e bağlanabilirdi. Bunun
- * yerine `<fieldset>` içinde beş yerel `<input type="radio">` kullanılır ve
- * yıldız görünümü etiketlerine verilir. Böylece ok tuşlarıyla gezinme, Tab
- * davranışı, ekran okuyucuda "5 seçenekten 4'ü seçili" duyurusu ve form
- * gönderimine katılma <em>bedava</em> gelir.
- *
- * <p>{@link Rating} genişletilemez: o `<span>` üretiyor ve açıkça
- * salt-gösterim. İkisini tek bileşende toplamak, gösterim tarafına hiç
- * kullanılmayan etkileşim kodu taşımak olurdu.
- *
- * <h3>Klavye (APG: radio group — tamamı YEREL)</h3>
- * <table>
- *   <tr><td>`ArrowRight` / `ArrowDown`</td><td>bir sonraki yıldız</td></tr>
- *   <tr><td>`ArrowLeft` / `ArrowUp`</td><td>bir önceki yıldız</td></tr>
- *   <tr><td>`Tab`</td><td>grubu TEK durak olarak geçer</td></tr>
- * </table>
- * Kütüphane hiçbir tuşu işlemiyor; nöbetçi bu yüzden tuşları değil DEVRİ
- * ölçüyor — beş gerçek radyo, tek grup adı, okunabilir adlar
- * (`components/__tests__/keyboard.test.tsx`). Yıldızlar `<span>`e dönerse
- * test kırılır.
- */
+/** Yıldızla puan girişi. */
 const RatingInput = ({
   value,
   onChange,

@@ -8,7 +8,6 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  /* Izgarada satirin en uzun kartina uyar; alt seritler hizali kalir. */
   height: 100%;
 
   &--interactive {
@@ -17,14 +16,6 @@
       box-shadow $duration-fast $ease-out,
       transform $duration-fast $ease-out;
 
-    /*
-     * YUKSELEN YUZEY — `interactive-surface`in belgelenmis ISTISNASI.
-     *
-     * Kart zemin DEGISTIRMEZ, bir kademe YUKSELIR. Sebep olculebilir: kart
-     * zaten `$surface`, sayfa `$page` ve aradaki bir kademe zemin degisimi
-     * beyaz kartta neredeyse gorunmez (1,05:1). Yukselme ayni bilgiyi tasiyip
-     * her temada okunuyor.
-     */
     &:hover {
       border-color: $border-strong;
       box-shadow: $shadow-md;
@@ -36,14 +27,6 @@
       box-shadow: $shadow-sm;
     }
 
-    /*
-     * Gorsel hover'da hafifce buyur.
-     *
-     * Kural burada, kart ilkelerinde durur: her kart bunu kendi modulunde
-     * yeniden yazdiginda farkli kartlarin hover davranisi zamanla
-     * ayrisiyordu. Yalnizca TIKLANABILIR kartlarda calisir — tiklanamayan bir
-     * kartin gorseli buyudugunde yanlis bir davet oluyor.
-     */
     &:hover .media__frame > img {
       transform: scale(1.04);
     }
@@ -87,26 +70,10 @@
     }
   }
 
-  /*
-   * KAPLAMA — cerceveyi doldurur, tasani kirpar.
-   *
-   * `object-fit: cover` ACIKCA yaziliyor: bu dal eskiden hic `object-fit`
-   * tasimiyordu ve tarayici varsayilani `fill`. Yani 4:3 bir fotograf 10:7
-   * cercevede kirpilmiyor, EZILIYORDU — kaplama sozu verilen yerde goruntu
-   * bozuluyordu ve bozulma "gorsel biraz farkli" diye okundugu icin kimse
-   * bunu bir hata olarak bildirmiyordu.
-   */
   &__frame--cover > img {
     object-fit: cover;
   }
 
-  /*
-   * SIGDIRMA — iki dal da kirpmaz; ayrimlari yalnizca olcek.
-   *
-   * Seffaf zeminli ve degisik oranlarda gelen gorseller; `cover` onlari
-   * kirpip kenarlarini kesiyordu. `contain` + ic bosluk her gorseli ayni
-   * cerceve icinde nefes alarak gosterir.
-   */
   &__frame--contain,
   &__frame--inset {
     padding: $space-4;
@@ -116,32 +83,6 @@
     }
   }
 
-  /*
-   * ICERIDEN — %85 + merkezleme.
-   *
-   * `contain` gorseli kirpmadan sigdirir ama uzun kenari cerceve dolgusuna
-   * dayanir; seffaf zeminli urun fotograflarinda parcanin kenari kartin
-   * kenarina degiyordu. Dolguyu buyutmek bunu COZMEZ: o yalnizca cerceve
-   * kutusunu daraltir, gorsel yine o kutunun uzun kenarina yapisir. Olcegi
-   * kismak gerekiyordu.
-   *
-   * %85 bir token DEGIL ve olmamali: bu, cercevenin ic olcegi — hicbir
-   * aralik/tipografi merdiveniyle ilgisi yok. Deger tek yerde duruyor ve
-   * `fit="inset"` diyen her cagirana ayni sozu veriyor.
-   *
-   * MERKEZLEME YALNIZ BU DALDA — cerceve `flex`i sadece `--inset` ile aliyor.
-   * Once butun cerceveye yazildi ve OLCULDU: `aspect-ratio` ile gelen
-   * yukseklik flex yerlesiminde baska yuvarlaniyor, `cover` / `contain`
-   * kartlari 1 px uzuyor ve 16 galeri anlik goruntusu kirmiziya donuyordu —
-   * yeni bir secenegin bedelini onu hic istemeyen cagiranlar oduyordu.
-   *
-   * Mutlak konum + `margin: auto` da denendi ve OLCULDU — sessizce YANLIS:
-   * mutlak konumlanmis ogede yuzde, konumlanmis atanin ICERIK kutusuna degil
-   * DOLGU kutusuna gore cozuluyor. 238x170 bir cercevede goruntu 175x117
-   * yerine 202x144 ciziliyordu; yani `%85` sozu tutulmuyor, dolgu da fiilen
-   * yok sayiliyordu. Kenar boslugu 33 px yerine 1,8 px kaliyor ve fark
-   * "biraz daha buyuk duruyor" diye okunup hata sayilmiyordu.
-   */
   &__frame--inset {
     display: flex;
     align-items: center;
@@ -154,12 +95,6 @@
   }
 }
 
-/*
- * Bindirme katmani.
- *
- * `pointer-events: none`: rozet yigini altindaki gorsel baglantisini
- * kapatmamali. Icindeki gercek dugmeler olaylari geri acar.
- */
 .overlay {
   position: absolute;
   z-index: $z-raised;
@@ -206,7 +141,6 @@
   min-width: 0;
 }
 
-/* Eylem seridi dipte: yan yana kartlarin alt satiri ayni hizada olur. */
 .footer {
   @include stack($space-2);
 

@@ -1,24 +1,4 @@
-/**
- * SCSS DENETÇİSİ.
- *
- * <h3>Neden var: odak halkası TEK yerden çizilir</h3>
- * `focus-ring` mixin'i dışında üç bileşen kendi halkasını elle çiziyordu
- * (`Tabs`, `RadioCard`, `RatingInput`) ve üçü de ayrışmıştı: biri `$blue`
- * kullanıyordu (`$ring-color` değil — ikisi bugün aynı, yarın değil), offset
- * değerleri 2 px ve 4 px arasında dolaşıyordu. Halkanın kalınlığını ya da
- * rengini değiştirmek isteyen biri mixin'i düzeltir, o üç yer eski hâlinde
- * kalırdı — ve fark yalnızca klavyeyle gezen birine görünürdü.
- *
- * <p>Kural bu yüzden bir tercih değil bir KİLİT: bileşen SCSS'inde `outline`
- * tanımı yasak. `outline: none` serbest — o bir halka ÇİZMEK değil yerel
- * halkayı KALDIRMAK, ve kaldırıldığı dört yerde de yerine başka bir gösterge
- * çiziliyor (kutunun kendisi vurgulanıyor, kulp büyüyor).
- *
- * <h3>Neden `stylelint-config-standard-scss`in tamamı değil</h3>
- * Hazır yapılandırma büyük ölçüde BİÇİM kuralı (tırnak türü, boşluk, satır
- * sonu) ve o işi Prettier zaten yapıyor; ikisini birlikte açmak, birbirini
- * düzelten iki araç demek. Buradan yalnızca gerçek hata sınıfları alınıyor.
- */
+/** SCSS DENETÇİSİ. */
 export default {
   extends: ['stylelint-config-standard-scss'],
 
@@ -50,19 +30,7 @@ export default {
     /* CSS modulunun `:global()` kacisi; stylelint onu bilmiyor. */
     'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['global'] }],
 
-    /*
-     * HAREKET OLCEGI KILIDI.
-     *
-     * Bilesen SCSS'inde ham sure degeri (`200ms`, `.3s`) yasak: sure
-     * `$duration-*` token'larindan gelir. Once her bilesen kendi degerini
-     * yaziyordu ve olcek disina cikanlar vardi — ayni jest iki bilesende iki
-     * farkli hizda oluyor, arayuz "elde dizilmis" hissi veriyordu. Olcek disi
-     * bir sure gerekiyorsa `theme/tokens.ts`e eklenir.
-     *
-     * `transition-behavior`in `allow-discrete` degeri ve `steps()` gibi
-     * sure ICERMEYEN yazimlar etkilenmiyor: kural yalnizca zaman birimi
-     * tasiyan degerleri yakaliyor.
-     */
+    /* HAREKET OLCEGI KILIDI. */
     'declaration-property-value-disallowed-list': [
       {
         outline: ['/^(?!none$).+$/'],

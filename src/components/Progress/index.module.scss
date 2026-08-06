@@ -23,19 +23,11 @@
     height: 8px;
   }
 
-  /*
-   * BELIRSIZ KIP: dolgu ray boyunca akar.
-   *
-   * Genislik `40%`te SABIT ve hareket eden sey konum: genisligi
-   * canlandirmak her karede yerlesim hesabi demekti.
-   */
   &--indeterminate .progress__fill {
     inline-size: 40%;
     animation: $anim-progress-slide $duration-shimmer $ease-in-out infinite;
 
     @include reduced-motion {
-      /* Hareket kapaliyken belirsizlik yine anlatilmali: cubuk yarim dolu
-         kalir — bos bir ray "hic ilerlemedi" gibi okunuyordu. */
       animation: none;
       inline-size: 50%;
     }
@@ -65,8 +57,6 @@
     transition: none;
   }
 
-  /* Zorlanmis renk kipinde dolgu ile ray ayni renge dusuyor; sistemin vurgu
-     rengi ikisini yeniden ayirir. */
   @media (forced-colors: active) {
     background-color: Highlight;
     forced-color-adjust: none;
@@ -81,16 +71,12 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* --- Dairesel --- */
-
 .circle {
   display: inline-flex;
   position: relative;
   flex-shrink: 0;
 
   &__svg {
-    /* SVG dairesi 12 yonunden baslar; varsayilan 3 yonu bir ilerleme
-       gostergesinde "yarim baslamis" gibi okunuyordu. */
     rotate: -90deg;
   }
 
@@ -125,7 +111,6 @@
     }
   }
 
-  /* Belirsiz kipte cember doner. */
   &--indeterminate &__svg {
     animation: $anim-spin $duration-spin linear infinite;
 
@@ -134,7 +119,6 @@
     }
   }
 
-  /* Ortadaki sayi: dairenin ICINDE, mutlak konumla ortalanir. */
   &__label {
     @include technical-text($font-size-xs);
 

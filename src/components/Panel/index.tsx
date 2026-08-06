@@ -30,31 +30,9 @@ type Props = {
 /**
  * Panel — başlığı olan içerik kutusu.
  *
- * <h3>Neden bu bileşen var</h3>
- * Bir uygulamanın on bir ayarlar sayfası, on bir farklı kart kuruyordu:
- * birinde dolgu 16 px diğerinde 24 px, birinde başlık kartın içinde diğerinde
- * dışında, birinde `max-width: 560px` diğerinde tam genişlik. Aynı disiplinde
- * görünmeleri için kararların tek yerde verilmesi gerekiyordu.
- *
- * <h3>Genişlik paneli DEĞİL içeriği sınırlar</h3>
- * Panel her zaman kapsayıcısını doldurur. Form alanlarının okunabilir satır
- * uzunluğunu aşmaması gerekiyorsa {@link PanelForm} kullanılır — o iç ızgarayı
- * sınırlar, panelin kendisini daraltmaz. Önceden bir "profil düzenle" paneli
- * sayfanın üçte biri kadar kalıp yanındaki boşluğa bakıyordu; sorun formun
- * değil PANELİN daraltılmasıydı.
- *
- * <h3>Dip şeridi o sütunu izler</h3>
- * Panelde bir `PanelForm` varsa `footer` içeriği <strong>aynı sütunda</strong>
- * biter. Şeridin kendisi (zemin + üst çizgi) tam genişlikte kalır; hizalanan
- * yalnızca içeriği. Ölçüldü: form 565 px'lik sütununu bitirirken kaydet
- * düğmesi panelin öbür ucunda, formdan 576 px uzakta duruyordu — göz formu
- * bitiriyor, düğmeyi arıyordu. `PanelForm` kullanılmayan panelde kural
- * uygulanmaz: orada sınırlanacak bir sütun yok ve şeridin sağa yaslanması
- * doğru davranış.
- *
  * @example
  * <Panel title="Profil bilgileri" description="Fatura bu bilgilerle kesilir">
- *   <PanelForm>…alanlar…</PanelForm>
+ * <PanelForm>…alanlar…</PanelForm>
  * </Panel>
  */
 const Panel: FC<Props> = ({
@@ -123,14 +101,7 @@ type PanelFormProps = {
   className?: string;
 };
 
-/**
- * Panel içindeki form ızgarası.
- *
- * <p>Genişliği SINIRLI (`$measure-narrow`): girdi alanları okunabilir satır
- * uzunluğunun ötesine uzamamalı — 900 px genişliğinde bir metin kutusu
- * doldurulması zor görünür. Ama bu sınır PANELE değil ızgaraya uygulanır;
- * panel tam genişlikte kalır ve sayfa düzeni bozulmaz.
- */
+/** Panel içindeki form ızgarası. */
 export const PanelForm: FC<PanelFormProps> = /*#__PURE__*/ named(
   /*#__PURE__*/ memo(({ children, columns = 1, className }) => (
     <div className={cx(styles.form, styles[`form--${columns}`], className)}>{children}</div>
@@ -143,12 +114,7 @@ type PanelRowProps = {
   className?: string;
 };
 
-/**
- * İki alanı yan yana koyan satır. Dar ekranda alt alta düşer.
- *
- * <p>`PanelForm columns={2}` tüm ızgarayı ikiye böler; bu yalnızca TEK bir
- * satırı böler (ad + soyad gibi).
- */
+/** İki alanı yan yana koyan satır. Dar ekranda alt alta düşer. */
 export const PanelRow: FC<PanelRowProps> = /*#__PURE__*/ named(
   /*#__PURE__*/ memo(({ children, className }) => (
     <div className={cx(styles.row, className)}>{children}</div>

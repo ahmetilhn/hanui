@@ -33,41 +33,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Rozet — durum ve sınıflandırma etiketi.
- *
- * <p><strong>Renk tek başına anlam taşımaz</strong> (WCAG 1.4.1): her rozet
- * okunabilir bir metin içerir. `tone` yalnızca metni pekiştirir; renk körü bir
- * kullanıcı da aynı bilgiyi alır.
- *
- * <h3>Durum tonlarında `solid` ile `soft` aynı şeyi verir</h3>
- * Bu bilinçli. <strong>Doygun dolgu = tıklanabilir</strong> kuralı gereği dolu
- * zeminli bir durum etiketi düğmeye benziyor ve kullanıcılar "Son 2 adet" gibi
- * bir etikete tıklamayı deniyordu. Prop çağıran tarafları kırmamak için
- * korundu, görünüm tint'e sabitlendi.
- *
- * <p>Doygun dolgu yalnızca <strong>miktar</strong> tonlarında (`action`,
- * `link`) anlamlı: onlar bir durumu değil bir sayıyı bildirir ve tıklanabilir
- * bir öğenin parçasıdır.
- *
- * <h3>Koyu bandın üzerinde: `neutral` yeniden bağlanır</h3>
- * Nötr rozet üç CSS özel özelliği okur — `--hanui-badge-bg`,
- * `--hanui-badge-fg`, `--hanui-badge-line`. Kapsayıcıda tanımlanmadıklarında
- * varsayılan tint çizilir; koyu bir gezinme rayının içinde ise kapsayıcı
- * üçünü kendi tonlarına bağlayarak rozeti oraya taşır. İç sınıflara kural
- * yazmak bir sonraki yayında sessizce düşerdi.
- *
- * ```scss
- * .rail__badge {
- *   --hanui-badge-bg: #{$rail-hover};
- *   --hanui-badge-fg: #{$rail-fg-2};
- *   --hanui-badge-line: #{$rail-line};
- * }
- * ```
- *
- * <p>Durum tonları bilinçli olarak ezilemez: bir hata rozetini kapsayıcının
- * sessizce nötrleştirmesi, rengin taşıdığı anlamı yok ederdi.
- */
+/** Rozet — durum ve sınıflandırma etiketi. */
 const Badge: FC<Props> = ({
   children,
   tone = 'neutral',

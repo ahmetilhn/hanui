@@ -1,13 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Secim kutusu.
- *
- * Tetikleyici bir `<button>` ama GIRDI gibi gorunur: ayni cerceve, ayni
- * yukseklik, ayni odak halkasi (`input-base`). Form icinde yan yana duran bir
- * metin alani ile bir secim kutusu farkli cizildiginde satir kirik goruyordu.
- */
 .select {
   position: relative;
   display: block;
@@ -23,19 +16,15 @@
   text-align: start;
   cursor: pointer;
 
-  /* Secim yokken metin soluk: yer tutucu ile secili deger ayirt edilmeli. */
   &--empty {
     color: $text-3;
   }
 
-  /* Panel acikken kutu da odakli gorunur; ikisi tek bir ogedir. */
   &--open {
     border-color: $ring-color;
     box-shadow: $ring;
   }
 
-  /* Yogun seritler (arac cubugu): form olcusu oradaki 32-36 px'lik
-     kontrollerin yaninda seridi buyutuyordu. */
   &--sm {
     min-height: 36px;
     padding-block: 0;
@@ -44,9 +33,6 @@
     font-weight: $weight-medium;
   }
 
-  /* Tetikleyicideki icerik ikonu (disaridan gelir): metin puntosunu degil
-     ikon olcegini alir, yoksa etiketle ayni yukseklikte kalip etiketi
-     ezeleyen bir "harf" gibi duruyordu. */
   &__icon {
     display: inline-flex;
     color: $text-2;
@@ -76,12 +62,6 @@
   }
 }
 
-/*
- * Masaustu paneli: tetikleyicinin altina yapisir.
- *
- * Asgari genislik ZORUNLU: arac cubugundaki kutu cok dar olabiliyor ve panel
- * o genislige indiginde secenek adlari kirpiliyordu.
- */
 .panel {
   position: absolute;
   top: calc(100% + #{$space-1});
@@ -94,8 +74,6 @@
   overflow: hidden;
   animation: $anim-fade-in-up $duration-fast $ease-out;
 
-  /* Seridin sag ucundaki kutuda `start` hizalama paneli ekranin disina
-     tasiriyordu. */
   &--start {
     inset-inline-start: 0;
   }
@@ -118,30 +96,16 @@
 
   @include custom-scrollbar;
 
-  /*
-   * Odak halkasi listede DEGIL etkin secenekte.
-   *
-   * Odak alt sayfada bu kapsayicida duruyor (APG: listbox +
-   * `aria-activedescendant`); butun listeyi ceviren bir halka, kullanicinin
-   * hangi satirda oldugunu soylemiyordu.
-   */
   &:focus {
     outline: none;
   }
 
-  /*
-   * Alt sayfada kaydirmayi PANELIN GOVDESI yapar; liste oldugu kadar uzar.
-   * Kendi kaydirma alani birakilsaydi ic ice iki kaydirma olusuyor ve
-   * kullanici hangisini kaydirdigini bilemiyordu (`Combobox` ile ayni kural).
-   */
   &--sheet {
     max-height: none;
     overflow: visible;
     padding: 0;
 
     .option {
-      /* Dokunma hedefi (WCAG 2.5.8) ve okunur metin: masaustu satiri parmakla
-         isabet ettirilemiyordu. */
       min-height: 48px;
       font-size: $font-size-base;
       border-radius: $radius-md;
@@ -160,16 +124,10 @@
   cursor: pointer;
   transition: background-color $duration-fast $ease-out;
 
-  /* Etkin (klavye ya da imlec) satir. */
   &--active {
     background-color: $surface-2;
   }
 
-  /*
-   * Secili satir UC sinyalle: zemin + metin rengi + onay isareti. Yalnizca
-   * zemin verildiginde etkin satirla ayni goruyordu.
-   * MAVI — secim bir gezinme eylemi; amber yalnizca donusum noktasinda.
-   */
   &--selected {
     background-color: $blue-tint;
     color: $blue-text;
@@ -199,6 +157,3 @@
     transition: none;
   }
 }
-
-/* Alt sayfanin kabugu `BottomSheet` icinde; burada yalnizca listenin o kabuk
-   icinde nasil durdugu var (bkz. `.list--sheet`). */

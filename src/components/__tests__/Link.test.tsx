@@ -6,13 +6,7 @@ import Button from '../Button';
 import HanuiProvider from '../../theme/HanuiProvider';
 import type { HanuiLinkProps } from '../../types/link.type';
 
-/**
- * Tüketicinin yönlendiricisini taklit eder.
- *
- * <p>`scroll` gibi yönlendiriciye özgü props DOM'a YAYILMAZ — gerçek bir
- * yönlendirici de onları tüketip `<a>`ya geçirmez. Burada yalnızca "geldi mi"
- * sorusunu ölçmek için bir `data-*` özniteliğine yazılıyor.
- */
+/** Tüketicinin yönlendiricisini taklit eder. */
 const RouterLink: FC<HanuiLinkProps> = ({ href, children, scroll, ...rest }) => (
   <a href={href} data-router="yes" data-scroll={String(scroll)} {...(rest as object)}>
     {children}

@@ -1,19 +1,4 @@
-/**
- * `src/theme/tokens.ts`i DERLEYİCİSİZ bir betikten okunabilir hâle getirir.
- *
- * <p>İki betik aynı kaynağa ihtiyaç duyuyor: `build-tokens.mjs` SCSS üretiyor,
- * `check-contrast.mjs` aynı değerleri ölçüyor. Yükleyici iki yere kopyalandığında
- * biri değişip diğeri eski kalır ve ölçüm ÜRETİLEN dosyadan başka bir şeyi
- * denetlemeye başlar — yani nöbetçi sessizce yanlış şeyi bekler.
- *
- * <p>Tipler DÜZENLİ İFADEYLE sökülmez: `as const`, jenerik tip argümanı ve
- * `Record<…>` bir düzenli ifadenin doğru ayrıştıramayacağı kadar iç içe.
- * TypeScript'in kendi `transpileModule`'ü kullanılıyor — paket zaten
- * `typescript`e bağımlı ve dönüşüm birebir doğru.
- *
- * <p>Palet kaynağı token kaynağının başına GÖMÜLÜR: `data:` URL modülleri
- * birbirini göreli yolla çözemez.
- */
+/** `src/theme/tokens.ts`i DERLEYİCİSİZ bir betikten okunabilir hâle getirir. */
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

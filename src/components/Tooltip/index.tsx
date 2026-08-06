@@ -53,49 +53,7 @@ const CLOSE_DELAY = 120;
 /** Dokunmatikte balonu açan basma süresi. Daha kısası kaydırma jestini yakalıyordu. */
 const LONG_PRESS_DELAY = 500;
 
-/**
- * İpucu balonu.
- *
- * <h3>Neden native `title` yetmiyor</h3>
- * Tarayıcının `title` özniteliği <strong>dokunmatikte hiç görünmez</strong>,
- * gecikmesi ayarlanamaz ve biçimlendirilemez. Trafiğin ağırlığı mobil olan
- * bir arayüzde "üzerine gelince açıklama çıkar" demek, kullanıcıların çoğu
- * için açıklamanın hiç olmaması demek.
- *
- * <h3>Balon PORTAL ile gövdede</h3>
- * Önce tetikleyicinin içinde `position: absolute` ile duruyordu ve üç yerde
- * birden bozuluyordu: `overflow: hidden` taşıyan bir kapsayıcının içinde
- * (kart, tablo hücresi, `Panel`) KIRPILIYOR, ekranın kenarında görünüm
- * alanının dışına TAŞIYOR, `transform` taşıyan bir atanın altında yığılma
- * bağlamına HAPSOLUYORDU. Konum artık `usePositioning` ile ölçülüyor;
- * gerekçenin tamamı orada.
- *
- * <h3>Neden yalnızca AÇIKLAMA taşır</h3>
- * Balonda <em>yalnızca</em> yardımcı metin durur — bağlantı, düğme veya
- * okunması zorunlu bir bilgi değil. İçine bir eylem konsaydı ona erişmenin
- * yolu olmazdı: balon `pointer-events: none` ve klavyeyle içine girilemiyor.
- * Eylem taşıyan yüzey `Popover`ın işi; kalıcı olması gereken metin `Field`ın
- * `hint`i.
- *
- * <h3>Dokunmatik: uzun basma</h3>
- * Dokunmatikte `hover` yok — ipucu orada hiç açılmıyordu. Uzun basma balonu
- * açar; ekranın herhangi bir yerine dokunmak kapatır. Bağlam menüsü
- * bastırılır: uzun basmada iOS'ta seçim büyüteci, Android'de kopyala menüsü
- * çıkıyor ve ikisi de balonun üstüne biniyordu.
- *
- * <h3>Kapanma toleransı</h3>
- * İmleç tetikleyiciden çıkar çıkmaz kapatmak, balonun kendisine ulaşmayı
- * imkânsız kılıyordu (metin seçilemiyor). Kapanış {@link CLOSE_DELAY} kadar
- * bekletilir ve bu sürede balona giren imleç onu açık tutar.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`Tab`</td><td>tetikleyiciye gelince GECİKMESİZ açılır</td></tr>
- *   <tr><td>`Escape`</td><td>kapatır; odak tetikleyicide kalır</td></tr>
- * </table>
- * Gecikme fare için var; Tab ile gelen kullanıcı zaten bilinçli olarak orada
- * duruyor.
- */
+/** İpucu balonu. */
 const Tooltip = ({ content, children, side, position, openDelay = 300, className }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const id = useId();
@@ -137,13 +95,7 @@ const Tooltip = ({ content, children, side, position, openDelay = 300, className
 
   useEffect(() => clearTimer, [clearTimer]);
 
-  /*
-   * Escape BELGE duzeyinde dinleniyor.
-   *
-   * Sarmalayicida dinlemek yetmiyordu: balon acikken odak tetikleyicide
-   * OLMAYABILIR (fareyle acilmis bir ipucu) ve o durumda tus olayi hic
-   * sarmalayiciya ulasmiyor, ipucu ekranda asili kaliyordu.
-   */
+  /* Escape BELGE duzeyinde dinleniyor. */
   useEffect(() => {
     if (!isOpen) return;
 

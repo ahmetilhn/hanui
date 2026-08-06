@@ -17,13 +17,7 @@ type Props = {
   /** Önceki/sonraki düğmelerinin erişilebilir adları. ZORUNLU. */
   previousLabel: string;
   nextLabel: string;
-  /**
-   * Sayfa göstergesinin ad üreticisi (`index` 1 tabanlı).
-   *
-   * <p>Verilmediğinde nokta göstergesi ÇİZİLMEZ: adsız bir nokta ekran
-   * okuyucuda "düğme" diye okunuyor ve kullanıcı nereye gittiğini
-   * bilmiyordu.
-   */
+  /** Sayfa göstergesinin ad üreticisi (`index` 1 tabanlı). */
   formatDotLabel?: (index: number, total: number) => string;
   /** Bir kartın asgari genişliği. Şerit buna göre kaç kart göstereceğine karar verir. */
   itemMinWidth?: number;
@@ -31,38 +25,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Kaydırılabilir şerit (carousel).
- *
- * <h3>OTOMATİK OYNATMA YOK — ve olmayacak</h3>
- * Kendiliğinden ilerleyen bir şerit WCAG 2.2.2'yi ihlal ediyor (beş saniyeden
- * uzun süren hareket duraklatılabilmeli) ama asıl sorun daha basit: kullanıcı
- * okumaya başladığı kartı kaybediyor. Bir prop olarak bile eklenmedi —
- * eklenseydi kullanılırdı.
- *
- * <h3>Kaydırma YEREL, JavaScript değil</h3>
- * Şerit `overflow-x: auto` + `scroll-snap`: dokunmatikte parmakla kaydırma,
- * masaüstünde shift+tekerlek ve <strong>klavyeyle ok tuşları</strong>
- * tarayıcıdan geliyor. JavaScript ile `transform` kaydıran bir uygulama
- * bunların hiçbirini getirmiyor ve kaydırma çubuğunu da götürüyor — kullanıcı
- * şeridin devam ettiğini göremiyordu.
- *
- * <p>Düğmeler `scrollBy` çağırıyor: yerel kaydırmayı DEĞİŞTİRMİYOR,
- * tetikliyor. İkisi aynı durumu paylaşıyor ve ayrışmaları imkânsız.
- *
- * <h3>Şerit klavyeyle ULAŞILABİLİR</h3>
- * Kaydırılabilir bir kutu, içinde odaklanabilir öğe yoksa `tabindex`
- * verilmediğinde klavye kullanıcısı için ulaşılamaz (WCAG 2.1.1). Şerit
- * genellikle bağlantı taşıyan kartlardan oluşuyor ve o durumda ek bir durak
- * gereksiz — bu yüzden `tabindex` yalnızca <strong>odaklanabilir çocuk
- * yoksa</strong> yazılıyor.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`Tab`</td><td>önceki/sonraki düğmelerine ve kartların içine</td></tr>
- *   <tr><td>ok tuşları</td><td>şeridi kaydırır (yerel)</td></tr>
- * </table>
- */
+/** Kaydırılabilir şerit (carousel). */
 const Carousel: FC<Props> = ({
   children,
   label,
@@ -83,13 +46,7 @@ const Carousel: FC<Props> = ({
   const [pageCount, setPageCount] = useState(1);
   const [needsTabStop, setNeedsTabStop] = useState(false);
 
-  /*
-   * DURUM SERIDIN KENDISINDEN OKUNUR, sayilmaz.
-   *
-   * Once "kacinci karttayiz" bir sayacla tutuluyordu ve parmakla kaydirma o
-   * sayaci hic guncellemiyordu: kullanici elle kaydirdiktan sonra ok
-   * dugmesine bastiginda serit basa ziplyordu.
-   */
+  /* DURUM SERIDIN KENDISINDEN OKUNUR, sayilmaz. */
   const measure = useCallback(() => {
     const track = trackRef.current;
     if (!track) return;

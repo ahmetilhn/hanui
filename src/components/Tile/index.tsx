@@ -20,24 +20,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Karo — ikon madalyonu + etiket.
- *
- * <h3>Neden ikon, neden yuvarlak madalyon</h3>
- * Ana giriş noktaları metin listesi olarak verildiğinde kullanıcı satır satır
- * okuyor. İkon, aranan öğeyi <em>okumadan</em> bulmayı sağlar; madalyon ise
- * ikona sabit bir kutu verir — farklı ikonların doğal genişlikleri karoları
- * düzensiz hizalıyordu.
- *
- * <h3>Karonun tamamı tıklanabilir</h3>
- * Bağlantı yalnızca etiketi değil karonun tümünü kaplar. Küçük bir metin
- * bağlantısını hedeflemek, özellikle dokunmatik ekranda gereksiz bir hassasiyet
- * talebiydi.
- *
- * <h3>`meta` neden sayı değil `ReactNode`</h3>
- * "1.248 ürün" cümlesi hem sayı biçimine hem dile bağlı. Bileşen içinde
- * `toLocaleString` çağırmak, o kararı kütüphanenin varsayımına bağlıyordu.
- */
+/** Karo — ikon madalyonu + etiket. */
 const Tile = ({ label, icon, href, meta, isActive, linkProps, className, testId }: Props) => (
   <HanuiLink
     href={href}

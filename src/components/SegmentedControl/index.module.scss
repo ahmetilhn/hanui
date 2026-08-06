@@ -1,13 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * BOLMELI DENETIM.
- *
- * Bir KUTU icinde bolmeler: kutu, seceneklerin birbirini disladigini gozle
- * anlatir. Ayri ayri duran dugmeler ayni bilgiyi vermiyordu — kullanici
- * hangisinin ac/kapa hangisinin secim oldugunu bilemiyor.
- */
 .segmented {
   display: inline-flex;
   padding: 3px;
@@ -54,13 +47,6 @@
 
   @include focus-ring($ring-color, -1px);
 
-  /*
-   * SECILI: yuzey YUKSELIR (dolu zemin + golge) ve metin koyulasir.
-   *
-   * Renk tek sinyal DEGIL: secili bolme kutunun icinde kabarik duruyor ve
-   * `aria-checked` durumu duyuruyor. Zorlanmis renk kipinde zemin kayboldugu
-   * icin orada sistem vurgu cifti devrede (asagida).
-   */
   &--selected {
     background-color: $surface;
     color: $text;

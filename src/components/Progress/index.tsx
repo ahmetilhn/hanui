@@ -23,13 +23,7 @@ type Props = {
   max?: number;
   /** Çubuğun erişilebilir adı ("Yükleme", "Ödeme adımı"). ZORUNLU. */
   label: string;
-  /**
-   * Ekran okuyucuya okunan METİN karşılığı ("3 / 5 dosya").
-   *
-   * <p>Verilmezse ekran okuyucu ham yüzdeyi okur. Bir dosya yüklemesinde
-   * "yüzde altmış" ile "5 dosyadan 3'ü" arasındaki fark, kullanıcının
-   * bekleyip beklememeye karar verebilmesi.
-   */
+  /** Ekran okuyucuya okunan METİN karşılığı ("3 / 5 dosya"). */
   valueText?: string;
   /** Yüzdeyi çubuğun yanında GÖRÜNÜR olarak yazar. */
   isValueVisible?: boolean;
@@ -39,29 +33,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * İlerleme çubuğu — <strong>ölçülebilir</strong> bekleme.
- *
- * <h3>{@link Spinner} ile farkı: sonu bilinip bilinmediği</h3>
- * `Spinner` "bir şey oluyor" der ve başka bir şey söyleyemez. Ölçülebilir bir
- * işte (dosya yükleme, içe aktarma, çok adımlı ödeme) bu yetmiyor: kullanıcı
- * beklemeye değip değmeyeceğine karar veremiyor ve iki saniyeyle iki dakika
- * arasındaki farkı ancak bekleyerek öğreniyordu.
- *
- * <p>`value` verilmediğinde çubuk BELİRSİZ kipe düşer: yine bir çubuk çizer
- * ama `aria-valuenow` yazmaz. Bu kasıtlı — bilinmeyen bir değeri "0" diye
- * bildirmek, ekran okuyucuya işin hiç ilerlemediğini söylüyordu.
- *
- * <h3>Yüzde tek başına yeterli DEĞİL</h3>
- * `valueText` verildiğinde ekran okuyucu onu okur ("5 dosyadan 3'ü"), yüzdeyi
- * değil. Aynı bilgi görsel tarafta `isValueVisible` ile yazılabiliyor; ikisi
- * de aynı gerçeği söylemek zorunda.
- *
- * <h3>Renk tek başına anlam taşımaz</h3>
- * `tone` yalnızca bir vurgu: "tamamlandı" ya da "başarısız" durumu çubuğun
- * rengiyle DEĞİL, yanındaki metinle ve çağıran tarafın çizdiği ikonla
- * anlatılır (WCAG 1.4.1).
- */
+/** İlerleme çubuğu — <strong>ölçülebilir</strong> bekleme. */
 const Progress = ({
   value,
   max = 100,
@@ -131,20 +103,7 @@ type CircleProps = {
   testId?: string;
 };
 
-/**
- * Dairesel ilerleme.
- *
- * <h3>Ne zaman çubuk, ne zaman çember</h3>
- * Çubuk bir SATIRA aittir ve yanındaki metinle okunur; çember bir KUTUYA
- * aittir (kart köşesi, avatar yerine geçen madalyon, dip şeritteki adım
- * göstergesi). Kararı yer belirler, tercih değil: dar bir kutuda çubuk 30
- * piksele düşüp okunamaz hâle geliyordu.
- *
- * <h3>Ölçü prop, token DEĞİL</h3>
- * Çemberin çapı `stroke-dasharray` hesabına giriyor ve o hesap JavaScript'te
- * yapılıyor: CSS değişkeninden okunamaz. Bu yüzden `size` bir sayı — ölçü
- * ölçeğinin dışında kalan tek yer ve nedeni bu.
- */
+/** Dairesel ilerleme. */
 const ProgressCircleBase = ({
   value,
   max = 100,

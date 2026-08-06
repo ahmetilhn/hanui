@@ -1,10 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Menu yuzeyi. GOVDEDE (portal), `position: fixed`; koordinati
- * `usePositioning` yaziyor.
- */
 .menu {
   @include stack(2px);
 
@@ -49,7 +45,6 @@
   @include row($space-2);
 
   width: 100%;
-  /* 40px: yogun bir listede parmakla secim 38px'te iskalaniyordu. */
   min-height: 40px;
   padding: $space-2 $space-3;
   border: none;
@@ -60,22 +55,13 @@
   font-family: $font-ui;
   font-size: $font-size-sm;
   color: $text;
-  /* Durum katmani TEK kural kumesinden: hover'da zemin bir kademe,
-     `active`te 1px basilma (bkz. `interactive-surface`). */
+
   @include interactive-surface($rest: transparent, $hover: $surface-2, $pressed: $surface-3);
 
   &:focus-visible {
     background-color: $surface-2;
   }
 
-  /*
-   * Odak halkasi YOK, zemin VAR.
-   *
-   * Menude odak her zaman bir ogenin uzerinde ve halka her satirda yeniden
-   * ciziliyordu: goz "secili satir" ile "odakli satir" arasinda ayrim
-   * yapamiyordu. Vurgu tek: zemin. Zorlanmis renk kipinde zemin kayboldugu
-   * icin orada halka geri geliyor (asagida).
-   */
   &:focus {
     outline: none;
   }
@@ -85,8 +71,6 @@
     cursor: not-allowed;
   }
 
-  /* Yikici eylem: geri alinamaz oldugu OKUNMALI. Renk tek sinyal degil —
-     cagiran taraf ikonu da verir. */
   &--danger {
     color: $bad-fg;
 
@@ -101,8 +85,6 @@
   }
 
   @media (forced-colors: active) {
-    /* Zeminle anlatilan vurgu bu kipte kayboluyor; halka sistem rengiyle
-       geri geliyor — ve mixin'den geciyor (bkz. stylelint kurali). */
     &:focus-visible {
       @include focus-ring-shape(Highlight, -2px);
     }

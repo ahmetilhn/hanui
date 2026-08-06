@@ -1,24 +1,12 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Temizleme dugmesinin dokunma hedefi. Caretin araligi, metnin rezervasyonu
- * ve dugmenin kendi olcusu bu TEK degerden turetiliyor; uc yerde ayri ayri
- * yazildiginda birbirinden ayrisip ikonlarin ust uste binmesine yol acmisti.
- */
 $clear-size: 22px;
 
 .combobox {
   position: relative;
   width: 100%;
 
-  /*
-   * Tetikleyici, girdi alanlariyla AYNI govdeyi kullanir.
-   *
-   * Bir formda arama kutusu, metin girdisi ve secim kutusu yan yana durur;
-   * biri 44px digeri 40px yuksekse satir hizasi bozuluyor ve form "elde
-   * dizilmis" gorunuyordu. `input-base` tek olcuyu dayatir.
-   */
   &__trigger {
     @include input-base;
 
@@ -27,40 +15,21 @@ $clear-size: 22px;
     gap: $space-2;
     text-align: start;
     cursor: pointer;
-    /* Ok ve temizleme dugmesi icin sagda yer. */
     padding-inline-end: $space-3;
 
-    /* Secim yapilmamis tetikleyici bir YER TUTUCU gosterir. */
     &--empty {
       color: $text-3;
     }
 
-    /* Panel acikken tetikleyici de vurgulu kalir: ikisi tek bir govde. */
     &--open {
       border-color: $ring-color;
       box-shadow: $ring;
     }
 
-    /* Hata renkle DEGIL, kenarlik + Field'in yazdigi mesajla bildirilir. */
     &--invalid {
       border-color: $danger-solid;
     }
 
-    /*
-     * Temizleme dugmesi tetikleyicinin USTUNDE duran bir kardes (bkz. TSX).
-     * Ustune bindigi icin metnin altina kaymasini engelleyen yer burada
-     * ayrilir: carpinin genisligi + caret + iki bosluk.
-     */
-    /*
-     * TEMIZLEME DUGMESI VARKEN metne ayrilan yer daralir.
-     *
-     * Rezervasyon yalnizca METIN icin: caret artik mutlak konumlu (asagida),
-     * yani bu dolgudan ETKILENMIYOR. Once caret bir flex cocuguydu ve bu
-     * dolgu onu da iceri itiyordu — olculdu: 199px'lik bir tetikleyicide
-     * caret sag kenardan 60px, carpi 38px iceride kaliyor, ikisi arasinda
-     * hic bosluk kalmadigi icin birbirine yapisik ve kutunun ortasina
-     * kaymis gorunuyorlardi.
-     */
     &--clearable {
       padding-inline-end: calc(
         #{$space-3} + #{$icon-sm} + #{$space-2} + #{$clear-size} + #{$space-2}
@@ -68,7 +37,6 @@ $clear-size: 22px;
     }
   }
 
-  /* Disaridan gelen icerik ikonu; olcu metinden degil ikon olceginden. */
   &__leadingIcon {
     display: inline-flex;
     color: $text-2;
@@ -82,11 +50,6 @@ $clear-size: 22px;
     flex: 1;
   }
 
-  /*
-   * Tetikleyicinin KARDESI, cocugu degil (ic ice etkilesimli oge = ekran
-   * okuyucuda duyurulmayan bir eylem). Gorsel yerini mutlak konum veriyor:
-   * caretin solunda, dikeyde ortalanmis.
-   */
   &__clear {
     position: absolute;
     inset-inline-end: calc(#{$space-3} + #{$icon-sm} + #{$space-2});
@@ -102,8 +65,6 @@ $clear-size: 22px;
     background: none;
     border-radius: $radius-pill;
     color: $text-2;
-    /* Carpi caretle AYNI olcude: iki isaret yan yana duruyor ve farkli
-       boyda olduklarinda ikisi de "yanlis cizilmis" gibi gorunuyordu. */
     font-size: $icon-sm;
     flex-shrink: 0;
     cursor: pointer;
@@ -123,17 +84,6 @@ $clear-size: 22px;
     }
   }
 
-  /*
-   * Caret MUTLAK konumlu ve sag kenara sabit.
-   *
-   * Flex cocuguyken tetikleyicinin dolgusunun icinde kaliyordu; temizleme
-   * dugmesi varken dolgu buyudugu icin caret de birlikte iceri kayiyordu.
-   * Ikisi de ayni referansa (`.combobox`) gore konumlandiginda araliklari
-   * TEK yerden hesaplaniyor ve ayrisamiyor.
-   *
-   * Olcu `$icon-xs` (14px) idi ve carpinin yaninda "yarim cizilmis" gibi
-   * duruyordu; `$icon-sm` ikisini ayni ailede gosteriyor.
-   */
   &__chevron {
     position: absolute;
     inset-inline-end: $space-3;
@@ -154,18 +104,6 @@ $clear-size: 22px;
     }
   }
 
-  /*
-   * Panel.
-   *
-   * Tetikleyiciye 4px mesafede acilir ve tam genisligini alir: dar bir panel,
-   * uzun secenek adlarini kirpip kullaniciyi secmeden once tahmin etmeye
-   * zorluyordu.
-   */
-  /*
-   * Konum `usePositioning`den geliyor (sabit konum + yer yoksa yukari
-   * cevirme). Burada `position`/`top`/`inset-inline` YAZILMAZ: mutlak
-   * konumluyken kip pencerenin `overflow: hidden` govdesi paneli kirpiyordu.
-   */
   &__panel {
     z-index: $z-dropdown;
     background-color: $surface;
@@ -180,8 +118,6 @@ $clear-size: 22px;
     }
   }
 
-  /* Arama alani panelin tepesinde YAPISKAN: uzun listede kaydirinca da
-     kullanici yazmaya devam edebilmeli. */
   &__search {
     @include row($space-2);
 
@@ -189,8 +125,6 @@ $clear-size: 22px;
     border-bottom: 1px solid $border;
     background-color: $surface;
 
-    /* Alt sayfada cerceveyi `sheet__toolbar` cizer; ikisi birlikte
-       cizildiginde ic ice iki cizgi cikiyordu. */
     :global(dialog) & {
       padding: $space-1 $space-2;
       border-bottom: none;
@@ -213,11 +147,6 @@ $clear-size: 22px;
     color: $text;
     padding-block: $space-2;
 
-    /*
-     * 16 px ZORUNLU: panel acilinca bu kutuya odak veriliyor ve iOS 16 px
-     * altindaki girdiye odakta sayfayi yakinlastirip geri cikmiyordu —
-     * pencere acilir acilmaz ekranin yarisi disari tasiyordu.
-     */
     @include for-touch {
       font-size: $font-size-base;
     }
@@ -226,7 +155,6 @@ $clear-size: 22px;
       color: $text-3;
     }
 
-    /* Odak halkasi panelin kendisinde degil; kutu zaten acik ve vurgulu. */
     &:focus {
       outline: none;
     }
@@ -241,17 +169,11 @@ $clear-size: 22px;
 
     @include custom-scrollbar;
 
-    /*
-     * Alt sayfada kaydirmayi PANELIN GOVDESI yapar; liste oldugu kadar uzar.
-     * Kendi tavani birakilsaydi ic ice iki kaydirma alani olusuyor ve
-     * kullanici hangisini kaydirdigini bilemiyordu.
-     */
     &--sheet {
       max-height: none;
       overflow: visible;
       padding: 0;
 
-      /* Parmakla secim: 40 px masaustu faresi icin yeterliydi. */
       .combobox__option {
         min-height: 48px;
         font-size: $font-size-base;
@@ -259,12 +181,6 @@ $clear-size: 22px;
     }
   }
 
-  /*
-   * Secenek.
-   *
-   * `<li>` degil icindeki `<div>` `role="option"` tasir: liste ogesinin
-   * kendisine rol vermek, ekran okuyucunun liste sayimini bozuyordu.
-   */
   &__option {
     display: flex;
     align-items: center;
@@ -274,15 +190,8 @@ $clear-size: 22px;
     cursor: pointer;
     font-size: $font-size-sm;
     color: $text;
-    /* 40px: yogun bir listede parmakla secim 38px'te iskalaniyordu. */
     min-height: 40px;
 
-    /*
-     * Etkin secenek: klavye ve fare TEK bir vurgu paylasir.
-     *
-     * Mavi tint, notr gri degil: notr vurgu secili durumdan ayirt edilemiyordu
-     * ve okla gezinen kullanici nerede oldugunu kaybediyordu.
-     */
     &--active {
       background-color: $blue-tint;
     }
@@ -292,11 +201,6 @@ $clear-size: 22px;
       font-weight: $weight-semibold;
     }
 
-    /*
-     * Pasif secenek: soluklastirma TEK BASINA sinyal degil (WCAG 1.4.1).
-     * Metin rengi + `aria-disabled` birlikte; opaklik metni okunamaz hale
-     * getiriyordu.
-     */
     &--disabled {
       color: $text-3;
       cursor: not-allowed;
@@ -314,7 +218,6 @@ $clear-size: 22px;
     @include truncate;
   }
 
-  /* Ayirt edici ikincil bilgi: ayni adli iki kayit ancak bununla ayrilir. */
   &__optionDescription {
     @include technical-text($font-size-2xs);
 

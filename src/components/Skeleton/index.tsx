@@ -18,17 +18,7 @@ type Props = {
   className?: string;
 };
 
-/**
- * Yükleme iskeleti.
- *
- * <h3>Neden dönen çark yerine iskelet</h3>
- * İskelet gelecek içeriğin <em>şeklini</em> gösterir; kullanıcı ne beklediğini
- * bilir ve içerik geldiğinde yerleşim kaymaz (CLS). Dönen bir çark hem konumu
- * hem boyutu belirsiz bırakır.
- *
- * <p>`aria-hidden`: ekran okuyucuya "yükleniyor" bilgisini veren, iskeletin
- * kendisi değil onu saran bölgenin `aria-busy` özelliğidir.
- */
+/** Yükleme iskeleti. */
 const Skeleton: FC<Props> = ({ width, height, variant = 'block', lines = 1, className }) => {
   const style: CSSProperties = {
     width: isNumber(width) ? `${width}px` : width,
@@ -66,17 +56,7 @@ type ShapeProps = {
   className?: string;
 };
 
-/**
- * KART iskeleti — `Card` + `CardMedia` + iki satır metnin ölçüsü.
- *
- * <h3>Neden hazır biçimler</h3>
- * "İskelet yerleşimi kaydırmaz" sözü ancak iskelet gelecek içeriğin ÖLÇÜSÜNÜ
- * taşıyorsa doğru. Pratikte her çağıran ölçüyü gözle tahmin ediyordu ve
- * tahminler tutmuyordu: 180 px'lik bir görsel alanına 120 px'lik iskelet
- * konulunca içerik geldiğinde sayfa 60 px sıçrıyordu (CLS). Bu biçimler
- * ölçüyü gerçek bileşenlerden alıyor — `CardMedia`nın varsayılan oranı,
- * `$font-size-sm` satır yüksekliği, `Panel` dolgusu.
- */
+/** KART iskeleti — `Card` + `CardMedia` + iki satır metnin ölçüsü. */
 const CardShape: FC<ShapeProps> = ({ count = 1, className }) => (
   <>
     {Array.from({ length: count }, (_, index) => (
@@ -106,14 +86,7 @@ const RowShape: FC<ShapeProps> = ({ count = 3, className }) => (
   </div>
 );
 
-/**
- * TABLO iskeleti — `DataTable`ın satır yüksekliğinde.
- *
- * <p>Sütun genişlikleri EŞİT: gerçek genişlikler içeriğe göre değişiyor ve
- * onları taklit etmeye çalışmak, veri geldiğinde daha büyük bir sıçrama
- * üretiyordu. Eşit sütunlar "burada bir tablo olacak" der ve fazlasını vaat
- * etmez.
- */
+/** TABLO iskeleti — `DataTable`ın satır yüksekliğinde. */
 const TableShape: FC<ShapeProps & { columns?: number }> = ({
   count = 5,
   columns = 4,

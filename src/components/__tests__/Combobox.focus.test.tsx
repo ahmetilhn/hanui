@@ -35,14 +35,7 @@ const LABELS = {
 const renderCombobox = () =>
   render(<Combobox options={OPTIONS} value={null} onChange={() => {}} labels={LABELS} />);
 
-/**
- * Odağın NEREYE gittiği — ekran genişliğine göre değişen tek davranış.
- *
- * <p>Asıl şikâyet: alt sayfa açılınca arama kutusu odaklanıyor ve telefonda
- * ekran klavyesi kullanıcı istemeden açılıyordu. Panel yarı yüksekliğe
- * sıkışıyor, liste birkaç satıra iniyor ve seçim yapmak için önce klavyeyi
- * kapatmak gerekiyordu.
- */
+/** Odağın NEREYE gittiği — ekran genişliğine göre değişen tek davranış. */
 describe('Combobox otomatik odak', () => {
   it('dar ekranda alt sayfa açılınca arama kutusu ODAKLANMAZ', async () => {
     mockViewport(false);

@@ -15,16 +15,7 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   testId?: string;
 };
 
-/**
- * Radyo düğmesi.
- *
- * <p>{@link Checkbox} ile aynı gerekçe: yerel `<input type="radio">` korunur
- * ve `accent-color` ile renklendirilir. Sahte bir daire çizmek ok tuşlarıyla
- * gezinmeyi ve grup duyurusunu elle yeniden kurmayı gerektirirdi.
- *
- * <p>Tüm satır tıklanabilir (`<label>` sarmalar): 18 px'lik daireyi
- * hedeflemek özellikle dokunmatik ekranda yorucu.
- */
+/** Radyo düğmesi. */
 const Radio = /*#__PURE__*/ forwardRef<HTMLInputElement, Props>(
   ({ label, hint, count, className, testId, ...rest }, ref) => (
     <label className={cx(styles.radio, className)} data-testid={testId}>

@@ -88,21 +88,7 @@ const {
   Tooltip,
 } = hanui;
 
-/**
- * EKSEN TARAMASI — dışa verilen HER bileşen, her anlamlı durumunda.
- *
- * <h3>Neden bileşen başına tek bir "varsayılan" tarama yetmiyor</h3>
- * Erişilebilirlik hataları çoğunlukla varsayılan durumda değil, DURUM
- * DEĞİŞTİĞİNDE doğuyor: yükleme sırasında `aria-busy` yazılmıyor, hata metni
- * alana `aria-describedby` ile bağlanmıyor, boş liste ekran okuyucuya hiç
- * duyurulmuyor. Bu yüzden yükleme / hata / boş / seçili durumları da ayrı
- * senaryo olarak taranıyor.
- *
- * <h3>Liste `index.ts`ten TÜRETİLİYOR</h3>
- * Aşağıdaki kayıt defterine girmeyen yeni bir bileşen testi KIRAR (bkz. son
- * `describe`). Elle tutulan bir liste ilk hafta doğru, üçüncü ay eksik olur ve
- * eksikliği kimse görmez — çünkü test yeşil döner.
- */
+/** EKSEN TARAMASI — dışa verilen HER bileşen, her anlamlı durumunda. */
 
 /*
  * Metinler saglayicidan: kutuphane hicbir dilde dize uydurmuyor ve eksik metin
@@ -155,12 +141,7 @@ const COLUMNS: hanui.DataTableColumn[] = [
   { key: 'actions', srLabel: 'Eylemler' },
 ];
 
-/**
- * Senaryo defteri: bileşen adı → o bileşenin taranacak durumları.
- *
- * <p>Anahtarlar `index.ts`teki dışa verme adlarıyla BİREBİR aynı olmak
- * zorunda; sondaki `describe` bunu ölçüyor.
- */
+/** Senaryo defteri: bileşen adı → o bileşenin taranacak durumları. */
 const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   HanuiProvider: { default: <HanuiProvider>içerik</HanuiProvider> },
 
@@ -831,14 +812,7 @@ describe('eksen taraması', () => {
   });
 });
 
-/**
- * DEFTER SÜRÜKLENMESİ.
- *
- * <p>Yeni bir bileşen `index.ts`e eklenip yukarıdaki deftere eklenmediğinde bu
- * test kırılır. Nöbetçinin kendisi de nöbetsiz kalmamalı: "her bileşen
- * taranıyor" iddiası, listeyi güncellemeyi hatırlamaya bağlı kaldığında bir
- * iddia değil bir temenni.
- */
+/** DEFTER SÜRÜKLENMESİ. */
 describe('senaryo defteri `index.ts` ile eşleşir', () => {
   /** React bileşeni mi? `memo`/`forwardRef` FONKSİYON DEĞİL nesne döndürür. */
   const isComponent = (value: unknown): boolean =>

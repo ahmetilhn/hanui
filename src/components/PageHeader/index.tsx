@@ -27,23 +27,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Sayfa başlığı — her ekranın aynı giriş bloğu.
- *
- * <h3>Neden ortak bir bileşen</h3>
- * Önceden her container kendi başlığını kuruyordu: bir sayfada punto 29 px,
- * diğerinde 23 px; birinde açıklama başlığın altında, birinde yanında;
- * boşluklar 8 px ile 24 px arasında dolaşıyordu. Sayfalar arası geçiş "başka
- * bir siteye geçtim" hissi veriyordu. Bu bileşen o kararları tek yerde verir.
- *
- * <h3>Açıklama genişliği sınırlı</h3>
- * Başlık tam genişlikte akabilir ama açıklama 68ch'de durur: 1360 px
- * genişlikte akan bir açıklama satırında göz satır sonunda yerini kaybediyor.
- *
- * <h3>Eylemler `flex-end`</h3>
- * Düğmeler başlık bloğunun ALT kenarına hizalanır. `baseline` verildiğinde iki
- * satırlık başlıklarda düğme ilk satıra çekiliyordu.
- */
+/** Sayfa başlığı — her ekranın aynı giriş bloğu. */
 const PageHeader: FC<Props> = ({
   title,
   eyebrow,

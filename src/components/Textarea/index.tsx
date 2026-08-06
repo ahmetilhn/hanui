@@ -16,44 +16,16 @@ import { named } from '../../helpers/component.helper';
 import styles from './index.module.scss';
 
 type Props = TextareaHTMLAttributes<HTMLTextAreaElement> & {
-  /**
-   * Alan içeriğiyle birlikte BÜYÜR — kaydırma çubuğu yerine yükseklik.
-   *
-   * <p>Sabit yükseklikli bir alanda kullanıcı yazdığının tamamını göremiyor:
-   * dört satırlık bir kutuya on satır yazan kişi, gönderdiğinde ne yazdığını
-   * kontrol etmek için kutunun içinde kaydırmak zorunda kalıyordu. `maxRows`
-   * ile tavan konur; ötesinde kaydırma geri döner (sayfa boyunca uzayan bir
-   * alan, altındaki gönder düğmesini ekrandan çıkarıyordu).
-   */
+  /** Alan içeriğiyle birlikte BÜYÜR — kaydırma çubuğu yerine yükseklik. */
   isAutoSize?: boolean;
   /** Otomatik büyümenin tavanı (satır). */
   maxRows?: number;
-  /**
-   * Kalan karakter sayacını gösterir. `maxLength` ile birlikte anlamlı.
-   *
-   * <p>Sayaç `aria-hidden`: aynı bilgi her tuşta duyurulsaydı yazma
-   * kesintiye uğrardı. Sınıra YAKLAŞILDIĞINDA (son %10) sayaç uyarı tonuna
-   * geçiyor — sınıra çarpıp yazamamak, yaklaştığını görmemekten kötü.
-   */
+  /** Kalan karakter sayacını gösterir. `maxLength` ile birlikte anlamlı. */
   hasCounter?: boolean;
   testId?: string;
 };
 
-/**
- * Çok satırlı metin girdisi.
- *
- * <p>Görünüm {@link Input} ile aynı gövdeden gelir: bir formda tek satırlı ve
- * çok satırlı alanlar yan yana durur, kenarlık ve odak davranışları ayrışırsa
- * form derlenmemiş görünür.
- *
- * <p>Yeniden boyutlandırma yalnızca <strong>dikey</strong>: yatayda büyütmek
- * alanı kapsayıcısının dışına taşırıp yerleşimi bozuyordu.
- *
- * <h3>Otomatik yükseklik neden CSS ile değil</h3>
- * `field-sizing: content` bu işi tek satırda yapıyor ama bugün yalnızca
- * Chromium'da var. Ölçüm yolu her yerde çalışıyor ve tarayıcı desteği
- * geldiğinde tek dosyada değiştirilecek.
- */
+/** Çok satırlı metin girdisi. */
 const Textarea = /*#__PURE__*/ forwardRef<HTMLTextAreaElement, Props>(
   (
     {
@@ -72,14 +44,7 @@ const Textarea = /*#__PURE__*/ forwardRef<HTMLTextAreaElement, Props>(
     ref,
   ) => {
     const innerRef = useRef<HTMLTextAreaElement | null>(null);
-    /*
-     * KONTROLLU kipte uzunluk `value`dan OKUNUR, ic durumdan degil.
-     *
-     * Sayac yalnizca `onChange` ile guncelleniyordu: disaridan gelen her deger
-     * degisimi (profilden on doldurma, form sifirlama, tasklaktan gelen taslak)
-     * sayaci ESKI sayida birakiyordu. Kullanici 400 karakterlik bir metni
-     * yukleyip "12 / 500" okuyordu.
-     */
+    /* KONTROLLU kipte uzunluk `value`dan OKUNUR, ic durumdan degil. */
     const [innerLength, setLength] = useState(String(defaultValue ?? '').length);
     const length = value === undefined ? innerLength : String(value).length;
 
@@ -97,9 +62,6 @@ const Textarea = /*#__PURE__*/ forwardRef<HTMLTextAreaElement, Props>(
     /*
      * OLCUM BOYAMADAN ONCE: `useEffect` ile alan bir kare boyunca eski
      * yuksekligiyle cizilip sonra ziplyordu.
-     *
-     * `height: auto` ONCE yazilir — yoksa `scrollHeight` bir onceki (buyuk)
-     * yuksekligi raporluyor ve alan bir daha hic kucumuyordu.
      */
     useLayoutEffect(() => {
       const node = innerRef.current;

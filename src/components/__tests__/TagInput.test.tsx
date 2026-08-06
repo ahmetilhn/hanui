@@ -3,13 +3,7 @@ import userEvent from '@testing-library/user-event';
 
 import TagInput from '../TagInput';
 
-/**
- * ETİKET GİRDİSİ — kayıp metin ve sessiz yutma.
- *
- * <p>İki davranış burada kilitleniyor ve ikisi de "kullanıcı yazdı, hiçbir şey
- * olmadı" şikâyetinin karşılığı: alan terk edildiğinde yarım kalan metnin
- * etikete dönmesi ve yinelenen bir değerin sessizce yutulmaması.
- */
+/** ETİKET GİRDİSİ — kayıp metin ve sessiz yutma. */
 
 const setup = (values: string[] = []) => {
   const onChange = jest.fn();

@@ -20,26 +20,14 @@ type CardProps = {
 /**
  * Kart — medya + gövde + eylem şeridi.
  *
- * <h3>Neden bileşik (compound) bir bileşen</h3>
- * Bir uygulamadaki her kart (ürün, kampanya, sipariş) aynı üç bölümden oluşur
- * ama içerikleri tamamen farklıdır. Tek bir "her şeyi yapan" kart bileşeni on
- * beş isteğe bağlı prop'a şişiyordu. Bunun yerine <em>yerleşim</em>
- * paylaşılır, içerik çağırana bırakılır: kenarlık, yarıçap, gölge, medya oranı
- * ve eylem şeridinin dipte durması tek yerde tanımlıdır.
- *
- * <h3>Eylem şeridi hep dipte</h3>
- * {@link CardFooter} `margin-top: auto` alır. Izgarada yan yana duran kartların
- * başlıkları farklı uzunlukta olsa da alt şerit aynı hizada kalır; aksi hâlde
- * satır dalgalı görünüyordu.
- *
  * @example
  * <Card as="article" isInteractive>
- *   <CardMedia href="/urun/x" ratio={1}>
- *     <CardOverlay position="top-left"><Badge>Yeni</Badge></CardOverlay>
- *     <img src={…} alt="" />
- *   </CardMedia>
- *   <CardBody>…</CardBody>
- *   <CardFooter>…</CardFooter>
+ * <CardMedia href="/urun/x" ratio={1}>
+ * <CardOverlay position="top-left"><Badge>Yeni</Badge></CardOverlay>
+ * <img src={…} alt="" />
+ * </CardMedia>
+ * <CardBody>…</CardBody>
+ * <CardFooter>…</CardFooter>
  * </Card>
  */
 const Card: FC<CardProps> = ({ children, isInteractive, as: Tag = 'div', className, testId }) => (
@@ -51,24 +39,7 @@ const Card: FC<CardProps> = ({ children, isInteractive, as: Tag = 'div', classNa
   </Tag>
 );
 
-/**
- * Görselin çerçeveyi NASIL doldurduğu.
- *
- * <p>Üçü de aynı soruyu yanıtlıyor — <em>kırpılsın mı, sığsın mı, yoksa
- * içeriden mi dursun</em> — bu yüzden tek bir prop'un değerleri; ayrı ayrı
- * boolean'lar olsalardı `isContained={false} isInset` gibi anlamsız
- * bileşimler yazılabilir hâle gelirdi.
- *
- * <ul>
- *   <li><b>`cover`</b> — çerçeveyi tamamen doldurur, taşan kenarları KIRPAR.
- *       Kadraj kenara kadar anlamlı olan fotoğraflar (kampanya, kapak).</li>
- *   <li><b>`contain`</b> — kırpmadan sığdırır; uzun kenarı çerçeve dolgusuna
- *       dayanır. Karışık oranlarda gelen görseller.</li>
- *   <li><b>`inset`</b> — sığdırır ve <b>%85</b>e çekip merkezler. Şeffaf
- *       zeminli ürün fotoğrafları: parçanın kenarı kartın kenarına
- *       değmiyor.</li>
- * </ul>
- */
+/** Görselin çerçeveyi NASIL doldurduğu. */
 export type CardMediaFit = 'cover' | 'contain' | 'inset';
 
 type CardMediaProps = {
@@ -91,30 +62,13 @@ type CardMediaProps = {
   className?: string;
 };
 
-/**
- * `fit` ile eski `isContained` arasındaki köprü.
- *
- * <p>Sıra ÖNEMLİ: açıkça verilen `fit` her zaman kazanır. Tersi olsaydı
- * (eskiyi öne almak) `isContained` varsayılanı `true` olduğu için yeni
- * prop'un hiçbir etkisi olmazdı — sessizce çalışmayan bir API.
- */
+/** `fit` ile eski `isContained` arasındaki köprü. */
 const resolveFit = (
   fit: CardMediaFit | undefined,
   isContained: boolean | undefined,
 ): CardMediaFit => fit ?? (isContained === false ? 'cover' : 'contain');
 
-/**
- * Kartın görsel alanı.
- *
- * <p>Oran <strong>sabittir</strong>: görsel yüklenene kadar yer tutar ve
- * yerleşim kaymasını (CLS) önler. Oransız bırakıldığında kartlar görseller
- * yüklendikçe zıplıyordu.
- *
- * <p>Görselin çerçeveyi doldurma biçimi ÇAĞIRANIN kararı ({@link CardMediaFit}):
- * kütüphane "her ürün fotoğrafı içeriden dursun" gibi bir tercihi kendi
- * varsayılanına gömmez. Varsayılan `contain` — kırpmayan, yani hiçbir bilgiyi
- * sessizce yok etmeyen seçenek.
- */
+/** Kartın görsel alanı. */
 export const CardMedia: FC<CardMediaProps> = /*#__PURE__*/ named(
   /*#__PURE__*/ memo(({ children, ratio = 1, href, linkProps, fit, isContained, className }) => {
     const content = (
@@ -157,13 +111,7 @@ type CardOverlayProps = {
   className?: string;
 };
 
-/**
- * Görselin üzerine binen katman: rozetler ve hızlı eylemler.
- *
- * <p>Varsayılan olarak `pointer-events: none` — rozet yığını, altındaki görsel
- * bağlantısının tıklanmasını engellememeli. İçindeki gerçek düğmeler kendi
- * olaylarını geri açar.
- */
+/** Görselin üzerine binen katman: rozetler ve hızlı eylemler. */
 export const CardOverlay: FC<CardOverlayProps> = /*#__PURE__*/ named(
   /*#__PURE__*/ memo(({ children, position = 'top-left', className }) => (
     <div className={cx(styles.overlay, styles[`overlay--${position}`], className)}>{children}</div>

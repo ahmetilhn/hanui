@@ -12,24 +12,7 @@ import Select, { type SelectOption } from '../Select';
 import TableCheckbox from '../TableCheckbox';
 import Tabs from '../Tabs';
 
-/**
- * KLAVYE SÖZLEŞMESİ — WAI-ARIA APG desenlerine göre.
- *
- * <h3>Neden ayrı bir dosya, neden bileşen testlerinin içinde değil</h3>
- * Klavye davranışı bir bileşenin en kolay BOZULAN ve en zor fark edilen
- * yanı: fare ile her şey çalışmaya devam ettiği için gözden kaçar, ve
- * `Escape`in kapatmayı bıraktığı bir kip pencere hiçbir görsel iz bırakmaz.
- * Tuş matrisleri bir arada durduğunda iki bileşen arasındaki AYRIŞMA da
- * görünür oluyor — `Select` ile `Combobox`ın ok tuşu davranışı bugün kopya
- * kod ve tam bu yüzden ayrışmaya açık.
- *
- * <h3>Tarayıcının işi TEST EDİLMEZ</h3>
- * Yerel öğeye devredilen davranış (radyo grubunda ok tuşları,
- * `<input type="range">`te `Home`/`End`) jsdom'da zaten YOK: onu test etmek
- * jsdom'un eksiğini ölçmek olurdu. Bu deseni kullanan bileşenlerde ölçülen
- * şey DEVRİN KENDİSİ — gerçekten yerel öğe mi kullanılıyor, grup adı tek mi,
- * erişilebilir ad yerinde mi. Taklit öğeye dönen bir refactor testi kırar.
- */
+/** KLAVYE SÖZLEŞMESİ — WAI-ARIA APG desenlerine göre. */
 
 const OPTIONS: ComboboxOption[] = [
   { value: 'a', label: 'Birinci' },
@@ -69,17 +52,7 @@ const activeOptionText = (owner: HTMLElement): string | null => {
   return id ? (document.getElementById(id)?.textContent ?? null) : null;
 };
 
-/**
- * `Combobox` — APG "combobox with listbox popup".
- *
- * | Tuş | Davranış |
- * |---|---|
- * | `ArrowDown` / `ArrowUp` | etkin seçenek bir alt/üst; uçlarda DÖNER |
- * | `Home` / `End` | ilk / son seçenek |
- * | `Enter` | etkin seçeneği seçer ve paneli kapatır |
- * | `Escape` | paneli kapatır, odak tetikleyiciye döner |
- * | `Tab` | paneli kapatır, gezinme sürer |
- */
+/** `Combobox` — APG "combobox with listbox popup". */
 describe('Combobox klavye sözleşmesi', () => {
   beforeEach(() => mockViewport(true));
 
@@ -168,22 +141,7 @@ describe('Combobox klavye sözleşmesi', () => {
   });
 });
 
-/**
- * `Select` — APG "listbox" + `aria-activedescendant`.
- *
- * | Tuş | Davranış |
- * |---|---|
- * | `ArrowDown` / `ArrowUp` / `Enter` / `Space` (kapalıyken) | paneli açar |
- * | `ArrowDown` / `ArrowUp` | etkin seçenek bir alt/üst; uçlarda DÖNER |
- * | `Home` / `End` | ilk / son seçenek |
- * | `Enter` / `Space` | etkin seçeneği seçer |
- * | `Escape` | kapatır, odak tetikleyicide kalır |
- * | `Tab` | kapatır, gezinme sürer |
- *
- * <p>Odak panel açıkken de TETİKLEYİCİDE kalır (alt sayfada listenin
- * kendisinde): iki ayrı klavye modeli olmasın diye seçenekler tek tek
- * odaklanabilir değil.
- */
+/** `Select` — APG "listbox" + `aria-activedescendant`. */
 describe('Select klavye sözleşmesi', () => {
   beforeEach(() => mockViewport(true));
 
@@ -261,19 +219,7 @@ describe('Select klavye sözleşmesi', () => {
   });
 });
 
-/**
- * `Tabs` — APG "tabs with automatic activation".
- *
- * | Tuş | Davranış |
- * |---|---|
- * | `ArrowRight` / `ArrowLeft` | bir sonraki / önceki sekme; uçlarda DÖNER |
- * | `Tab` | sekme çubuğundan panele çıkar (dönen `tabindex`) |
- *
- * <p>Etkinleştirme OTOMATİK: ok tuşu odakla birlikte seçimi de taşır. Panel
- * içeriği hazır ve ucuz olduğu sürece APG'nin önerdiği budur; manuel
- * etkinleştirme (`Enter` ile seçme) pahalı panellerde gerekir ve o seçenek
- * henüz yok.
- */
+/** `Tabs` — APG "tabs with automatic activation". */
 describe('Tabs klavye sözleşmesi', () => {
   const ITEMS = [
     { id: 'a', label: 'Birinci', content: 'A içeriği' },
@@ -328,17 +274,7 @@ describe('Tabs klavye sözleşmesi', () => {
   });
 });
 
-/**
- * `ChipGroup` (tek seçim) — APG "radio group".
- *
- * | Tuş | Davranış |
- * |---|---|
- * | `ArrowRight` / `ArrowDown` | bir sonraki seçenek; uçlarda DÖNER |
- * | `ArrowLeft` / `ArrowUp` | bir önceki seçenek |
- *
- * <p>Çoklu seçimde ok tuşu YOK: orada her cip bağımsız bir onay kutusu ve
- * `Tab` ile gezilir — ok tuşuyla gezmek seçimi de değiştirirdi.
- */
+/** `ChipGroup` (tek seçim) — APG "radio group". */
 describe('ChipGroup klavye sözleşmesi', () => {
   const OPTIONS_ = [
     { value: 'a', label: 'Birinci' },
@@ -373,19 +309,7 @@ describe('ChipGroup klavye sözleşmesi', () => {
   });
 });
 
-/**
- * `Modal` / `BottomSheet` — yerel `<dialog>` + `showModal()`.
- *
- * | Tuş | Davranış |
- * |---|---|
- * | `Escape` | kapatır (`isDismissable={false}` iken KAPATMAZ) |
- * | `Tab` | odak panelin içinde döner (tarayıcı: `showModal()`) |
- *
- * <p>Odak tuzağı ve arka planın etkileşime kapanması TARAYICIDAN gelir; bu
- * yüzden burada ölçülen şey `<dialog>` kullanımının kendisi ve `cancel`
- * olayının React durumuna bağlanması. `cancel` yakalanmadığında pencere
- * kapanıyor ama `isOpen` `true` kalıyor ve bir daha açılamıyordu.
- */
+/** `Modal` / `BottomSheet` — yerel `<dialog>` + `showModal()`. */
 describe('kip pencere klavye sözleşmesi', () => {
   const cancel = (dialog: HTMLElement) =>
     fireEvent(dialog, new Event('cancel', { cancelable: true }));
@@ -429,14 +353,7 @@ describe('kip pencere klavye sözleşmesi', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  /*
-   * ODAK KAPATMA DUGMESINE GITMEZ.
-   *
-   * `showModal()` odagi DOM sirasindaki ilk odaklanabilir ogeye tasiyor ve o
-   * neredeyse her zaman basliktaki carpi: ekran okuyucu pencereyi "Kapat,
-   * dugme" diye aciyordu — kullanicinin duydugu ilk sey, pencerenin ne oldugu
-   * degil ondan nasil kacilacagi.
-   */
+  /* ODAK KAPATMA DUGMESINE GITMEZ. */
   it('Modal: odak İLK ANLAMLI öğeye gider, kapatma düğmesine değil', () => {
     render(
       <Modal
@@ -501,20 +418,7 @@ describe('kip pencere klavye sözleşmesi', () => {
   });
 });
 
-/**
- * `RangeSlider` — iki yerel `<input type="range">`.
- *
- * | Tuş | Davranış (tarayıcıdan) |
- * |---|---|
- * | `ArrowRight` / `ArrowUp` | bir adım artırır |
- * | `ArrowLeft` / `ArrowDown` | bir adım azaltır |
- * | `Home` / `End` | ölçeğin ucuna gider |
- * | `PageUp` / `PageDown` | büyük adım |
- *
- * <p>Yukarıdakiler yerel öğeden gelir ve jsdom'da yok. Burada ölçülen iki şey
- * KÜTÜPHANEYE ait: kulpların birbirini geçmemesi ve pahalı işin (`onCommit`)
- * tuş BIRAKILDIĞINDA çalışması.
- */
+/** `RangeSlider` — iki yerel `<input type="range">`. */
 describe('RangeSlider klavye sözleşmesi', () => {
   const setup = () => {
     const onChange = jest.fn();
@@ -578,19 +482,7 @@ describe('RangeSlider klavye sözleşmesi', () => {
   });
 });
 
-/**
- * `RatingInput` — beş yerel `<input type="radio">`.
- *
- * | Tuş | Davranış (tarayıcıdan) |
- * |---|---|
- * | `ArrowRight` / `ArrowDown` | bir sonraki yıldız |
- * | `ArrowLeft` / `ArrowUp` | bir önceki yıldız |
- * | `Tab` | grubu tek durak olarak geçer |
- *
- * <p>Ok tuşu gezinmesi RADYO GRUBUNUN kendisinden gelir ve jsdom onu
- * uygulamıyor. Ölçülen şey devrin geçerliliği: beş gerçek radyo, TEK grup adı
- * ve her birinin okunabilir bir adı. Yıldızlar `<span>`e dönerse test kırılır.
- */
+/** `RatingInput` — beş yerel `<input type="radio">`. */
 describe('RatingInput klavye sözleşmesi', () => {
   const LABELS = {
     ratingLabels: { 1: 'Çok kötü', 2: 'Kötü', 3: 'Orta', 4: 'İyi', 5: 'Çok iyi' } as const,
@@ -624,17 +516,7 @@ describe('RatingInput klavye sözleşmesi', () => {
   });
 });
 
-/**
- * `TableCheckbox` — satır seçimi.
- *
- * | Tuş | Davranış |
- * |---|---|
- * | `Space` | seçimi değiştirir (yerel onay kutusu) |
- *
- * <p>Kutu yerel: `Space`, `indeterminate` durumu ve form gönderimine katılma
- * platformdan geliyor. Erişilebilir ad ZORUNLU — bir tabloda on beş kutu
- * "onay kutusu" diye okunduğunda hangisinin hangi satır olduğu kayboluyordu.
- */
+/** `TableCheckbox` — satır seçimi. */
 describe('TableCheckbox klavye sözleşmesi', () => {
   it('`Space` seçimi değiştirir', async () => {
     const user = userEvent.setup();

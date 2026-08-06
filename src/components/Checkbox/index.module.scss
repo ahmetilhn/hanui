@@ -14,14 +14,11 @@
     flex-shrink: 0;
     accent-color: $blue;
     cursor: pointer;
-    /* Kutu, yanindaki metnin ilk satiriyla optik olarak hizalanir. */
     margin-top: 2px;
 
     @include focus-ring;
   }
 
-  /* Govde kalan genisligi doldurur: etiketin icine sag hizali bir sayac
-     (filtre adedi gibi) konabilmeli. */
   &__body {
     @include stack($space-1);
 

@@ -40,36 +40,7 @@ type MultipleProps<T extends string> = BaseProps<T> & {
 
 type Props<T extends string> = SingleProps<T> | MultipleProps<T>;
 
-/**
- * Çip grubu — açılır liste yerine tek dokunuşla seçim.
- *
- * <h3>Ne zaman çip grubu, ne zaman açılır liste</h3>
- * Seçenek sayısı azsa (kabaca 7'ye kadar) ve seçenekler ekranda durabiliyorsa
- * çip grubu kullanılır: kullanıcı listeyi <em>açmadan</em> hem seçenekleri hem
- * de hangisinin seçili olduğunu görür — açılır listede bu bilgi iki tıklama
- * arkasındadır. 5–20 seçenek için {@link Select}, 20+ için {@link Combobox}.
- *
- * <h3>Tek seçim radyo grubudur</h3>
- * Tek seçimli grup `role="radiogroup"` alır ve çipler `role="radio"` olur.
- * Görsel olarak radyo düğmesi gibi durmasalar da davranış aynıdır; ekran
- * okuyucu "3 seçenekten 2.'si" diye okur. Yalnız `aria-pressed` kullanmak,
- * seçeneklerin birbirini dışladığı bilgisini kaybettiriyordu.
- *
- * <h3>Gezinme tabindex'i dolaşır (roving tabindex)</h3>
- * Radyo grubunda Tab tuşu <strong>gruba</strong> girer, seçenekler arasında ok
- * tuşlarıyla gezilir. Her çipin ayrı ayrı Tab durağı olması, 7 seçenekli bir
- * filtrede klavye kullanıcısını 7 kez Tab'lamaya zorluyordu.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`ArrowRight` / `ArrowDown`</td><td>sonraki seçenek; uçlarda DÖNER</td></tr>
- *   <tr><td>`ArrowLeft` / `ArrowUp`</td><td>önceki seçenek</td></tr>
- * </table>
- * ÇOKLU seçimde ok tuşu YOKTUR: orada her çip bağımsız bir onay kutusu ve
- * `Tab` ile gezilir — ok tuşuyla gezinmek seçimi de değiştirirdi, oysa
- * radyo grubunun aksine burada gezinmek seçmek demek değil. Nöbetçi:
- * `components/__tests__/keyboard.test.tsx`.
- */
+/** Çip grubu — açılır liste yerine tek dokunuşla seçim. */
 const ChipGroup = <T extends string>({
   options,
   label,

@@ -33,21 +33,10 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  /**
-   * Kapatma düğmesinin erişilebilir adı.
-   *
-   * <p>Verilmezse `HanuiProvider labels.close` okunur. Bağlama göre farklı
-   * olması gereken pencerelerde ("Daha sonra") prop kazanır.
-   */
+  /** Kapatma düğmesinin erişilebilir adı. */
   closeLabel?: string;
   children?: ReactNode;
-  /**
-   * Başlığın altındaki bir cümlelik açıklama.
-   *
-   * <p>`aria-describedby` ile pencereye bağlanır: ekran okuyucu pencere
-   * açıldığında başlıkla birlikte bunu da okur. Gövdeye paragraf olarak
-   * yazıldığında duyurulmuyordu.
-   */
+  /** Başlığın altındaki bir cümlelik açıklama. */
   description?: ReactNode;
   /** Altta duran eylemler. Sağa yaslanır; dar ekranda tam genişliğe yayılır. */
   footer?: ReactNode;
@@ -56,50 +45,13 @@ type Props = {
   /** İkon madalyonunun tonu. */
   tone?: ModalTone;
   size?: 'sm' | 'md' | 'lg';
-  /**
-   * `false` iken arka plana tıklama, Escape ve kapatma düğmesi kapatmaz.
-   *
-   * <p>Yalnızca <strong>sürmekte olan</strong> bir işlem için: silme isteği
-   * gönderilmişken pencerenin kapanması, kullanıcıya işlem iptal edilmiş gibi
-   * görünüyordu.
-   */
+  /** `false` iken arka plana tıklama, Escape ve kapatma düğmesi kapatmaz. */
   isDismissable?: boolean;
   className?: string;
   testId?: string;
 };
 
-/**
- * Kip pencere (modal).
- *
- * <h3>Yerel `<dialog>` + `showModal()`</h3>
- * Odak tuzağı, Escape ile kapanma, arka planın etkileşime kapanması ve
- * `aria-modal` semantiği tarayıcıdan gelir. Bunları `<div>` üzerine elle
- * kurmak yüzlerce satır ve kaçınılmaz olarak eksik bir odak yönetimi demek.
- *
- * <h3>Neden `open` özniteliği değil `showModal()`</h3>
- * `<dialog open>` pencereyi <em>kipsiz</em> açar: arka plan tıklanabilir kalır
- * ve odak tuzağı çalışmaz. Kipli davranışın tek yolu yöntemi çağırmak.
- *
- * <h3>Arka planın kaydırılması ayrıca engellenir</h3>
- * `showModal()` arka planı <em>etkileşime</em> kapatır ama tarayıcıların bir
- * kısmında sayfa hâlâ kaydırılabiliyor: kullanıcı pencereyi kaydırdığını
- * sanırken arkadaki listeyi kaydırıyordu. `<body>` kilitlenir.
- *
- * <h3>Mobilde alt sayfaya düşer</h3>
- * Dar ekranda ortalanmış bir pencere, klavye açıldığında yukarı sıkışıyor ve
- * dip düğmeleri klavyenin altında kalıyordu. Alt sayfa baş parmağın
- * erişebildiği yerde durur.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`Escape`</td><td>kapatır — `isDismissable={false}` iken KAPATMAZ</td></tr>
- *   <tr><td>`Tab`</td><td>odak panelin içinde döner (tarayıcı: `showModal()`)</td></tr>
- * </table>
- * Odak tuzağı tarayıcıdan gelir; kütüphanenin işi `cancel` olayını React
- * durumuna bağlamak. Yakalanmadığında pencere kapanıyor ama `isOpen` `true`
- * kalıyor ve bir daha açılamıyordu. Nöbetçi:
- * `components/__tests__/keyboard.test.tsx`.
- */
+/** Kip pencere (modal). */
 const Modal = ({
   isOpen,
   onClose,
@@ -122,15 +74,7 @@ const Modal = ({
   const titleId = useId();
   const descriptionId = useId();
 
-  /*
-   * ACILIS: `showModal()` + odak + yigina katilma.
-   *
-   * Uc is TEK etkide toplandi cunku SIRALARI onemli: pencere once acilmali
-   * (yoksa icindeki hicbir sey odaklanabilir degil), sonra odak verilmeli,
-   * en son yigina katilmali — yigina once katilsaydi, acilis sirasinda kisa
-   * bir an icin "en ust panel" olup ustundeki gercek panelin Escape'ini
-   * yutuyordu.
-   */
+  /* ACILIS: `showModal()` + odak + yigina katilma. */
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
@@ -143,11 +87,13 @@ const Modal = ({
     const restoreFocus = captureFocus();
     if (!dialog.open) dialog.showModal();
 
-    /* Odak KAPATMA DUGMESINE degil ilk anlamli ogeye. `showModal()` DOM
-       sirasindaki ilk odaklanabilir ogeye gidiyor ve o neredeyse her zaman
-       basliktaki carpi: ekran okuyucu pencereyi "Kapat, dugme" diye aciyor —
-       kullanicinin duydugu ilk sey, pencerenin ne oldugu degil ondan nasil
-       kacilacagi. */
+    /*
+     * Odak KAPATMA DUGMESINE degil ilk anlamli ogeye. `showModal()` DOM
+     * sirasindaki ilk odaklanabilir ogeye gidiyor ve o neredeyse her zaman
+     * basliktaki carpi: ekran okuyucu pencereyi "Kapat, dugme" diye aciyor —
+     * kullanicinin duydugu ilk sey, pencerenin ne oldugu degil ondan nasil
+     * kacilacagi.
+     */
     focusFirstMeaningful(dialog, `.${styles.modal__close}`);
     /* Odak bir metin alanina dustuyse geri alinir: telefonda ekran klavyesi
        kullanici istemeden aciliyordu (bkz. `helpers/focus.helper`). */

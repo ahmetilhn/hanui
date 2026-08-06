@@ -11,20 +11,12 @@
     @include money($font-size-lg);
   }
 
-  /* Para birimi simgesi tutardan kucuk: sayi one cikmali. */
   &__currency {
     font-size: 0.75em;
     font-weight: $weight-semibold;
     margin-inline-start: 2px;
   }
 
-  /*
-   * Ustu cizili eski tutar: `$text-3`.
-   *
-   * Token setinde `$text-3`un mesru iki kullanimindan biri bu (digeri yer
-   * tutucu). Guncel tutarla ayni agirlikta olmamali — dusuk kontrast burada
-   * KASITLI: bu bilgi ikincil ve okunmasi zorunlu degil.
-   */
   &__list {
     font-size: $font-size-sm;
     color: $text-3;
@@ -32,11 +24,6 @@
     text-decoration-thickness: 1px;
   }
 
-  /*
-   * Indirim yuzdesi. Tutarin KENDISI notr kalir; renk yalnizca burada.
-   * Kirmizi yerine yesil: kazanci kirmizi ile isaretlemek "uyari" gibi
-   * okunuyordu.
-   */
   &__discount {
     font-size: $font-size-xs;
     font-weight: $weight-bold;

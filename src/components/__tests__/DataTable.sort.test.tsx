@@ -3,14 +3,7 @@ import userEvent from '@testing-library/user-event';
 
 import DataTable, { DataTableRow, type DataTableColumn } from '../DataTable';
 
-/**
- * SIRALAMA VE TOPLU EYLEM.
- *
- * <p>Sıralamanın KENDİSİ burada yapılmıyor — veri çağıranın ve sıralama
- * neredeyse her zaman sunucuda. Ölçülen şey sözleşme: başlığın gerçekten
- * tıklanabilir bir düğme olması, yönün `aria-sort` ile bildirilmesi ve
- * ikinci tıkta yönün çevrilmesi.
- */
+/** SIRALAMA VE TOPLU EYLEM. */
 
 const row = (
   <DataTableRow>

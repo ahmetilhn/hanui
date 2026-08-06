@@ -1,20 +1,12 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Anahtar.
- *
- * Yerel onay kutusu GORSEL OLARAK gizlenir ama DOM'da kalir: `Space`, `Tab`
- * sirasi, form gonderimi ve `:disabled` tarayicidan gelir. Gorunum ray + kulp
- * ile cizilir ve durumu `:checked` belirler.
- */
 .switch {
   display: flex;
   align-items: flex-start;
   gap: $space-3;
   cursor: pointer;
   padding: $space-2;
-  /* Dolgu kadar geri cekilir: satir hizasi bozulmadan tiklama alani buyur. */
   margin-inline: calc(-1 * #{$space-2});
   border-radius: $radius-sm;
   transition: background-color $duration-fast $ease-out;
@@ -23,7 +15,6 @@
     background-color: $surface-2;
   }
 
-  /* Odak halkasi KUTUNUN kendisinde: gizli girdiye cizilen halka gorunmuyor. */
   &:has(.switch__input:focus-visible) {
     @include focus-ring-shape;
   }
@@ -32,8 +23,6 @@
     transition: none;
   }
 
-  /* Etiket solda: ayar listelerinin yaygin duzeni — anahtarlar sag kenarda
-     hizali durur ve goz tek bir sutunu tarar. */
   &--labelFirst {
     flex-direction: row-reverse;
     justify-content: space-between;
@@ -57,10 +46,6 @@
   @include visually-hidden;
 }
 
-/*
- * RAY. Olcusu SABIT piksel: yogun kipte de kucumemeli — bir anahtarin
- * dokunma hedefi bilgi yogunlugunun konusu degil (WCAG 2.5.8).
- */
 .switch__track {
   position: relative;
   flex-shrink: 0;
@@ -73,7 +58,6 @@
     background-color $duration-fast $ease-out,
     border-color $duration-fast $ease-out;
 
-  /* Gorsel kutu 24 px; dokunma hedefi 44. */
   @include tap-target;
 
   @include reduced-motion {
@@ -81,10 +65,6 @@
   }
 }
 
-/*
- * KULP. Durumu KONUM anlatiyor, renk degil: renk tek basina anlam tasimaz
- * (WCAG 1.4.1) ve zorlanmis renk kipinde zemin farki tamamen kayboluyor.
- */
 .switch__thumb {
   position: absolute;
   top: 2px;
@@ -101,16 +81,6 @@
   }
 }
 
-/*
- * ACIK HAL.
- *
- * `translate` KULLANILIR, `inset-inline-start` degil: konum ozelligini
- * canlandirmak her karede yerlesim hesabi demek ve dusuk guclu telefonda
- * kulp takiliyordu. `translate` bilesik katmanda kalir.
- *
- * RTL'de yon kendiliginden donmuyor (`translate` fiziksel): mantiksal yon
- * `for-rtl` ile veriliyor.
- */
 .switch__input:checked + .switch__track {
   background-color: $blue;
 
@@ -127,8 +97,6 @@
   opacity: 0.6;
 }
 
-/* Zorlanmis renk kipinde zemin farki KAYBOLUYOR; kutu siniri ve kulbun
-   dolgusu sistem renkleriyle yeniden kuruluyor. */
 @media (forced-colors: active) {
   .switch__track {
     border-color: ButtonBorder;

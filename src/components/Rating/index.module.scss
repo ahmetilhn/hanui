@@ -6,27 +6,12 @@
   align-items: center;
   gap: $space-2;
 
-  /*
-   * Yildizlar DONUSUM RENGINDE DEGIL, kendi token'inda: `$star`.
-   *
-   * Doygun turuncu yalnizca donusum eyleminde. Her kartta bes turuncu yildiz,
-   * "ekranda tek doygun turuncu" kuralini dogrudan bozuyordu.
-   *
-   * Once uyari metni tonu kullaniliyordu (#7a3e02) — kahverengiye calan koyu
-   * bir amber. Bes yildiz yan yana dizildiginde puan "kirli kirmizi"
-   * gorunuyordu. `$star` sicakligi korur, doygun turuncuyla yarismaz ve tema
-   * basina ayri ayarlanir (acik temada koyu altin, koyu temada parlak altin).
-   */
   &__stars {
     display: inline-flex;
     gap: 1px;
     color: $star;
   }
 
-  /*
-   * Bos yildiz DOLU govdeli, soluk tonda (bkz. bilesen). Ton `$border-strong`:
-   * `$border` zeminden ayrilmiyor, `$text-3` ise "bos"u dolu gibi okutuyordu.
-   */
   &__empty {
     color: $border-strong;
   }
@@ -41,12 +26,6 @@
     @include visually-hidden;
   }
 
-  /*
-   * Olcu ikon olceginden. Once 14/16 px'lik elle yazilmis degerlerdi: urun
-   * kartinda bes yildiz, yanindaki adet metniyle (13 px) neredeyse ayni
-   * yuksekliktedir ve puan bir ETIKET degil bir GRAFIK — okunmasi icin
-   * metinden buyuk olmali.
-   */
   &--sm .rating__stars {
     font-size: $icon-sm;
   }

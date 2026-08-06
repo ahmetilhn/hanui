@@ -23,15 +23,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Her tona kendi ikonu; renk tek başına anlam taşımaz (WCAG 1.4.1).
- *
- * <p>Dördü de DOLU (`*Fill`) sürüm: ton zeminin üzerinde ince çizgili bir
- * simge, madalyonun içinde soluk kalıp uzaktan seçilemiyordu.
- *
- * <p>`aria-hidden`: ikonun taşıdığı bilgi yanındaki metinde zaten var; ikisini
- * birden okumak ekran okuyucuda tekrar üretiyordu.
- */
+/** Her tona kendi ikonu; renk tek başına anlam taşımaz (WCAG 1.4.1). */
 const ICONS: Record<AlertTone, ReactNode> = {
   info: <InfoCircleFill aria-hidden />,
   success: <CheckCircleFill aria-hidden />,
@@ -39,13 +31,7 @@ const ICONS: Record<AlertTone, ReactNode> = {
   danger: <XCircleFill aria-hidden />,
 };
 
-/**
- * Bilgi / uyarı kutusu.
- *
- * <p>`danger` ve `warning` tonları `role="alert"` taşır: ekran okuyucu bunları
- * anında duyurur. `info` ve `success` duyurulmaz — sayfa yüklenirken her bilgi
- * kutusunun okunması gürültü olurdu.
- */
+/** Bilgi / uyarı kutusu. */
 const Alert: FC<Props> = ({ children, tone = 'info', title, action, className, testId }) => (
   <div
     className={cx(styles.alert, styles[`alert--${tone}`], className)}

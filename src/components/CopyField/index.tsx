@@ -13,27 +13,14 @@ import styles from './index.module.scss';
 type Props = {
   /** Gösterilecek ve panoya kopyalanacak değer. */
   value: string;
-  /**
-   * Kopyalama düğmesinin erişilebilir adı.
-   *
-   * <p>Verilmezse `labels.copyField.copy(value)` çağrılır. Config bir DİZE
-   * değil biçimlendirici tutar: ad değeri İÇERMELİ — bir listede on beş
-   * kopyalama düğmesi var ve hepsi "Kopyala" diye okunduğunda ekran okuyucu
-   * kullanıcısı hangisinin hangi kayıt olduğunu bilmiyordu.
-   */
+  /** Kopyalama düğmesinin erişilebilir adı. */
   copyLabel?: string;
   /** Kopyalandıktan sonraki ad. Verilmezse `labels.copyField.copied(value)`. */
   copiedLabel?: string;
   /** `aria-live` ile duyurulan onay cümlesi. Verilmezse `labels.copyField.announcement`. */
   copiedAnnouncement?: string;
   size?: 'sm' | 'md';
-  /**
-   * Kopyalama düğmesini gizler.
-   *
-   * <p>Yalnızca değerin <em>zaten tıklanabilir bir şeyin içinde</em> olduğu
-   * yerlerde (bir bağlantının gövdesi) verilir: iç içe etkileşim öğesi geçersiz
-   * HTML üretir.
-   */
+  /** Kopyalama düğmesini gizler. */
   isReadOnly?: boolean;
   className?: string;
   testId?: string;
@@ -42,38 +29,7 @@ type Props = {
 /** "Kopyalandı" geri bildiriminin ekranda kalma suresi (ms). */
 const COPIED_FEEDBACK_MS = 1600;
 
-/**
- * Kopyalanabilir teknik değer — <strong>tek dokunuşla panoya</strong>.
- *
- * <h3>Neden ayrı bir öğe</h3>
- * Bir kod (SKU, parça numarası, sipariş numarası, IBAN) dekoratif bir metin
- * değil, kullanıcının <em>taşıdığı</em> veri. Düz bir `<span>` olduğunda
- * kullanıcı onu fareyle seçmeye çalışırken kartın tamamını seçiyor ya da
- * yanlışlıkla altındaki bağlantıyı tetikliyordu.
- *
- * <h3>Neden monospace</h3>
- * "0986479644" gibi diziler orantılı yazı tipinde okunmuyor: `0`/`O` ve `1`/`l`
- * ayırt edilemiyor ve bir hane atlandığında tamamen başka bir kayıt oluyor.
- * `technical-text` sabit genişlik + `tabular-nums` verir; iki değer alt alta
- * geldiğinde farklı hane gözle bulunur.
- *
- * <h3>Geri bildirim neden düğmenin üstünde</h3>
- * Bir bildirim (toast) da olurdu ama listelerde on beş satır var; ekranın
- * dibinde "kopyalandı" yazması <em>hangisinin</em> kopyalandığını
- * söylemiyordu. İkon yerinde tike dönünce cevap tıklanan yerde.
- *
- * <h3>Düğmede native `title` YOK</h3>
- * Ad yalnızca `aria-label`da. `title` aynı metni bir kez daha yazıyordu ve
- * tarayıcı balonu dokunmatikte hiç görünmediği için hiçbir şey kazandırmıyor,
- * bazı ekran okuyucularda adı iki kez okutuyordu. Simgenin kendisi zaten bir
- * pano ve kopyalandığında tikli panoya dönüyor.
- *
- * <h3>Pano erişimi reddedilirse</h3>
- * `navigator.clipboard` güvenli olmayan bağlamda (HTTP) ve izin verilmediğinde
- * reddeder. O durumda değer sessizce <em>seçilir</em>: kullanıcı Ctrl+C ile
- * kendisi kopyalayabilir. Sessizce hiçbir şey yapmamak, düğmeyi bozuk
- * gösteriyordu.
- */
+/** Kopyalanabilir teknik değer — <strong>tek dokunuşla panoya</strong>. */
 const CopyField: FC<Props> = ({
   value,
   copyLabel,

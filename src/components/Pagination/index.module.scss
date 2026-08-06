@@ -4,12 +4,6 @@
 .pagination {
   @include row($space-1);
 
-  /*
-   * SARILABILIR: 320 px'te 1-…-4-5-6-…-24 dizisi tek satira sigmiyor ve satir
-   * kaydirilacagina sayfayi yatay kaydiriyordu. Kaydirma alternatifi elendi —
-   * etkin sayfa gorunum disinda kalabiliyor ve kullanici nerede oldugunu
-   * goremiyordu. Sarmada her hucre gorunur kalir.
-   */
   flex-wrap: wrap;
   row-gap: $space-1;
   justify-content: center;
@@ -26,11 +20,6 @@
     padding: 0;
   }
 
-  /*
-   * Baglanti (URL kipi) icin tam gorunum: `<a>` primitif tasimiyor, durum
-   * matrisi ve odak halkasi burada kurulur.
-   */
-  /* Oklar YON TASIR: RTL'de "onceki" sola degil saga bakar. */
   &__arrow svg {
     @include mirror-in-rtl;
   }
@@ -52,7 +41,6 @@
     border: 1px solid $border;
     border-radius: $radius-md;
     cursor: pointer;
-    /* Sayfa numarasi bir `<a>`: tarayicinin varsayilan alti cizgisi gelir. */
     text-decoration: none;
     transition:
       border-color $duration-fast $ease-out,
@@ -76,13 +64,6 @@
     }
   }
 
-  /*
-   * Ayni kurallar primitiflerin (IconButton/Button) USTUNE atali seciciyle bir
-   * kez daha bindirilir. Ozguluk BILEREK yukseltildi: primitif sinifi ile
-   * modul sinifi ayni ozgulukte kaliyor ve kazanan bundle kaynak sirasina
-   * bagli oluyordu. Boylece ok ve dugme, baglanti komsulariyla piksel piksel
-   * ayni gorunur.
-   */
   & &__arrow,
   & &__page {
     width: auto;
@@ -116,7 +97,6 @@
     }
   }
 
-  /* Aktif sayfa dolu: kullanici nerede oldugunu bir bakista gormeli. */
   & &__page--active {
     background-color: $blue;
     border-color: $blue;
@@ -140,11 +120,6 @@
     user-select: none;
   }
 
-  /*
-   * Dar ekranda hucreler daralir; yukseklik (ve IconButton'in 44 px'lik
-   * gorunmez dokunma ortusu) korunur. Yine sigmayan dizi sarilir — sayfa
-   * govdesi HICBIR genislikte yatay kaymaz.
-   */
   @include for-mobile {
     & &__arrow,
     & &__page,

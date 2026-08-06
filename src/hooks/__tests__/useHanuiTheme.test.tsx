@@ -3,16 +3,7 @@ import { act, renderHook } from '@testing-library/react';
 import { THEME_ATTRIBUTE, THEME_SWITCHING_CLASS } from '../../helpers/theme.helper';
 import useHanuiTheme from '../useHanuiTheme';
 
-/**
- * Tema kancası — okuma, yazma ve HİDRASYON.
- *
- * <h3>Neden `isReady` ölçülüyor</h3>
- * Kanca ilk render'da SABİT `'light'` döndürür, gerçek değeri değil. Sunucuda
- * `document` yok ve istemcide gerçek değeri ilk render'da okumak hidrasyon
- * uyuşmazlığı üretiyordu: sunucu "light" çizdi, istemci "dark" okudu, React
- * ağacı attı ve tema anahtarı bir kare boyunca yanlış ikonu gösterdi. Bu
- * davranış bir KUSUR gibi görünüp "düzeltilmeye" açık; testi onu kilitliyor.
- */
+/** Tema kancası — okuma, yazma ve HİDRASYON. */
 
 /** Sistem tercihini ve dinleyicilerini taklit eder. */
 const mockMatchMedia = (prefersDark: boolean) => {

@@ -8,15 +8,7 @@ import Tabs from '../components/Tabs';
 import Textarea from '../components/Textarea';
 import HanuiProvider from '../theme/HanuiProvider';
 
-/**
- * FAZ 4 DAVRANIŞ NÖBETÇİLERİ.
- *
- * <p>Bu turda eklenen beş davranışın her biri, GÖZLE fark edilmesi zor bir
- * kusuru kapatıyor: bir `aria-describedby` bağı, bir `Intl` yerel ayarı, bir
- * `tabIndex` gezinmesi, bir canlı bölge duyurusu. Hiçbiri ekran görüntüsünde
- * görünmüyor — yani görsel regresyon bunları yakalamıyor ve tek nöbetçi bu
- * dosya.
- */
+/** FAZ 4 DAVRANIŞ NÖBETÇİLERİ. */
 
 const wrap = (ui: React.ReactElement, labels?: Record<string, unknown>) =>
   render(<HanuiProvider labels={labels}>{ui}</HanuiProvider>);

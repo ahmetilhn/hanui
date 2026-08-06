@@ -17,15 +17,6 @@ type ScrollerProps = HTMLAttributes<HTMLDivElement> & {
 /**
  * Tablo kaydırma kutusu — "tablo kendi kutusunda kayar, sayfa asla yatay
  * kaymaz" kuralının tek uygulaması.
- *
- * <p>Yatay kaydırma yalnızca BİLEREK kurulur: geniş tablo bu kutunun içinde
- * kayar; `min-width: 0` + `align-self: stretch` kutunun esnek bir kapsayıcıda
- * kendisinin taşmasını engeller. Üç tablonun üç ayrı elle kurulmuş (ya da hiç
- * kurulmamış) kaydırma stratejisi vardı; stratejisi olmayan tabloda monospace
- * değerler 360 px'te sayfanın kendisini yatay kaydırıyordu.
- *
- * <p>Kaydırma çubuğu TEMALI (`custom-scrollbar`): işletim sisteminin açık
- * çubuğu koyu temada tablonun altında parlak bir şerit bırakıyordu.
  */
 export const TableScroller: FC<ScrollerProps> = /*#__PURE__*/ named(
   /*#__PURE__*/ memo(({ hasFrame = true, className, children, ...rest }) => (
@@ -58,17 +49,7 @@ type Props = TableHTMLAttributes<HTMLTableElement> &
     hasRowHover: boolean;
   }>;
 
-/**
- * Temel tablo — hairline satır ayrımı, `$surface-2` başlık, yoğunluk ölçeği.
- *
- * <p>Görsel kararlar (hangi hücre monospace, hangi sütun sabit) çağıranın
- * modülünde kalır; teknik değer hücresi `@include technical-text` ile
- * yazılır. Bileşen yalnızca üç tabloda üçe ayrışmış iskelet kurallarını tek
- * yerde toplar.
- *
- * <p>Operasyon ekranlarının durum satırlı (yükleniyor/hata/boş) sürümü için
- * {@link DataTable}.
- */
+/** Temel tablo — hairline satır ayrımı, `$surface-2` başlık, yoğunluk ölçeği. */
 const Table: FC<Props> = ({
   density = 'regular',
   hasStickyHead,

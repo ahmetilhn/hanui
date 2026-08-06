@@ -1,17 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Dizin — gruplanmis baglanti listesi.
- *
- * Iki farkli dizin sayfasi bu gorsel dilbilgisini PAYLASIR: grup basligi,
- * izgara, satir ogesi. Ayni gorunmeleri buradan gelir.
- */
-/*
- * Atlama seridinin YUKSEKLIGI: 4 ust dolgu + 32 baglanti + 12 alt dolgu +
- * 1 cizgi. Serit de yapiskan; grup basliklari ONUN altina yapismali, yoksa
- * iki yapiskan katman ayni noktada ust uste biniyor.
- */
 $jump-height: 49px;
 
 .directory {
@@ -19,12 +8,6 @@ $jump-height: 49px;
 }
 
 .group {
-  /*
-   * Cipa hedefi bandin altina inmeli — ama tuketici bunu
-   * `html { scroll-padding-top }` ile ZATEN dusuruyor olmali. Burada bir kez
-   * daha eklenirse iki deger toplaniyor ve `#harf` baglantisi hedefi ekranin
-   * ortasina kadar itiyordu.
-   */
   scroll-margin-top: 0;
 
   &__header {
@@ -35,33 +18,12 @@ $jump-height: 49px;
     margin-bottom: $space-3;
     border-bottom: 1px solid $border;
 
-    /*
-     * Yapiskan baslik: uzun bir listede kaydirirken hangi harfte oldugunu
-     * gormek, listeyi yukari sarip kontrol etmekten iyi. Zemin sayfa
-     * zeminidir — altindaki satirlar basligin arkasindan gecmemeli.
-     *
-     * `top: 0` YETMEZ: tuketicinin ust bandi da yapiskan olabilir ve baslik
-     * onun arkasina girip gorunmez oluyordu.
-     */
     @include sticky-below-header(0);
 
     z-index: $z-base;
     background-color: $page;
   }
 
-  /*
-   * Grup basligi $text, mavi DEGIL.
-   *
-   * Once harf basliklari vurgu renginde ciziliyordu ve sayfada onlarca renkli
-   * harf, gercek baglantilardan daha cok dikkat cekiyordu. Baslik bir
-   * ayirici; renk baglantilara ait.
-   *
-   * Baslik DARALABILIR olmali: `flex-shrink: 0` ile yazilmisti ve satirin
-   * diger ucundaki sayacla birlikte satiri tasiriyordu — uzun bir baslik +
-   * sayac 360 px'lik ekranda sayfanin TAMAMINI yatay kaydiriyordu (olculdu:
-   * +126 px). Baslik artik daralip sarar; sayac kisa ve sabit oldugu icin o
-   * sabit kalir.
-   */
   &__label {
     @include heading(lg, $weight-bold);
 
@@ -93,11 +55,6 @@ $jump-height: 49px;
     white-space: nowrap;
   }
 
-  /*
-   * Satir izgarasi: sutun sayisi degil ASGARI sutun genisligi verilir. Genis
-   * ekranda dort, tablette iki, mobilde tek sutun — kirilma noktasi basina
-   * kural yazmaya gerek kalmaz.
-   */
   &__list {
     @include auto-grid(220px, $space-1);
 
@@ -107,13 +64,6 @@ $jump-height: 49px;
   }
 }
 
-/*
- * Dizin satiri.
- *
- * TUM SATIR tiklanabilir ve en az 44 px (WCAG 2.5.8): yalnizca metnin
- * tiklanabilir oldugu bir listede dokunmatik kullanicilar satirin bosluguna
- * basip hicbir sey olmadigini goruyordu.
- */
 .row {
   display: flex;
   align-items: center;
@@ -145,10 +95,6 @@ $jump-height: 49px;
     transition: none;
   }
 
-  /*
-   * Logo/ikon yuvasi SABIT genislikte: farkli genislikte logolar satir
-   * adlarini birbirinden kaydiriyor ve izgara dalgali gorunuyordu.
-   */
   &__media {
     display: inline-flex;
     align-items: center;
@@ -194,19 +140,8 @@ $jump-height: 49px;
   }
 }
 
-/*
- * Alfabe atlama seridi.
- *
- * Yapiskan: liste uzun ve kullanici asagida da harfe atlamak isteyebilir.
- * `#cipa` baglantilari — JavaScript gerekmez, tarayici kaydirmayi kendisi
- * yapar ve baglanti paylasilabilir.
- */
 .jump {
   @include scroll-row($space-1);
-
-  /* Bandin hemen ALTINA, bosluksuz: serit bandin bir uzantisi gibi okunur ve
-     arada sayfa zemininden bir seritin gorunmesi banti "yuzuyor"
-     gosteriyordu. */
   @include sticky-below-header(0);
 
   z-index: $z-raised;
@@ -243,15 +178,6 @@ $jump-height: 49px;
   }
 }
 
-/*
- * Atlama seridi VARSA grup basliklari onun altina yapisir.
- *
- * Ikisi de yapiskan ve ikisi de bandin dibini hedefliyordu: harf basligi
- * seridin arkasina giriyor, kullanici kaydirirken "hangi harfteyim" sorusunun
- * cevabini kaybediyordu. Serit kosullu ciziliyor (yalnizca birden fazla grup
- * varsa) — bu yuzden pay SABIT eklenmez, kardes seciciyle yalnizca serit
- * gercekten sayfadayken eklenir.
- */
 .jump ~ .directory {
   .group {
     scroll-margin-top: $jump-height;

@@ -1,17 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * BILDIRIM YIGINI.
- *
- * Ekranin DIBINDE: mobilde bas parmagin erisebildigi yer orasi ve icindeki
- * "Geri al" eylemine ulasmak gerekiyor. Ust kose masaustunde yaygin ama
- * telefonda erisilemez bir kose.
- *
- * `pointer-events: none` kapsayicida, `auto` bildirimde: yigin ekranin
- * dibinde genis bir serit kapliyor ve altindaki dugmeler tiklanamaz
- * kaliyordu.
- */
 .hub {
   position: fixed;
   inset-inline: 0;
@@ -28,8 +17,6 @@
 
   @include safe-bottom($space-4);
 
-  /* Masaustunde sag alt kose: ekranin ortasinda beliren bir bildirim
-     icerigin okunmasini kesiyordu. */
   @include for-desktop-up {
     align-items: flex-end;
   }
@@ -54,11 +41,6 @@
     animation: none;
   }
 
-  /*
-   * TON: sol kenarda bir SERIT + ikon. Zemin tinti kullanilmadi — bildirim
-   * yuzeyi sayfadan ayrilmali ve tint zemin koyu temada karti yuzeye
-   * gomuyordu. Renk tek sinyal degil: ikon ton basina degisiyor.
-   */
   &--info {
     border-inline-start: 3px solid $blue;
   }
@@ -84,7 +66,6 @@
   display: inline-flex;
   flex-shrink: 0;
   font-size: $icon-md;
-  /* Ikonun optik merkezi ilk satirin x-yuksekligine hizalanir. */
   margin-top: 1px;
 
   .toast--info & {
@@ -123,13 +104,6 @@
   line-height: $leading-normal;
 }
 
-/*
- * Bildirim icindeki TEK eylem.
- *
- * `Button` DEGIL: dolu bir dugme bildirimde ikinci bir dogurum noktasi gibi
- * duruyor ve ekrandaki tek `PRIMARY` kuralini bozuyordu. Metin bagi yeterli
- * — eylem zaten bir cumlelik.
- */
 .toast__action {
   flex-shrink: 0;
   padding: $space-1 $space-2;

@@ -1,17 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Alt sayfa.
- *
- * Gorunurluk `[open]`e BAGLI (bkz. `bottom-sheet` mixin'i): kapali bir
- * `<dialog>`i gizleyen kural tarayici katmanindadir ve bir sinif secicisine
- * yenilir.
- *
- * Kirilma noktasi SORULMAZ. Panel zaten yalnizca dar ekranda aciliyor; bir
- * medya sorgusuyla ayrica gizlemek, acilmis bir kipsel paneli GORUNMEZ ama
- * etkin birakma riski demek — sayfanin tamami tiklanamaz olurdu.
- */
 .sheet {
   display: none;
 
@@ -27,7 +16,6 @@
     border-bottom: 1px solid $border;
     flex-shrink: 0;
 
-    /* Panel tam genislik: yatay telefonda centik payi (safe-inline). */
     @include safe-inline($space-4);
   }
 
@@ -37,11 +25,6 @@
     margin: 0;
   }
 
-  /*
-   * Baslik ile govde arasindaki serit: `Combobox`in arama kutusu buraya
-   * girer. Govdenin ICINE konsaydi listeyle birlikte kayacak ve kullanici
-   * uzun bir listede kaydirirken yazmaya devam edemeyecekti.
-   */
   &__toolbar {
     padding: $space-2 $space-3;
     border-bottom: 1px solid $border;
@@ -50,35 +33,8 @@
     @include safe-inline($space-3);
   }
 
-  /*
-   * TABAN OLCU ICERIK (`auto`), SIFIR DEGIL.
-   *
-   * `flex: 1` = `flex: 1 1 0%`, yani govdenin taban olcusu SIFIR. Panelin
-   * kendi yuksekligi ise ICERIKTEN geliyor: `<dialog>` varsayilani
-   * `height: fit-content` ve burada yalnizca `max-height` yaziliyor (kisa bir
-   * listede panel liste kadar boylanmali — bkz. `e2e/bottom-sheet.spec.ts`).
-   * Icerikten boylanan bir sutunda, taban olcusu sifir olan bir ogenin panelin
-   * yuksekligine ne kadar katkida bulundugu tarayicinin `min()`/`max-content`
-   * hesabina kalir; katki sifir sayildiginda panel BASLIK + DIP SERIT kadar
-   * kaliyor ve govde — icinde onlarca satir varken — bir yariga iniyordu.
-   * Gercek cihazda bildirilen hata buydu (iOS ve Android).
-   *
-   * OLCULDU: Playwright'in WebKit ve Chromium'unda (iPhone 14 / Pixel 7,
-   * duz liste, ic ice esnek sutun, `<details>` yigini, `height: 100%` cocuk)
-   * `flex: 1` ile `flex: 1 1 auto` AYNI sayilari veriyor — yani bu degisiklik
-   * olculebilen hicbir durumu degistirmiyor, yalnizca panelin yuksekligini
-   * tarayicinin bir tahminine birakmayi birakiyor. Cikarim: hatayi `grow`
-   * uretemez (buyume yalnizca ARTI bosluk dagitir), geriye `basis: 0` kaliyor.
-   *
-   * `1 1 auto` — `flex: 1`in kaldirilmasi DEGIL: panele bir gun kesin bir
-   * yukseklik verilirse govde yine boslugu doldurur; kaldirilsaydi (`0 1 auto`)
-   * doldurmazdi.
-   */
   &__body {
     flex: 1 1 auto;
-    /* `min-height: 0` OLMADAN esnek oge icerigiyle birlikte buyur ve panelin
-       `max-height`ini asar: klavye acikken liste kaydirilamiyor, panelin alti
-       ekranin disina tasiyordu. */
     min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -87,8 +43,6 @@
     @include safe-inline($space-3);
     @include custom-scrollbar;
 
-    /* Guvenli alan payi DIP OGENIN isi. Dip serit varsa dolgu orada; ikisine
-       birden yazildiginda son satirin altinda iki kat bosluk kaliyordu. */
     &:last-child {
       @include safe-bottom;
     }

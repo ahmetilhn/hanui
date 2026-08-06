@@ -3,21 +3,7 @@ import { resolve } from 'node:path';
 
 import * as hanui from '../index';
 
-/**
- * GALERİ KAPSAMI — görsel regresyonun kör noktası olmasın.
- *
- * <p>Görsel senaryolar `playground/scenarios.tsx` içindeki defterden
- * türetiliyor: deftere girmeyen bir bileşenin anlık görüntüsü hiç alınmaz ve
- * bir token değişikliği onu sessizce bozabilir. "Her bileşen taranıyor"
- * iddiası, listeyi güncellemeyi hatırlamaya bağlı kaldığında bir iddia değil
- * bir temennidir.
- *
- * <h3>Neden defter `import` EDİLMİYOR da metin olarak okunuyor</h3>
- * `playground/` Jest'in `roots`unun dışında ve oraya taşınması, galeri
- * bağımlılıklarını (Vite'a özgü `import.meta`, CSS import'u) test ortamına
- * sokardı. Sorulan soru bundan basit: <em>defterde bu ad bir anahtar olarak
- * geçiyor mu</em>. Metin araması bunu yan etkisiz yanıtlıyor.
- */
+/** GALERİ KAPSAMI — görsel regresyonun kör noktası olmasın. */
 
 const source = readFileSync(resolve(__dirname, '../../playground/scenarios.tsx'), 'utf8');
 

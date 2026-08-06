@@ -29,13 +29,7 @@ export type SelectOption<T extends string = string> = {
   isDisabled?: boolean;
 };
 
-/**
- * Seçenek listesinin nerede açıldığı.
- *
- * <p>`popover` tetikleyicinin altında, `sheet` ekranın dibinde. Karar
- * <strong>açılırken</strong> verilir; sunucuda ekran genişliği bilinmediği
- * için ilk boyamada verilecek her karar yanlış olurdu.
- */
+/** Seçenek listesinin nerede açıldığı. */
 type OpenMode = 'popover' | 'sheet';
 
 type Props<T extends string> = {
@@ -45,10 +39,6 @@ type Props<T extends string> = {
   /**
    * Alanın adı. İki işi birden yapar: alt sayfanın başlığı olur ve
    * tetikleyicinin <strong>erişilebilir adı</strong>dır.
-   *
-   * <p>Tetikleyici bir `<button>` ve düğmenin adı HTML-AAM'e göre
-   * `<label>`den GELMEZ — görünür bir etiket olsa bile ekran okuyucu yalnızca
-   * seçili değeri okur ("En yeni, düğme") ve neyi seçtiğini söylemez.
    */
   label: string;
   /** Seçim yokken tetikleyicide görünen metin. Verilmezse `labels.selectPlaceholder`. */
@@ -59,12 +49,7 @@ type Props<T extends string> = {
   icon?: ReactNode;
   /** `sm` yoğun şeritler içindir (araç çubuğu); varsayılan form ölçüsü `md`. */
   size?: 'sm' | 'md';
-  /**
-   * Panelin hangi kenardan hizalanacağı.
-   *
-   * <p>Şeridin sağ ucundaki bir tetikleyicide `start` hizalama paneli sağa
-   * doğru taşırıyordu; `end` panelin sağ kenarını tetikleyiciye yaslar.
-   */
+  /** Panelin hangi kenardan hizalanacağı. */
   align?: 'start' | 'end';
   isDisabled?: boolean;
   id?: string;
@@ -74,42 +59,7 @@ type Props<T extends string> = {
   testId?: string;
 };
 
-/**
- * Seçim kutusu.
- *
- * <h3>Yerel `<select>` KULLANILMAZ</h3>
- * Yerel açılır liste her tarayıcıda başka türlü çiziliyor, seçeneklerine tek
- * bir stil verilemiyor (seçili değeri işaretlemek, ikon koymak, satırı
- * yükseltmek yok) ve mobilde ekranın ortasında beliren tekerlek uygulamanın
- * geri kalanına hiç benzemiyordu. Kutu baştan sona bizim: masaüstünde
- * tetikleyicinin altında bir panel, mobilde ekranın dibinden yükselen bir
- * <strong>alt sayfa</strong> açar.
- *
- * <p>Bu, "yerel öğe taklit öğeden iyidir" kuralının BİLİNÇLİ tek istisnası:
- * bedeli (odak yönetimi, ok tuşları, `aria-activedescendant`) bir kez ödenip
- * tek bileşene kapatıldı.
- *
- * <h3>Klavye — odak TEK yerde</h3>
- * Panel açıkken odak tetikleyicide kalır, alt sayfada ise listenin kendisine
- * geçer; iki durumda da etkin seçenek `aria-activedescendant` ile bildirilir.
- * Seçenekleri tek tek odaklanabilir yapmak, aynı bileşende iki ayrı klavye
- * modeli demekti (APG: listbox + activedescendant).
- *
- * <table>
- *   <tr><td>`ArrowDown`/`ArrowUp`/`Enter`/`Space` (kapalıyken)</td><td>paneli açar</td></tr>
- *   <tr><td>`ArrowDown` / `ArrowUp`</td><td>etkin seçenek bir alt/üst; uçlarda DÖNER</td></tr>
- *   <tr><td>`Home` / `End`</td><td>ilk / son seçenek</td></tr>
- *   <tr><td>`Enter` / `Space`</td><td>etkin seçeneği seçer</td></tr>
- *   <tr><td>`Escape`</td><td>seçim yapmadan kapatır, odak tetikleyicide</td></tr>
- *   <tr><td>`Tab`</td><td>kapatır, gezinme sürer</td></tr>
- * </table>
- * Etkin seçenek açılışta SEÇİLİ olandan başlar. Nöbetçi:
- * `components/__tests__/keyboard.test.tsx`.
- *
- * <h3>20+ seçenek varsa bu bileşen DEĞİL</h3>
- * Aramasız bir liste 20 satırdan sonra taranamaz hâle gelir; orada
- * {@link Combobox} kullanılır.
- */
+/** Seçim kutusu. */
 const Select = <T extends string>({
   options,
   value,
@@ -158,14 +108,7 @@ const Select = <T extends string>({
     close();
   };
 
-  /*
-   * Kapaninca odak TETIKLEYICIYE doner.
-   *
-   * Odagi `selectOption` icinde geri vermek ise yaramiyor: alt sayfa ayni
-   * commit'te DOM'dan kalkiyor ve odaklanan dugme sokulunce odak `<body>`ye
-   * dusuyordu — klavye kullanicisi secim yaptiktan sonra sayfanin en basina
-   * donuyordu.
-   */
+  /* Kapaninca odak TETIKLEYICIYE doner. */
   const wasOpenRef = useRef(false);
   useEffect(() => {
     if (wasOpenRef.current && !isOpen) triggerRef.current?.focus();
@@ -185,14 +128,7 @@ const Select = <T extends string>({
   }, [openMode, close]);
 
 
-  /*
-   * KLAVYE MODELI `useListboxNavigation`da — `Combobox`la AYNI kanca.
-   *
-   * Alti davranis (uclarda donme, `Home`/`End`, secme, `Escape`, `Tab` ile
-   * kapatip gezinmeyi surdurme, etkin secenegi gorunur tutma) iki bilesende
-   * KOPYA koddu ve ayrisma sessizdi: her bilesenin kendi testi vardi ve her
-   * biri kendi davranisini dogruluyordu.
-   */
+  /* KLAVYE MODELI `useListboxNavigation`da — `Combobox`la AYNI kanca. */
   const { activeIndex, setActiveIndex, listRef, handleKeyDown } =
     useListboxNavigation<HTMLUListElement>({
       count: options.length,
@@ -205,14 +141,7 @@ const Select = <T extends string>({
       onClose: close,
     });
 
-  /*
-   * Alt sayfada odak listenin kendisine gecer: ok tuslari orada isler.
-   *
-   * `preventScroll` ZORUNLU: odaklanan oge ust katmanda duran sabit bir
-   * panelin icinde ve iOS onu "gorunur kilmak" icin sayfayi kaydiriyor —
-   * panel oldugu yerde durdugu icin kaydirmanin tek etkisi, arkadaki sayfanin
-   * kullanicinin bakmadigi bir yere atlamasiydi.
-   */
+  /* Alt sayfada odak listenin kendisine gecer: ok tuslari orada isler. */
   useEffect(() => {
     if (openMode === 'sheet') listRef.current?.focus({ preventScroll: true });
     /* `listRef` kancadan geliyor ve `useRef` kimligi SABIT; bagimlilikta

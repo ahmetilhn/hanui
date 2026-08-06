@@ -1,17 +1,6 @@
 /**
  * Kırılma noktaları — `styles/_variables.scss` içindeki `$breakpoint-*` ile
  * <strong>aynı</strong> değerler.
- *
- * <p>Kararı normalde CSS verir; bu sabitler yalnızca <em>JavaScript'in de
- * bilmek zorunda olduğu</em> tek durum için var: kipsel bir panel
- * (`<dialog>`) açıkken pencere büyütüldüğünde. `showModal()` sayfanın geri
- * kalanını inert bırakır ve bu, panelin çizilip çizilmediğine değil kipsel
- * olmasına bağlıdır — CSS onu gizlese bile sayfa tıklanamaz kalır. Panel bu
- * yüzden kırılma noktası aşıldığında JavaScript ile kapatılır.
- *
- * <p>Değerler iki yerde durduğu için ayrışabilir. Ayrışırlarsa panel yanlış
- * genişlikte kapanır; CSS tarafı her zaman kazanır, buradaki değer ona
- * uydurulur.
  */
 export const MOBILE_BREAKPOINT = 640;
 

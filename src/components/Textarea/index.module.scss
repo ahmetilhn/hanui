@@ -4,14 +4,11 @@
 .textarea {
   @include input-base;
 
-  /* Yalnizca dikey buyutulur; yatayda tasma yerlesimi bozuyordu. */
   resize: vertical;
   min-height: 96px;
   line-height: $leading-normal;
 }
 
-/* Sarmalayici: sayac alanin ALTINDA, saga yasli. Icine konsaydi metnin
-   uzerine biniyordu. */
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -20,7 +17,6 @@
 }
 
 .textarea--autoSize {
-  /* Olcum JavaScript'te; elle boyutlandirma otomatik yuksekligi eziyordu. */
   resize: none;
   overflow-y: hidden;
 }
@@ -31,8 +27,6 @@
   color: $text-3;
   font-variant-numeric: tabular-nums;
 
-  /* Sinira YAKLASILDIGINDA uyari tonu: sinira carpip yazamamak, yaklastigini
-     gormemekten kotu. Renk tek sinyal degil — sayi zaten okunuyor. */
   &--near {
     color: $warn-fg;
     font-weight: $weight-semibold;

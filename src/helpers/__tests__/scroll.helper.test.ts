@@ -1,14 +1,6 @@
 import { scrollIntoViewIfPossible } from '../scroll.helper';
 
-/**
- * TÜKETİCİ TESTİNİ KIRAN HATANIN NÖBETÇİSİ.
- *
- * <p>Bulunduğu yer gerçek: `hanparca-frontend`in `LoginContainer` testi
- * `E.scrollIntoView is not a function` ile düşüyordu. Kırılan yer tüketicinin
- * kodu, sebebi ise `Tabs`ın seçili sekmeyi görünüre kaydırma girişimiydi —
- * jsdom `scrollIntoView`u uygulamıyor. Kütüphane, çizildiği her test
- * ortamında AYAKTA kalmak zorunda.
- */
+/** TÜKETİCİ TESTİNİ KIRAN HATANIN NÖBETÇİSİ. */
 
 describe('scrollIntoViewIfPossible', () => {
   it('destekleniyorsa çağırır ve seçenekleri geçirir', () => {

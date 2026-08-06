@@ -21,9 +21,6 @@ export const THEME_ATTRIBUTE = 'data-hanui-theme';
 /**
  * Bilgi yoğunluğunun taşındığı öznitelik.
  * `<html data-hanui-density="compact">`.
- *
- * <p>Tema gibi BELGE düzeyinde: portal ile gövdeye taşınan kip pencere de aynı
- * yoğunlukta olmalı ve bir React ağacına bağlanan değer onu kapsamıyor.
  */
 export const DENSITY_ATTRIBUTE = 'data-hanui-density';
 
@@ -41,21 +38,7 @@ export const resolveTokens = (
   return { ...base, ...overrides };
 };
 
-/**
- * Yapılandırmayı CSS metnine çevirir.
- *
- * <h3>Neden yalnızca EZİLEN token'lar yazılıyor</h3>
- * Tam eşlemeyi yazmak da çalışırdı ama iki bedeli var: çıktı 90 satır yerine
- * 4 satır olurdu ve daha önemlisi, kütüphane bir sonraki sürümde bir token'ın
- * varsayılanını değiştirdiğinde tüketicinin sayfası ESKİ değeri yazmaya devam
- * ederdi — üstelik ezmediği bir token için. Ezmeler ne ise o yazılır.
- *
- * <h3>Neden `<style>`, neden satır içi stil değil</h3>
- * Satır içi stil yalnızca `<html>` üzerinde durur ve `[data-hanui-theme]`
- * seçicisinden daha yüksek özgüllüktedir: kullanıcı temayı değiştirdiğinde
- * ezmeler HER İKİ temada da aynı kalıyordu. Ayrı bir kural bloğu, açık ve
- * koyu ezmeleri kendi seçicilerine bağlar.
- */
+/** Yapılandırmayı CSS metnine çevirir. */
 export const buildThemeCss = (config: HanuiThemeConfig): string => {
   const blocks: string[] = [];
 
@@ -77,23 +60,7 @@ export const buildThemeCss = (config: HanuiThemeConfig): string => {
         .join('\n')}\n}`,
     );
 
-  /*
-   * OLCU EZMELERI TEMA BASINA DEGIL, TEK BLOKTA.
-   *
-   * Bir markanin yuvarlakligi acik temada 12 px, koyu temada 8 px olmaz. Ayri
-   * verilebilseydi iki degerin ayrismasi kacinilmazdi ve fark yalnizca tema
-   * degistirildiginde gorunurdu — yani neredeyse hic.
-   *
-   * `:root` YETERLI: renk ezmelerinde iki secici gerekiyordu cunku uretilmis
-   * koyu blok `[data-hanui-theme='dark']` ile ozgullukte yarisiyor. Olcuye
-   * karsilik gelen uretilmis blok ise `:root` (base-tokens) — esit ozgulluk,
-   * kaynak sirasi kazandiriyor ve bu etiket `<head>`in SONUNA ekleniyor.
-   *
-   * TEK ISTISNA yogun kip: `[data-hanui-density='compact']` daha yuksek
-   * ozgullukte ve ezmeyi yener. Ezme orada da gecerli olsun diye ayni govde
-   * ikinci kez, o secici altinda yaziliyor — aksi halde tuketicinin verdigi
-   * `space-4`, compact acilir acilmaz kutuphanenin varsayilanina donuyordu.
-   */
+  /* OLCU EZMELERI TEMA BASINA DEGIL, TEK BLOKTA. */
   const metrics = config.metrics ?? {};
 
   if (Object.keys(metrics).length > 0) {
@@ -133,9 +100,6 @@ export const buildThemeCss = (config: HanuiThemeConfig): string => {
 /**
  * Ezmeleri belgeye yazar. Aynı `<style>` etiketi tekrar kullanılır: her
  * çağrıda yeni bir etiket eklemek, birbirini ezen onlarca blok bırakıyordu.
- *
- * <p>Etiket `<head>`in SONUNA eklenir — paket CSS'i ondan önce yüklenmiş
- * olmalı ki eşit özgüllükte ezme kazansın.
  */
 export const applyThemeConfig = (config: HanuiThemeConfig | undefined): void => {
   if (!isClient()) return;

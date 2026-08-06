@@ -8,25 +8,12 @@ import styles from './index.module.scss';
 
 type Props = {
   size?: 'sm' | 'md' | 'lg';
-  /**
-   * Ekran okuyucuya okunacak metin; görsel olarak gizli.
-   *
-   * <p>Verilmezse `labels.loading` okunur. Boş dizeye BİLİNÇLİ olarak izin
-   * verilir: göstergenin <em>zaten adı olan</em> bir öğenin içinde durduğu
-   * yerlerde (yükleniyor durumundaki bir düğme) duyurmak tekrar üretiyor.
-   * `label=""` orada doğru olan ve config'i de bastırır.
-   */
+  /** Ekran okuyucuya okunacak metin; görsel olarak gizli. */
   label?: string;
   className?: string;
 };
 
-/**
- * Yükleme göstergesi.
- *
- * <p>İskelet (`Skeleton`) tercih edilir; bu bileşen yalnızca <em>şekli
- * bilinmeyen</em> bir bekleme için — düğme içi işlem veya belirsiz süreli bir
- * sorgu gibi.
- */
+/** Yükleme göstergesi. */
 const Spinner: FC<Props> = ({ size = 'md', label, className }) => {
   const { labels } = useHanui();
 

@@ -1,13 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Dugme.
- *
- * Metin ARAYUZ FONTUNDA ($font-ui), baslik fontunda degil: grotesk baslik
- * yuzleri 14 px yari-kalinda sikisip okunurlugu dusuruyordu ve dugme
- * etiketleri bir arayuzun en cok okunan kisa metinleri.
- */
 .button {
   display: inline-flex;
   align-items: center;
@@ -31,7 +24,6 @@
 
   @include focus-ring;
 
-  /* Basma geri bildirimi: 1px cokme, tiklamanin kaydedildigini hissettirir. */
   &:active:not(:disabled) {
     transform: translateY(1px);
   }
@@ -50,17 +42,6 @@
     }
   }
 
-  /*
-   * Ikon metinden buyuk — ama 1.05em kadar degil.
-   *
-   * Ikonlarin gorsel agirligi harflerden dusuk: esit puntoda etiketin
-   * yaninda kucuk kaliyorlar. Ilk duzeltme %5'ti ve OLCULEBILIR bir fark
-   * degildi (15 px metin → 15.75 px ikon). Ikon olcegi ise puntodan tamamen
-   * ayri: `medium` dugmede 15 px etiket + 18 px ikon.
-   *
-   * Spinner ETIKETLE olceklenmeye devam eder (`1.15em`): o bir simge degil,
-   * metnin yerini tutan bir hareket — buyudugunde dugme icinde ziplar.
-   */
   &__icon {
     display: inline-flex;
     align-items: center;
@@ -84,19 +65,10 @@
     width: 100%;
   }
 
-  /*
-   * Yuklenirken genislik SABIT kalir.
-   *
-   * Icerik degistirilmedigi icin genislik zaten korunur; burada yalnizca
-   * imlec ayarlanir. Metni "Yukleniyor…" ile degistirmek dugmeyi daraltip
-   * yerlesimi kaydiriyordu.
-   */
   &--loading {
     cursor: progress;
   }
 
-  // --- Boyutlar ---
-  // Yukseklikler dokunma hedefi kuralina uyar: medium ve large >= 44px.
   &--small {
     padding: $space-2 $space-3;
     font-size: $font-size-sm;
@@ -123,17 +95,6 @@
     }
   }
 
-  // =====================================================================
-  // VARYANTLAR
-  // =====================================================================
-
-  /*
-   * Birincil: NOTR GRAFIT.
-   *
-   * Amber degil — amber `--cart`e ayrildi. Grafit dolgu koyu temada sayfadan
-   * ayirt edilemedigi icin `$action` token'i orada acik bir notr yuzeye
-   * doner; iki temada da en yuksek vurgu korunur.
-   */
   &--primary {
     background-color: $action;
     color: $on-action;
@@ -149,31 +110,12 @@
       box-shadow: $shadow-xs;
     }
 
-    /*
-     * Pasif dugme SOLUK BIR DOLGUYA duser, saydamlasmaz.
-     *
-     * `opacity` ile soluklastirildiginda altindaki zemin sizip rengi
-     * kirletiyordu — koyu bir bant uzerinde pasif dugme yesilimsi
-     * gorunuyordu. Kendi soluk dolgusu her zeminde ayni gorunur.
-     *
-     * METIN `$on-action-soft`, `$surface` DEGIL. Beyaz metin bu dolgunun
-     * uzerinde acik temada 1,55:1'de kaliyordu (koyuda 1,93) — etiket
-     * okunmuyor, yani dugmenin NEYI engelledigi de okunmuyordu. Pasiflik
-     * dolgunun geri cekilmesiyle bildirilir; gerekcenin tamami
-     * `theme/tokens.ts` `on-action-soft` altinda.
-     */
     &:disabled {
       background-color: $action-soft;
       color: $on-action-soft;
     }
   }
 
-  /*
-   * DONUSUM EYLEMI — ekrandaki tek doygun turuncu.
-   *
-   * Metin `$on-amber` (#291500), beyaz DEGIL: amber uzerinde beyaz 2.3:1'de
-   * kaliyor ve okunmuyor. Koyu kahve 8.1:1 verir.
-   */
   &--cart {
     background-color: $amber;
     color: $on-amber;
@@ -216,12 +158,6 @@
     }
   }
 
-  /*
-   * Mavi CERCEVELI eylem.
-   *
-   * Dolgulu degil: mavi gezinme ve kesif rengidir. Dolu mavi dugme onu bir
-   * donusum noktasi gibi gosterip amberle yarisiyordu.
-   */
   &--outline {
     background-color: transparent;
     border-color: $blue;
@@ -243,14 +179,6 @@
     }
   }
 
-  /*
-   * Vurgu blogu (kahraman, kampanya bandi) icindeki ikincil eylem.
-   *
-   * Bant TEMAYI IZLIYOR, bu yuzden varyant da bandin token'larini kullanir:
-   * acik temada acik gri bir dugme, koyu temada koyu gri. Once "koyu bolum
-   * icindeki eylem" diye tanimliydi ve acik temada koyu bir dugme
-   * birakiyordu.
-   */
   &--dark {
     background-color: $nav-bg-2;
     border-color: $nav-line-strong;
@@ -299,13 +227,6 @@
     }
   }
 
-  /*
-   * Yikici eylem: DURUM TINTI DEGIL gercek bir dolgu.
-   *
-   * Olumsuz durum rozetiyle ayni kirmiziyi tasimaz: biri bir uyari etiketi,
-   * digeri geri alinamaz bir eylem. Ayni renkte olsalar kullanici uyari
-   * etiketine tiklamayi deniyordu.
-   */
   &--danger {
     background-color: $danger-solid;
     color: $on-danger;
@@ -323,20 +244,10 @@
   }
 }
 
-/*
- * Dugme yukleyicisi.
- *
- * Renk dugmenin KENDI metin renginden alinir (`currentColor`): hangi
- * varyantta olursa olsun kontrast dugmenin yazisiyla ayni. Varsayilanlariyla
- * birakildiginda (gri halka + mavi tepe) doygun dolgulu bir dugmede halka
- * zemine karisiyor, mavi nokta da zar zor seciliyordu — donme goruluyor ama
- * HAREKET OKUNMUYORDU.
- */
 .button__spinner {
   border-color: color-mix(in srgb, currentColor 28%, transparent);
   border-top-color: currentColor;
 
-  /* Dugme puntosuyla olceklenir; sabit 14 px her boyda ayni kaliyordu. */
   width: 1.15em;
   height: 1.15em;
   border-width: 2px;

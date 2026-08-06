@@ -26,13 +26,6 @@
   @include stack($space-2);
 }
 
-/*
- * HAZIR BICIMLER — olcu gercek bilesenlerden.
- *
- * "Iskelet yerlesimi kaydirmaz" sozu ancak iskelet gelecek icerigin OLCUSUNU
- * tasiyorsa dogru. Her cagiran olcuyu gozle tahmin ediyordu ve tahminler
- * tutmuyordu.
- */
 .card {
   border: 1px solid $border;
   border-radius: $radius-lg;
@@ -41,7 +34,6 @@
 }
 
 .card__media {
-  /* `CardMedia`nin varsayilan orani (1.4) ile ayni. */
   aspect-ratio: 1.4;
   width: 100%;
   height: auto;
@@ -78,16 +70,11 @@
   background-color: $surface;
 }
 
-/*
- * Sutun genislikleri ESIT: gercek genislikler icerige gore degisiyor ve onlari
- * taklit etmek veri geldiginde DAHA BUYUK bir sicrama uretiyordu.
- */
 .table__row {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
   gap: $space-3;
   align-items: center;
-  /* `DataTable` satir yuksekligi. */
   min-height: 40px;
 }

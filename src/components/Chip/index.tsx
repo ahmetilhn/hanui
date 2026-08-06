@@ -42,32 +42,7 @@ type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
   testId?: string;
 };
 
-/**
- * Çip — seçilebilir etiket.
- *
- * <h3>Tasarım sisteminin en çok tekrarlanan öğesi</h3>
- * Kategori seçimi, hızlı filtre, sıralama tercihi, görünüm anahtarı: hepsi
- * aynı öğe. Ayrı ayrı düğme stilleri yazmak yerine tek çip kullanılır;
- * böylece seçili durumun nasıl göründüğü uygulamanın her yerinde aynıdır.
- *
- * <h3>Seçili durum üç sinyalle birden bildirilir</h3>
- * Kenarlık + metin rengi + ikon rengi <em>birlikte</em> değişir. Yalnızca
- * zemini doldurmak (renk tek başına, WCAG 1.4.1) renk körü kullanıcı için
- * ayırt edilemez olurdu; ayrıca dolu zemin çipi düğmeye benzetip "buraya
- * tıkla" gibi okutuyordu — oysa çip bir <em>durum</em> gösterir.
- *
- * <h3>Neden `aria-pressed`, `disabled` değil</h3>
- * Seçili çip pasifleştirilmez: kullanıcı seçimini geri alabilmeli. Basılı
- * düğme semantiği (`aria-pressed`) ekran okuyucuya "seçili, kapatılabilir"
- * bilgisini verir.
- *
- * <h3>Native `title` YAZILMAZ</h3>
- * Görünür metni olmayan çip `label`ı yalnızca `aria-label`a koyar. Önce
- * ikisini birden yazıyordu; tarayıcının balonu dokunmatikte hiç görünmez,
- * klavyede gecikmeli çıkar ve biçimi işletim sistemine bağlıdır — yani
- * "üzerine gelince ne olduğu yazar" sözü kullanıcıların çoğunda tutmuyordu.
- * Açıklama isteyen çağıran çipi {@link Tooltip} ile sarar.
- */
+/** Çip — seçilebilir etiket. */
 const Chip = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
   (
     {

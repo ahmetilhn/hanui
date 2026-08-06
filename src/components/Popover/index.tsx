@@ -41,38 +41,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Popover — <strong>eylem taşıyabilen</strong>, odaklanabilir yüzey.
- *
- * <h3>{@link Tooltip} ile farkı: içine ne konabildiği</h3>
- * İkisi de tetikleyiciye yapışan bir yüzey açıyor; ayrım içeriğin
- * ERİŞİLEBİLİR olup olmamasında:
- *
- * <ul>
- *   <li>`Tooltip` yalnızca AÇIKLAMA taşır. `pointer-events: none` ve klavyeyle
- *       içine girilemez — içine bir bağlantı konsa ona ulaşmanın yolu olmazdı
- *       (fare balona giderken tetikleyiciden çıkıyor).</li>
- *   <li><b>`Popover` odak alır.</b> Açıldığında odak içeri girer, `Escape`
- *       kapatır ve odak tetikleyiciye döner. Bağlantı, düğme, kısa bir form
- *       konabilir.</li>
- * </ul>
- *
- * <h3>Kipsel DEĞİL</h3>
- * Arka plan tıklanabilir kalır ve sayfa kaydırılabilir. Kararı bekleyen,
- * kaçınılmaz bir seçim `Modal`ın işi; popover yardımcı bir yüzey ve
- * kullanıcıyı hapsetmemeli. Bu yüzden `<dialog>` DEĞİL portal + `usePositioning`:
- * `showModal()` arka planı inert bırakıyor, `<dialog open>` (kipsiz) ise üst
- * katmana hiç girmiyor ve `z-index` yarışına dönüyordu.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`Enter` / `Space`</td><td>tetikleyicide: açar</td></tr>
- *   <tr><td>`Escape`</td><td>kapatır, odak TETİKLEYİCİYE döner</td></tr>
- *   <tr><td>`Tab`</td><td>yüzeyin içinde gezinir; dışına çıkınca KAPANIR</td></tr>
- * </table>
- * Odak tuzağı YOK — kipsel olmayan bir yüzeyde odağı hapsetmek, kullanıcıyı
- * sayfadan koparır. Odak dışarı çıktığında yüzey kapanır.
- */
+/** Popover — <strong>eylem taşıyabilen</strong>, odaklanabilir yüzey. */
 const Popover = ({
   trigger,
   children,

@@ -2,13 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import PromptDialog from '../PromptDialog';
 
-/**
- * Pencere YALNIZCA başarıda kapanır.
- *
- * <p>Bu kural bir hatadan doğdu: pencere istekten <em>önce</em> kapatılıyordu
- * ve istek patlayınca kullanıcının yazdığı gerekçe geri dönüşsüz siliniyordu.
- * Bir daha yazmak zorunda kalmak, hatanın kendisinden daha can sıkıcıydı.
- */
+/** Pencere YALNIZCA başarıda kapanır. */
 describe('PromptDialog — pencere yalnızca başarıda kapanır', () => {
   const baseProps = {
     isOpen: true,

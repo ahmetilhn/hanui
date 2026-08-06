@@ -26,15 +26,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Kırıntı yolu.
- *
- * <p>Son öğe bağlantı DEĞİL ve `aria-current="page"` taşır: bulunduğu sayfaya
- * bağlantı veren bir kırıntı yolu, ekran okuyucu kullanıcısını yanıltır.
- *
- * <p>Ayırıcı ikon `aria-hidden`; ekran okuyucu liste yapısından hiyerarşiyi
- * zaten anlar.
- */
+/** Kırıntı yolu. */
 const Breadcrumb: FC<Props> = ({ items, label, linkProps, className, testId }) => {
   const { labels } = useHanui();
 

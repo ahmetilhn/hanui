@@ -17,14 +17,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Bölüm başlığı.
- *
- * <p>Başlık düzeyi (`as`) görsel boyuttan (`size`) <strong>ayrı</strong>:
- * sayfa hiyerarşisi anlamsal olmak zorunda ama görsel boyut bağlamla değişir.
- * İkisini birbirine bağlamak, doğru görünüm için yanlış başlık düzeyi seçmeye
- * zorlardı.
- */
+/** Bölüm başlığı. */
 const SectionHeader: FC<Props> = ({
   title,
   description,

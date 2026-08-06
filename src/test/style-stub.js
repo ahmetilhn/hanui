@@ -1,10 +1,4 @@
-/*
- * SCSS modülü saplaması.
- *
- * Erişilen her anahtar KENDI ADINI döndürür (`styles['button--primary']` →
- * `'button--primary'`). Boş nesne döndüren bir saplamada bileşen sınıfsız
- * çiziliyor ve "hangi varyant çizildi" sorusu testte sorulamıyordu.
- */
+/* SCSS modülü saplaması. */
 module.exports = new Proxy(
   {},
   {

@@ -1,13 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Kullanici madalyonu.
- *
- * Notr zemin, koyu metin: marka renginde dolu bir daire hesap menusunun en
- * ustunde birincil eylem gibi duruyor ve altindaki gercek menuyle
- * yarisiyordu. Madalyon kimlik tasir, dikkat cekmez.
- */
 .avatar {
   display: inline-flex;
   align-items: center;
@@ -18,7 +11,6 @@
   color: $text;
   font-family: $font-heading;
   font-weight: $weight-semibold;
-  /* Bas harfler optik olarak ortalanir; harf araligi onlari dagitmamali. */
   letter-spacing: 0;
   line-height: $leading-none;
   user-select: none;
@@ -49,17 +41,6 @@
   }
 }
 
-/*
- * MADALYON TONLARI — ad'dan turetiliyor (bkz. `resolveTone`).
- *
- * Alti kova: daha azinda on kisilik bir listede tonlar tekrar ediyor, daha
- * cogunda tonlar birbirine yaklasip ayirt edilemez oluyordu. Sayi
- * `TONE_COUNT` ile AYNI olmak zorunda.
- *
- * Hepsi TINT: doygun dolgu "tiklanabilir" demek ve avatar tiklanabilir degil.
- * Metin rengi her kovada kendi koyu esiyle geliyor — kontrast denetcisi bu
- * ciftleri zaten olcuyor.
- */
 .avatar--tone-0 {
   background-color: $blue-tint;
   color: $blue-text;

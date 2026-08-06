@@ -29,11 +29,6 @@ type BaseProps = {
   /**
    * Sayfa değiştiğinde ekran okuyucuya duyurulacak metin
    * ("3. sayfa · 1.248 sonuç").
-   *
-   * <p>Verilmediğinde duyuru YAPILMAZ. Görsel tarafta sayfa numarası
-   * `aria-current` ile zaten işaretli ama o yalnızca ODAK oraya geldiğinde
-   * okunuyor: bağlantıya basıp listenin başına dönen kullanıcı, kaçıncı
-   * sayfada olduğunu ve kaç sonuç kaldığını hiç duymuyordu.
    */
   formatAnnouncement?: (page: number, totalPages: number) => string;
   className?: string;
@@ -41,14 +36,7 @@ type BaseProps = {
 };
 
 type LinkProps = BaseProps & {
-  /**
-   * Sayfa numarasının adresini üretir.
-   *
-   * <p>Verildiğinde numaralar `<a>` olur — ve olması gerekir. Düğmenin `href`i
-   * yok: arama motoru bir tıklama olayını çalıştırmaz ve ikinci sayfaya HİÇ
-   * geçemez; kullanıcı da orta tuşla yeni sekmede açamaz, adresi kopyalayamaz,
-   * durum çubuğunda hedefi göremez.
-   */
+  /** Sayfa numarasının adresini üretir. */
   buildHref: (page: number) => string;
   onPageChange?: never;
   /** Yönlendiriciye geçirilecek ek props (`{ scroll: false }` gibi). */
@@ -56,14 +44,7 @@ type LinkProps = BaseProps & {
 };
 
 type ButtonProps = BaseProps & {
-  /**
-   * Sayfa değişimi adres çubuğu YERİNE buraya bildirilir.
-   *
-   * <p>Yalnızca sayfalamanın adrese yazılmadığı listeler için: kişiye özel,
-   * `noindex` ekranlarda kimse "ikinci sayfa" bağlantısını paylaşmıyor ve orada
-   * adresi kirletmek geri tuşunu kullanılamaz hâle getiriyordu. Bağlantı
-   * verilebilecek bir hedef olmadığı için numaralar düğme kalır.
-   */
+  /** Sayfa değişimi adres çubuğu YERİNE buraya bildirilir. */
   onPageChange: (page: number) => void;
   buildHref?: never;
   linkProps?: never;
@@ -90,25 +71,7 @@ const buildPageList = (page: number, totalPages: number): (number | 'gap')[] => 
   return result;
 };
 
-/**
- * Sayfalama.
- *
- * <h3>Sayfa numaraları BAĞLANTI, düğme değil</h3>
- * `buildHref` verildiğinde numaralar `<a>` olur. Düğme olarak bırakıldığında
- * iki bedeli vardı:
- * <ul>
- *   <li><strong>Tarayıcı (crawler) ikinci sayfaya geçemiyordu.</strong> Düğmenin
- *       `href`i yok; arama motoru bir tıklama olayını çalıştırmaz. Derin
- *       sayfalardaki kayıtlar yalnızca sitemap'te göründükleri kadar
- *       keşfedilebiliyordu.</li>
- *   <li><strong>Kullanıcı yeni sekmede açamıyordu.</strong> Orta tık, Cmd+tık ve
- *       "bağlantıyı kopyala" çalışmıyor, durum çubuğunda hedef görünmüyordu.</li>
- * </ul>
- *
- * <p>Oklar her iki kipte de `IconButton`: devre dışı kalabildikleri için düğme
- * kalırlar — `<a>` etiketinin "devre dışı" hâli yok, `aria-disabled` ise
- * tıklamayı engellemez. Sayfa numaraları tarayıcıya zaten tam listeyi veriyor.
- */
+/** Sayfalama. */
 const Pagination: FC<Props> = ({
   page,
   totalPages,

@@ -48,8 +48,6 @@
     color: $text;
     font-weight: $weight-semibold;
 
-    /* iOS: 16 px altindaki girdiye odak sayfayi yakinlastirip geri
-       cikmiyordu (bkz. for-touch mixin'i). */
     @include for-touch {
       font-size: $font-size-base;
     }
@@ -64,14 +62,6 @@
     }
   }
 
-  /*
-   * ARTI VE EKSI IKON OLCEGINDEN OLCULUR.
-   *
-   * Once dugmeler metin puntosu tasiyordu (13 / 15 px) ve adet kutusundaki
-   * rakam onlardan buyuk gorunuyordu: adedi degistiren iki dugme, degistirdigi
-   * sayidan kucuktu. `PlusLg`/`DashLg` cizgileri daha kalin; ayni olcude bile
-   * dokunulabilir bir hedef gibi okunuyorlar.
-   */
   &--sm {
     .stepper__button {
       height: 32px;
@@ -82,8 +72,6 @@
       width: 34px;
       font-size: $font-size-xs;
 
-      /* Ust kuraldaki for-touch bloku bu seciciye yeniliyor; ayni istisna
-         burada da yazilir (iOS odak yakinlastirmasi). */
       @include for-touch {
         font-size: $font-size-base;
       }

@@ -17,12 +17,6 @@
 
   @include focus-ring;
 
-  /*
-   * Ikon madalyonu.
-   *
-   * Sabit kutu: farkli ikonlarin dogal genislikleri karolari duzensiz
-   * hizaliyordu. Yuvarlak zemin ayrica ikonu kartin zemininden ayirir.
-   */
   &__medallion {
     display: inline-flex;
     align-items: center;
@@ -62,8 +56,6 @@
     color: $blue-hover;
   }
 
-  /* Etkin karo: madalyon DOLAR — karo listesinde tek bir oge secilidir ve dolu
-     zemin onu bir bakista ayirir. */
   &--active {
     border-color: $blue;
 

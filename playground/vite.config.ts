@@ -4,18 +4,7 @@ import { resolve } from 'node:path';
 import hanuiLayer from '../scripts/lib/postcss-hanui-layer.mjs';
 import { defineConfig } from 'vite';
 
-/**
- * Galeri uygulaması — kütüphane derlemesinden AYRI.
- *
- * <p>Kök `vite.config.ts` kütüphane kipinde (`build.lib`) ve tek bir giriş
- * noktası üretiyor; galeri ise sıradan bir uygulama. İkisini tek yapılandırmada
- * toplamak, `lib` ayarlarının uygulamaya sızmasına (ve `'use client'`
- * banner'ının bir HTML sayfasına eklenmesine) yol açıyordu.
- *
- * <p>CSS modülü ad şeması kütüphaneninkiyle AYNI tutulur: galeride görülen sınıf
- * adı, üretimde görülenle aynı olmalı — aksi hâlde bir hata ayıklama oturumunda
- * aranan sınıf bulunamıyor.
- */
+/** Galeri uygulaması — kütüphane derlemesinden AYRI. */
 export default defineConfig({
   root: resolve(import.meta.dirname, '.'),
   resolve: {

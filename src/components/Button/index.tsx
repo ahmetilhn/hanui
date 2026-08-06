@@ -39,27 +39,9 @@ type Props = BaseProps &
 /**
  * Düğme.
  *
- * <h3>Yüklenirken içerik korunur</h3>
- * Metin dönen çarkla DEĞİŞTİRİLMEZ, yanına eklenir ve düğme genişliği
- * sabitlenir. Metni değiştirmek düğmeyi daraltıp yerleşimi kaydırıyordu ve
- * kullanıcı neye tıkladığını kaybediyordu.
- *
- * <h3>Bağlantı mı düğme mi</h3>
- * `href` verilirse `<a>` çizilir. Görsel olarak düğme gibi duran bir
- * bağlantının gerçekten `<a>` olması gerekir: orta tuşla yeni sekmede
- * açılması ve tarayıcı geçmişine girmesi beklenen davranıştır.
- *
- * <p>`isExternal` ile birlikte yönlendirici DEĞİL ham `<a>` çizilir ve
- * `target="_blank"` + `rel="noopener noreferrer"` eklenir. Uygulama dışı bir
- * adres için yönlendiriciyi araya sokmak anlamsız; `rel` ise zorunlu —
- * `noopener` olmadan açılan sekme `window.opener` üzerinden bu sayfaya
- * erişebiliyor. Düğme benzeri dış bağlantı elle `<a>` olarak yazılmasın diye
- * burada: elle yazılan her bağlantı odak halkasını ve durum matrisini yeniden
- * kurmak zorunda kalıyordu.
- *
  * @example
  * <Button variant={UIVariant.PRIMARY} isLoading={isSaving} onClick={save}>
- *   Kaydet
+ * Kaydet
  * </Button>
  */
 const Button = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(

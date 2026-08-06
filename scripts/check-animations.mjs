@@ -1,50 +1,11 @@
 #!/usr/bin/env node
-/**
- * DERLENMIS CSS'TE HER ANIMASYON ADI TANIMLI BIR `@keyframes`E BAGLI MI?
- *
- * <h3>Neden bir nobetci gerekiyor</h3>
- * Var olmayan bir animasyona basvurmak GECERLI CSS'tir. Tarayici bildirimi
- * sessizce duser, Sass derler, stylelint susar, e2e'nin statik ekran
- * goruntusu ilk kareyi karsilastirdigi icin duran bir spinner ile donen bir
- * spinneri ayirt edemez. Yani bu kirikta uyaracak KIMSE yoktu.
- *
- * <h3>Olculen kirik (v2.0.9 ve oncesi)</h3>
- * `build/styles.css` icindeki 18 animasyon referansinin 18'i de kirikti:
- * modul dosyalari `animation: hanui-spin …` yaziyor, CSS Modules kisayoldaki
- * ADI da yerellestiriyor (`hanui-hanui-spin-wTV0a`), ama `@keyframes` global
- * `base.scss` icinde tanimli ve hashlenmiyor. Tanimli 7 keyframe'in HICBIRI
- * kullanilmiyordu — spinner donmuyor, popover suzulmuyor, iskelet parlamiyor,
- * alt sayfa kaymadan beliriyordu. Kirik yayina kadar gitti.
- *
- * Cozum `base.scss` icinde: ad bir ozel ozellige (`--hanui-anim-*`) konur,
- * modul `var(...)` ile okur ve yerellestirme fonksiyon dugumune dokunmadigi
- * icin devreye girmez. Bu betik o cozumun YERINDE DURDUGUNU olcer — kaynagi
- * degil CIKTIYI okur, cunku kirilan sey derleme adimiydi.
- *
- * <h3>Ne olcuyor</h3>
- * 1. Her `animation` / `animation-name` degerindeki ad tanimli bir
- *    `@keyframes`e karsilik geliyor mu.
- * 2. Ad `var(--hanui-anim-*)` ise: o ozel ozellik yayinlanmis mi ve
- *    gosterdigi keyframe tanimli mi.
- * 3. Tanimli ama HIC kullanilmayan keyframe var mi (olu tanim — kirigin
- *    ilk belirtisi tam olarak buydu).
- *
- * Kullanim: `node scripts/check-animations.mjs [css-yolu]` (varsayilan
- * `build/styles.css`). `npm run verify` icinde kosar.
- */
+/** DERLENMIS CSS'TE HER ANIMASYON ADI TANIMLI BIR `@keyframes`E BAGLI MI? */
 import { readFileSync } from 'node:fs';
 import { argv, exit } from 'node:process';
 
 const CSS_PATH = argv[2] ?? 'build/styles.css';
 
-/**
- * `animation` kisayolundaki ADI ayiklar.
- *
- * Kisayol sirali degil: `animation: 700ms linear infinite hanui-spin` de
- * gecerli. Ad, anahtar kelime OLMAYAN ve sure/egri gibi gorunmeyen tek
- * tanimlayicidir. Fonksiyon cagrilari (`var(...)`, `cubic-bezier(...)`)
- * ayrica toplanir — ad bir ozel ozellikten geliyor olabilir.
- */
+/** `animation` kisayolundaki ADI ayiklar. */
 const KEYWORDS = new Set([
   'normal',
   'reverse',

@@ -1,24 +1,11 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * TARIH ALANI — yerel `<input type="date">`.
- *
- * Govde `input-base`ten: bir formda tarih alani ile metin alani yan yana
- * duruyor ve ikisi ayri yukseklikteyse satir hizasi bozuluyordu.
- */
 .dateField {
   @include input-base;
 
-  /*
-   * Yerel takvim simgesi TIKLANABILIR kalir ve imleci isaret eder.
-   * Varsayilan imlec metin oku ve kullanici simgenin tiklanabilir oldugunu
-   * anlamiyordu.
-   */
   &::-webkit-calendar-picker-indicator {
     cursor: pointer;
-    /* Simge tarayicinin kendi cizimi ve tema token'ini izlemiyor; koyu temada
-       siyah bir kare olarak kaliyordu. `filter` onu metin rengine yaklastirir. */
     opacity: 0.6;
 
     &:hover {
@@ -26,15 +13,11 @@
     }
   }
 
-  /* Bos tarih alani yer tutucu gostermiyor: tarayici "gg.aa.yyyy" maskesini
-     kendisi ciziyor ve o maske `$text-3` tonunda okunmali. */
   &:invalid,
   &:not(:focus):placeholder-shown {
     color: $text-2;
   }
 }
-
-/* --- Aralik --- */
 
 .range {
   @include stack($space-2);
@@ -56,32 +39,10 @@
   min-width: 140px;
 }
 
-/*
- * OZET SATIRI: secilen araligin okunur hali.
- *
- * Iki ISO tarih ("2026-03-01" ve "2026-03-14") kullanici icin bir aralik
- * degil iki sayi; ozet ikisini tek cumlede birlestiriyor ve `Intl` ile yerel
- * bicimde yaziyor.
- */
 .range__summary {
   font-size: $font-size-xs;
   color: $text-2;
 
-  /*
-   * OZET DE `Field`IN MESAJ SOZLESMESINE GIRER.
-   *
-   * `Field` ipucunu/hatasini kapsayicinin verdigi siraya gore ciziyor ve
-   * `FilterBar` onu denetimin USTUNE aliyor (yoksa serit alanlari alt
-   * kenardan hizaladigi icin denetim komsularindan yukari kaciyor). Ozet
-   * satiri bir `Field` mesaji DEGIL, kendi kutusunun cocugu — ve tam bu
-   * yuzden duzeltmenin disinda kalmisti.
-   *
-   * OLCULDU (panel /rapor/ciro): ozet acikken "Uygula" dugmesi tarih
-   * girdilerinden 26 px asagida kaliyordu. Ayni degiskeni okuyunca serit
-   * icinde ozet tarihlerin ustune cikar, alanin en alt ogesi yine denetim
-   * olur ve satir kapanir. Serit disinda deger yazilmaz: yedek `0`, yani
-   * ozet DOM sirasinda oldugu gibi altta kalir.
-   */
   order: var(--hanui-field-message-order, 0);
 }
 

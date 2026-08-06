@@ -21,14 +21,7 @@ export type AccordionItem = {
 
 type Props = {
   items: AccordionItem[];
-  /**
-   * Aynı anda YALNIZCA BİR bölüm açık kalır.
-   *
-   * <p>Varsayılan çoklu: bir SSS listesinde iki soruyu yan yana okumak
-   * yaygın bir ihtiyaç ve tek-açık kip, kullanıcının az önce açtığı bölümü
-   * habersizce kapatıyordu. Tek-açık yalnızca bölümler UZUN olduğunda
-   * (mobil filtre paneli) doğru.
-   */
+  /** Aynı anda YALNIZCA BİR bölüm açık kalır. */
   isSingle?: boolean;
   /** Kontrolsüz kullanımda açılışta açık olan bölümler. */
   defaultOpenIds?: string[];
@@ -39,37 +32,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Akordeon — katlanabilir bölümler.
- *
- * <h3>Yerel `<details>` / `<summary>` üzerine</h3>
- * Açık/kapalı durumu, klavye desteği (`Enter` ve `Space`), ekran okuyucu
- * duyurusu ("genişletildi/daraltıldı") ve <strong>sayfa içi bulma</strong>
- * tarayıcıdan gelir. Sonuncusu taklit bir uygulamada imkânsız: Ctrl+F ile
- * aranan bir metin kapalı bir `<details>`in içindeyse tarayıcı bölümü kendisi
- * açıyor; `display: none` ile gizlenmiş bir `<div>`de o metin hiç yok.
- *
- * <p>Bedeli, tek-açık kipin elle kurulması: `<details name="…">` bunu yerel
- * olarak veriyor ama Safari 17.2 öncesinde yok ve orada TÜM bölümler
- * birbirinden bağımsız açılıyordu — sessiz bir davranış farkı. Karar burada
- * veriliyor, tarayıcıya bırakılmıyor.
- *
- * <h3>Yükseklik geçişi</h3>
- * `interpolate-size: allow-keywords` + `height` geçişi ile `auto`ya
- * canlandırılıyor. Desteklemeyen tarayıcıda geçiş düşer ve bölüm ANINDA
- * açılır — eski davranış. Sabit bir piksel yüksekliği vermek ya da
- * `max-height` numarası kullanmak yanlış: ilki içeriği kırpıyor, ikincisi
- * kısa bölümlerde gözle görülür bir gecikme bırakıyordu.
- *
- * <h3>Klavye (yerel)</h3>
- * <table>
- *   <tr><td>`Enter` / `Space`</td><td>bölümü açar/kapatır</td></tr>
- *   <tr><td>`Tab`</td><td>başlıklar arasında gezinir</td></tr>
- * </table>
- * Ok tuşu YOKTUR ve olmamalı: akordeon bir liste değil, her başlık bağımsız
- * bir düğme (WAI-ARIA APG accordion deseni ok tuşlarını isteğe bağlı bırakıyor
- * ve yerel öğe onları getirmiyor).
- */
+/** Akordeon — katlanabilir bölümler. */
 const Accordion: FC<Props> = ({
   items,
   isSingle,

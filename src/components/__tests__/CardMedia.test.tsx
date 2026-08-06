@@ -2,21 +2,7 @@ import { render } from '@testing-library/react';
 
 import { CardMedia } from '../Card';
 
-/**
- * MEDYA DOLDURMA BİÇİMİ — karar çağıranda.
- *
- * <h3>Neden bir test, neden görsel regresyon değil</h3>
- * Galeri senaryosu bu kuralları çiziyor ama piksel karşılaştırması "hangi
- * prop hangi sınıfa gider" sorusunu <em>yanıtlamaz</em>: bir eşleme
- * karışsaydı (örneğin `cover` sığdırma sınıfını alsaydı) anlık görüntü
- * yalnızca "bir şey değişti" derdi. Sözleşme burada adıyla kilitli.
- *
- * <h3>Eski `isContained` yolu neden hâlâ ölçülüyor</h3>
- * Kütüphanenin kuralı: bir prop adı değişecekse eski yol bir sürüm boyunca
- * çalışır (`docs/MIGRATION.md`). "Çalışır" bir niyet beyanı olmamalı — köprü
- * sessizce koptuğunda tüketicinin gördüğü şey, prop'unu yazdığı hâlde
- * değişmeyen bir görünüm oluyordu.
- */
+/** MEDYA DOLDURMA BİÇİMİ — karar çağıranda. */
 
 /** Çerçeve: oranı taşıyan `<span>`; sınıf adları saplamadan kendi adlarıyla gelir. */
 const frameOf = (container: HTMLElement): HTMLElement => {

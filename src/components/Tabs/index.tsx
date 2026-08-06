@@ -23,13 +23,7 @@ export type TabItem = {
   label: string;
   /** Etiketin yanında gösterilen sayı. */
   count?: number;
-  /**
-   * Sekmenin paneli.
-   *
-   * <p>Verilmezse bileşen yalnızca <strong>sekme çubuğu</strong> çizer ve
-   * içeriği çağıran taraf yönetir. Bir formun üç kipi tek bir panelin içinde
-   * yaşıyorsa üç ayrı panel yazmak aynı alanları üç kez tanımlamak olurdu.
-   */
+  /** Sekmenin paneli. */
   content?: ReactNode;
 };
 
@@ -37,60 +31,18 @@ type Props = {
   items: TabItem[];
   /** Kontrolsüz kullanımda açılışta seçili sekme. */
   defaultTabId?: string;
-  /**
-   * Kontrollü kullanım: seçili sekme çağıranın durumunda.
-   *
-   * <p>`onChange` ile birlikte verilir. Kontrolsüz sürüm (yalnızca
-   * `defaultTabId`) korunur — kendi durumunu tutması yeterli olan sekmelerin
-   * dışarıdan yönetilmesi gereksiz.
-   */
+  /** Kontrollü kullanım: seçili sekme çağıranın durumunda. */
   activeId?: string;
   onChange?: (id: string) => void;
   /** Sekme çubuğunun erişilebilir adı. */
   ariaLabel?: string;
-  /**
-   * Ok tuşu yalnızca ODAĞI taşır; seçim `Enter`/`Space` ile yapılır.
-   *
-   * <p>Varsayılan OTOMATİK etkinleştirme (ok tuşu odakla birlikte seçimi de
-   * taşır) ve APG panel içeriği hazır olduğu sürece onu öneriyor. Ama panel
-   * PAHALIYSA — her sekme bir istek atıyorsa — otomatik etkinleştirme,
-   * kullanıcı beşinci sekmeye giderken dört istek atıyor. Manuel kipte
-   * kullanıcı hedefine varıp `Enter`a basıyor: tek istek.
-   */
+  /** Ok tuşu yalnızca ODAĞI taşır; seçim `Enter`/`Space` ile yapılır. */
   isManualActivation?: boolean;
   className?: string;
   testId?: string;
 };
 
-/**
- * Sekmeler.
- *
- * <p>ARIA sekme kalıbı tam uygulanır: `role="tablist"`, `aria-selected`,
- * `aria-controls` ve ok tuşlarıyla gezinme. Yalnızca görsel olarak sekme gibi
- * duran düğmeler, klavye kullanıcısı için gezinilemez bir yapı olurdu.
- *
- * <p>Seçili olmayan panel DOM'dan çıkarılır: gizli panellerdeki bağlantılar ve
- * girdiler sekme sırasına girmemeli.
- *
- * <h3>İki kullanım</h3>
- * <ul>
- *   <li><b>Kontrolsüz + panelli</b> — `items[].content` verilir, bileşen
- *       seçimi kendisi tutar.</li>
- *   <li><b>Kontrollü + panelsiz</b> — `activeId` + `onChange` verilir,
- *       `content` verilmez; bileşen yalnızca çubuğu çizer.</li>
- * </ul>
- *
- * <h3>Klavye (APG: tabs, OTOMATİK etkinleştirme)</h3>
- * <table>
- *   <tr><td>`ArrowRight` / `ArrowLeft`</td><td>sonraki / önceki sekme; uçlarda DÖNER</td></tr>
- *   <tr><td>`Tab`</td><td>çubuktan panele çıkar — çubuk TEK durak</td></tr>
- * </table>
- * Ok tuşu odakla birlikte seçimi de taşır (otomatik etkinleştirme). Panel
- * içeriği hazır ve ucuz olduğu sürece APG'nin önerdiği budur; her sekmesi bir
- * istek atan pahalı bir panelde `isManualActivation` verilir — orada otomatik
- * etkinleştirme, kullanıcı beşinci sekmeye giderken dört istek atıyordu.
- * Nöbetçi: `components/__tests__/keyboard.test.tsx`.
- */
+/** Sekmeler. */
 const Tabs: FC<Props> = ({
   items,
   defaultTabId,
@@ -113,17 +65,7 @@ const Tabs: FC<Props> = ({
   const listRef = useRef<HTMLDivElement>(null);
   const active = items[activeIndex] ?? items[0];
 
-  /*
-   * SECILI SEKME GORUNURE KAYDIRILIR.
-   *
-   * Cubuk tasabiliyor (`scroll-row`) ve secim adres cubugundan ya da baska bir
-   * denetimden de gelebiliyor: on sekmeli bir cubukta yedinci sekme secili
-   * gelen bir sayfa, kullaniciya hicbir sekme secili degilmis gibi
-   * gorunuyordu.
-   *
-   * `block: 'nearest'` — dikey kaydirma YOK: cubuk sayfanin ortasindayken
-   * `scrollIntoView` bütün sayfayi zipliyordu.
-   */
+  /* SECILI SEKME GORUNURE KAYDIRILIR. */
   useEffect(() => {
     scrollIntoViewIfPossible(listRef.current?.querySelector(`[aria-selected="true"]`), {
       block: 'nearest',
@@ -136,13 +78,7 @@ const Tabs: FC<Props> = ({
     onChange?.(id);
   };
 
-  /**
-   * Ok tuşlarıyla gezinme; başta/sonda döner.
-   *
-   * <p>Otomatik kipte ok tuşu odakla birlikte SEÇİMİ de taşır; manuel kipte
-   * yalnızca odağı taşır ve seçim `Enter`/`Space` ile yapılır. İkisi de APG
-   * içinde geçerli — ayrım panelin pahalı olup olmadığında.
-   */
+  /** Ok tuşlarıyla gezinme; başta/sonda döner. */
   const handleKeyDown = (event: KeyboardEvent) => {
     if (isManualActivation && (event.key === 'Enter' || event.key === ' ')) {
       event.preventDefault();
@@ -169,9 +105,6 @@ const Tabs: FC<Props> = ({
   /*
    * Panelsiz kullanimda `aria-controls` VERILMEZ: var olmayan bir kimligi
    * isaret etmek ekran okuyucuda kirik bir bag uretir.
-   *
-   * Kontrol VARLIK uzerinden: `content` bir dize ya da sayi da olabilir ve
-   * `undefined`/`null` disindaki her sey bir panel demek.
    */
   const hasPanel = isDefined(active?.content);
 

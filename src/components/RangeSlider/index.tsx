@@ -37,41 +37,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Çift kulplu aralık kaydırıcı.
- *
- * <h3>Neden iki gerçek `<input type="range">`</h3>
- * Kulplar `<div>` ile çizilip sürükleme JavaScript'le yazıldığında klavye
- * desteği, ekran okuyucu duyurusu ve dokunma davranışı elle yeniden kurulmak
- * zorunda kalır — ve pratikte biri hep eksik kalır. Üst üste bindirilmiş iki
- * yerel aralık girdisi bunların hepsini ücretsiz getirir: ok tuşları, Home/End,
- * PageUp/PageDown ve aralık duyurusu kendiliğinden çalışır.
- *
- * <h3>Kulplar birbirini geçemez</h3>
- * Alt kulp üst değeri, üst kulp alt değeri aşamaz. Geçmelerine izin vermek
- * "en az 8.000, en çok 1.200" gibi anlamsız bir aralık üretiyordu.
- *
- * <h3>Sayı değil METİN duyurulur</h3>
- * `aria-valuetext` biçimlenmiş değeri taşır. Aksi hâlde ekran okuyucu ham
- * sayıyı ("bir milyon iki yüz elli bin") okuyordu.
- *
- * <h3>`onChange` ile `onCommit` ayrıdır</h3>
- * Kaydırırken her adımda adres çubuğuna yazmak, tek bir sürüklemede onlarca
- * gezinme kaydı bırakıp geri tuşunu kullanılamaz hâle getiriyordu. Ekran anında
- * güncellenir (`onChange`), sorgu yalnızca kulp bırakılınca yazılır.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`ArrowRight` / `ArrowUp`</td><td>bir adım artırır</td></tr>
- *   <tr><td>`ArrowLeft` / `ArrowDown`</td><td>bir adım azaltır</td></tr>
- *   <tr><td>`Home` / `End`</td><td>ölçeğin ucuna gider</td></tr>
- *   <tr><td>`PageUp` / `PageDown`</td><td>büyük adım</td></tr>
- * </table>
- * Tamamı YEREL öğeden gelir — kütüphane hiçbir tuşu kendisi işlemez. Buraya
- * ait olan iki şey ayrıca ölçülüyor: kulpların birbirini geçmemesi ve
- * `onCommit`in tuş bırakıldığında (`keyup`) çalışması. Nöbetçi:
- * `components/__tests__/keyboard.test.tsx`.
- */
+/** Çift kulplu aralık kaydırıcı. */
 const RangeSlider = ({
   min,
   max,

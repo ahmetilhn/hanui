@@ -2,14 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 
 import useAnnounce from '../useAnnounce';
 
-/**
- * DUYURU MERKEZİ.
- *
- * <p>Görsel geri bildirimi olan her asenkron sonucun sesli karşılığı olmalı:
- * filtre 48 ürüne düştüğünde, sepete eklendiğinde, form hata verdiğinde. Gören
- * kullanıcı sonucu bir bakışta alıyor; ekran okuyucu kullanıcısı odağı olmayan
- * bir yerde değişen içeriği fark etmiyor.
- */
+/** DUYURU MERKEZİ. */
 
 const region = (politeness: 'polite' | 'assertive') =>
   document.getElementById(`hanui-live-region-${politeness}`);

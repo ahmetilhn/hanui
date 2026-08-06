@@ -1,13 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Kopyalanabilir teknik deger.
- *
- * Bu tur bir deger kullanicinin TASIDIGI veridir: baska bir yere gonderiyor,
- * karsilastiriyor, mesajla soruyor. Bu yuzden hem sabit genislikli bir yazi
- * tipiyle okunur hem de tek dokunusla kopyalanir.
- */
 .copy {
   display: inline-flex;
   align-items: center;
@@ -23,11 +16,6 @@
     @include technical-text($font-size-sm);
   }
 
-  /*
-   * `user-select: all` — tek tiklama degerin TAMAMINI secer. Kullanicilar
-   * fareyle surukleyerek yarim numara kopyaliyordu; bir hanesi eksik bir kod
-   * bambaska bir kayit demek.
-   */
   &__code {
     @include truncate;
 
@@ -35,32 +23,12 @@
     color: inherit;
   }
 
-  /*
-   * Kopyalama dugmesi.
-   *
-   * Notr ve sessiz: degerin YANINDA duruyor, onun yerine gecmiyor. Dokunma
-   * hedefi 44 px, gorsel kutu 20 px — gorunmez tampon ile (WCAG 2.5.8), aksi
-   * halde satir iki katina cikiyordu.
-   */
   &__button {
-    /*
-     * Tampon ORTALANIR. Elle yazilmis hali `position: absolute` idi ama
-     * `top`/`left` verilmedigi icin 44 px'lik alan dugmenin SOL UST kosesinden
-     * asagi saga dogru aciliyordu: hedef gorsel simgenin uzerinde degil
-     * altinda-sagindaydi ve altta baska bir satir varsa onun uzerine
-     * biniyordu. Ortak mixin ayni tamponu merkeze koyar.
-     */
     @include tap-target;
 
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    /*
-     * Gorsel kutu 24 px, ikon 16 px. Once 20/13'tu: 13 px'lik bir pano
-     * simgesi, yanindaki tek aralikli deger metniyle ayni yukseklikte
-     * kaliyor ve TIKLANABILIR oldugu okunmuyordu. Dokunma hedefi 44 px
-     * (`tap-target`) — o degismedi, satir yuksekligi de degismez.
-     */
     width: 24px;
     height: 24px;
     flex-shrink: 0;
@@ -86,7 +54,6 @@
       transition: none;
     }
 
-    /* Kopyalandi: yesil tik. Ikon DA degisiyor — renk tek sinyal degil. */
     &--done {
       color: $green-accent;
 

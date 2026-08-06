@@ -28,39 +28,7 @@ type Props<T extends string> = {
   testId?: string;
 };
 
-/**
- * Bölmeli denetim — <strong>görünüm</strong> değiştirme.
- *
- * <h3>{@link ChipGroup} ile farkı: filtre mi görünüm mü</h3>
- * İkisi de `radiogroup` ve ikisi de tek seçim; ayrım seçilen şeyin ne
- * olduğunda:
- *
- * <ul>
- *   <li>`ChipGroup` bir FİLTRE. Seçim listeyi daraltıyor, seçenek sayısı
- *       değişken ve "hiçbiri" geçerli bir durum — çipe ikinci kez basmak
- *       seçimi kaldırıyor.</li>
- *   <li><b>`SegmentedControl` bir GÖRÜNÜM anahtarı.</b> Liste/ızgara,
- *       aylık/yıllık, gelen/giden. Seçenek sayısı 2-4 ve SABİT; <strong>seçili
- *       durum her zaman tektir</strong> — "hiçbiri" diye bir hâl yok, çünkü
- *       ekranda bir şey çizilmek zorunda.</li>
- * </ul>
- *
- * <p>Bu yüzden seçili öğeye ikinci kez basmak hiçbir şey yapmaz; `ChipGroup`ta
- * aynı hareket seçimi kaldırıyor. Aynı bileşeni iki iş için kullanmak, bu
- * davranış farkını kaybetmek olurdu.
- *
- * <h3>Neden `Tabs` değil</h3>
- * `Tabs` bir PANEL değiştirir ve `aria-controls` ile ona bağlanır; bölmeli
- * denetim aynı içeriğin başka bir SUNUMUNU seçiyor — gösterilen veri aynı.
- * Sekme olarak sunmak ekran okuyucuya var olmayan bir panel vaat ediyordu.
- *
- * <h3>Klavye (APG: radio group)</h3>
- * <table>
- *   <tr><td>`ArrowRight` / `ArrowDown`</td><td>sonraki seçenek; uçlarda DÖNER</td></tr>
- *   <tr><td>`ArrowLeft` / `ArrowUp`</td><td>önceki seçenek</td></tr>
- *   <tr><td>`Tab`</td><td>grubu TEK durak olarak geçer (dönen `tabindex`)</td></tr>
- * </table>
- */
+/** Bölmeli denetim — <strong>görünüm</strong> değiştirme. */
 const SegmentedControl = <T extends string>({
   options,
   value,

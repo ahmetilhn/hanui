@@ -3,15 +3,7 @@ import type { KeyboardEvent } from 'react';
 
 import useListboxNavigation from '../useListboxNavigation';
 
-/**
- * `Select` ve `Combobox`ın ORTAK klavye modeli.
- *
- * <p>Bu kanca çıkarılmadan önce aynı altı davranış iki bileşende kopya kod
- * olarak duruyordu ve ayrışma SESSİZDİ: her bileşenin kendi testi vardı ve her
- * biri kendi davranışını doğruluyordu — biri `Home` tuşunu desteklerken
- * diğerinin desteklememesi hiçbir yerde kırılmıyordu. Model artık tek yerde,
- * nöbetçisi de burada.
- */
+/** `Select` ve `Combobox`ın ORTAK klavye modeli. */
 
 const key = (name: string): KeyboardEvent<HTMLElement> =>
   ({ key: name, preventDefault: jest.fn() }) as unknown as KeyboardEvent<HTMLElement>;

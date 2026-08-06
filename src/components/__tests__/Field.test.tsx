@@ -31,20 +31,7 @@ describe('Field', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Geçersiz adres');
   });
 
-  /*
-   * BU TEST TERSINE CEVRILDI — ve gerekcesi olculebilir.
-   *
-   * Ipucu once hatanin ALTERNATIFIYDI: "gurultu yapiyor" gerekcesiyle hata
-   * belirir belirmez kural ekrandan siliniyordu. Kullanicinin OKUMASI GEREKEN
-   * mesaj tam da oydu: "Gecersiz adres" neyin yanlis oldugunu soyluyor,
-   * "Fatura buraya gider" ne yapilmasi gerektigini. Ikincisini kaldirmak,
-   * kullaniciyi kurali hatirlamaya birakiyordu.
-   *
-   * Ayrica ikisi CELISIYORDU: `aria-describedby` artik hem hatayi hem ipucunu
-   * gosteriyor ve ipucu cizilmediginde bag BOS bir dugume isaret ediyordu —
-   * ekran okuyucu var olmayan bir kimligi atliyor, gorunur kullanici da metni
-   * gormuyordu. Hata ONCE okunur; onem sirasi orada.
-   */
+  /* BU TEST TERSINE CEVRILDI — ve gerekcesi olculebilir. */
   it('hata varken yardım metni de KALIR', () => {
     render(
       <Field label="E-posta" hint="Fatura buraya gider" error="Geçersiz adres">

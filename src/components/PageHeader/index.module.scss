@@ -1,12 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Sayfa basligi.
- *
- * Bosluk olcegi burada SABITLENIR: her sayfa ayni giris ritmini alir.
- * Container kendi `padding-block`'unu yazmaz (bkz. `@mixin page`).
- */
 .header {
   @include stack($space-4);
 
@@ -14,11 +8,6 @@
     gap: $space-3;
   }
 
-  /*
-   * Baslik solda, eylemler sagda. `align-items: baseline` DEGIL `flex-end`:
-   * iki satirlik basliklarda taban cizgisi hizalamasi dugmeyi basligin ilk
-   * satirina cekiyordu.
-   */
   &__top {
     display: flex;
     align-items: flex-end;
@@ -27,14 +16,6 @@
     flex-wrap: wrap;
   }
 
-  /*
-   * Kirinti yolu yuvasi ICERIGI KADAR.
-   *
-   * `align-self: flex-start` olmadan yuva dikey esnek kutunun tam genisligine
-   * geriliyor: seride konan bir dugme baslik genisliginde ve ortalanmis metinle
-   * cikiyordu. `max-inline-size` + `min-inline-size` uzun bir yolun kendi
-   * tasma kuralini korur.
-   */
   &__breadcrumb {
     align-self: flex-start;
     max-inline-size: 100%;
@@ -52,7 +33,6 @@
     @include overline;
   }
 
-  /* Baslik ve sayac AYNI SATIRDA: kullanici sayiyi baslikla okur. */
   &__titleRow {
     display: flex;
     align-items: baseline;
@@ -66,10 +46,6 @@
     margin: 0;
   }
 
-  /*
-   * Sayac. Basliktan bir kademe kucuk ve $text-2: rakam basligi
-   * golgelememeli ama okunmali.
-   */
   &__meta {
     font-family: $font-ui;
     font-size: $font-size-sm;
@@ -79,7 +55,6 @@
     white-space: nowrap;
   }
 
-  /* Aciklama 68ch'de durur; tam genislikte akan satirda goz kayboluyor. */
   &__description {
     @include muted($font-size-base);
 
@@ -92,7 +67,6 @@
 
     flex-shrink: 0;
 
-    /* Dar ekranda eylemler tam genislige yayilir; kenarda asili kalmaz. */
     @include for-mobile {
       width: 100%;
 

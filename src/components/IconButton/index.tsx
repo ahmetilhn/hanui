@@ -28,38 +28,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   testId?: string;
 };
 
-/**
- * Yalnızca ikon taşıyan düğme.
- *
- * <p>`label` <strong>zorunlu</strong>: görsel etiketi olmayan bir düğme
- * `aria-label` olmadan ekran okuyucuda "düğme" diye okunur. Zorunlu tutmak,
- * unutulmasını derleme zamanında engeller.
- *
- * <p>Dokunma hedefi 44×44 px'ten küçük olamaz (WCAG 2.5.8) — görsel kutu daha
- * küçük olsa bile tıklanabilir alan korunur.
- *
- * <h3>`href` verilince `<a>` çizilir</h3>
- * Bir tablo satırının "düzenle" simgesi görsel olarak düğme ama davranışı
- * bağlantı: orta tuşla yeni sekmede açılması, adresinin kopyalanabilmesi ve
- * tarayıcı geçmişine girmesi beklenen davranış. `onClick` + `router.push` ile
- * yazıldığında bunların hiçbiri çalışmıyordu.
- *
- * <p>Bağlantı kipinde `disabled` YOKTUR — `<a>` etiketinin devre dışı hâli
- * yok ve `aria-disabled` tıklamayı engellemez. Erişilemez olması gereken bir
- * eylem hiç çizilmez.
- *
- * <h3>Native `title` YAZILMAZ</h3>
- * Düğme `label`ı yalnızca `aria-label`a koyar. Önce ikisi birlikte
- * yazılıyordu (`title="Şifreyi göster" aria-label="Şifreyi göster"`) ve bu üç
- * ayrı sorun üretiyordu: tarayıcının balonu <strong>dokunmatikte hiç
- * görünmez</strong> — trafiğin ağırlığı mobil olan bir arayüzde açıklamanın
- * hiç olmaması demek; klavyeyle gelen kullanıcıda gecikmeli çıkar ve biçimi
- * işletim sistemine bağlıdır; bazı ekran okuyucular `aria-label` ile birlikte
- * ikisini de okuyup adı <em>iki kez</em> söyler. Görünür bir açıklama isteyen
- * çağıran düğmeyi {@link Tooltip} ile sarar — balon dokunmatikte uzun basmayla
- * da açılır. Yine de `title` geçirmek isteyen `...rest` ile geçirebilir; karar
- * artık çağıranın.
- */
+/** Yalnızca ikon taşıyan düğme. */
 const IconButton = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
   (
     {

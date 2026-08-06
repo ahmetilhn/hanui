@@ -41,13 +41,7 @@ describe('buildThemeCss', () => {
     expect(css).toContain(`:root:not([${THEME_ATTRIBUTE}])`);
   });
 
-  /*
-   * OLCU EZMELERI TEMA BASINA DEGIL.
-   *
-   * Bir markanin yuvarlakligi acik temada 12 px, koyu temada 8 px olmaz. Ayri
-   * verilebilseydi iki degerin ayrismasi kacinilmazdi ve fark yalnizca tema
-   * degistirildiginde gorunurdu — yani neredeyse hic.
-   */
+  /* OLCU EZMELERI TEMA BASINA DEGIL. */
   it('ölçü ezmesi tema seçiminden bağımsız `:root`a yazılır', () => {
     const css = buildThemeCss({ metrics: { 'radius-md': '2px', 'space-4': '20px' } });
 

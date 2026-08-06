@@ -1,10 +1,4 @@
-/**
- * Ölçü basamakları.
- *
- * <p>`MEDIUM` ve `LARGE` dokunma hedefi kuralına uyar (WCAG 2.5.8, ≥44 px).
- * `SMALL` yoğun şeritler içindir ve orada görsel kutu küçülür ama tıklanabilir
- * alan `tap-target` ile korunur.
- */
+/** Ölçü basamakları. */
 enum UISize {
   SMALL = 'SMALL',
   MEDIUM = 'MEDIUM',

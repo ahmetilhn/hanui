@@ -47,35 +47,7 @@ const STATUS_TEXT: Record<'done' | 'current' | 'upcoming', string> = {
   upcoming: 'sıradaki',
 };
 
-/**
- * Adım göstergesi (stepper) — çok adımlı akışta NEREDE olunduğu.
- *
- * <h3>Üç durum, ÜÇ AYRI işaret</h3>
- * Tamamlanan adım <strong>tik</strong>, bulunulan adım <strong>dolu
- * madalyon + sıra numarası</strong>, sıradaki adım <strong>boş
- * madalyon</strong> taşıyor. Renk bunlara EŞLİK ediyor, tek başına
- * anlatmıyor (WCAG 1.4.1): üçünü yalnızca renkle ayırmak, renk körü bir
- * kullanıcı için "üç aynı daire" demekti.
- *
- * <p>Durum ayrıca METİN olarak okunuyor — her adımın erişilebilir adına
- * "tamamlandı" / "şu anki adım" / "sıradaki" ekleniyor. Görsel işaret ekran
- * okuyucuya geçmiyor; `aria-current` tek başına yalnızca BULUNULAN adımı
- * söylüyor, tamamlananları değil.
- *
- * <h3>Geri dönülebilirlik AÇIKÇA bildirilir</h3>
- * `onStepClick` verilmediğinde adımlar `<button>` bile değil: tıklanabilir
- * görünüp hiçbir şey yapmayan bir adım, kullanıcıya var olmayan bir yol vaat
- * ediyordu. Verildiğinde yalnızca TAMAMLANMIŞ adımlar tıklanabilir — ileri
- * atlamak, atlanan adımın verisini toplamadan devam etmek demek.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`Tab`</td><td>tıklanabilir adımlar arasında gezinir</td></tr>
- *   <tr><td>`Enter` / `Space`</td><td>adıma döner</td></tr>
- * </table>
- * Ok tuşu YOK: adımlar bir seçim listesi değil, her biri bağımsız bir
- * gezinme bağlantısı.
- */
+/** Adım göstergesi (stepper) — çok adımlı akışta NEREDE olunduğu. */
 const Steps: FC<Props> = ({
   steps,
   currentIndex,

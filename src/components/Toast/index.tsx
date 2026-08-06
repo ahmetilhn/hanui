@@ -41,14 +41,7 @@ const ICONS: Record<ToastTone, ReactNode> = {
   danger: <XCircleFill aria-hidden />,
 };
 
-/**
- * Ton başına varsayılan süre.
- *
- * <p>Hata daha UZUN durur: kullanıcı bir şeyin yanlış gittiğini okumak,
- * başarıyı okumaktan daha uzun sürüyor ve genellikle bir karar gerektiriyor.
- * Dört saniyede kaybolan bir hata mesajı, kullanıcıya ne olduğunu
- * söylememekle aynı kapıya çıkıyordu.
- */
+/** Ton başına varsayılan süre. */
 const DEFAULT_DURATION: Record<ToastTone, number> = {
   info: 4_000,
   success: 4_000,
@@ -59,14 +52,7 @@ const DEFAULT_DURATION: Record<ToastTone, number> = {
 /** Aynı anda ekranda duran en fazla bildirim. */
 const MAX_VISIBLE = 3;
 
-/*
- * YAYIN MERKEZI — modul duzeyinde, saglayicidan BAGIMSIZ.
- *
- * `HanuiProvider` zorunlu degil (bkz. `theme/context.ts`) ve bildirim
- * cagrilari React agacinin disindan da geliyor: bir axios interceptor'unun
- * icinden, bir servis fonksiyonundan. Yayin merkezi bir context'e baglansaydi
- * o cagrilarin hicbiri calismazdi.
- */
+/* YAYIN MERKEZI — modul duzeyinde, saglayicidan BAGIMSIZ. */
 let counter = 0;
 /* `new Set()` modul duzeyinde bir CAGRI ve acilama olmadan bundler onu yan
    etkili sayabilir — Faz 0'da `memo()` cagrilarinda tam olarak bu olmustu.
@@ -100,13 +86,6 @@ const push = (message: string, options: ToastOptions = {}): number => {
 
 /**
  * BİLDİRİM SÖZLEŞMESİ — süre, ikon ve renk kararları TEK YERDE.
- *
- * <h3>Neden harici bir kütüphaneye sarmalayıcı DEĞİL</h3>
- * Tüketici `react-hot-toast` taşıyordu ve gövdeyi kendi yazmak zorunda
- * kalmıştı: kütüphanenin goober sınıfı bizim modül sınıfımızla AYNI
- * özgüllükteydi ve kazananı kaynak sırası belirliyordu — aynı bildirim
- * geliştirmede ve üretimde İKİ FARKLI RENKTE çıkıyordu. Bir sarmalayıcı bu
- * sorunu çözmez, erteler.
  *
  * @example
  * toast.success('Adres kaydedildi');
@@ -217,25 +196,7 @@ type HubProps = {
   className?: string;
 };
 
-/**
- * Bildirim yığını — uygulamada <strong>BİR KEZ</strong> çizilir.
- *
- * <h3>Neden tek yığın</h3>
- * Birden fazla canlı bölge, ekran okuyucuların duyuruları birleştirip sırayla
- * okumasına ya da tamamen atlamasına yol açıyor. Yığın kök yerleşimde bir kez
- * durur; `toast.*` çağrıları React ağacının dışından da çalışır.
- *
- * <h3>Duyuru bölgesi HER ZAMAN DOM'da</h3>
- * Kapsayıcı bildirim yokken de çiziliyor. Sonradan DOM'a eklenen bir canlı
- * bölgenin ilk duyurusu güvenilmez — ekran okuyucu bölgeyi izlemeye
- * başlamadan içerik gelmiş oluyor.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`Tab`</td><td>bildirimin eylemine ve kapatma düğmesine ulaşır</td></tr>
- *   <tr><td>odak/hover</td><td>kapanma sayacını DURDURUR</td></tr>
- * </table>
- */
+/** Bildirim yığını — uygulamada <strong>BİR KEZ</strong> çizilir. */
 const ToastHub = ({ closeLabel, className }: HubProps) => {
   const { labels } = useHanui();
   const [toasts, setToasts] = useState<ToastRecord[]>([]);
@@ -264,25 +225,7 @@ const ToastHub = ({ closeLabel, className }: HubProps) => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [toasts]);
 
-  /*
-   * ═══ HIDRASYON: `isClient()` RENDER İÇİNDE OKUNAMAZ ═══
-   *
-   * Burada `if (!isClient()) return null` yazıyordu ve bu, React'in
-   * hidrasyon uyuşmazlığı için listelediği ilk maddenin ta kendisiydi:
-   * sunucu/istemci dallanması. Sunucu `null` üretiyor, istemcinin İLK
-   * render'ı ise portalı üretiyordu; ağaç o noktada ayrıştığı için React
-   * "server rendered HTML didn't match" diyor ve alt ağacın tamamını
-   * yeniden çiziyordu.
-   *
-   * Etkisi büyüktü: `ToastHub` kök yerleşimde duruyor, yani uyuşmazlık
-   * uygulamanın HER sayfasında oluşuyordu (ölçüldü: tüketici uygulamada
-   * `<ToastHub />` kaldırılınca hata tümüyle kayboluyor).
-   *
-   * Doğru kalıp bir DURUM bayrağı: sunucu ve istemcinin ilk render'ı aynı
-   * şeyi (`null`) üretir, portal ancak montajdan SONRA açılır. Bildirimler
-   * zaten yalnızca kullanıcı etkileşimiyle çıkıyor; bir kare gecikmenin
-   * görünür bir bedeli yok.
-   */
+  /* HIDRASYON: `isClient()` RENDER İÇİNDE OKUNAMAZ */
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => setIsMounted(true), []);

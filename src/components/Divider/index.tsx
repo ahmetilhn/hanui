@@ -10,12 +10,7 @@ type Props = {
   className?: string;
 };
 
-/**
- * Ayırıcı çizgi.
- *
- * <p>Etiketli hâli `role="separator"` taşımaz: metin içerdiğinde ekran okuyucu
- * onu ayırıcı değil içerik olarak okumalı ("veya").
- */
+/** Ayırıcı çizgi. */
 const Divider: FC<Props> = ({ label, className }) =>
   label ? (
     <div className={cx(styles.divider, styles['divider--labelled'], className)}>

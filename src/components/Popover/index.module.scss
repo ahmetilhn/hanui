@@ -1,12 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Popover yuzeyi.
- *
- * GOVDEDE (portal) ve `position: fixed`; koordinati `usePositioning` yaziyor.
- * Buradaki hicbir kural konum belirlemez.
- */
 .popover {
   z-index: $z-dropdown;
 
@@ -23,8 +17,6 @@
   line-height: $leading-normal;
   text-align: start;
 
-  /* Yon: yuzey hangi kenarda acildiysa oradan gelir; carpisma yuzunden
-     karsit kenara dusuldugunde animasyon da onunla birlikte doner. */
   &--top {
     animation: $anim-fade-in-up $duration-fast $ease-out;
   }
@@ -42,8 +34,6 @@
     animation: none;
   }
 
-  /* Zorlanmis renk kipinde golge cizilmiyor; kutu siniri yuzeyin sayfadan
-     ayrilmasinin TEK yolu. */
   @media (forced-colors: active) {
     border-color: CanvasText;
   }

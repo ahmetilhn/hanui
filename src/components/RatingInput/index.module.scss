@@ -25,28 +25,14 @@
     gap: $space-1;
   }
 
-  /*
-   * Yildiz = radyo dugmesinin etiketi.
-   *
-   * Girdinin kendisi gorsel olarak gizlenir ama DOM'da durur; odak halkasi
-   * etikete `:focus-within` ile tasinir. Girdiyi `display: none` yapmak onu
-   * klavye sirasindan cikarirdi.
-   */
   &__star {
     position: relative;
-    /*
-     * Gercek 44px kutu (WCAG 2.5.8): gorsel yildiz daha kucuk ama yildizlar
-     * arasi ritim bu kutudan geliyor. `tap-target` KULLANILMAZ: gorunmez ortu
-     * kutuyu kucultur ve yildizlar birbirine yaklasirdi.
-     */
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-width: 44px;
     min-height: 44px;
 
-    /* Metin degil GRAFIK olcusu: 44 px'lik kutunun icinde secilebilir
-       buyuklukte tek deger. */
     font-size: $icon-xl;
     color: $border;
     cursor: pointer;
@@ -58,7 +44,6 @@
       transform: scale(1.1);
     }
 
-    /* Puan yildizi token'i — bkz. `Rating`. */
     &--filled {
       color: $star;
     }
@@ -90,7 +75,6 @@
     font-size: $font-size-sm;
     font-weight: $weight-medium;
     color: $text;
-    /* Metin gorununce yildizlar ziplamasin diye yer bastan ayrilir. */
     min-height: 1.4em;
   }
 }

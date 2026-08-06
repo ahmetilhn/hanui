@@ -11,18 +11,6 @@
   padding: 0;
   font-size: $font-size-xs;
 
-  /*
-   * DAR EKRANDA SARMAZ, KAYAR.
-   *
-   * Sarmali yol derin hiyerarsilerde uc satira ciktiginda (olculdu: 71 px)
-   * sayfanin en degerli bolgesini yiyordu. Yol ikincil bir gezinme aracidir;
-   * tek satirda kalir ve gerekirse kaydirilir.
-   *
-   * Baslangic SOLDA kalir (kokten yapraga): son ogeyi gostermek icin serit
-   * saga kaydirilabilirdi ama bulundugun sayfanin adi zaten hemen altta
-   * `<h1>` olarak duruyor. Kaydirilmis bir yol ise "yukari cikma"
-   * baglantilarini — yolun tek ise yarar kismini — gizliyordu.
-   */
   @include for-tablet-portrait {
     @include scroll-row($space-1);
 
@@ -59,13 +47,6 @@
     font-weight: $weight-medium;
   }
 
-  /*
-   * Ayrac DOLU ucgen (`CaretRightFill`), ince chevron degil.
-   *
-   * Chevron 12 px'te yalnizca iki hairline cizgiye iniyor ve `$text-3`
-   * tonunda — yolun en soluk ogesi — acik temada neredeyse kayboluyordu.
-   * Dolu ucgen ayni olcude ayni sessizlikte ama gorunur.
-   */
   &__separator {
     @include mirror-in-rtl;
 

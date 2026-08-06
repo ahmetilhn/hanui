@@ -14,10 +14,6 @@ export type InitHanuiOptions = Partial<{
   /**
    * Bilgi yoğunluğu. Verilmezse `<html data-hanui-density>` neyse o kalır;
    * o da yoksa `default`.
-   *
-   * <p>Uygulama başına SABİT bir karar olduğunda (operasyon paneli her zaman
-   * `compact`) buradan verilir; kullanıcıya seçtiren bir uygulama özniteliği
-   * kendisi yazar.
    */
   density: HanuiDensity;
 }>;
@@ -25,28 +21,11 @@ export type InitHanuiOptions = Partial<{
 /**
  * Kütüphaneyi <strong>React ağacının dışından</strong> yapılandırır.
  *
- * <h3>Ne zaman bu, ne zaman `HanuiProvider`</h3>
- * `HanuiProvider` React'in içinde yaşıyor ve yönlendirici bileşenini de
- * taşıyor — normal yol o. Bu fonksiyon iki durum için:
- *
- * <ul>
- *   <li><strong>Boyamadan önce çalışması gereken tema.</strong> Sağlayıcı
- *       ağaç monte olduktan sonra yazıyor; koyu tema seçmiş bir kullanıcı o
- *       ana kadar beyaz ekran görüyor. `<head>` içindeki satır içi bir
- *       betikten çağrıldığında ezmeler ilk boyamadan önce yerinde olur.</li>
- *   <li><strong>React kullanmayan bir kabuk.</strong> Tasarım token'ları
- *       yalnızca CSS; bir e-posta önizlemesi ya da Storybook temasında
- *       bileşen ağacı olmadan da gerekiyor.</li>
- * </ul>
- *
- * <p>İkisi birlikte kullanılabilir: aynı `<style>` etiketini paylaşırlar ve
- * son çağrı kazanır.
- *
  * @example
  * // app/layout.tsx — <head> içine, boyamadan önce.
  * <script dangerouslySetInnerHTML={{ __html: `
- *   document.documentElement.dataset.hanuiTheme =
- *     localStorage.getItem('theme') ?? 'light';
+ * document.documentElement.dataset.hanuiTheme =
+ * localStorage.getItem('theme') ?? 'light';
  * ` }} />
  */
 export const initHanui = (options: InitHanuiOptions = {}): void => {

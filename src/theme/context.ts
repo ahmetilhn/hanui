@@ -7,14 +7,7 @@ import type { HanuiLabels } from './labels';
 import type { HanuiThemeConfig } from './tokens';
 
 export type HanuiContextValue = {
-  /**
-   * Tüketicinin yönlendiricisi (`next/link`, `react-router`ın `Link`i…).
-   *
-   * <p>Verilmezse ham `<a>` çizilir ve gezinme tam sayfa yenilemesi olur.
-   * Bir bileşen kütüphanesi kendi yönlendiricisini SEÇEMEZ: `next/link`
-   * import etmek paketi Next'e bağlar, `react-router` import etmek başka bir
-   * uygulamayı kırar. Karar tüketicinin.
-   */
+  /** Tüketicinin yönlendiricisi (`next/link`, `react-router`ın `Link`i…). */
   linkComponent?: HanuiLinkComponent;
   /** Uygulanan tema ezmeleri. Salt okunur; değiştirmek için `HanuiProvider`. */
   theme?: HanuiThemeConfig;
@@ -27,14 +20,7 @@ export type HanuiContextValue = {
 
 const HanuiContext = createContext<HanuiContextValue>({});
 
-/**
- * Sağlayıcı ZORUNLU DEĞİL.
- *
- * <p>Sağlayıcısız kullanımda bağlantılar ham `<a>` olur ve tema
- * varsayılanlarda kalır — yani paket `import` edilip hiçbir kurulum
- * yapılmadan çalışır. Sağlayıcıyı zorunlu kılmak, tek bir `Badge` kullanmak
- * isteyen bir tüketiciyi de kök yerleşimi değiştirmeye zorluyordu.
- */
+/** Sağlayıcı ZORUNLU DEĞİL. */
 export const useHanui = (): HanuiContextValue => useContext(HanuiContext);
 
 export default HanuiContext;

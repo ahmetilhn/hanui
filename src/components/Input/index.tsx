@@ -20,15 +20,7 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix'> & {
   testId?: string;
 };
 
-/**
- * Metin girdisi.
- *
- * <p>Ön ek / son ek girdinin <em>içinde</em> konumlanır; girdinin yanına ayrı
- * bir kutu koymak hizalamayı bozar ve odak halkasını ikiye böler.
- *
- * <p>Odak halkası sarmalayıcıda değil girdinin kendisinde: sarmalayıcıya
- * verildiğinde `:focus-visible` klavye/fare ayrımını kaybediyordu.
- */
+/** Metin girdisi. */
 const Input = /*#__PURE__*/ forwardRef<HTMLInputElement, Props>(
   ({ prefix, suffix, isTechnical, className, testId, ...rest }, ref) => (
     <span className={cx(styles.wrapper, className)}>

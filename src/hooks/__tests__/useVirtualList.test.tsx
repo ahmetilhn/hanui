@@ -2,14 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 
 import useVirtualList from '../useVirtualList';
 
-/**
- * SANALLAŞTIRMA nöbetçisi.
- *
- * <p>Ölçülen sorun: 1121 markalı bir `Combobox` listesinde DOM 1121 satır
- * taşıyordu ve panel açılışı mobilde gözle görülür şekilde donuyordu. Kanca
- * kütüphane içinde yazıldı — `react-window` bu işi yapıyor ama paketin tek
- * çalışma zamanı bağımlılığının ikon seti olması bilinçli bir karar.
- */
+/** SANALLAŞTIRMA nöbetçisi. */
 
 /** Ölçülebilir bir kaydırma kutusu: jsdom düzen yapmıyor, ölçüler elle verilir. */
 const attach = (

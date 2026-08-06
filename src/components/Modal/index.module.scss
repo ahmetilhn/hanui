@@ -1,14 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Kip pencere.
- *
- * `<dialog>` varsayilan olarak kenarlikli ve ortalanir; sifirlanip kendi
- * yuzeyimiz verilir. Ic bosluk PANELE ait, dialog'un kendisine degil — arka
- * plana tiklama olcumu dialog'un kutusuna bakiyor ve ic bosluk o kutuyu
- * buyutup panelin kenarindaki tiklamalari "arka plan" sayiyordu.
- */
 .modal {
   border: none;
   padding: 0;
@@ -26,47 +18,14 @@
     max-width: min(92vw, 880px);
   }
 
-  /*
-   * GIRIS VE CIKIS SIMETRIK.
-   *
-   * Once yalnizca GIRIS animasyonu vardi (`animation: hanui-fade-in-up`):
-   * pencere yumusakca aciliyor, kapanirken BIR KAREDE yok oluyordu. Kullanici
-   * neyin kapandigini goremiyor — ozellikle iki pencere ust usteyken, hangisinin
-   * kapandigi belirsizdi.
-   *
-   * `@starting-style` + `transition-behavior: allow-discrete` ikisini de tek
-   * kural kumesiyle veriyor: `display` ve `overlay` de gecise katildigi icin
-   * `close()` cagrildiginda oge hemen kaybolmuyor, cikis suresi boyunca ust
-   * katmanda kaliyor. `animation` ile bu MUMKUN DEGILDI — bir animasyon
-   * ogenin `display: none` olmasini geciktiremez.
-   *
-   * Destegi olmayan tarayicida: gecis dusuyor, pencere aninda gorunup aninda
-   * kayboluyor — yani ESKI davranis. Hicbir sey kirilmiyor.
-   */
   @include surface-transition;
-
-  /* Perde de pencereyle BIRLIKTE belirir VE birlikte kaybolur. Animasyonsuz
-     birakildiginda sayfa bir anda kararip pencere onun ustune "dusuyor" gibi
-     goruntu veriyordu. AYRI mixin: `[open]` sozde ogeye uygulanamaz. */
   @include backdrop-transition;
 
   &::backdrop {
     background-color: $scrim;
-    /*
-     * Hafif bulaniklik: arka plandaki icerigin okunabilir kalmasi pencereyi
-     * "sayfanin bir parcasi" gibi gosteriyordu. Kip bir pencere dikkati
-     * tamamen almali.
-     */
     backdrop-filter: blur(3px);
   }
 
-  /*
-   * MOBILDE ALT SAYFA.
-   *
-   * Ortalanmis bir pencere, klavye acildiginda yukari sikisiyor ve dip
-   * dugmeleri klavyenin altinda kaliyordu. Alt sayfa bas parmagin
-   * erisebildigi yerde durur.
-   */
   @include for-mobile {
     &,
     &--sm,
@@ -76,15 +35,9 @@
       max-height: calc(92dvh - env(safe-area-inset-top, 0px));
       margin: 0;
       margin-top: auto;
-      /* Alt sayfa gibi duran her yuzey ayni kadar KALDIRILIR (`$sheet-lift`).
-         `margin-top: auto` pencereyi YERLESIM gorunum alaninin dibine
-         oturtuyor; centikli cihazda dip serit — yani eylem dugmeleri — ana
-         ekran cubugunun altinda kaliyordu. */
       margin-bottom: #{$sheet-lift};
     }
 
-    /* Dar ekranda yuzey DIPTEN gelir: `translateY(6px)` yerine tam yukseklik.
-       Giris ve cikis yine simetrik. */
     &:not([open]),
     &[open] {
       @include surface-transition($shift: 100%, $duration: $duration-normal);
@@ -108,7 +61,6 @@
     }
   }
 
-  /* Baslik ve kapatma yapiskan: uzun icerikte kaydirinca da erisilebilir. */
   &__header {
     @include row($space-3, flex-start);
 
@@ -119,17 +71,10 @@
     @include for-mobile {
       padding: $space-4;
 
-      /* Alt sayfa tam genislik: yatay telefonda centik payi (safe-inline). */
       @include safe-inline($space-4);
     }
   }
 
-  /*
-   * Ikon madalyonu.
-   *
-   * Tint zemin — doygun dolgu degil: bu bir DURUM gostergesi (yikici islem,
-   * uyari, onay), tiklanabilir bir oge degil.
-   */
   &__icon {
     display: inline-flex;
     align-items: center;
@@ -138,8 +83,6 @@
     height: 40px;
     flex-shrink: 0;
     border-radius: $radius-md;
-    /* 19 px'lik metin puntosu, 40 px'lik madalyonun yarisini bos birakiyordu:
-       durum ikonu pencerenin ilk okunan ogesi, once o goruluyor. */
     font-size: $icon-xl;
 
     &--neutral {
@@ -168,7 +111,6 @@
 
     flex: 1;
     min-width: 0;
-    /* Ikon 40 px; baslik onun optik merkezine hizalanir. */
     padding-top: 2px;
   }
 
@@ -186,8 +128,6 @@
     max-width: $measure;
   }
 
-  /* Kapatma dugmesi basligin ust hizasinda; dikey ortalanirsa iki satirlik
-     baslikta asagi kayiyor. */
   &__close {
     flex-shrink: 0;
     margin-top: -2px;
@@ -196,7 +136,6 @@
   &__body {
     padding: $space-5;
     overflow-y: auto;
-    /* Uzun formda govde kayar, baslik ve eylemler sabit kalir. */
     flex: 1;
 
     @include custom-scrollbar;
@@ -206,20 +145,12 @@
 
       @include safe-inline($space-4);
 
-      /* Dip seridi yoksa guvenli alani govde oder; yoksa son satir ana ekran
-         cubugunun altinda kaliyordu. Pencere `$sheet-lift` kadar kaldirildigi
-         icin hesap `safe-bottom`a birakilir — elle yazilan `max(…, env(…))`
-         ayni payi ikinci kez ekliyordu. */
       &:last-child {
         @include safe-bottom($space-4);
       }
     }
   }
 
-  /*
-   * Dip seridi: gomulu yuzey. Govdeyle ayni beyaz kalirsa eylemler formun
-   * icindeymis gibi gorunuyordu.
-   */
   &__footer {
     @include wrap-row($space-2);
 
@@ -235,11 +166,6 @@
       @include safe-inline($space-4);
       @include safe-bottom($space-3);
 
-      /*
-       * Dar ekranda dugmeler tam genislige yayilir. `column-reverse`: JSX'te
-       * "Vazgec" once yazilir (klavye sirasi mantikli) ama ekranda BIRINCIL
-       * EYLEM ALTTA, bas parmaga yakin durur.
-       */
       flex-direction: column-reverse;
 
       > * {

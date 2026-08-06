@@ -6,13 +6,7 @@ import {
   resetModalStack,
 } from '../focus.helper';
 
-/**
- * ODAK YÖNETİMİ — geri dönüş, ilk anlamlı öğe ve kipsel yığın.
- *
- * <p>Üçü de görsel iz bırakmadan bozulan davranışlar: odak `<body>`ye
- * düştüğünde ekranda hiçbir şey değişmiyor, yalnızca klavye kullanıcısı
- * sayfanın en başına gidiyor.
- */
+/** ODAK YÖNETİMİ — geri dönüş, ilk anlamlı öğe ve kipsel yığın. */
 
 const mount = (html: string): HTMLElement => {
   document.body.innerHTML = html;

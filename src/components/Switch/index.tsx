@@ -20,48 +20,12 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'role'> & {
 /**
  * Anahtar (switch) — <strong>anında</strong> uygulanan aç/kapa.
  *
- * <h3>`Checkbox` ile farkı: NE ZAMAN etkili olduğu</h3>
- * İkisi de iki durumlu ve ikisi de yerel `<input type="checkbox">` üzerine
- * kurulu; ayrım görünüşte değil ZAMANLAMADA:
- *
- * <ul>
- *   <li>{@link Checkbox} bir formda <strong>gönderilecek</strong> seçimdir.
- *       "Sözleşmeyi okudum" işaretlendiğinde hiçbir şey olmaz; karar
- *       "Kaydet"e basıldığında geçerli olur. Geri almak için işareti kaldırıp
- *       yeniden göndermek gerekir.</li>
- *   <li><b>`Switch` ANINDA uygulanır.</b> "Kampanya bildirimleri" açıldığı
- *       anda sunucuya gider. Kaydet düğmesi yoktur, olmamalıdır da —
- *       kullanıcı anahtarı çevirdikten sonra bir düğme aramak zorunda
- *       kalıyordu.</li>
- * </ul>
- *
- * <p>Ayrım keyfi değil ekran okuyucuda DUYULUYOR: `role="switch"` "açık/kapalı"
- * diye okunur, onay kutusu "işaretli/işaretsiz" diye. İkisi kullanıcıya farklı
- * bir söz veriyor.
- *
- * <h3>Yerel öğe korunur</h3>
- * `<input type="checkbox" role="switch">` — `Space` ile değiştirme, `Tab`
- * sırası, form gönderimine katılma ve `:disabled` semantiği tarayıcıdan gelir.
- * `<div role="switch" tabindex="0">` yazmak bunların hepsini elle yeniden
- * kurmak demekti.
- *
- * <h3>Durum RENKLE ANLATILMAZ</h3>
- * Açık ve kapalı hâl arasındaki fark yalnızca zemin rengi olsaydı renk körü
- * bir kullanıcı için iki durum aynı görünürdü (WCAG 1.4.1). Kulp KONUM
- * değiştiriyor — bu bir biçim farkı — ve zorlanmış renk kipinde çerçeve +
- * konum tek başına yeterli kalıyor.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`Space`</td><td>durumu değiştirir</td></tr>
- * </table>
- *
  * @example
  * <Switch
- *   label="Kampanya bildirimleri"
- *   hint="E-posta ile ayda en fazla iki ileti"
- *   checked={isSubscribed}
- *   onChange={event => subscribe(event.target.checked)}
+ * label="Kampanya bildirimleri"
+ * hint="E-posta ile ayda en fazla iki ileti"
+ * checked={isSubscribed}
+ * onChange={event => subscribe(event.target.checked)}
  * />
  */
 const Switch = forwardRef<HTMLInputElement, Props>(

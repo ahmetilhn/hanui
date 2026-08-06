@@ -2,18 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 
 import useScrollLock from '../useScrollLock';
 
-/**
- * KAYDIRMA KİLİDİ — sayacın nöbetçisi.
- *
- * <p>Bu kancanın tek varlık sebebi İÇ İÇE panellerde doğru davranmak.
- * `Modal` ve `BottomSheet` kilidi kendi başlarına yazarken tek pencerede
- * doğru çalışıyor, iki pencerede bozuluyordu: dış pencerenin temizliği önce
- * koşabiliyor ve iç panel hâlâ açıkken kilidi AÇIYORDU — kullanıcı panelin
- * arkasındaki listeyi kaydırıyordu.
- *
- * <p>Aşağıdaki "iki panel" testi, korumalar kaldırıldığında gerçekten kırılan
- * test.
- */
+/** KAYDIRMA KİLİDİ — sayacın nöbetçisi. */
 describe('useScrollLock', () => {
   beforeEach(() => {
     document.body.style.overflow = '';
@@ -73,12 +62,6 @@ describe('useScrollLock', () => {
    * genisligi kadar YATAY OLARAK SIÇRIYOR. Kanca iki onlem aliyor:
    * `scrollbar-gutter: stable` ve — destegi olmayan tarayicida — olculen
    * genislik kadar dolgu.
-   *
-   * ÖLÇÜLEN SEY BURADA DOLGUNUN GERI ALINMASI. `scrollbar-gutter` jsdom'da
-   * ONAYLANMIYOR (`setProperty` taninmayan ozelligi sessizce atiyor) ve
-   * `innerWidth - clientWidth` her zaman 0: ikisini de test etmek jsdom'un
-   * eksigini olcmek olurdu. Kanca bir dolgu YAZDIYSA onu geri almak zorunda
-   * ve bunu dogrulamak icin onceki degeri bozmasi yeterli.
    */
   it('önceki satır içi dolgu kilit kalkınca geri gelir', () => {
     document.body.style.paddingRight = '4px';

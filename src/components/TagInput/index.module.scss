@@ -1,13 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * ETIKET GIRDISI.
- *
- * Kutu `input-base` govdesini kullanir ama YEREL girdinin kendisi degil:
- * cipler DOM'da girdinin KARDESI (bir `<input>` cocuk alamiyor) ve ikisi
- * gorsel olarak tek bir kutuda duruyor.
- */
 .tagInput {
   @include input-base;
 
@@ -18,8 +11,6 @@
   padding: $space-1 $space-2;
   cursor: text;
 
-  /* Odak halkasi KUTUDA: girdi kutunun icinde ve ona cizilen halka yalnizca
-     metin alanini sariyordu. */
   &:has(.tagInput__field:focus-visible) {
     border-color: $ring-color;
     box-shadow: $ring;
@@ -49,12 +40,6 @@
     background-color $duration-fast $ease-out,
     border-color $duration-fast $ease-out;
 
-  /*
-   * YINELENEN deger: var olan cip bir kare vurgulanir.
-   *
-   * Sessizce yutmak yerine GOSTERMEK gerekiyordu — kullanici "yazdim,
-   * kayboldu" diyordu.
-   */
   &--duplicate {
     background-color: $warn-bg;
     border-color: $warn-line;
@@ -93,10 +78,6 @@
   @include focus-ring($ring-color, 1px);
 }
 
-/*
- * YEREL GIRDI. Kendi kenarligi ve odak halkasi YOK: onlar kutunun isi ve iki
- * kez cizildiginde ic ice iki cerceve cikiyordu.
- */
 .tagInput__field {
   flex: 1;
   min-width: 100px;
@@ -107,8 +88,6 @@
   font-size: $font-size-sm;
   color: $text;
 
-  /* 16 px ZORUNLU: iOS 16 px altindaki girdiye odakta sayfayi yakinlastirip
-     geri cikmiyor. */
   @include for-touch {
     font-size: $font-size-base;
   }

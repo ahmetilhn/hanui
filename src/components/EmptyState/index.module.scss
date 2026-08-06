@@ -1,14 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Bos durum.
- *
- * Kullaniciyi cikmaz sokakta BIRAKMAZ: her bos durum en az bir ileri yol
- * gosterir. Bu yuzden bilesende `action` ve `secondaryAction` var ve yerlesim
- * onlarin varligina gore degil, HER ZAMAN ortalanmis duruyor — eylem
- * eklendiginde blok yerinden kaymasin.
- */
 .empty {
   @include stack($space-3);
 
@@ -20,13 +12,6 @@
     padding: $space-7 $space-4;
   }
 
-  /*
-   * Ikon madalyonu.
-   *
-   * `$surface-2` daire — doygun dolgu degil: bos durum bir HATA degil, bir
-   * bilgi. Renkli bir madalyon kullaniciya bir sey ters gitmis gibi
-   * okunuyordu.
-   */
   &__icon {
     display: flex;
     align-items: center;
@@ -37,8 +22,6 @@
     background-color: $surface-2;
     border: 1px solid $border;
     color: $text-2;
-    /* 64 px'lik madalyonun icinde 26 px'lik simge, kenarina 19 px bosluk
-       birakip daireyi bos gosteriyordu. */
     font-size: 32px;
     margin-bottom: $space-1;
   }
@@ -50,11 +33,6 @@
     text-wrap: balance;
   }
 
-  /*
-   * Aciklama `$text-2` ve 48ch: ortalanmis metinde satir uzunlugu daha da
-   * kritik — goz her satirin basini yeniden bulmak zorunda ve uzun satirlar
-   * ortalanmis blokta okunamaz hale geliyor.
-   */
   &__description {
     @include muted($font-size-sm);
 
@@ -69,7 +47,6 @@
     justify-content: center;
     margin-top: $space-2;
 
-    /* Dar ekranda eylemler alt alta ve tam genislikte. */
     @include for-mobile {
       width: 100%;
       max-width: 320px;
@@ -81,7 +58,6 @@
     }
   }
 
-  /* Panel ve kart icinde kullanilan kucuk surum. */
   &--sm {
     padding: $space-6 $space-4;
 
@@ -97,13 +73,6 @@
   }
 }
 
-/*
- * HATA TONU — "bos" ile "yuklenemedi" ayni yerlesimde ama AYRI gorunur.
- *
- * Yerlesim ayni kaliyor ki iki durum arasindaki gecis sicramasin; ayrimi ikon
- * madalyonunun tonu ve baslik rengi tasiyor. Ag hatasini "kayit kalmamis" diye
- * okuyan kullanici yanlis karar veriyordu.
- */
 .empty--error {
   .empty__icon {
     color: $bad-fg;

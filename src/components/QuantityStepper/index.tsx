@@ -27,16 +27,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Adet seçici.
- *
- * <p>Doğrudan yazma da desteklenir: 12 adet isteyen kullanıcının artı düğmesine
- * on iki kez basması kabul edilemez.
- *
- * <p>Yazılan değer <strong>odak kaybında</strong> sınırlara çekilir, her tuş
- * vuruşunda değil: "12" yazarken "1"i anında 1'e sabitlemek kullanıcının
- * yazmasını engellerdi.
- */
+/** Adet seçici. */
 const QuantityStepper: FC<Props> = ({
   value,
   onChange,

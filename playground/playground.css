@@ -1,15 +1,3 @@
-/*
- * GALERİNİN KENDİ KABUĞU.
- *
- * Bu dosya kütüphanenin parçası DEĞİL ve paketlenmiyor. Kütüphane tüketicinin
- * sayfasına karışan global stil yazmadığı için (sıfırlama, `body`, başlık,
- * bağlantı) galerinin kendi kabuğunu kendisi kurması gerekiyor — ve bu kabuk
- * bilerek çıplak: bileşenlerin görünüşünü etkileyen tek şey token'lar olmalı,
- * galerinin süsü değil.
- *
- * Renkler doğrudan CSS özel özelliklerinden okunuyor; galeri de temayı izler.
- */
-
 * {
   box-sizing: border-box;
 }
@@ -84,25 +72,10 @@ body {
   flex-direction: column;
   gap: 8px;
   min-width: 0;
-  /* Genis bilesenler (tablo, filtre seridi) satiri kendilerine alsin. */
+  
   flex: 0 1 auto;
 }
 
-/*
- * `…Wide` ILE BITEN SENARYO SATIRIN TAMAMINI ALIR.
- *
- * Hücre normalde içeriği kadar. Bazı nöbetçiler ancak bileşen bir GENİŞLİK
- * EŞİĞİNİN ötesindeyken bir şey ölçer: `Panel`in dip şeridi `PanelForm`un
- * 565 px'lik sütununu izliyor mu sorusu, 260 px'lik bir hücrede duruma
- * bakılmaksızın "evet" görünür — yani anlık görüntü düzeltme olsa da olmasa
- * da aynı çıkar.
- *
- * Senaryoya sabit piksel yazmak DENENDI ve daha kötüsünü yaptı: telefon
- * ölçüsünde galeriyi yana taşırıp sayfayı yatay kaydırıyor, `toHaveScreenshot`
- * bölümleri görünüme kaydırırken yanlış dikdörtgeni yakalıyor ve bir bölümün
- * karesine başka bir bileşenin içeriği düşüyordu. Karar hücrede, ölçü
- * kabından geliyor: masaüstünde satırın tamamı, telefonda kabın genişliği.
- */
 .gallery__state[data-state$='Wide'] {
   flex: 1 0 100%;
 }

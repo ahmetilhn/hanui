@@ -4,36 +4,12 @@ import { createRoot } from 'react-dom/client';
 import { HanuiProvider, LABELS, SCENARIOS } from './scenarios';
 import { SOLO_ONLY } from './solo';
 
-/*
- * Kutuphanenin GLOBAL stil sayfasi ACIKCA import ediliyor.
- *
- * `src/index.ts` onu zaten yan etki olarak cekiyor ama galeri kaynagi dogrudan
- * tuketiyor ve bu yapilandirmada satir sessizce dusuyordu: bilesenlerin CSS
- * modulleri geliyor, token yayini (`:root`) gelmiyordu. Sonuc gorunuyordu ama
- * teshis edilmesi zor — her renk ve font `var()` yedegine, yani hicbir seye
- * iniyor ve galeri serif harflerle beyaz bir sayfa olarak aciliyordu.
- */
+/* Kutuphanenin GLOBAL stil sayfasi ACIKCA import ediliyor. */
 import '../src/styles/base.scss';
 
 import './playground.css';
 
-/**
- * BİLEŞEN GALERİSİ.
- *
- * <h3>Neden Storybook değil</h3>
- * Storybook bu boyuttaki bir kütüphaneye orantısız: kendi bundler'ı, kendi
- * eklenti ekosistemi ve her büyük sürümünde bir göç işi geliyor. Buradaki
- * ihtiyaç bundan küçük — bileşenleri iki temada yan yana görmek ve görsel
- * regresyona bir kaynak vermek. Bir `index.html`, bir liste ve Vite bunun
- * için yeterli; galeri kütüphanenin KAYNAĞINI import ediyor, derlenmiş
- * paketini değil, yani değişiklik anında görülüyor.
- *
- * <h3>Durum adres çubuğunda</h3>
- * `?theme=dark&dir=rtl&solo=Modal`. Görsel regresyon aynı sayfayı bu
- * parametrelerle açıyor: kip pencerenin ekran görüntüsünü almak için tıklama
- * senaryosu yazmak gerekmiyor ve tarayıcı otomasyonu ile insan aynı adresi
- * paylaşıyor.
- */
+/** BİLEŞEN GALERİSİ. */
 
 const params = new URLSearchParams(window.location.search);
 

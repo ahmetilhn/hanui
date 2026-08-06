@@ -1,13 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * Tablo kaydirma kutusu.
- *
- * Tek strateji: tablo KENDI kutusunda kayar, sayfa govdesi hicbir kirilma
- * noktasinda yatay kaymaz. `min-width: 0` sart — esnek bir kapsayicinin
- * icinde kutunun kendisi buyuyup sayfayi kaydiriyordu.
- */
 .scroller {
   overflow: auto;
   min-width: 0;
@@ -37,8 +30,6 @@
     border-bottom: none;
   }
 
-  /* Yogunluk: dolgu iskeletten ayri ki tablolar iceriklerine gore nefes
-     alabilsin. Hucre dolgusu cagiran modulde YENIDEN yazilmaz. */
   &--compact th,
   &--compact td {
     padding: $space-2 $space-3;
@@ -54,16 +45,6 @@
     padding: $space-3 $space-4;
   }
 
-  /*
-   * Baslik satiri kutunun icinde yapiskan.
-   *
-   * `$surface-2` zemin ZORUNLU: saydam bir baslik satirinin arkasindan kayan
-   * satirlar geciyordu.
-   *
-   * `top: 0` DOGRU olan: referans ust bant degil, tablonun kendi kaydirma
-   * kutusu (`TableScroller`). Bant offseti buraya yazilirsa baslik satiri
-   * kendi kutusunun 150 px asagisina duser.
-   */
   &--sticky-head thead th {
     position: sticky;
     top: 0;
@@ -78,8 +59,6 @@
     white-space: nowrap;
   }
 
-  /* Satir hover'i yalnizca veri hucrelerini boyar: yapiskan satir basligi
-     (`th[scope='row']`) kendi zeminini korur. */
   &--row-hover tbody tr:hover > td {
     background-color: $surface-2;
   }

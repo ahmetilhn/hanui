@@ -5,12 +5,6 @@
  * kaldırılmaz ve davranışı sessizce değişmez. İç yardımcılar (`HanuiLink`,
  * ikonlar, `cx`) bilinçli olarak dışarıda — dışa verilseler tüketiciler onlara
  * dayanır ve iç yapıyı değiştirmek kırıcı bir değişikliğe dönüşür.
- *
- * <h3>Stil ayrı import edilir</h3>
- * <pre>import '@ahmetilhn/hanui/styles.css';</pre>
- * CSS'i JavaScript'in içine gömmek (`style-inject`) sunucu tarafı çizimde
- * `document` arıyor ve SSR'ı kırıyordu; ayrıca tüketicinin CSS sırasını
- * belirlemesini imkânsız kılıyor.
  */
 
 import './styles/base.scss';

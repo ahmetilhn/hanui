@@ -1,12 +1,4 @@
-/**
- * WCAG kontrast hesabı — ölçüm, karar değil.
- *
- * <p>Renk ayrıştırma `theme/tokens.ts`in ürettiği İKİ biçimi tanımak zorunda:
- * ham hex (`#1f2937`) ve `alpha()`nın ürettiği `rgba(31, 41, 55, 0.55)`. İkincisi
- * tek başına bir renk DEĞİL: saydam bir katman, arkasındaki yüzeyle birleşmeden
- * ölçülemez. `scrim` beyaz zeminde başka, koyu bir görselin üzerinde başka bir
- * renk — bu yüzden her saydam token bir ZEMİNLE birlikte ölçülür.
- */
+/** WCAG kontrast hesabı — ölçüm, karar değil. */
 
 /** `#rgb` / `#rrggbb` / `rgba(r, g, b, a)` → `{ r, g, b, a }` (0-255, 0-1). */
 export const parseColor = value => {

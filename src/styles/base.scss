@@ -1,37 +1,6 @@
 @use 'mixins' as *;
 @use 'tokens.generated';
 
-/*
- * HANUI TABAN KATMANI.
- *
- * `src/index.ts` bunu import eder; derleme sonucunda tek bir
- * `@ahmetilhn/hanui/styles.css` cikar. Tuketici onu bir kez import eder.
- *
- * BURASI BIR CSS SIFIRLAMASI DEGIL. Bir bilesen kutuphanesi tuketicinin
- * `<body>`sine, basliklarina ve baglantilarina karismaz — o sayfa
- * tuketicinin. Yalnizca uc sey var:
- *
- *   1. Token yayini (`tokens.generated`) — bilesenlerin okudugu her renk.
- *   2. Paylasilan `@keyframes` — mixin'ler ve bilesenler bunlara ADLA
- *      basvuruyor; her modulde ayri tanimlamak ayni animasyonun onlarca
- *      kopyasini uretirdi.
- *   3. Bilesenlerin ICINDE gecerli olan iki varsayilan (kutu modeli ve
- *      `accent-color`) — ikisi de `[data-hanui-scope]` ile SINIRLI.
- */
-
-/*
- * Kutu modeli: yalnizca kutuphanenin KENDI ogeleri.
- *
- * Global `*, *::before, *::after { box-sizing: border-box }` yazmak
- * tuketicinin sayfasindaki her ogeyi degistirmek demek — bir bagimlilik bunu
- * yapamaz. Ama bilesenlerimizin dolgu + genislik hesaplari `border-box`a
- * dayaniyor: `content-box` varsayilanina birakilmis bir sayfada
- * `width: 100%` + `padding` tasiyan her girdi kapsayicisindan tasiyordu.
- *
- * Secici sinif ONEKINE bakar (`generateScopedName: 'hanui-[local]-…'`) ve
- * TORUNLARA INMEZ: bir kartin govdesine tuketicinin koydugu icerik onun
- * kendi kutu modelini korumali.
- */
 [class^='hanui-'],
 [class*=' hanui-'],
 [class^='hanui-']::before,
@@ -41,12 +10,6 @@
   box-sizing: border-box;
 }
 
-/*
- * PAYLASILAN ANIMASYONLAR.
- *
- * Adlar `hanui-` onekli: tuketicinin kendi `@keyframes fade-in`i ile ayni ada
- * dusen bir tanim, hangisinin kazandigini kaynak sirasina birakiyordu.
- */
 @keyframes hanui-shimmer {
   0% {
     background-position: 200% 0;
@@ -75,10 +38,6 @@
   }
 }
 
-/* Ustten acilan yuzey: `fade-in-up`in aynasi. Cikis yonu her zaman GERCEK
-   konumu izler — `usePositioning` carpisma yuzunden karsit kenara dustugunde
-   animasyon da onunla birlikte doner; sabit bir yon, asagi acilan bir balonun
-   yukaridan gelmesi demekti. */
 @keyframes hanui-fade-in-down {
   from {
     opacity: 0;
@@ -101,7 +60,6 @@
   }
 }
 
-/* Alt sayfa (bottom sheet): asagidan yukari kayar. */
 @keyframes hanui-slide-up {
   from {
     transform: translateY(100%);
@@ -112,40 +70,6 @@
   }
 }
 
-/*
- * ═══ ANIMASYON ADLARI OZEL OZELLIK OLARAK YAYINLANIR ═══
- *
- * ⚠ Bir modul `animation: hanui-spin …` DIYE YAZAMAZ. CSS Modules `animation`
- * kisayolundaki ADI da yerellestirir (`hanui-hanui-spin-wTV0a`), ama yukaridaki
- * `@keyframes` bu GLOBAL dosyada tanimli ve hashlenmez. Iki ad eslesmez,
- * tarayici var olmayan bir animasyona basvurur ve bildirimi SESSIZCE duser:
- * gecerli CSS oldugu icin ne Sass, ne stylelint, ne tarayici uyarir.
- *
- * OLCULEN ZARAR (v2.0.9 ve oncesi): derlenmis `styles.css` icindeki 18
- * animasyon referansinin **18'i de** kirikti — tanimli 7 keyframe'in HICBIRI
- * kullanilmiyordu. Spinner donmuyor, popover suzulmuyor, iskelet parlamiyor,
- * alt sayfa kaymadan beliriyordu. Galeri (`playground`) ayni boru hattini
- * kullandigi icin orada da kirikti ve e2e statik ekran goruntusu
- * karsilastirdigi icin gormedi: duran bir spinner ilk karede donen bir
- * spinnerla ayni gorunur. Kirik yayina kadar gitti; tuketicide
- * (`hanparca-frontend/src/styles/globals.scss`) elle bir yeniden baglama
- * katmani yazilmasi gerekti.
- *
- * COZUM: ad bir OZEL OZELLIGE konur ve modul `var(...)` ile okur.
- * `postcss-modules-local-by-default` animasyon degerindeki fonksiyon
- * dugumlerine DOKUNMAZ (`if (node.type === 'function') return false`), yani
- * yerellestirme hic devreye girmez. Ad, ozel ozellik ikamesinden SONRA
- * cozulur — `animation-name: var(--x)` her guncel tarayicida gecerlidir.
- *
- * ⚠ DENENDI VE OLMADI: `animation: :global(hanui-spin) …`. CSS Modules'un
- * belgelenmis kacisi bu, ama PostCSS 8.5'in kendi ayristiricisi degerin
- * basindaki iki nokta ustusteyi "Double colon" diye reddediyor — dosya
- * derlenmiyor bile.
- *
- * Bilesende kullanim `_variables.scss` icindeki `$anim-*` adlariyla; nobetci
- * `scripts/check-animations.mjs` derlenmis CSS'te tanimsiz bir animasyon adi
- * kalirsa `verify`i dusurur.
- */
 :root {
   --hanui-anim-shimmer: hanui-shimmer;
   --hanui-anim-spin: hanui-spin;
@@ -153,19 +77,9 @@
   --hanui-anim-fade-in-down: hanui-fade-in-down;
   --hanui-anim-fade-in: hanui-fade-in;
   --hanui-anim-slide-up: hanui-slide-up;
-  /* `@keyframes hanui-progress-slide` bu dosyanin SONUNDA — tanimi ilerleme
-     cubugunun gerekcesiyle birlikte duruyor. */
   --hanui-anim-progress-slide: hanui-progress-slide;
 }
 
-/*
- * Tema gecisi sirasinda gecici olarak `<html>` uzerinde durur.
- *
- * Acik→koyu gecisinde her yuzey ayni anda ama FARKLI surelerde animasyon
- * yapiyordu (kart golgesi 140 ms, zemin 200 ms) ve gecis dalgali
- * gorunuyordu. Bu sinif tum gecisleri tek bir kare boyunca kapatir; tema
- * ANINDA doner. Ani gecis, dalgali gecisten iyi. `useHanuiTheme` yazar.
- */
 .hanui-theme-switching,
 .hanui-theme-switching *,
 .hanui-theme-switching *::before,
@@ -173,50 +87,16 @@
   transition: none !important;
 }
 
-/// Ekran okuyucuya birakilan metin — tuketicinin de kullanabilecegi tek sinif.
 .hanui-visually-hidden {
   @include visually-hidden;
 }
 
-/*
- * =====================================================================
- * ZORLANMIS RENK KIPI — Windows Yuksek Kontrast (WCAG 1.4.1 / 1.4.11)
- * =====================================================================
- *
- * Bu kipte isletim sistemi TUM renkleri kendi paletiyle degistirir:
- * `background-color`, `color` ve `border-color` yok sayilir, sistem renkleri
- * (`Canvas`, `CanvasText`, `Highlight`, `ButtonBorder`) yerlerini alir.
- * Amaci dogru; bedeli, RENKLE anlatilan her seyin KAYBOLMASI:
- *
- *   * Tint zeminli rozetler (`Badge`, `Alert`, `Chip`) tek tip bir kutuya
- *     dusuyor — "stokta" ile "tukendi" ayirt edilemiyor.
- *   * `box-shadow` ile cizilen odak halkasi TAMAMEN kayboluyor: golge bu
- *     kipte cizilmiyor. Klavye kullanicisi nerede oldugunu goremiyor.
- *   * `Spinner`in donen yayi zeminle ayni renge dusuyor.
- *   * Onay kutusu ve radyo isaretleri kayboluyor.
- *
- * Kutuphanede bu kip icin SIFIR kural vardi. Asagidakiler her durumu sistem
- * renkleriyle yeniden kuruyor; `forced-color-adjust: none` YALNIZCA rengin
- * kendisi bir DURUM tasidigi yerlerde (durum noktasi, dolu yildiz).
- */
 @media (forced-colors: active) {
-  /*
-   * ODAK HALKASI — bu kipteki en kritik madde.
-   *
-   * `focus-ring` mixin'i `outline` kullaniyor ve `outline` zorlanmis kipte
-   * KORUNUR; ama `input-base` gibi yerlerde odak `box-shadow: $ring` ile
-   * ciziliyor ve golge cizilmiyor. Yedek burada: odaklanan her ogeye sistem
-   * vurgu rengiyle gercek bir cizgi.
-   */
   :focus-visible {
     outline: 3px solid Highlight;
     outline-offset: 2px;
   }
 
-  /*
-   * KUTU SINIRI. Tint zemin gittigi icin rozet/uyari/cip kutu olarak
-   * okunmayi kenarliga borclu; kenarlik rengi de sistemden gelmeli.
-   */
   [class*='badge'],
   [class*='alert'],
   [class*='chip'],
@@ -226,11 +106,6 @@
     border: 1px solid ButtonBorder;
   }
 
-  /*
-   * SECILI DURUM. Zemin tinti kayboldugu icin "secili cip" ile "secili
-   * olmayan cip" ayni goruntuye dusuyordu; sistemin vurgu cifti ikisini
-   * yeniden ayirir.
-   */
   [aria-selected='true'],
   [aria-current='page'],
   [aria-pressed='true'],
@@ -241,19 +116,12 @@
     forced-color-adjust: none;
   }
 
-  /* Pasif oge: sistemin GrayText'i tek dogru sinyal. */
   :disabled,
   [aria-disabled='true'] {
     color: GrayText;
     border-color: GrayText;
   }
 
-  /*
-   * Yerel kontrollerin isaretleri (`accent-color` ile boyanmis tik ve nokta)
-   * bu kipte sistem tarafindan zaten dogru ciziliyor; `forced-color-adjust`
-   * ile ellenmemeleri gerekiyor. Kural, birinin sonradan ekleyecegi bir
-   * ezmeye karsi ACIK bir kayit.
-   */
   input[type='checkbox'],
   input[type='radio'],
   input[type='range'] {
@@ -261,41 +129,18 @@
   }
 }
 
-/*
- * =====================================================================
- * YUKSEK KONTRAST TERCIHI (`prefers-contrast: more`)
- * =====================================================================
- *
- * Zorlanmis kipten farki: kullanici renkleri DEGISTIRMIYOR, daha keskin bir
- * ayrim istiyor. Hairline'lar en cok burada sikinti veriyor — `$border`
- * beyaz uzerinde 1,38:1 ve dusuk kontrast tercihi olan bir kullanici icin
- * bu bir cizgi degil bir tahmin. Kenarliklar bir kademe koyulasir.
- */
 @media (prefers-contrast: more) {
   :root {
     --hanui-border: var(--hanui-border-strong);
     --hanui-nav-line: var(--hanui-nav-line-strong);
-    /* Soluk metin bir kademe koyulasir: ucuncu kademe ikinciye cikar. */
     --hanui-text-3: var(--hanui-text-2);
     --hanui-nav-fg-3: var(--hanui-nav-fg-2);
   }
 }
 
-/*
- * =====================================================================
- * SAYDAMLIK AZALTMA (`prefers-reduced-transparency`)
- * =====================================================================
- *
- * Saydam yuzeyler (kip pencere perdesi, cam efektli baslik) arkalarindaki
- * metni okunur birakmiyor ve bazi kullanicilar icin bas donmesi/odak
- * kaybi kaynagi. Tercih verildiginde saydam token'lar OPAK karsiliklarina
- * duser — deger yine token, bilesende hicbir kural degismiyor.
- */
 @media (prefers-reduced-transparency: reduce) {
   :root {
     --hanui-glass: var(--hanui-glass-solid);
-    /* Perde saydam KALMAK zorunda (arkasi gorunmeyen bir kip pencere neyin
-       ustunde durdugunu soylemiyor) ama tam opaklige yaklasir. */
     --hanui-scrim: rgb(17 21 27 / 92%);
     --hanui-scrim-soft: rgb(17 21 27 / 78%);
   }
@@ -306,13 +151,6 @@
   }
 }
 
-/*
- * Belirsiz ilerleme cubugu: dolgu ray boyunca akar.
- *
- * Genislik SABIT, hareket eden sey KONUM: genisligi canlandirmak her karede
- * yerlesim hesabi demekti ve dusuk guclu telefonda cubuk takiliyordu.
- * `translate` bilesik katmanda kalir.
- */
 @keyframes hanui-progress-slide {
   from {
     translate: -100% 0;

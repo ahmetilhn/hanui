@@ -45,55 +45,13 @@ type Props = {
   toolbar?: ReactNode;
   /** Dipte duran eylem şeridi. */
   footer?: ReactNode;
-  /**
-   * Panelin <strong>kendiliğinden kapandığı</strong> medya sorgusu.
-   *
-   * <p>Varsayılan mobil eşiği (`>640`), çünkü seçim kutuları o eşiğin üstünde
-   * listeyi yapışkan panelde açıyor. Kendi eşiği daha geniş olan çağıranlar
-   * kendi sorgusunu verir; aksi hâlde 800 px'te açılan panel pencere 641 px'i
-   * geçtiğinde kapanıyor ya da hiç kapanmıyordu.
-   */
+  /** Panelin <strong>kendiliğinden kapandığı</strong> medya sorgusu. */
   closeAbove?: string;
   className?: string;
   testId?: string;
 };
 
-/**
- * Alt sayfa (bottom sheet) — ekranın dibinden yükselen kipsel panel.
- *
- * <h3>Ne zaman</h3>
- * Dar ekranda bir <strong>seçim listesi</strong> açan her kutu bunu kullanır
- * ({@link Select}, {@link Combobox}). Masaüstünde aynı liste tetikleyiciye
- * yapışan bir panelde açılır; telefonda o panel klavye açılınca sıkışıyor ve
- * listenin alt ucu ekranın dışında kalıyordu. Alt sayfa baş parmağın
- * erişebildiği yerde durur, satırları büyüktür ve ekranı tek işe ayırır.
- *
- * <h3>Neden yerel `<dialog>` + portal</h3>
- * `showModal()` odak tuzağını, Escape'i ve arka planın etkileşime kapanmasını
- * tarayıcıdan getirir. Panel <strong>gövdeye taşınır</strong>: seçim kutuları
- * `<label>` içinde durabiliyor ve etiketin içindeki tıklama etiketlenen öğeye
- * yönleniyor — seçeneklere basmak aynı anda tetikleyiciyi de tetikliyordu.
- *
- * <h3>Yalnızca açıkken çizilir</h3>
- * Bileşen `isOpen` almaz: çağıran taraf açıkken <em>render eder</em>, kapatmak
- * için kaldırır. Kapalı bir `<dialog>`u CSS ile gizlemeye çalışmak, sınıf
- * seçicisinin tarayıcı kuralını yenmesi yüzünden paneli ekranın dibinde asılı
- * bırakıyordu.
- *
- * <h3>Kırılma noktası aşılırsa kapanır</h3>
- * `showModal()` sayfanın geri kalanını panel çizilsin ya da çizilmesin inert
- * bırakır; pencere büyütülüp panel gizlenseydi sayfa tıklanamaz kalırdı.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`Escape`</td><td>kapatır (`cancel` olayı çağırana bildirilir)</td></tr>
- *   <tr><td>`Tab`</td><td>odak panelin içinde döner</td></tr>
- * </table>
- * Açılışta odak metin alanına DÜŞMEZ: `showModal()` odağı ilk odaklanabilir
- * öğeye taşıyor ve o öğe bir metin alanı olduğunda telefonda ekran klavyesi
- * kullanıcı istemeden açılıyordu (bkz. `helpers/focus.helper`). Nöbetçi:
- * `components/__tests__/keyboard.test.tsx`.
- */
+/** Alt sayfa (bottom sheet) — ekranın dibinden yükselen kipsel panel. */
 const BottomSheet = ({
   title,
   closeLabel,
@@ -113,20 +71,16 @@ const BottomSheet = ({
   /* Panel GORUNEN alana yaslanir: klavye ve adres cubugu altinda kalmaz. */
   useSheetViewport();
 
-  /* Arka plan kaydirmasi kilitlenir: `showModal()` arka plani etkilesime
-     kapatir ama kaydirmayi her tarayicida engellemiyor — kullanici alt sayfayi
-     kaydirdigini sanirken arkadaki listeyi kaydiriyordu. Kilit SAYACLI: bu
-     panel neredeyse her zaman baska bir kipsel yuzeyin (secim kutusu, filtre
-     paneli) ICINDE aciliyor ve ilki kapaninca kilit erken acilmamali. */
+  /*
+   * Arka plan kaydirmasi kilitlenir: `showModal()` arka plani etkilesime
+   * kapatir ama kaydirmayi her tarayicida engellemiyor — kullanici alt sayfayi
+   * kaydirdigini sanirken arkadaki listeyi kaydiriyordu. Kilit SAYACLI: bu
+   * panel neredeyse her zaman baska bir kipsel yuzeyin (secim kutusu, filtre
+   * paneli) ICINDE aciliyor ve ilki kapaninca kilit erken acilmamali.
+   */
   useScrollLock();
 
-  /*
-   * ODAK GERI DONUSU ve KIPSEL YIGIN.
-   *
-   * Panel `isOpen` almiyor — cagiran acikken cizip kapatmak icin kaldiriyor
-   * (bkz. yukaridaki not). Yani "acilis" MONTAJ, "kapanis" SOKUM: ikisi de
-   * bos bagimlilikli tek bir etkiye sigiyor.
-   */
+  /* ODAK GERI DONUSU ve KIPSEL YIGIN. */
   useEffect(() => {
     const restoreFocus = captureFocus();
     const { token, pop } = pushModal();

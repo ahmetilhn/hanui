@@ -11,17 +11,7 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   testId?: string;
 };
 
-/**
- * Onay kutusu.
- *
- * <p>Yerel `<input type="checkbox">` korunur ve `accent-color` ile
- * renklendirilir. Özel bir kutu çizmek (gizli input + sahte kare) klavye
- * odağını ve ekran okuyucu davranışını elle yeniden kurmayı gerektirir;
- * kazanç görsel, maliyet erişilebilirlik.
- *
- * <p>Tüm satır tıklanabilir (`<label>` sarmalar): 18 px'lik kareyi
- * hedeflemek özellikle dokunmatik ekranda yorucu.
- */
+/** Onay kutusu. */
 const Checkbox = /*#__PURE__*/ forwardRef<HTMLInputElement, Props>(
   ({ label, hint, className, testId, ...rest }, ref) => (
     <label className={cx(styles.checkbox, className)} data-testid={testId}>

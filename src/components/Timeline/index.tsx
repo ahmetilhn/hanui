@@ -31,14 +31,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Durumun GÖRSEL işareti — renkten bağımsız.
- *
- * <p>`done` tik, `failed` çarpı taşıyor; ikisi de dolu daire ve YALNIZCA
- * renkle ayrılsalardı renk körü bir kullanıcı için aynı görünüyorlardı
- * (WCAG 1.4.1). `current` ve `pending` kendi biçimlerini kenarlıktan alıyor
- * (dolu halka / kesikli daire) ve glif taşımıyor.
- */
+/** Durumun GÖRSEL işareti — renkten bağımsız. */
 const STATUS_ICON: Record<TimelineStatus, ReactNode> = {
   done: <CheckLg />,
   failed: <XLg />,
@@ -54,31 +47,7 @@ const STATUS_TEXT: Record<TimelineStatus, string> = {
   failed: 'başarısız',
 };
 
-/**
- * Zaman çizelgesi — sipariş durumu, işlem geçmişi.
- *
- * <h3>{@link Steps} ile farkı: ileri mi geri mi bakıyor</h3>
- * İkisi de sıralı ve durumlu; ayrım yönlerinde:
- *
- * <ul>
- *   <li>`Steps` İLERİ bakar: kullanıcı bir akışın içinde ve kalan adımları
- *       görüyor. Adım sayısı sabit, adımlara dönülebilir.</li>
- *   <li><b>`Timeline` GERİ bakar:</b> olmuş şeylerin kaydı. Olay sayısı
- *       değişken, hiçbiri tıklanabilir değil ve <strong>başarısız</strong>
- *       diye bir durum var — bir adım "başarısız" olamaz, akış orada durur;
- *       bir olay olabilir ve kayıtta kalır.</li>
- * </ul>
- *
- * <h3>Zaman biçimlendirmesi ÇAĞIRANIN</h3>
- * `time` biçimlendirilmiş bir dize. Kütüphane `Intl` çağırsaydı yerel ayarı
- * ve "3 saat önce" mi "14:32" mi yazılacağını kendisi seçmiş olurdu — ikisi
- * de bağlama bağlı kararlar.
- *
- * <h3>Durum renkle DEĞİL, üç şeyle birden</h3>
- * İşaretin <strong>biçimi</strong> (dolu / halka / tik / çarpı), rengi ve
- * ekran okuyucuya okunan <strong>metni</strong>. Yalnızca renk kullanılsaydı
- * "tamamlandı" ile "başarısız" renk körü bir kullanıcı için aynı daireydi.
- */
+/** Zaman çizelgesi — sipariş durumu, işlem geçmişi. */
 const Timeline: FC<Props> = ({ events, label, className, testId }) => (
   <ol className={cx(styles.timeline, className)} aria-label={label} data-testid={testId}>
     {events.map(event => {

@@ -17,20 +17,11 @@ type DirectoryProps = {
 /**
  * Dizin — harf veya konu başlıklı, gruplanmış bağlantı listesi.
  *
- * <h3>Neden ortak bir bileşen</h3>
- * Bir marka dizini ile bir kategori dizini aynı işi yapıyor: yüzlerce
- * bağlantıyı gruplayıp taranabilir kılmak. Ama iki container bunu ayrı ayrı
- * kurmuştu ve sonuç iki farklı sayfa oldu — birinde grup başlığı alt çizgili
- * 19 px, diğerinde çizgisiz; birinde satırlar ızgarada, diğerinde tek kolonda.
- *
- * <p>Ortak olan <em>görsel dilbilgisi</em>: grup başlığı + ızgara + satır
- * öğesi. O buraya taşındı; ne listelendiği çağırana kaldı.
- *
  * @example
  * <Directory>
- *   <DirectoryGroup label="A">
- *     <DirectoryRow href="/marka/ate" name="ATE" media={<img … />} />
- *   </DirectoryGroup>
+ * <DirectoryGroup label="A">
+ * <DirectoryRow href="/marka/ate" name="ATE" media={<img … />} />
+ * </DirectoryGroup>
  * </Directory>
  */
 const Directory: FC<DirectoryProps> = ({ children, className }) => (
@@ -54,12 +45,7 @@ type DirectoryGroupProps = {
   id?: string;
 };
 
-/**
- * Dizin grubu.
- *
- * <p>Başlık <strong>yapışkan</strong>: uzun bir listede kaydırırken hangi
- * harfte olduğunu görmek, listeyi yukarı sarıp kontrol etmekten iyi.
- */
+/** Dizin grubu. */
 export const DirectoryGroup: FC<DirectoryGroupProps> = /*#__PURE__*/ named(
   /*#__PURE__*/ memo(({ label, href, linkProps, meta, children, id }) => (
     <section className={styles.group} id={id}>
@@ -94,13 +80,7 @@ type DirectoryRowProps = {
   className?: string;
 };
 
-/**
- * Dizin satırı — tek bir bağlantı.
- *
- * <p>Tüm satır tıklanabilir ve en az 44 px yüksekliğinde (WCAG 2.5.8):
- * yalnızca metnin tıklanabilir olduğu bir listede dokunmatik kullanıcılar
- * satırın boşluğuna basıp hiçbir şey olmadığını görüyordu.
- */
+/** Dizin satırı — tek bir bağlantı. */
 export const DirectoryRow: FC<DirectoryRowProps> = /*#__PURE__*/ named(
   /*#__PURE__*/ memo(({ href, name, media, marker, linkProps, className }) => (
     <li>
@@ -123,17 +103,7 @@ type DirectoryJumpProps = {
   label?: string;
 };
 
-/**
- * Alfabe atlama şeridi.
- *
- * <p>Uzun bir listede "V" harfine ulaşmak için kaydırmak dakikalar alıyordu.
- * Şerit yatay kayar ve `#çıpa` bağlantıları taşır — JavaScript gerekmez,
- * tarayıcı kaydırmayı kendisi yapar ve bağlantı paylaşılabilir.
- *
- * <p>Bağlantılar HAM `<a>`: bunlar sayfa içi çıpa, gezinme değil. Bir
- * yönlendiriciden geçirmek aynı sayfayı yeniden çözümleyip kaydırmayı
- * kaçırıyordu.
- */
+/** Alfabe atlama şeridi. */
 export const DirectoryJump: FC<DirectoryJumpProps> = /*#__PURE__*/ named(
   /*#__PURE__*/ memo(({ labels, toId, label }) => {
     /* Prop adi `labels` (grup etiketleri) config'in adiyla cakisiyor; config

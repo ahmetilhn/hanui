@@ -10,34 +10,6 @@ export type AnnouncePoliteness = 'polite' | 'assertive';
 /**
  * EKRAN OKUYUCU DUYURU MERKEZİ.
  *
- * <h3>Sorun: görsel geri bildirimin sesli karşılığı yoktu</h3>
- * Asenkron bir sonuç ekranda görünüyor ama ekran okuyucuya HİÇ ulaşmıyordu:
- * filtre uygulanıp liste 48 ürüne düştüğünde, sepete ekleme başarılı
- * olduğunda, form gönderimi hata verdiğinde. Gören kullanıcı sonucu bir
- * bakışta alıyor; ekran okuyucu kullanıcısı odağı olmayan bir yerde değişen
- * içeriği fark etmiyor — imleci oraya götürmedikçe.
- *
- * <p>Kütüphanede yalnızca `CopyField` kendi başına duyuruyordu ve o da kendi
- * `aria-live` bölgesini kendisi çiziyordu. Aynı deseni her bileşene kopyalamak
- * sayfada onlarca canlı bölge demek — ve birden fazla canlı bölge, ekran
- * okuyucuların duyuruları BİRLEŞTİRİP sırayla okumasına ya da tamamen
- * atlamasına yol açıyor.
- *
- * <h3>Bölge sağlayıcıda DEĞİL, belgede</h3>
- * `HanuiProvider` zorunlu değil (bkz. `theme/context.ts`): tek bir `Badge`
- * kullanmak isteyen tüketici kök yerleşimini değiştirmek zorunda kalmasın.
- * Duyuru bölgesi sağlayıcıya bağlansaydı, sağlayıcısız kullanımda hiçbir şey
- * duyurulmazdı — üstelik sessizce. Bölge ilk çağrıda belgeye eklenir ve
- * uygulamanın ömrü boyunca orada kalır; DOM'a eklenen bir canlı bölgenin
- * duyurusu güvenilmez, önceden var olması gerekir.
- *
- * <h3>Neden iki ayrı bölge</h3>
- * `polite` sıradaki cümleyi bekler, `assertive` kullanıcının okuduğu şeyi
- * BÖLER. Tek bir bölgede `aria-live` değerini değiştirmek işe yaramıyor:
- * değişiklik bir sonraki duyuruda değil, o anda okunmakta olanda etkili
- * olmuyor. Hata için `assertive` (kullanıcı yanlış bir işe devam ediyor
- * olabilir), geri kalan her şey için `polite`.
- *
  * @example
  * const announce = useAnnounce();
  * announce(`${count} ürün bulundu`);
@@ -70,13 +42,7 @@ const getRegion = (politeness: AnnouncePoliteness): HTMLElement | null => {
   return region;
 };
 
-/**
- * AYNI metni arka arkaya duyurmak.
- *
- * <p>Bölgenin metni değişmediğinde ekran okuyucu hiçbir şey okumaz: "Kopyalandı"
- * ikinci kez basıldığında sessiz kalıyordu. Metin önce boşaltılıp bir kare
- * sonra yazılıyor — değişiklik böylece gerçekten bir değişiklik oluyor.
- */
+/** AYNI metni arka arkaya duyurmak. */
 const write = (region: HTMLElement, message: string): void => {
   region.textContent = '';
 

@@ -26,21 +26,10 @@ import Spinner from '../Spinner';
 
 import styles from './index.module.scss';
 
-/**
- * Sanallaştırmanın devreye girdiği eşik.
- *
- * <p>Altında kazanç yok: kırk satırlık bir listede DOM maliyeti zaten ihmal
- * edilebilir ve ölçüm katmanı yalnızca karmaşıklık ekler.
- */
+/** Sanallaştırmanın devreye girdiği eşik. */
 const VIRTUAL_THRESHOLD = 80;
 
-/**
- * Seçenek satırının yüksekliği (`--sheet` dışında).
- *
- * <p>SCSS'teki `min-height` ile birlikte değişir; ayrıştıklarında satırlar
- * yanlış konumlanır. Ölçüyü çalışma zamanında okumak (`getComputedStyle`) bir
- * seçenek değil: liste henüz çizilmemişken okunacak bir satır yok.
- */
+/** Seçenek satırının yüksekliği (`--sheet` dışında). */
 const OPTION_HEIGHT = 40;
 
 export type ComboboxOption<T extends string = string> = {
@@ -51,14 +40,7 @@ export type ComboboxOption<T extends string = string> = {
   isDisabled?: boolean;
 };
 
-/**
- * Bileşenin çizdiği metinler.
- *
- * <p>`placeholder` dışındaki her şey `HanuiProvider labels.combobox`ten de
- * gelebilir; buradaki değer kazanır. `placeholder` ALANI adlandırır
- * ("Şehir seçin", "Marka seçin") ve her çağrı yerinde farklıdır — o yüzden
- * zorunlu kaldı.
- */
+/** Bileşenin çizdiği metinler. */
 export type ComboboxLabels = {
   /** Seçim yokken tetikleyicide ve alt sayfa başlığında görünen metin. */
   placeholder: string;
@@ -89,13 +71,7 @@ type Props<T extends string> = {
   isDisabled?: boolean;
   /** Seçimi kaldıran çarpı düğmesi gösterilir. */
   isClearable?: boolean;
-  /**
-   * Arama kutusu GİZLENİR.
-   *
-   * <p>Az sayıda, sabit seçenekli listelerde arama bir işe yaramıyor: altı
-   * satırı taramak yazmaktan hızlı ve kutu açılışta odağı çalıp mobilde
-   * klavyeyi açıyordu. Ok tuşlarıyla gezinme ve `Escape` yine çalışır.
-   */
+  /** Arama kutusu GİZLENİR. */
   isSearchHidden?: boolean;
   /** Tetikleyicinin solundaki ikon. */
   icon?: ReactNode;
@@ -106,55 +82,7 @@ type Props<T extends string> = {
   testId?: string;
 };
 
-/**
- * Aranabilir seçim kutusu.
- *
- * <h3>Neden yerel `<select>` değil</h3>
- * Yerel açılır liste 20 seçeneğe kadar iyidir. Binlerce seçenekli bir listede
- * kullanıcı harf harf yazarak (ve yalnızca baştan eşleşerek) arıyor, mobilde
- * ise metrelerce süren bir tekerlek çeviriyor. Aranabilir liste, seçeneği
- * <em>yazarak</em> bulmayı mümkün kılar.
- *
- * <h3>Arama kutusu listenin İÇİNDE</h3>
- * Arama alanını listenin dışına koymak kullanıcıya iki ayrı alan gösteriyor
- * ve hangisinin seçimi belirlediği anlaşılmıyordu. Tek tetikleyici, tek
- * panel: masaüstünde panel açılınca odak doğrudan arama kutusuna gider,
- * yazılır, Enter'a basılır. Dar ekranda odak VERİLMEZ — bkz. aşağıdaki not.
- *
- * <h3>Yerel mi sunucu araması mı</h3>
- * `onSearch` verilmezse bileşen elindeki listeyi aksan duyarsız filtreler.
- * Verilirse filtrelemeyi <em>yapmaz</em> — sunucudan gelen liste zaten
- * filtrelenmiştir; ikinci kez filtrelemek sunucunun daha akıllı eşleşmesini
- * (eş anlamlı, kod eşleşmesi) bozardı.
- *
- * <h3>Seçilenin etiketi listeden düşse de korunur</h3>
- * Sunucu aramasında kullanıcı yeni bir arama yaptığında seçili kayıt gelen
- * listede olmayabilir. Etiket son bilinen değerden hatırlanır; aksi hâlde
- * tetikleyici seçim varken yer tutucuya dönüyordu.
- *
- * <h3>Dar ekranda arama kutusu ODAKLANMAZ</h3>
- * Alt sayfa açılırken kutuya odaklanmak ekran klavyesini kullanıcı istemeden
- * açıyordu: panel yarı yüksekliğe sıkışıyor, liste birkaç satıra iniyor ve
- * seçim yapmak için önce klavyeyi kapatmak gerekiyordu. Telefonda liste
- * taranarak kullanılır; yazmak isteyen kutuya kendisi dokunur.
- *
- * <h3>ARIA</h3>
- * Tetikleyici `aria-haspopup="listbox"`, panel içindeki arama alanı
- * `role="combobox"` + `aria-activedescendant`. Masaüstünde odak arama
- * kutusundan ayrılmaz; ok tuşları yalnızca <em>etkin</em> seçeneği değiştirir.
- * Odağı seçeneklere taşımak, yazmaya devam etmeyi imkânsız kılıyordu.
- *
- * <h3>Klavye (APG: combobox with listbox popup)</h3>
- * <table>
- *   <tr><td>`ArrowDown` / `ArrowUp`</td><td>etkin seçenek bir alt/üst; uçlarda DÖNER</td></tr>
- *   <tr><td>`Home` / `End`</td><td>ilk / son seçenek</td></tr>
- *   <tr><td>`Enter`</td><td>etkin seçeneği seçer, paneli kapatır</td></tr>
- *   <tr><td>`Escape`</td><td>kapatır, odak tetikleyiciye döner</td></tr>
- *   <tr><td>`Tab`</td><td>kapatır, gezinme sürer</td></tr>
- *   <tr><td>yazmak</td><td>filtreler ve etkin seçeneği başa çeker</td></tr>
- * </table>
- * Nöbetçi: `components/__tests__/keyboard.test.tsx`.
- */
+/** Aranabilir seçim kutusu. */
 const Combobox = <T extends string>({
   options,
   value,
@@ -280,10 +208,6 @@ const Combobox = <T extends string>({
   /*
    * Disari tiklamada kapanir. `mousedown` kullanilir: `click` beklerken
    * kullanici surukleyerek secim yaparsa panel kapanmiyordu.
-   *
-   * YALNIZCA masaustu panelinde. Alt sayfa govdeye tasindigi icin `rootRef`
-   * onu ICERMIYOR: dinleyici acik kalsaydi panelin icindeki her dokunus
-   * "disari tiklama" sayilip sayfayi kapatirdi. Orada bu isi perde yapiyor.
    */
   useEffect(() => {
     if (openMode !== 'popover') return;
@@ -296,18 +220,7 @@ const Combobox = <T extends string>({
     return () => document.removeEventListener('mousedown', handlePointerDown);
   }, [openMode, close]);
 
-  /*
-   * Odak arama kutusuna YALNIZCA masaustu panelinde verilir.
-   *
-   * Alt sayfada (dar ekran) odaklamak, kullanici yazmak istemedigi halde
-   * ekran klavyesini aciyordu: panel yari yuksekluge sikisiyor, uzun listeden
-   * ucu besi goruntude kaliyor ve secim yapmak icin once klavyeyi kapatmak
-   * gerekiyordu. Masaustunde ekran klavyesi YOK; oradaki odak yazarak
-   * aramanin ve ok tuslariyla gezinmenin tek dayanagi.
-   *
-   * `preventScroll` duruyor: iOS odaklanan kutuyu gorunur kilmak icin SAYFAYI
-   * kaydiriyor ve arkadaki liste baska bir yere atliyordu.
-   */
+  /* Odak arama kutusuna YALNIZCA masaustu panelinde verilir. */
   useEffect(() => {
     if (openMode === 'popover') inputRef.current?.focus({ preventScroll: true });
   }, [openMode]);
@@ -319,46 +232,15 @@ const Combobox = <T extends string>({
     close();
   };
 
-  /*
-   * Kapaninca odak TETIKLEYICIYE doner.
-   *
-   * Odagi `close()`in hemen ardindan vermek alt sayfada ise yaramiyordu:
-   * panel o an hala kipsel ve `showModal()` disaridaki her ogeyi inert
-   * birakiyor — `focus()` sessizce hicbir sey yapmiyor, panel kalkinca da
-   * odak `<body>`ye dusuyordu. Kullanici secim yaptiktan sonra sayfanin en
-   * basina donuyordu.
-   */
+  /* Kapaninca odak TETIKLEYICIYE doner. */
   const wasOpenRef = useRef(false);
   useEffect(() => {
     if (wasOpenRef.current && !isOpen) triggerRef.current?.focus();
     wasOpenRef.current = isOpen;
   }, [isOpen]);
 
-  /*
-   * KLAVYE MODELI `useListboxNavigation`da — `Select`le AYNI kanca.
-   *
-   * Alti davranis (uclarda donme, `Home`/`End`, secme, `Escape`, `Tab` ile
-   * kapatip gezinmeyi surdurme, etkin secenegi gorunur tutma) iki bilesende
-   * KOPYA koddu ve ayrisma SESSIZDI: her bilesenin kendi testi vardi ve her
-   * biri kendi davranisini dogruluyordu.
-   *
-   * `Space` BURADA secmez (`hasSpaceSelect` verilmiyor): arama kutusunda
-   * bosluk bir KARAKTER ve secime cevrilmesi "fren balatasi" yazmayi imkansiz
-   * kilardi. `Select`te oyle bir kutu yok ve orada da tetiklenmiyor.
-   */
-  /*
-   * ═══ PANEL SABIT KONUMLU, MUTLAK DEGIL ═══
-   *
-   * Panel `position: absolute` idi ve tetikleyicinin kapsayicisina gore
-   * konumlaniyordu. Kip pencerenin govdesi `overflow: hidden` tasidigi icin
-   * (uzun formda basligin sabit kalmasi gerekiyor) panel oraya girdiginde
-   * KIRPILIYORDU: "Aracınızı tanımlayın" penceresinde marka listesinin
-   * yalnizca ilk satiri gorunuyor, gerisi pencerenin alt kenarinda kesiliyordu.
-   *
-   * `usePositioning` iki sorunu birden cozer: sabit konum kirpan atayi
-   * atlar ve asagida yer yoksa paneli YUKARI cevirir. Ayni kanca `Popover`
-   * ve `Tooltip` icinde de kullaniliyor — konumlandirma tek yerden.
-   */
+  /* KLAVYE MODELI `useListboxNavigation`da — `Select`le AYNI kanca. */
+  /* PANEL SABIT KONUMLU, MUTLAK DEGIL */
   const positioning = usePositioning(triggerRef, panelRef, {
     side: 'bottom',
     align: 'start',
@@ -381,23 +263,7 @@ const Combobox = <T extends string>({
       onClose: close,
     });
 
-  /*
-   * SANALLASTIRMA — ve UC kosulu birden.
-   *
-   * Olculen sorun: 1121 markali bir listede DOM 1121 satir tasiyordu, panel
-   * acilisi donuyor ve her tus vurusunda liste yeniden ciziliyordu. Ama kanca
-   * SABIT satir yuksekligi istiyor ve burada uc sinir var:
-   *
-   * 1. `popover` KIPINDE. Alt sayfada kaydiran oge liste degil sayfanin
-   *    govdesi (`--sheet`: `overflow: visible`); kancanin olctugu kutu hic
-   *    kaydirilmiyor ve aralik hep basta kalirdi.
-   * 2. ACIKLAMASIZ listede. Ikincil satir tasiyan secenek daha uzun; karisik
-   *    bir listede tek bir `rowHeight` her satiri yanlis konumlandirir.
-   * 3. Liste UZUNSA. Kirk satirlik bir listede sanallastirma hicbir sey
-   *    kazandirmaz, yalnizca bir olcum katmani ekler.
-   *
-   * Ucu birden saglanmiyorsa liste TAM cizilir — eski davranis.
-   */
+  /* SANALLASTIRMA — ve UC kosulu birden. */
   const hasDescriptions = visibleOptions.some(option => Boolean(option.description));
   const isVirtual =
     openMode === 'popover' && !hasDescriptions && visibleOptions.length > VIRTUAL_THRESHOLD;
@@ -497,12 +363,12 @@ const Combobox = <T extends string>({
                 role="option"
                 data-index={index}
                 /*
-                EKRAN OKUYUCU GERCEK SAYIYI DUYMALI. Cizilmeyen satirlar
-                yuzunden "16 secenekten 3." deniyordu; dogrusu "1121
-                secenekten 3.". Ikisi de yalnizca sanallastirma acikken
-                yazilir — tam cizilen listede tarayici zaten dogru sayiyor ve
-                elle yazmak iki kaynak demek olurdu.
-              */
+                 * EKRAN OKUYUCU GERCEK SAYIYI DUYMALI. Cizilmeyen satirlar
+                 * yuzunden "16 secenekten 3." deniyordu; dogrusu "1121
+                 * secenekten 3.". Ikisi de yalnizca sanallastirma acikken
+                 * yazilir — tam cizilen listede tarayici zaten dogru sayiyor ve
+                 * elle yazmak iki kaynak demek olurdu.
+                 */
                 aria-setsize={isVirtual ? visibleOptions.length : undefined}
                 aria-posinset={isVirtual ? index + 1 : undefined}
                 aria-selected={isChosen}
@@ -561,11 +427,11 @@ const Combobox = <T extends string>({
         aria-controls={isOpen ? listboxId : undefined}
         aria-label={labels.placeholder}
         /*
-          Hata `aria-invalid` ile DEGIL `aria-describedby` ile duyurulur:
-          `aria-invalid`, `role="button"` uzerinde tanimsizdir ve ekran
-          okuyucular onu yok sayar. `Field` hata metnini zaten `role="alert"`
-          ile bagliyor; buradaki gorev yalnizca gorsel.
-        */
+         * Hata `aria-invalid` ile DEGIL `aria-describedby` ile duyurulur:
+         * `aria-invalid`, `role="button"` uzerinde tanimsizdir ve ekran
+         * okuyucular onu yok sayar. `Field` hata metnini zaten `role="alert"`
+         * ile bagliyor; buradaki gorev yalnizca gorsel.
+         */
         aria-describedby={describedBy}
         onClick={() => (isOpen ? close() : open())}
       >

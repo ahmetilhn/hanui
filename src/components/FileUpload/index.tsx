@@ -58,35 +58,7 @@ const formatSize = (bytes: number): string => {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
 
-/**
- * Dosya yükleme — sürükle-bırak <strong>ve</strong> düğme.
- *
- * <h3>Yerel `<input type="file">` KORUNUR</h3>
- * Görsel olarak gizlenir ama DOM'da kalır ve `<label>` ile alana bağlanır:
- * klavyeyle `Tab` + `Enter`, ekran okuyucuda "dosya seç, düğme" duyurusu,
- * işletim sisteminin dosya seçicisi ve mobilde kamera/galeri seçenekleri
- * <em>bedava</em> gelir. `<div>` üzerine `onDrop` yazıp düğmeyi taklit etmek
- * bunların hiçbirini getirmiyor — ve sürükle-bırak zaten <strong>tek başına
- * erişilebilir değil</strong>: fare gerektiriyor (WCAG 2.5.7).
- *
- * <h3>Doğrulama BİLEŞENDE, ama yalnızca ÖLÇÜLEBİLİR olan</h3>
- * Boyut sınırı burada uygulanıyor çünkü cevabı kesin ve anında verilebiliyor:
- * aşan dosya `onSelect`e hiç ulaşmıyor, kullanıcı yüklemenin bitmesini
- * beklemeden hatayı görüyor. Tür/içerik doğrulaması burada YAPILMIYOR —
- * `accept` bir öneri, gerçek karar sunucunun ve istemcide "geçerli" demek
- * yanlış bir söz olurdu.
- *
- * <h3>Sonuç DUYURULUYOR</h3>
- * Dosya eklendiğinde ve reddedildiğinde `useAnnounce` ile ekran okuyucuya
- * bildiriliyor. Listeye sessizce eklenen bir satır, görmeyen kullanıcı için
- * hiç olmamış demekti.
- *
- * <h3>Klavye</h3>
- * <table>
- *   <tr><td>`Tab`</td><td>alana, sonra her dosyanın kaldırma düğmesine</td></tr>
- *   <tr><td>`Enter` / `Space`</td><td>alanda: dosya seçiciyi açar</td></tr>
- * </table>
- */
+/** Dosya yükleme — sürükle-bırak <strong>ve</strong> düğme. */
 const FileUpload = ({
   files,
   onSelect,
