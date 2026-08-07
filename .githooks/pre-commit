@@ -1,0 +1,163 @@
+#!/bin/sh
+#
+# Hanparca ön-commit kancası — Prettier + ESLint + Stylelint + testler
+#
+# Amaç: biçim, lint ve test hatalarını CI'da (ya da IDE uyarısında) değil,
+# commit anında bitirmek.
+#
+#   1. Prettier --write  → biçimlendirir, dosyayı yeniden stage'ler
+#   2. ESLint  --fix     → düzeltilebilenleri düzeltir; geriye HATA kalırsa
+#                          commit durur (uyarılar durdurmaz — `npm run lint`
+#                          ile aynı eşik)
+#
+#   2b. Stylelint --fix  → SCSS için ESLint'in karşılığı (`npm run lint`
+#                          ikisini birden koşar)
+#   3. Testler           → TAM süit (`npm test --silent -- --ci`)
+#
+# **Testler neden daraltılmadı.** `jest --findRelatedTests` ile stage'lenen
+# dosyanın bağımlılık grafiğine inmek mümkündü; ölçüldü ve gerekmedi: tam süit
+# 4 sn sürüyor. Daraltma saniyenin altında bir kazanç için "hangi
+# testin koştuğu" sorusunu commit'e göre değişken hâle getirirdi — kanca ile CI
+# aynı şeyi ölçmeli.
+#
+# **Testler yalnızca biçim/lint temizse koşar.** Lint hatası kalan kod çoğu
+# zaman derlenmiyordur; o durumda test çıktısı asıl hatanın üstünü örten
+# gürültüdür.
+#
+# Kısmi stage edilmiş dosyalara (hem index'te hem çalışma alanında değişiklik)
+# DOKUNULMAZ: biçimlendirip `git add` etmek, stage'lemediğin değişiklikleri de
+# commit'e sokardı. Böyle bir dosyanın index'teki hâli biçimsizse commit durur
+# ve ne yapman gerektiği yazılır.
+#
+# ⚠ Testler ÇALIŞMA ALANINI görür, index'i değil. Kısmi stage zaten yukarıda
+# reddedildiği için pratikte ikisi aynıdır; farkın kaldığı tek yer stage
+# edilmemiş YENİ dosyalardır.
+#
+# Kancayı atlamak: git commit --no-verify
+#
+# Devreye girişi: `core.hooksPath=.githooks`. package.json'daki `prepare`
+# betiği bunu `npm install` / `npm ci` sırasında otomatik ayarlar.
+
+set -eu
+
+cd "$(git rev-parse --show-toplevel)"
+
+# Kanca terminalden de, IDE / Git arayüzünden de tetiklenir; oralarda PATH'teki
+# node çoğu zaman .nvmrc sürümü DEĞİLDİR (bu makinede varsayılan v14, projeler
+# >=24 istiyor — ESLint 9 eski node'da `Object.hasOwn is not a function` ile
+# çöküyor). nvm varsa .nvmrc sürümüne geç.
+if [ -s .nvmrc ]; then
+  NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+  if [ -s "$NVM_DIR/nvm.sh" ]; then
+    . "$NVM_DIR/nvm.sh" >/dev/null 2>&1 || true
+    nvm use >/dev/null 2>&1 || true
+  fi
+fi
+
+node_major=$(node -v 2>/dev/null | sed 's/^v\([0-9]*\).*/\1/' || echo 0)
+
+PRETTIER="node_modules/.bin/prettier"
+ESLINT="node_modules/.bin/eslint"
+STYLELINT="node_modules/.bin/stylelint"
+
+# Biçimlendirilecek dosyalar — `npm run format:check` ile aynı kapsam.
+PRETTIER_PATTERN='^(src|playground|__tests__)/.*\.(ts|tsx|scss|css)$'
+# ESLint yalnızca `npm run lint` kapsamında çalışır.
+ESLINT_PATTERN='^src/.*\.(ts|tsx)$'
+STYLELINT_PATTERN='^src/.*\.scss$'
+# Bu desene uyan bir dosya stage'lendiyse testler koşar.
+TEST_TRIGGER_PATTERN='^(src|__tests__)/.*\.(ts|tsx|scss)$'
+
+if [ ! -x "$PRETTIER" ]; then
+  echo "ön-commit: $PRETTIER yok — 'npm ci' çalıştır. Kanca atlandı." >&2
+  exit 0
+fi
+
+TMP=$(mktemp -d)
+trap 'rm -rf "$TMP"' EXIT INT TERM
+
+git diff --cached --name-only --diff-filter=ACMR >"$TMP/all" || true
+[ -s "$TMP/all" ] || exit 0
+
+grep -E "$PRETTIER_PATTERN" "$TMP/all" >"$TMP/staged" || true
+
+# Çalışma alanında da değişik olan staged dosyalar = kısmi stage.
+git diff --name-only >"$TMP/dirty" || true
+
+: >"$TMP/whole"
+: >"$TMP/partial"
+while IFS= read -r file; do
+  if grep -Fxq "$file" "$TMP/dirty"; then
+    printf '%s\n' "$file" >>"$TMP/partial"
+  else
+    printf '%s\n' "$file" >>"$TMP/whole"
+  fi
+done <"$TMP/staged"
+
+status=0
+
+if [ -s "$TMP/whole" ]; then
+  report=$(tr '\n' '\0' <"$TMP/whole" | xargs -0 "$PRETTIER" --write --ignore-unknown)
+  changed=$(printf '%s\n' "$report" | grep -v '(unchanged)' | sed 's/ [0-9]*ms$//' || true)
+  tr '\n' '\0' <"$TMP/whole" | xargs -0 git add --
+  if [ -n "$changed" ]; then
+    printf 'ön-commit: Prettier biçimlendirdi ve yeniden stage'"'"'ledi:\n%s\n' "$changed"
+  fi
+
+  grep -E "$ESLINT_PATTERN" "$TMP/whole" >"$TMP/lint" || true
+  if [ -s "$TMP/lint" ] && [ -x "$ESLINT" ] && [ "${node_major:-0}" -lt 20 ]; then
+    echo "ön-commit: node $(node -v 2>/dev/null) — ESLint atlandı (>=20 gerekir; 'nvm use')." >&2
+    : >"$TMP/lint"
+  fi
+  if [ -s "$TMP/lint" ] && [ -x "$ESLINT" ]; then
+    if ! tr '\n' '\0' <"$TMP/lint" | xargs -0 "$ESLINT" --fix --no-warn-ignored; then
+      status=1
+    fi
+    # --fix'in yazdıklarını her hâlükârda index'e al; commit dursa bile
+    # düzeltmeler kaybolmasın.
+    tr '\n' '\0' <"$TMP/lint" | xargs -0 git add --
+    if [ "$status" -ne 0 ]; then
+      echo "" >&2
+      echo "ön-commit: ESLint hataları kaldı (yukarıda). Düzelt ya da 'git commit --no-verify'." >&2
+    fi
+  fi
+
+  grep -E "$STYLELINT_PATTERN" "$TMP/whole" >"$TMP/style" || true
+  if [ -s "$TMP/style" ] && [ -x "$STYLELINT" ] && [ "${node_major:-0}" -ge 20 ]; then
+    if ! tr '\n' '\0' <"$TMP/style" | xargs -0 "$STYLELINT" --fix; then
+      status=1
+      echo "" >&2
+      echo "ön-commit: Stylelint hataları kaldı (yukarıda)." >&2
+    fi
+    tr '\n' '\0' <"$TMP/style" | xargs -0 git add --
+  fi
+fi
+
+if [ -s "$TMP/partial" ]; then
+  while IFS= read -r file; do
+    if git show ":$file" | "$PRETTIER" --stdin-filepath "$file" --ignore-unknown --check >/dev/null 2>&1; then
+      continue
+    fi
+    echo "ön-commit: $file kısmi stage edilmiş ve index'teki hâli biçimsiz." >&2
+    echo "           Çalışma alanına dokunmadım (stage'lemediğin değişiklikler var)." >&2
+    echo "           Çözüm: npx prettier --write \"$file\" && git add \"$file\"" >&2
+    status=1
+  done <"$TMP/partial"
+fi
+
+grep -E "$TEST_TRIGGER_PATTERN" "$TMP/all" >"$TMP/trigger" || true
+if [ "$status" -eq 0 ] && [ -s "$TMP/trigger" ]; then
+  if [ "${node_major:-0}" -lt 20 ]; then
+    echo "ön-commit: node $(node -v 2>/dev/null) — testler atlandı (>=20 gerekir; 'nvm use')." >&2
+  else
+    echo "ön-commit: testler koşuyor…"
+    if ! npm test --silent -- --ci >"$TMP/test.log" 2>&1; then
+      cat "$TMP/test.log" >&2
+      echo "" >&2
+      echo "ön-commit: testler kırıldı (yukarıda). Düzelt ya da 'git commit --no-verify'." >&2
+      status=1
+    fi
+  fi
+fi
+
+exit "$status"

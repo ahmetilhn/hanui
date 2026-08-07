@@ -232,3 +232,93 @@ sığmazsa karşı kenara çevrilir.
 
 Ölçü/ton/varyant için sistemde **tek ad** kullanılır; `kind` o sözleşmenin
 dışında kalmış tek isimdi.
+
+## Kod düzeni ve tasarım prensipleri — ZORUNLU
+
+| Prensip | Ne demek |
+|---|---|
+| **KISS** | Uzun ve dolambaçlı yerine sade ve okunur. |
+| **DRY** | Aynı kural iki yerde yaşamaz. |
+| **SRP** | Bir dosya tek sebeple değişir. |
+| **SoC** | Konumlandırma/erişilebilirlik mantığı `hooks/`ta, çizim bileşende, renk `theme/`te. |
+| **OCP** | Yeni görünüm yeni varyant token'ıdır; bileşen gövdesine `if` eklemek değil. |
+| **YAGNI** | Çağıranı olmayan prop eklenmez — her prop bir API taahhüdüdür. |
+| **Immutability** | Prop'lar ve token nesneleri yerinde değiştirilmez. |
+
+### Klasör sözleşmesi
+
+| Ne | Nerede |
+|---|---|
+| Paylaşılan / alanı anlatan `type` | `src/types/*.type.ts` |
+| `enum` | `src/enums/*.enum.ts` |
+| Sabit değerler | `src/constants/*.constants.ts` |
+| Birden fazla yerde kullanılan fonksiyon | `src/helpers/*.helper.ts` |
+
+⚠ **Bileşenin KENDİ genel API tipi bileşenin yanında kalır** (`BadgeTone`
+`Badge`de, `TabItem` `Tabs`ta, `UploadFile` `FileUpload`ta). Bunlar "o an
+çalışılan dosyaya rastgele eklenmiş" tipler değil, bileşenin sözleşmesidir;
+bileşen ile sözleşmesini ayırmak, tüketicinin iki dosya açmasını gerektirir
+ve bir bileşen kütüphanesinde okunurluğu **düşürür**.
+
+**Taşınanlar — gerçekten dağınık olanlar:** tema tipleri (`HanuiToken`,
+`HanuiThemeConfig`, `HanuiLabels`, `InitHanuiOptions`… — `theme/tokens.ts`
+480 satırlık bir **veri** dosyası, tip bildirmesi işi değildi), kanca
+tipleri (`PositionSide`, `PositioningOptions`, `VirtualRange`,
+`AnnouncePoliteness`…) ve `ClassValue`.
+
+⚠ **Public API DEĞİŞMEDİ, ölçüldü.** `build/index.d.ts` içindeki dışa
+aktarım kümesi taşımadan önce ve sonra **birebir aynı** (144 ad).
+`src/index.ts` bir cephedir; tip gövdeleri nerede yaşarsa yaşasın tüketici
+(`hanparca-frontend`, `hanparca-admin`) aynı adları aynı yerden alır.
+Taşıma yaparken bu karşılaştırma **tekrarlanmalı**:
+
+```bash
+npm run build && grep -oE 'export (type )?\{[^}]*\}' build/index.d.ts | sort -u
+```
+
+### Node 24 · ECMAScript 2025
+
+`tsconfig.json` → `target: ES2024`, `lib: ["DOM", "DOM.Iterable", "ESNext"]`.
+
+### Ön-commit kancası
+
+`.githooks/pre-commit` (bu turda **eklendi**) — **Prettier** → **ESLint** →
+**Stylelint** → **TAM test süiti**. Ölçüldü: süit 3,4 sn (35 dosya /
+411 test). `package.json`daki `prepare` betiği `core.hooksPath`i
+`npm install` sırasında ayarlar.
+
+### `PasswordInput` ve `ToastPortal` — iki uygulamadan buraya taşındı
+
+Her ikisi de `hanparca-admin` ve `hanparca-frontend`te **birebir aynı dosya**
+olarak duruyordu ve ikisi de zaten bu kütüphanenin bileşenlerini sarmalıyordu
+(`Input`+`IconButton`, `ToastHub`) — yani en baştan buraya aitlerdi.
+
+| Bileşen | Neden burada |
+|---|---|
+| `PasswordInput` | `Input` + `IconButton` sarmalayıcısı. Etiketler `labels.passwordShow` / `labels.passwordHide` üzerinden; sabit Türkçe metin gömülü DEĞİL. |
+| `ToastPortal` | `ToastHub` portal kullanıyor ve `document` olmadan çalışamıyor; sunucuda çizilen ağaçta hidrasyon uyuşmazlığı üretir. Montaj bekleyen sarmalayıcı uygulamanın değil bileşenin sorunu. |
+
+⚠ **Uygulamalar HENÜZ GEÇMEDİ.** `hanparca-admin` ve `hanparca-frontend`
+hanui'yi npm'den alıyor (`^2.0.10`) ve bu bileşenler `2.1.0`da. Geçiş için
+sırasıyla: `npm publish` → iki uygulamada bağımlılığı yükselt → yerel
+`components/PasswordInput` ve `components/ToastPortal` klasörlerini sil →
+`import { PasswordInput, ToastPortal } from '@ahmetilhn/hanui'`. Yayın
+yapılmadan yerel kopyaları silmek her iki uygulamayı da kırar.
+
+### `ThemeToggle` ve `Logo` neden BURAYA TAŞINMADI
+
+- **`ThemeToggle`** `nav-fg`, `nav-bg`, `nav-hover`, `nav-line` token'larını
+  okuyor; bunlar uygulamanın üst bandına ait ve hanui'nin token
+  sözleşmesinde **yok**. Buraya taşımak ya o token'ları kütüphaneye sokmayı
+  (bir uygulamanın kroması genel bir tasarım sistemine girer) ya da bileşeni
+  yeniden tasarlamayı gerektirir (zemin rengi tüketiciden gelen CSS özel
+  değişkenleriyle). İkincisi doğru yol ama ayrı bir tur.
+- **`Logo`** marka varlığı taşıyor (`/brand/*.svg`, "Hanparca"). MIT
+  lisanslı, genel amaçlı bir tasarım sistemine tek bir şirketin markasını
+  koymak yanlış olur. Doğru ayrıştırma: mekanizma (temaya göre kaynak
+  değiştirme, orana göre boyutlandırma) hanui'ye, varlıklar uygulamada.
+
+⚠ İkisi de bugün **iki depoda kopya** ve ikisi de **ayrışmış** (`ThemeToggle`
+101 vs 96 satır — admin'de `Tooltip`, vitrinde `IconButton`; `Logo` 117 vs
+128 — vitrinde ek `app` varyantı). Bu bilinen bir borçtur, görünmez bir
+kopya değil.

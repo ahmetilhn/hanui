@@ -6,7 +6,10 @@ import useListboxNavigation from '@/hooks/useListboxNavigation';
 const key = (name: string): KeyboardEvent<HTMLElement> =>
   ({ key: name, preventDefault: jest.fn() }) as unknown as KeyboardEvent<HTMLElement>;
 
-const setup = (overrides: Partial<Parameters<typeof useListboxNavigation>[0]> = {}, options = {}) => {
+const setup = (
+  overrides: Partial<Parameters<typeof useListboxNavigation>[0]> = {},
+  options = {},
+) => {
   const onSelect = jest.fn();
   const onClose = jest.fn();
 

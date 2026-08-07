@@ -4,3 +4,6 @@ export type CommonElementProps = Partial<{
   id: string;
   testId: string;
 }>;
+
+/** Sınıf birleştiricinin kabul ettiği değerler. */
+export type ClassValue = string | false | null | undefined;

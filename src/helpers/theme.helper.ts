@@ -1,13 +1,7 @@
 import { isClient } from '@ahmetilhn/handy-utils';
 
-import {
-  DARK_THEME,
-  DEFAULT_FONTS,
-  LIGHT_THEME,
-  type HanuiColorScheme,
-  type HanuiResolvedTokens,
-  type HanuiThemeConfig,
-} from '../theme/tokens';
+import { DARK_THEME, DEFAULT_FONTS, LIGHT_THEME } from '../theme/tokens';
+import type { HanuiColorScheme, HanuiResolvedTokens, HanuiThemeConfig } from '@/types/theme.type';
 
 /** CSS özel özelliği öneki — `_tokens.generated.scss` ile aynı olmak zorunda. */
 export const TOKEN_PREFIX = '--hanui-';

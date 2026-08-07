@@ -90,7 +90,8 @@ const Tabs: FC<Props> = ({
     if (offset === 0) return;
 
     event.preventDefault();
-    const next = ((isManualActivation ? focusIndex : activeIndex) + offset + items.length) % items.length;
+    const next =
+      ((isManualActivation ? focusIndex : activeIndex) + offset + items.length) % items.length;
 
     setFocusIndex(next);
     if (!isManualActivation) select(items[next].id);
@@ -132,7 +133,9 @@ const Tabs: FC<Props> = ({
               /* Donen `tabindex` ODAKLANANI izler: manuel kipte secili sekme
                  ile odaklanan sekme ayri ve Tab'in geri donecegi yer
                  odaklanan olmali. */
-              tabIndex={(isManualActivation ? items[focusIndex]?.id === item.id : isActive) ? 0 : -1}
+              tabIndex={
+                (isManualActivation ? items[focusIndex]?.id === item.id : isActive) ? 0 : -1
+              }
               className={cx(styles.tabs__tab, isActive && styles['tabs__tab--active'])}
               onClick={() => select(item.id)}
             >

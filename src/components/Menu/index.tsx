@@ -21,9 +21,10 @@ import { isClient } from '@ahmetilhn/handy-utils';
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import { captureFocus } from '../../helpers/focus.helper';
-import usePositioning, { type PositionAlign, type PositionSide } from '../../hooks/usePositioning';
+import usePositioning from '../../hooks/usePositioning';
 
 import styles from './index.module.scss';
+import type { PositionAlign, PositionSide } from '@/types/positioning.type';
 
 export type MenuItem = {
   id: string;

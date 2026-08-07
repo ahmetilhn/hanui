@@ -1,7 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-import { COMPACT_DENSITY, DARK_THEME, DEFAULT_FONTS, LIGHT_THEME, METRIC_TOKENS } from '@/theme/tokens';
+import {
+  COMPACT_DENSITY,
+  DARK_THEME,
+  DEFAULT_FONTS,
+  LIGHT_THEME,
+  METRIC_TOKENS,
+} from '@/theme/tokens';
 
 const STYLES = resolve(__dirname, '../../src/styles');
 

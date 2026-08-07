@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { isClient } from '@ahmetilhn/handy-utils';
 
 import { THEME_ATTRIBUTE, THEME_SWITCHING_CLASS } from '../helpers/theme.helper';
-import type { HanuiColorPreference, HanuiColorScheme } from '../theme/tokens';
+import type { HanuiColorPreference, HanuiColorScheme, HanuiThemeState } from '@/types/theme.type';
 
 /** Sistem tercihini okur. Betik hiç çalışmamışsa ilk değer buradan gelir. */
 const readSystemScheme = (): HanuiColorScheme =>
@@ -19,33 +19,13 @@ const readPreference = (): HanuiColorPreference => {
   return attribute === 'dark' || attribute === 'light' ? attribute : 'system';
 };
 
-type ThemeState = {
-  /**
-   * ÇÖZÜLMÜŞ tema — ekranda çizili olan. `preference` `system` iken bu alan
-   * işletim sisteminin o anki tercihini taşır.
-   */
-  scheme: HanuiColorScheme;
-  /**
-   * Kullanıcının SEÇİMİ. Üç durumlu bir tema anahtarı (Açık / Koyu / Sistem)
-   * bunu okur; `scheme` okunsaydı "Sistem" seçiliyken düğme "Koyu"yu işaretli
-   * gösterirdi.
-   */
-  preference: HanuiColorPreference;
-  /** `'system'` verildiğinde AÇIK seçim silinir ve sistem tercihi izlenir. */
-  setScheme: (preference: HanuiColorPreference) => void;
-  /** Açık ↔ koyu. `system` iken ÇÖZÜLMÜŞ değerin tersine geçer. */
-  toggle: () => void;
-  /** Sunucu çıktısında ve hidrasyondan önceki ilk karede `false`. */
-  isReady: boolean;
-};
-
 /**
  * Açık/koyu seçimini okur ve değiştirir.
  *
  * @example
  * const { scheme, toggle, isReady } = useHanuiTheme();
  */
-const useHanuiTheme = (): ThemeState => {
+const useHanuiTheme = (): HanuiThemeState => {
   /*
    * Ilk deger SABIT 'light': sunucuda `document` yok ve istemcideki gercek
    * degeri ilk render'da okumak hidrasyon uyusmazligi uretiyordu (sunucu

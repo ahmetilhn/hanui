@@ -127,7 +127,6 @@ const Select = <T extends string>({
     return () => document.removeEventListener('mousedown', handlePointerDown);
   }, [openMode, close]);
 
-
   /* KLAVYE MODELI `useListboxNavigation`da — `Combobox`la AYNI kanca. */
   const { activeIndex, setActiveIndex, listRef, handleKeyDown } =
     useListboxNavigation<HTMLUListElement>({

@@ -1,22 +1,7 @@
 import { isClient } from '@ahmetilhn/handy-utils';
 
 import { applyThemeConfig, DENSITY_ATTRIBUTE, THEME_ATTRIBUTE } from '../helpers/theme.helper';
-import type { HanuiColorScheme, HanuiDensity, HanuiThemeConfig } from './tokens';
-
-export type InitHanuiOptions = Partial<{
-  /** Tema ve ölçü ezmeleri. Yalnızca değiştirilen token'lar verilir. */
-  theme: HanuiThemeConfig;
-  /**
-   * Başlangıç şeması. Verilmezse `<html data-hanui-theme>` neyse o kalır;
-   * o da yoksa sistem tercihi (`prefers-color-scheme`) devreye girer.
-   */
-  colorScheme: HanuiColorScheme;
-  /**
-   * Bilgi yoğunluğu. Verilmezse `<html data-hanui-density>` neyse o kalır;
-   * o da yoksa `default`.
-   */
-  density: HanuiDensity;
-}>;
+import type { InitHanuiOptions } from '@/types/theme.type';
 
 /**
  * Kütüphaneyi <strong>React ağacının dışından</strong> yapılandırır.

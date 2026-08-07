@@ -84,7 +84,8 @@ const Field: FC<Props> = ({
         required: isRequired || undefined,
         'aria-invalid': error ? true : undefined,
         /* HATA VE YARDIM BIRLIKTE baglanir, biri digerini EZMEZ. */
-        'aria-describedby': [error && errorId, hint && hintId].filter(Boolean).join(' ') || undefined,
+        'aria-describedby':
+          [error && errorId, hint && hintId].filter(Boolean).join(' ') || undefined,
       })}
 
       {/*

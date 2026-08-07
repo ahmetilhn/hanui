@@ -9,6 +9,7 @@ import {
   STAR,
   STATUS,
 } from './palette';
+import { HanuiFonts } from '@/types/theme.type';
 
 /** TEMA TOKEN'LARI. */
 
@@ -413,68 +414,9 @@ export const COMPACT_DENSITY = {
   'leading-relaxed': '1.6',
 } as const satisfies Partial<Record<keyof typeof METRIC_TOKENS, string>>;
 
-/** Token adları — `LIGHT_THEME`den türetilir, elle listelenmez. */
-export type HanuiToken = keyof typeof LIGHT_THEME;
-
-/** Ölçü token adları — `METRIC_TOKENS`ten türetilir. */
-export type HanuiMetricToken = keyof typeof METRIC_TOKENS;
-
-/** Ölçü ezmeleri. Kısmî verilebilir; verilmeyen her ölçü varsayılanında kalır. */
-export type HanuiMetrics = Partial<Record<HanuiMetricToken, string>>;
-
-/** Bilgi yoğunluğu. `default` vitrin, `compact` operasyon paneli. */
-export type HanuiDensity = 'default' | 'compact';
-
-/** Bir temanın token → değer eşlemesi. Kısmî verilebilir; eksikler varsayılandan gelir. */
-export type HanuiThemeTokens = Partial<Record<HanuiToken, string>>;
-
-/** Bir temanın TAM eşlemesi. */
-export type HanuiResolvedTokens = Record<HanuiToken, string>;
-
-/** ÇÖZÜLMÜŞ tema — ekranda gerçekten hangisi çizili. */
-export type HanuiColorScheme = 'light' | 'dark';
-
-/**
- * Kullanıcının SEÇİMİ. `system` = açık bir seçim yok, işletim sistemi tercihi
- * izlenir (`prefers-color-scheme`).
- */
-export type HanuiColorPreference = HanuiColorScheme | 'system';
-
-/** Yazı tipi ailesi sözleşmesi. */
-export type HanuiFonts = Partial<{
-  heading: string;
-  body: string;
-  mono: string;
-}>;
-
 /** Kütüphanenin varsayılan font yığınları — hepsi sistem fontlarına iner. */
 export const DEFAULT_FONTS: Required<HanuiFonts> = {
   heading: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
   body: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
   mono: "ui-monospace, 'SF Mono', Menlo, Consolas, monospace",
 };
-
-/**
- * Dışarıdan verilebilecek tema yapılandırması.
- *
- * @example
- * initHanui({
- * theme: {
- * light: { blue: '#0d6efd', 'blue-text': '#0a58ca' },
- * dark:  { blue: '#6ea8fe' },
- * fonts: { heading: 'Archivo, sans-serif' },
- * },
- * });
- */
-export type HanuiThemeConfig = Partial<{
-  light: HanuiThemeTokens;
-  dark: HanuiThemeTokens;
-  fonts: HanuiFonts;
-  /**
-   * Ölçü ezmeleri — yarıçap, boşluk, punto, süre.
-   *
-   * @example
-   * initHanui({ theme: { metrics: { 'radius-md': '2px', 'radius-lg': '4px' } } });
-   */
-  metrics: HanuiMetrics;
-}>;

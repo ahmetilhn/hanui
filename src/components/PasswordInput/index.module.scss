@@ -1,0 +1,26 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.password {
+  position: relative;
+  display: block;
+
+  &__field {
+    input {
+      padding-inline-end: $space-8;
+    }
+  }
+
+  &__toggle {
+    position: absolute;
+    inset-inline-end: $space-2;
+    top: 50%;
+    transform: translateY(-50%);
+
+    color: $text-2;
+
+    &:hover {
+      color: $text;
+    }
+  }
+}

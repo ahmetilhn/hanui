@@ -3,32 +3,13 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { isClient } from '@ahmetilhn/handy-utils';
-
-/** Yüzeyin tercih ettiği kenar. Yer yoksa karşıtına düşer. */
-export type PositionSide = 'top' | 'bottom' | 'left' | 'right';
-
-/** Tercih edilen kenar boyunca hizalama. */
-export type PositionAlign = 'start' | 'center' | 'end';
-
-export type PositioningOptions = {
-  side?: PositionSide;
-  align?: PositionAlign;
-  /** Tetikleyici ile yüzey arasındaki boşluk (px). */
-  offset?: number;
-  /** Görünüm alanının kenarından bırakılacak asgari pay (px). */
-  padding?: number;
-  /** Kapalıyken ölçüm yapılmaz ve dinleyici kurulmaz. */
-  isOpen: boolean;
-};
-
-export type PositioningState = {
-  /** Yüzeye uygulanacak stil — `position: fixed` + hesaplanmış koordinat. */
-  style: { position: 'fixed'; top: number; left: number };
-  /** ÇÖZÜLMÜŞ kenar: çarpışma yüzünden tercih edilenin karşıtı olabilir. */
-  side: PositionSide;
-  /** İlk ölçüm yapıldı mı. Yapılmadan çizilen yüzey sol üst köşede parlıyor. */
-  isPositioned: boolean;
-};
+import {
+  PositionAlign,
+  PositionSide,
+  PositioningOptions,
+  PositioningRect,
+  PositioningState,
+} from '@/types/positioning.type';
 
 const OPPOSITE: Record<PositionSide, PositionSide> = {
   top: 'bottom',
@@ -41,11 +22,9 @@ const OPPOSITE: Record<PositionSide, PositionSide> = {
 const clamp = (value: number, min: number, max: number): number =>
   Math.min(Math.max(value, min), max);
 
-type Rect = { top: number; left: number; width: number; height: number };
-
 /** Verilen kenarda yüzeyin sol-üst köşesi nereye düşer. */
 const place = (
-  anchor: Rect,
+  anchor: PositioningRect,
   surface: { width: number; height: number },
   side: PositionSide,
   align: PositionAlign,

@@ -97,10 +97,7 @@ const Textarea = /*#__PURE__*/ forwardRef<HTMLTextAreaElement, Props>(
         {hasCounter && maxLength !== undefined && (
           /* `aria-hidden`: ayni bilgi her tusta duyurulsaydi yazma kesintiye
              ugrardi. Sinir zaten `maxLength` ile taniniyor. */
-          <span
-            className={cx(styles.counter, isNearLimit && styles['counter--near'])}
-            aria-hidden
-          >
+          <span className={cx(styles.counter, isNearLimit && styles['counter--near'])} aria-hidden>
             {length} / {maxLength}
           </span>
         )}

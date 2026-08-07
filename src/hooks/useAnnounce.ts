@@ -3,9 +3,7 @@
 import { useCallback } from 'react';
 
 import { isClient } from '@ahmetilhn/handy-utils';
-
-/** Duyurunun aciliyeti. */
-export type AnnouncePoliteness = 'polite' | 'assertive';
+import { AnnouncePoliteness } from '@/types/hook.type';
 
 /**
  * EKRAN OKUYUCU DUYURU MERKEZİ.

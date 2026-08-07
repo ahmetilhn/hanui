@@ -5,8 +5,7 @@ import { type FC, type ReactNode, useEffect, useMemo, useRef } from 'react';
 import { applyThemeConfig } from '../helpers/theme.helper';
 import type { HanuiLinkComponent } from '../types/link.type';
 import HanuiContext from './context';
-import type { HanuiLabels } from './labels';
-import type { HanuiThemeConfig } from './tokens';
+import type { HanuiLabels, HanuiThemeConfig } from '@/types/theme.type';
 
 type Props = {
   children: ReactNode;

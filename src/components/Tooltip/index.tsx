@@ -16,9 +16,10 @@ import { isClient } from '@ahmetilhn/handy-utils';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
-import usePositioning, { type PositionSide } from '../../hooks/usePositioning';
+import usePositioning from '../../hooks/usePositioning';
 
 import styles from './index.module.scss';
+import type { PositionSide } from '@/types/positioning.type';
 
 type Props = {
   /** Balonda gösterilecek açıklama. */

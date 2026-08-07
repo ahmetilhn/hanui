@@ -1,23 +1,10 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-export type VirtualRange = {
-  /** Çizilecek ilk öğenin dizini. */
-  start: number;
-  /** Çizilecek son öğenin dizini (dahil DEĞİL). */
-  end: number;
-  /** Listenin gerçek toplam yüksekliği — kaydırma çubuğu doğru boyda olmalı. */
-  totalHeight: number;
-  /** Görünen ilk öğenin üstünde bırakılacak boşluk. */
-  offset: number;
-};
+import { VirtualRange } from '@/types/hook.type';
 
 /** SANALLAŞTIRMA — yalnızca görünen satırları çiz. */
-const useVirtualList = (
-  count: number,
-  { rowHeight = 40, overscan = 6, isEnabled = true } = {},
-) => {
+const useVirtualList = (count: number, { rowHeight = 40, overscan = 6, isEnabled = true } = {}) => {
   const scrollRef = useRef<HTMLElement | null>(null);
   const [range, setRange] = useState<VirtualRange>({
     start: 0,

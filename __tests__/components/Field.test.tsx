@@ -36,9 +36,7 @@ describe('Field', () => {
     expect(screen.getByText('Fatura buraya gider')).toBeInTheDocument();
     expect(screen.getByText('Geçersiz adres')).toBeInTheDocument();
 
-    const [first] = (
-      screen.getByRole('textbox').getAttribute('aria-describedby') ?? ''
-    ).split(' ');
+    const [first] = (screen.getByRole('textbox').getAttribute('aria-describedby') ?? '').split(' ');
 
     expect(document.getElementById(first as string)).toHaveTextContent('Geçersiz adres');
   });

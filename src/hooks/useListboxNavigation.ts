@@ -1,19 +1,16 @@
 'use client';
 
-import { type KeyboardEvent, type RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  type KeyboardEvent,
+  type RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { scrollIntoViewIfPossible } from '../helpers/scroll.helper';
-
-export type ListboxNavigationOptions = {
-  /** Seçenek sayısı. Liste süzüldüğünde değişir. */
-  count: number;
-  isOpen: boolean;
-  /** Açılışta etkin olacak dizin — genellikle seçili olan. */
-  initialIndex?: number;
-  /** `Enter` / `Space` ile seçildiğinde. */
-  onSelect: (index: number) => void;
-  onClose: () => void;
-};
+import { ListboxNavigationOptions } from '@/types/hook.type';
 
 export type ListboxNavigation<T extends HTMLElement = HTMLElement> = {
   activeIndex: number;

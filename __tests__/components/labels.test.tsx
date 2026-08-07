@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 
 import HanuiProvider from '@/theme/HanuiProvider';
 import { resetLabelWarnings } from '@/helpers/label.helper';
-import type { HanuiLabels } from '@/theme/labels';
 import Breadcrumb from '@/components/Breadcrumb';
 import CopyField from '@/components/CopyField';
 import DataTable from '@/components/DataTable';
@@ -11,6 +10,7 @@ import Input from '@/components/Input';
 import Modal from '@/components/Modal';
 import Rating from '@/components/Rating';
 import Spinner from '@/components/Spinner';
+import type { HanuiLabels } from '@/types/theme.type';
 
 const LABELS: HanuiLabels = {
   close: 'Kapat',

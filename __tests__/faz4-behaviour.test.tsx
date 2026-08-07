@@ -120,10 +120,7 @@ describe('Tabs — manuel etkinleştirme', () => {
     await user.click(screen.getByRole('tab', { name: 'Genel' }));
     await user.keyboard('{ArrowRight}{Enter}');
 
-    expect(screen.getByRole('tab', { name: 'Uyumluluk' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
+    expect(screen.getByRole('tab', { name: 'Uyumluluk' })).toHaveAttribute('aria-selected', 'true');
   });
 
   it('otomatik kip (varsayılan) ok tuşuyla AÇAR', async () => {
@@ -133,10 +130,7 @@ describe('Tabs — manuel etkinleştirme', () => {
     await user.click(screen.getByRole('tab', { name: 'Genel' }));
     await user.keyboard('{ArrowRight}');
 
-    expect(screen.getByRole('tab', { name: 'Uyumluluk' })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
+    expect(screen.getByRole('tab', { name: 'Uyumluluk' })).toHaveAttribute('aria-selected', 'true');
   });
 });
 

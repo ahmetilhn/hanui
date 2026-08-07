@@ -1,5 +1,4 @@
-/** Sınıf birleştiricinin kabul ettiği değerler. */
-export type ClassValue = string | false | null | undefined;
+import { ClassValue } from '@/types/common-element-props.type';
 
 /** Sınıf adı birleştirici. */
 export const cx = (...values: ClassValue[]): string => {
