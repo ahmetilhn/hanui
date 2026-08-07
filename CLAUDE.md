@@ -266,6 +266,24 @@ ve bir bileşen kütüphanesinde okunurluğu **düşürür**.
 tipleri (`PositionSide`, `PositioningOptions`, `VirtualRange`,
 `AnnouncePoliteness`…) ve `ClassValue`.
 
+**`Combobox` istisnası — 515 satır bir sinyaldi.** Tipleri (`ComboboxOption`,
+`ComboboxLabels`, `ComboboxProps`) `types/combobox.type.ts`e, ölçüleri
+(`VIRTUAL_THRESHOLD`, `OPTION_HEIGHT`) `constants/combobox.constants.ts`e
+taşındı; dosya **460** satıra indi. Kural bozulmadı: tipler bileşenden
+**yine de dışa açılıyor**
+
+```ts
+export type { ComboboxLabels, ComboboxOption, ComboboxProps } from '../../types/combobox.type';
+```
+
+çünkü çağıranlar (uygulamalar ve testler) `@/components/Combobox` yolundan
+alıyordu ve yalnızca dosya yeri değişti diye bir sürüm kırılması olmamalı.
+
+⚠ **`theme/tokens.ts` (422) BÖLÜNMEDİ.** O bir **veri tablosu**; renk/uzaklık
+adlarını iki dosyaya ayırmak "hangi token nerede" sorusunu üretir ve
+okunurluğu düşürür. Dosya boyu bir kapı değil sinyaldir — burada sinyal
+yanlış alarm.
+
 ⚠ **Public API DEĞİŞMEDİ, ölçüldü.** `build/index.d.ts` içindeki dışa
 aktarım kümesi taşımadan önce ve sonra **birebir aynı** (144 ad).
 `src/index.ts` bir cephedir; tip gövdeleri nerede yaşarsa yaşasın tüketici

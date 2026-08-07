@@ -1,15 +1,6 @@
 'use client';
 
-import {
-  memo,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { memo, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 
 import { CaretDownFill, CheckLg, Search, XLg } from 'react-bootstrap-icons';
 
@@ -24,63 +15,17 @@ import { useHanui } from '../../theme/context';
 import BottomSheet from '../BottomSheet';
 import Spinner from '../Spinner';
 
+import { OPTION_HEIGHT, VIRTUAL_THRESHOLD } from '../../constants/combobox.constants';
+import { ComboboxOption, ComboboxProps } from '../../types/combobox.type';
+
 import styles from './index.module.scss';
 
-/** Sanallaştırmanın devreye girdiği eşik. */
-const VIRTUAL_THRESHOLD = 80;
-
-/** Seçenek satırının yüksekliği (`--sheet` dışında). */
-const OPTION_HEIGHT = 40;
-
-export type ComboboxOption<T extends string = string> = {
-  value: T;
-  label: string;
-  /** İkincil satır: kod, numara, ayırt edici bilgi. */
-  description?: string;
-  isDisabled?: boolean;
-};
-
-/** Bileşenin çizdiği metinler. */
-export type ComboboxLabels = {
-  /** Seçim yokken tetikleyicide ve alt sayfa başlığında görünen metin. */
-  placeholder: string;
-  /** Arama kutusunun yer tutucusu ve erişilebilir adı. */
-  searchPlaceholder?: string;
-  /** Liste boşken gösterilen metin. */
-  emptyMessage?: string;
-  /** Arama sürerken liste yerine gösterilen metin. */
-  loadingMessage?: string;
-  /** Seçimi kaldıran çarpının erişilebilir adı. */
-  clearLabel?: string;
-  /** Alt sayfanın kapatma düğmesinin erişilebilir adı. */
-  closeLabel?: string;
-};
-
-type Props<T extends string> = {
-  options: ComboboxOption<T>[];
-  value: T | null;
-  onChange: (value: T | null) => void;
-  labels: ComboboxLabels;
-  /**
-   * Verilirse arama <strong>sunucuda</strong> yapılır: bileşen listeyi kendisi
-   * filtrelemez, yazılanı 300 ms bekleyip buraya bildirir. Verilmezse
-   * filtreleme yerelde ve aksan duyarsız yapılır.
-   */
-  onSearch?: (query: string) => void;
-  isLoading?: boolean;
-  isDisabled?: boolean;
-  /** Seçimi kaldıran çarpı düğmesi gösterilir. */
-  isClearable?: boolean;
-  /** Arama kutusu GİZLENİR. */
-  isSearchHidden?: boolean;
-  /** Tetikleyicinin solundaki ikon. */
-  icon?: ReactNode;
-  id?: string;
-  'aria-describedby'?: string;
-  'aria-invalid'?: boolean;
-  className?: string;
-  testId?: string;
-};
+/*
+ * Tipler `types/`e tasindi ama BURADAN da disa aciliyor: cagiranlar
+ * (uygulamalar ve testler) `@ahmetilhn/hanui/components/Combobox` yolundan
+ * aliyordu ve yalnizca yeri degisti diye bir surum kirilmasi olmamali.
+ */
+export type { ComboboxLabels, ComboboxOption, ComboboxProps } from '../../types/combobox.type';
 
 /** Aranabilir seçim kutusu. */
 const Combobox = <T extends string>({
@@ -99,7 +44,7 @@ const Combobox = <T extends string>({
   testId,
   'aria-describedby': describedBy,
   'aria-invalid': isInvalid,
-}: Props<T>) => {
+}: ComboboxProps<T>) => {
   const { labels: config } = useHanui();
 
   /*
