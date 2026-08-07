@@ -2,7 +2,7 @@
   "compilerOptions": {
     /* Node 24 / ECMAScript 2025. `target` TypeScript 5.9'un adlandirdigi en
        ust surum; ES2025 kutuphanesi `lib: ESNext` ile acilir. */
-    "target": "ES2024",
+    "target": "ES2023",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
     "moduleResolution": "bundler",

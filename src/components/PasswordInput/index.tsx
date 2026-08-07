@@ -1,6 +1,7 @@
 import { FC, InputHTMLAttributes, memo, useState } from 'react';
 import { EyeFill, EyeSlashFill } from 'react-bootstrap-icons';
 
+import { named } from '../../helpers/component.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { useHanui } from '../../theme/context';
 import IconButton from '../IconButton';
@@ -54,4 +55,6 @@ const PasswordInput: FC<Props> = ({ className, showLabel, hideLabel, ...rest }) 
   );
 };
 
-export default memo(PasswordInput) as typeof PasswordInput;
+export default /*#__PURE__*/ memo(
+  /*#__PURE__*/ named(PasswordInput, 'PasswordInput'),
+) as typeof PasswordInput;

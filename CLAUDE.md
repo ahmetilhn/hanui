@@ -296,7 +296,41 @@ npm run build && grep -oE 'export (type )?\{[^}]*\}' build/index.d.ts | sort -u
 
 ### Node 24 · ECMAScript 2025
 
-`tsconfig.json` → `target: ES2024`, `lib: ["DOM", "DOM.Iterable", "ESNext"]`.
+`tsconfig.json` → `target: ES2023`, `lib: ["DOM", "DOM.Iterable", "ESNext"]`.
+
+⚠ **`target` burada ES2024 DEĞİL ve bunun ölçülmüş bir sebebi var.** Diğer
+depolar `ES2024` yazıyor; hanui'de o değer her derlemede **89 uyarı** basıyordu:
+
+```
+▲ [WARNING] Unrecognized target environment "es2024" [tsconfig.json]
+```
+
+Vite 5.4'ün getirdiği esbuild **0.21.5** ve o sürümün *tsconfig* ayrıştırıcısı
+`es2024`ü tanımıyor (`--target=es2024` bayrağı ayrı bir yol ve kabul ediyor —
+bu yüzden ilk bakışta çelişkili görünüyor). Tanımadığı değeri **sessizce yok
+sayıp** kendi varsayılanına düşüyordu, yani yapılandırma çalışmıyor ama
+başarısız da olmuyordu.
+
+**Kaybedilen bir şey yok:** `target` yalnızca *downlevel* üretimini belirler,
+ES2025 API'lerini veren şey `lib: ESNext`. Yayınlanan bir kütüphane için
+`ES2023` çıktısı zaten daha güvenli. Vite/esbuild yükseltildiğinde `ES2024`
+yazılabilir; ölçüm `npm run build 2>&1 | grep -c "Unrecognized target"` → `0`.
+
+⚠ **`memo()` çağrısı `/*#__PURE__*/` OLMADAN yazılmaz — ağaç sarsmayı kırar.**
+`PasswordInput` ve `ToastPortal` eklenirken bu atlandı ve `size-limit`
+yakaladı: yalnızca `Button` ithal eden bir uygulama **3,93 → 5,68 kB**
+indiriyordu (`Badge` 3,31 → 5,19). İki bileşen de anlaşılabilir biçimde
+"küçük"tü ama modül düzeyindeki açıklamasız çağrı, bundler için yan etki ve
+hedefin **tüm bağımlılık zincirini** ayakta tutuyor. Doğru biçim istisnasız:
+
+```ts
+export default /*#__PURE__*/ memo(/*#__PURE__*/ named(PasswordInput, 'PasswordInput')) as typeof PasswordInput;
+```
+
+Düzeltmeden sonra ölçüm tabana **birebir** döndü (3,93 / 3,31). Bu kural
+`helpers/component.helper.ts` javadoc'unda ve `Toast`taki `new Set()`
+açıklamasında zaten yazılıydı; nöbetçi `.size-limit.js` — **ve yalnızca tam
+`npm run verify` koşusunda çalışır**, `npm test` bunu görmez.
 
 ### Ön-commit kancası
 

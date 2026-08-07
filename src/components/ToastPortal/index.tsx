@@ -1,5 +1,7 @@
 import { FC, memo, useEffect, useState } from 'react';
 
+import { named } from '../../helpers/component.helper';
+
 import ToastHub from '../Toast';
 
 /**
@@ -21,4 +23,6 @@ const ToastPortal: FC = () => {
   return <ToastHub />;
 };
 
-export default memo(ToastPortal) as typeof ToastPortal;
+export default /*#__PURE__*/ memo(
+  /*#__PURE__*/ named(ToastPortal, 'ToastPortal'),
+) as typeof ToastPortal;
