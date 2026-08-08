@@ -73,11 +73,12 @@ neredeyse görünmez (1,05:1). Satır, menü öğesi ve düğme için geçerli D
 
 - **Amber yalnızca dönüşüm eylemi** (`UIVariant.CART`) — ekrandaki tek doygun
   turuncu. Kampanya bandında amber kullanılırsa o ekranda dönüşüm düğmesi
-  grafite çevrilir; ikisi aynı anda olmaz.
+  marka çamına çevrilir; ikisi aynı anda olmaz.
 - **Doygun dolgu = tıklanabilir.** Durum etiketleri **her zaman** tint zeminli
   (`@include tint`), eylemler her zaman dolgulu veya çerçeveli. Bu ayrım
   bozulursa kullanıcı durum etiketine tıklamayı dener.
-- **Birincil eylem grafittir**, amber değil; bir ekranda tek `PRIMARY`.
+- **Birincil eylem marka çamıdır** (`#003f34`), amber değil; bir ekranda tek
+  `PRIMARY`. `graphite*` token adları sözleşme gereği kaldı, değerleri çam.
 - **Mavi gezinme ve keşiftir**: bağlantı, etkin filtre, odak halkası.
 - **Fiyat siyah kalır.** Güncel fiyat `$text`, üstü çizili eski fiyat `$text-3`,
   indirim küçük bir rozet. Kırmızı fiyat bu sektörde ucuz durur ve kırmızıyı

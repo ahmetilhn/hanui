@@ -1,13 +1,15 @@
 import {
   ACCENT,
   AMBER,
+  BAND,
   BLUE,
+  BRAND,
   DANGER_SOLID,
-  GRAPHITE,
   NEUTRAL,
   SALE,
   STAR,
   STATUS,
+  SURFACE_DARK,
 } from './palette';
 import { HanuiFonts } from '@/types/theme.type';
 
@@ -51,15 +53,15 @@ export const LIGHT_THEME = {
   'text-2': NEUTRAL.n600,
   'text-3': NEUTRAL.n550,
 
-  // --- Grafit: bant, alt bilgi, tablo başlığı, teknik blok ---
-  graphite: GRAPHITE.base,
-  'graphite-2': GRAPHITE.two,
-  'graphite-3': GRAPHITE.three,
+  // --- Bant: üst bant, alt bilgi, tablo başlığı, teknik blok ---
+  graphite: BAND.base,
+  'graphite-2': BAND.two,
+  'graphite-3': BAND.three,
 
-  /* BİRİNCİL EYLEM (dolgulu, nötr). */
-  action: GRAPHITE.base,
-  'action-hover': GRAPHITE.two,
-  'action-active': GRAPHITE.three,
+  /* BİRİNCİL EYLEM (dolgulu, marka çamı). */
+  action: BAND.base,
+  'action-hover': BAND.two,
+  'action-active': BAND.three,
   'on-action': NEUTRAL.n0,
   /** Pasif dolgu; saydamlık DEĞİL kendi rengi (bkz. Button `:disabled`). */
   'action-soft': NEUTRAL.n300,
@@ -181,36 +183,29 @@ export const LIGHT_THEME = {
    * lekeler çok daha hafif: koyu bant için ayarlanmış %22 opaklık açık
    * zeminde lekeyi kirli bir dasa çeviriyordu.
    */
-  'glow-1': alpha(BLUE.base, 0.1),
-  'glow-2': alpha(BLUE.base, 0.06),
+  'glow-1': alpha(BRAND.spring, 0.1),
+  'glow-2': alpha(BRAND.pine, 0.06),
   'glow-amber': alpha(AMBER.base, 0.09),
 } as const;
 
 /** KOYU TEMA. */
 export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
-  page: '#0e1116',
-  surface: '#171b22',
-  'surface-2': '#1f242d',
-  'surface-3': '#262c36',
-  'surface-inset': '#13171d',
+  page: SURFACE_DARK.page,
+  surface: SURFACE_DARK.surface,
+  'surface-2': SURFACE_DARK.surfaceTwo,
+  'surface-3': SURFACE_DARK.surfaceThree,
+  'surface-inset': SURFACE_DARK.inset,
 
-  border: '#262c36',
-  'border-strong': '#363e4a',
+  border: SURFACE_DARK.border,
+  'border-strong': SURFACE_DARK.borderStrong,
 
-  text: '#e7eaee',
-  'text-2': '#9aa4b2',
-  /*
-   * Açık temanın `text-3`ü ile AYNI HEX DEĞİL, olamaz da: koyu temada aynı ton
-   * zeminden uzaklaşmaz, yaklaşır. Ölçüldü: `#6b7583` `surface` üzerinde
-   * 3,69:1 ve `surface-2` üzerinde 3,25:1 — yer tutucu ve üstü çizili fiyat
-   * koyu temada okunmuyordu. `#818b99` yüzeylerin en açığında (`surface-2`)
-   * 4,51:1.
-   */
-  'text-3': '#818b99',
+  text: SURFACE_DARK.text,
+  'text-2': SURFACE_DARK.textTwo,
+  'text-3': SURFACE_DARK.textThree,
 
-  graphite: GRAPHITE.ink,
-  'graphite-2': GRAPHITE.inkTwo,
-  'graphite-3': GRAPHITE.two,
+  graphite: BAND.dark,
+  'graphite-2': BAND.darkTwo,
+  'graphite-3': BAND.base,
 
   /*
    * Koyu temada grafit dolgu sayfadan ayırt edilemez. Birincil eylem AÇIK bir
@@ -220,14 +215,14 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'action-hover': NEUTRAL.n0,
   'action-active': NEUTRAL.n300,
   'on-action': NEUTRAL.n900,
-  'action-soft': '#414a58',
+  'action-soft': SURFACE_DARK.actionSoft,
   /* Koyu temada pasif dolgu ortada bir gri: metin AÇIK olmali (bkz. LIGHT). */
   'on-action-soft': NEUTRAL.n300,
 
   amber: AMBER.dark,
   'amber-hover': AMBER.darkHover,
   'amber-active': AMBER.base,
-  'amber-soft': '#6d5316',
+  'amber-soft': AMBER.darkSoft,
   'on-amber': AMBER.on,
 
   blue: BLUE.dark,
@@ -275,16 +270,16 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'on-danger': DANGER_SOLID.onDark,
 
   /* Koyu temada bant sayfadan daha KOYU: aynı tonda olsa yüzüyor görünüyor. */
-  'nav-bg': GRAPHITE.ink,
-  'nav-bg-2': GRAPHITE.inkTwo,
-  'nav-fg': '#e7eaee',
-  'nav-fg-2': '#9aa4b2',
+  'nav-bg': BAND.dark,
+  'nav-bg-2': BAND.darkTwo,
+  'nav-fg': SURFACE_DARK.text,
+  'nav-fg-2': SURFACE_DARK.textTwo,
   /* Açık temadaki kardeşiyle aynı gerekçe: bandın en soluk metni de metindir. */
-  'nav-fg-3': '#818b99',
-  'nav-line': '#262c36',
-  'nav-line-strong': '#363e4a',
+  'nav-fg-3': SURFACE_DARK.textThree,
+  'nav-line': SURFACE_DARK.border,
+  'nav-line-strong': SURFACE_DARK.borderStrong,
   'nav-hover': alpha(NEUTRAL.n0, 0.07),
-  'footer-bg': GRAPHITE.ink,
+  'footer-bg': BAND.dark,
 
   /*
    * Koyu zeminde gölge okunmaz; derinlik daha çok kenarlıkla kurulur.
@@ -305,18 +300,18 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
 
   scrim: alpha(BLACK, 0.68),
   'scrim-soft': alpha(BLACK, 0.45),
-  glass: alpha('#1f242d', 0.92),
-  'glass-solid': '#1f242d',
+  glass: alpha(SURFACE_DARK.surfaceTwo, 0.92),
+  'glass-solid': SURFACE_DARK.surfaceTwo,
   'on-scrim': NEUTRAL.n0,
 
-  'skeleton-a': '#1f242d',
-  'skeleton-b': '#262c36',
+  'skeleton-a': SURFACE_DARK.surfaceTwo,
+  'skeleton-b': SURFACE_DARK.surfaceThree,
   track: alpha(NEUTRAL.n0, 0.14),
 
-  'media-bg': '#1f242d',
+  'media-bg': SURFACE_DARK.surfaceTwo,
 
-  'glow-1': alpha(BLUE.base, 0.2),
-  'glow-2': alpha(BLUE.dark, 0.1),
+  'glow-1': alpha(BRAND.spring, 0.2),
+  'glow-2': alpha(BRAND.pine, 0.12),
   'glow-amber': alpha(AMBER.dark, 0.12),
 };
 
