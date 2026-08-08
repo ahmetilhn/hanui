@@ -134,17 +134,24 @@ export const SURFACE_DARK = {
 } as const;
 
 /**
- * KOYU TEMANIN BİRİNCİL EYLEMİ — kurumsal imza eşleşmesi.
+ * BİRİNCİL EYLEMİN SINIRI — dolgunun kendisi değil, KENARI.
  *
- * <p>Koyu temada koyu yeşil dolgu sayfadan ayırt edilemiyor. Önceki sürüm bu
- * yüzden açık bir nötre (`n150`) dönüyordu: okunur ama markasız bir gri
- * düğme. Kılavuzun en güçlü eşleşmesi tam olarak burada işe yarıyor —
- * mint dolgu + siyah metin, 14,65:1.
+ * <p>Birincil düğme iki temada da kurumsal koyu yeşil dolgu taşır: "açık yeşil
+ * zeminli düğme yoktur" kuralı marka kararı. Bunun ölçülmüş bedeli koyu temada
+ * düğmenin <strong>kaybolması</strong>: çam sayfaya karşı 1,36:1, koyu kartın
+ * yüzeyine (`surface-2`) karşı <strong>1,04:1</strong> — dolgu orada
+ * görünmüyor bile. Önceki sürüm bu yüzden dolguyu minte çeviriyordu.
+ *
+ * <p>Çözüm dolguyu değiştirmek değil ona bir sınır vermek: mint saç çizgisi
+ * sayfaya karşı 14,65:1, koyu yüzeylerin en açığına (`surface-3`) karşı
+ * 9,39:1 — WCAG 1.4.11'in grafik eşiğini (3:1) her zeminde geçer ve kılavuzun
+ * imza eşleşmesini düğmenin kenarına taşır. Açık temada çam zaten kâğıda
+ * karşı 13,16:1; orada sınır dolgunun KENDİSİDİR — görünmez ama geometriyi
+ * (1 px'lik kenarlık) iki temada aynı tutar.
  */
-export const MINT = {
-  base: BRAND.mint,
-  hover: '#70ffb3',
-  active: '#2ce883',
+export const ACTION_LINE = {
+  light: BRAND.pine,
+  dark: BRAND.mint,
 } as const;
 
 // --- Amber ------------------------------------------------------------

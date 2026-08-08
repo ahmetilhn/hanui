@@ -88,7 +88,7 @@ button.steps__button {
   .steps__item--current & {
     background-color: $blue;
     border-color: $blue;
-    color: $on-action;
+    color: $on-blue;
   }
 
   @media (forced-colors: active) {

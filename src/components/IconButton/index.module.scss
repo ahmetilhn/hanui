@@ -62,8 +62,11 @@
     }
   }
 
+  /* Kenarlık `Button--primary` ile aynı sebeple: koyu temada çam dolgu koyu
+     yüzeyden ayrılmıyor (bkz. palette `ACTION_LINE`). */
   &--solid {
     background-color: $action;
+    border-color: $action-line;
     color: $on-action;
 
     &:hover:not(:disabled) {
@@ -72,6 +75,7 @@
 
     &:disabled {
       background-color: $action-soft;
+      border-color: transparent;
       color: $on-action-soft;
     }
   }

@@ -100,13 +100,13 @@
   & &__page--active {
     background-color: $blue;
     border-color: $blue;
-    color: $on-action;
+    color: $on-blue;
 
     &:hover:not(:disabled),
     &:active:not(:disabled) {
       background-color: $blue-text;
       border-color: $blue-text;
-      color: $on-action;
+      color: $on-blue;
     }
   }
 

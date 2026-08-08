@@ -1,11 +1,12 @@
 import {
   ACCENT,
+  ACTION_LINE,
   AMBER,
   BAND,
   BLUE,
   BRAND,
+  CORPORATE,
   DANGER_SOLID,
-  MINT,
   NEUTRAL,
   SALE,
   STAR,
@@ -64,6 +65,8 @@ export const LIGHT_THEME = {
   'action-hover': BAND.two,
   'action-active': BAND.three,
   'on-action': NEUTRAL.n0,
+  /** Dolgunun SINIRI; açık temada dolgunun kendisi (bkz. `ACTION_LINE`). */
+  'action-line': ACTION_LINE.light,
   /** Pasif dolgu; saydamlık DEĞİL kendi rengi (bkz. Button `:disabled`). */
   'action-soft': NEUTRAL.n300,
   /** PASİF DOLGU ÜZERİNDEKİ METİN. */
@@ -83,6 +86,16 @@ export const LIGHT_THEME = {
   'blue-text': BLUE.text,
   'blue-tint': BLUE.tint,
   'blue-line': BLUE.line,
+  /*
+   * MAVİ DOLGU ÜZERİNDEKİ METİN — etkin sayfa numarası, etkin karo madalyonu,
+   * geçerli adım, dolu bağlantı rozeti. Bir zamanlar `on-action`ı kullanıyordu
+   * ve o kestirme birincil eylemin dolgusu iki temada da koyu yeşile
+   * sabitlendiğinde KIRILDI: `on-action` beyaza döndü, mavi ise koyu temada
+   * açık bir teal (`#51d2d6`) ve beyaz metin orada 2,1:1'e düşüyor. İki
+   * dolgunun aydınlığı ters yönlere gidiyor, tek metin token'ı ikisini birden
+   * taşıyamaz.
+   */
+  'on-blue': NEUTRAL.n0,
 
   // --- Durum: tint zemin + koyu metin + eşleşen hairline ---
   'ok-bg': STATUS.okBg,
@@ -142,6 +155,23 @@ export const LIGHT_THEME = {
   'nav-line-strong': NEUTRAL.n300,
   'nav-hover': NEUTRAL.n100,
   'footer-bg': NEUTRAL.n100,
+
+  /*
+   * MARKA ŞERİDİ — `nav-*`ın TEMADAN BAĞIMSIZ kardeşi. Değerleri iki temada da
+   * birebir aynı ve bu tanımın kendisi: şerit kurumsal koyu yeşil zemini
+   * taşıyan bir yüzeydir, temanın açık/koyu merdiveninde bir kademe değil.
+   *
+   * <p>`nav-*` bunu yapamaz çünkü açık temada beyaza dönüyor; `graphite`
+   * ailesi ise yalnızca ZEMİN — üzerine ne yazılacağını söyleyen bir metin
+   * kademesi yok ve açık temada `text`/`nav-fg` siyah, yani çamın üzerinde
+   * okunmuyor. Metin katmanları doğrudan kılavuzdan: gövde kâğıt (12,68:1),
+   * ikincil sis (6,15:1).
+   */
+  'band-bg': BAND.dark,
+  'band-fg': CORPORATE.paper,
+  'band-fg-2': CORPORATE.mist,
+  'band-line': BAND.darkLine,
+  'band-hover': alpha(NEUTRAL.n0, 0.07),
 
   // --- Gölge: nötr-serin (sıcak gölge serin gri zeminde kirli durur) ---
   'shadow-xs': `0 1px 2px ${alpha(NEUTRAL.n900, 0.05)}`,
@@ -211,15 +241,22 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'graphite-3': BAND.two,
 
   /*
-   * Koyu temada koyu yeşil dolgu sayfadan ayırt edilemez. Birincil eylem
-   * kurumsal İMZA EŞLEŞMESİNE döner: mint dolgu + siyah metin, 14,65:1.
-   * Önceki sürüm açık bir nötre (`n150`) dönüyordu — okunur ama markasız.
+   * ⚠ BİRİNCİL EYLEM İKİ TEMADA DA KURUMSAL KOYU YEŞİL — koyu temada mint
+   * dolguya DÖNMEZ. Önceki sürüm dönüyordu (mint + siyah metin, 14,65:1) ve
+   * ölçüm olarak kusursuzdu; düşen şey markaydı: açık yeşil kılavuzda logonun
+   * ve imza işaretinin rengi, bir düğmenin zemini değil. Aynı ekranda mint
+   * dolgulu düğme ile mint logo yan yana geldiğinde imza rengi bir vurgu
+   * olmaktan çıkıp arayüzün genel dolgusuna dönüşüyordu.
+   *
+   * <p>Bedeli ölçüldü ve `action-line` ile ödendi: çam koyu sayfada 1,36:1,
+   * koyu kartta (`surface-2`) 1,04:1 — dolgunun kendisi görünmüyor, düğmeyi
+   * mint saç çizgisi (14,65:1) ve beyaz metin (14,09:1) görünür kılıyor.
    */
-  action: MINT.base,
-  'action-hover': MINT.hover,
-  'action-active': MINT.active,
-  /* Mavi dolgu da bu metni kullanıyor: siyah `blue-dark` üzerinde 6,45:1. */
-  'on-action': NEUTRAL.n900,
+  action: BRAND.pine,
+  'action-hover': BAND.two,
+  'action-active': BAND.three,
+  'on-action': NEUTRAL.n0,
+  'action-line': ACTION_LINE.dark,
   'action-soft': SURFACE_DARK.actionSoft,
   /* Koyu temada pasif dolgu ortada bir gri: metin AÇIK olmali (bkz. LIGHT). */
   'on-action-soft': NEUTRAL.n300,
@@ -236,6 +273,8 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'blue-text': BLUE.dark,
   'blue-tint': BLUE.darkTint,
   'blue-line': BLUE.darkLine,
+  /* Koyu temada mavi dolgu AÇILIYOR; üzerine siyah gider (10,55:1). */
+  'on-blue': NEUTRAL.n900,
 
   'ok-bg': STATUS.okBgDark,
   'ok-fg': STATUS.okFgDark,
@@ -285,6 +324,13 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'nav-line-strong': BAND.darkLineStrong,
   'nav-hover': alpha(NEUTRAL.n0, 0.07),
   'footer-bg': BAND.dark,
+
+  /* AÇIK TEMADAKİYLE BİREBİR AYNI — şerit temaya göre dönmez (bkz. LIGHT). */
+  'band-bg': BAND.dark,
+  'band-fg': CORPORATE.paper,
+  'band-fg-2': CORPORATE.mist,
+  'band-line': BAND.darkLine,
+  'band-hover': alpha(NEUTRAL.n0, 0.07),
 
   /*
    * Koyu zeminde gölge okunmaz; derinlik daha çok kenarlıkla kurulur.

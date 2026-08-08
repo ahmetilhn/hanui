@@ -52,11 +52,12 @@ const buildPairs = () => {
 
   /*
    * Mavi dolgu üzerindeki metin — etkin sayfa numarası (`Pagination`), etkin
-   * karo madalyonu (`Tile`), dolu bağlantı rozeti (`Badge`). Üçü de
-   * `on-action` kullanır: mavi TEMAYA göre dönüyor ve sabit beyaz bir metin
-   * koyu temada 2,97:1'e düşüyordu.
+   * karo madalyonu (`Tile`), geçerli adım (`Steps`), dolu bağlantı rozeti
+   * (`Badge`). Kendi token'ı var: mavi koyu temada AÇILIYOR, birincil eylem
+   * ise iki temada da koyu yeşil — biri koyu metin isterken diğeri beyaz
+   * istiyor ve tek token ikisini taşıyamıyor (bkz. `tokens.ts` → `on-blue`).
    */
-  for (const fill of ['blue', 'blue-hover']) add('on-action', fill, 'text');
+  for (const fill of ['blue', 'blue-hover']) add('on-blue', fill, 'text');
 
   /*
    * `on-green` YALNIZCA `green-accent` ile ölçülür, hover'ıyla değil.
@@ -83,6 +84,10 @@ const buildPairs = () => {
     add('nav-fg-3', band, 'text');
   }
 
+  /* Marka şeridi: temadan bağımsız, iki temada da aynı çift ölçülür. */
+  add('band-fg', 'band-bg', 'text');
+  add('band-fg-2', 'band-bg', 'text');
+
   // --- Örtü ve cam: saydam; arkalarında sayfa var ---
   add('on-scrim', 'scrim', 'text', 'page');
   add('text', 'glass', 'text', 'page');
@@ -97,6 +102,12 @@ const buildPairs = () => {
 
   // --- Grafik ve ikon (1.4.11) ---
   for (const surface of ['page', 'surface', 'surface-2']) {
+    /*
+     * Birincil düğmenin SINIRI eşiği taşıyan taraf: dolgunun kendisi (çam)
+     * koyu temada koyu yüzeyde 1,04:1 ve advisory listede kalıyor. Düğmenin
+     * görülebilirliği bu satıra bağlı — o yüzden burada, `graphic` olarak.
+     */
+    add('action-line', surface, 'graphic');
     add('ring-color', surface, 'graphic');
     add('red-accent', surface, 'graphic');
     add('green-accent', surface, 'graphic');

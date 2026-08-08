@@ -78,17 +78,23 @@ olarak ANKOR, geri kalan her kademe onlardan ölçülerek çıkarıldı.
 | Kılavuz token'ı | Hex | `palette.ts` | Rolü |
 |---|---|---|---|
 | Koyu yeşil | `#00322a` | `BRAND.pine` | Birincil eylem, bant, açık zeminde logo |
-| Açık yeşil | `#43ff9c` | `BRAND.mint` | İmza; koyu temanın birincil eylemi |
+| Açık yeşil | `#43ff9c` | `BRAND.mint` | İmza; koyu zeminde logo, koyu temada birincil eylemin SINIRI |
 | Siyah | `#00120f` | `BRAND.ink` | Gövde metni, koyu temanın sayfası |
 | Kâğıt | `#eff4f1` | `CORPORATE.paper` → `n100` | Açık zemin, koyu temada gövde metni |
 | Slate | `#38594f` | `CORPORATE.slate` → `n600` | Açık zeminde ikincil metin |
 | Sis | `#8fb3a7` | `CORPORATE.mist` → `textTwo` | Koyu zeminde ikincil metin |
 
 - ⚠ **Açık yeşil AÇIK ZEMİNDE METİN OLAMAZ** — kâğıt üzerinde 1,18:1.
-  Kılavuzdaki tek kesin renk kuralı bu ve kütüphanede iki yerde karşılığı var:
-  koyu temanın `action` dolgusu (üzerine siyah metin, 14,65:1) ve `glow-1`.
-  Olumlu durum ailesi mintten **türetilmez**; ankoru ayrı (`ANCHOR.green`
-  `#1d9a64`, kâğıt üzerinde 3,22:1).
+  Kılavuzdaki tek kesin renk kuralı bu. Kütüphanede iki yerde karşılığı var:
+  koyu temanın `action-line` saç çizgisi ve `glow-1`. Olumlu durum ailesi
+  mintten **türetilmez**; ankoru ayrı (`ANCHOR.green` `#1d9a64`, kâğıt
+  üzerinde 3,22:1).
+- ⚠ **AÇIK YEŞİL ZEMİNLİ DÜĞME YOKTUR.** Koyu tema bir süre birincil eylemi
+  mint dolguya çeviriyordu (üzerine siyah metin, 14,65:1) ve ölçüm olarak
+  kusursuzdu; düşen şey markaydı — mint kılavuzda **logonun** rengi, bir
+  düğmenin zemini değil, ve aynı ekranda mint logo ile mint düğme yan yana
+  geldiğinde imza rengi vurgu olmaktan çıkıp arayüzün genel dolgusuna
+  dönüşüyordu. Ayrıntı aşağıda ("Birincil eylem iki temada da koyu yeşil").
 - **Nötr eksen yeşile kayar.** Önceki eksen serin gri-maviydi (H 207-220);
   kurumsal kâğıt/slate/sis H 144-162'de duruyor ve iki eksen yan yana
   geldiğinde aynı gri iki farklı renk gibi okunuyordu. Ara kademeler H
@@ -100,9 +106,9 @@ olarak ANKOR, geri kalan her kademe onlardan ölçülerek çıkarıldı.
 - **Doygun dolgu = tıklanabilir.** Durum etiketleri **her zaman** tint zeminli
   (`@include tint`), eylemler her zaman dolgulu veya çerçeveli. Bu ayrım
   bozulursa kullanıcı durum etiketine tıklamayı dener.
-- **Birincil eylem koyu yeşildir** (`#00322a`), amber değil; bir ekranda tek
-  `PRIMARY`. `graphite*` token adları sözleşme gereği kaldı, değerleri koyu
-  yeşil.
+- **Birincil eylem koyu yeşildir** (`#00322a`) — amber değil, **iki temada da
+  aynı**; bir ekranda tek `PRIMARY`. `graphite*` token adları sözleşme gereği
+  kaldı, değerleri koyu yeşil.
 - **Rol rengi gezinme ve keşiftir**: bağlantı, etkin filtre, seçili satır,
   ilerleme, odak halkası. ⚠ Token adları `blue*` **ama değerleri mavi değil** —
   ayrıntı aşağıdaki "Rol rengi artık teal" bölümünde.
@@ -118,6 +124,57 @@ sayfaya karşı) ve üstündeki logo mint olduğunda imza eşleşmesi bandın i�
 çıkar. ⚠ Bandın ayırıcı çizgisi bu yüzden sayfa kenarlığından **gelmez**
 (`BAND.darkLine`): aynı ton bant zemininde 1,10:1'e düşüyordu — çizgi çizilmiş
 ama görünmüyordu.
+
+### Birincil eylem İKİ TEMADA DA koyu yeşil — sınırı `action-line` taşır
+
+Koyu tema `action`ı minte çeviriyordu. Marka kararı bunu geri aldı: **açık
+yeşil zeminli düğme yok.** Ölçülmüş bedel, mint dolgunun çözdüğü şeydi —
+kurumsal çam koyu yüzeylerde **kayboluyor**:
+
+| Zemin | Çam dolgu (`action`) | Mint saç çizgisi (`action-line`) |
+|---|---|---|
+| `page` (`#00120f`) | **1,36:1** | 14,65:1 |
+| `surface` | 1,20:1 | 12,86:1 |
+| `surface-2` (kart) | **1,04:1** | 11,21:1 |
+| `surface-3` | 1,42:1 | 9,39:1 |
+
+Yani düğmeyi dolgusu değil **kenarı** görünür kılıyor; metin beyaz (14,09:1).
+Çözüm bilinçli olarak dolguyu açmak değil sınır vermek: dolguyu bir kademe
+açmak çamdan çıkmak, iki kademe açmak yeniden minte varmak olurdu.
+
+- `action-line` **açık temada dolgunun kendisidir** (`BRAND.pine`) — görünmez,
+  ama 1 px'lik kenarlık iki temada da yazıldığı için düğmenin ölçüsü değişmez.
+- Nöbetçi `check-contrast.mjs`: `action-line` üç yüzeye karşı **`graphic`**
+  katmanında (≥3:1) ölçülür — advisory değil. Dolgunun kendisi advisory
+  listede kalır (1,04:1 orada bilinçli bir kayıt).
+- Aynı kenarlığı `IconButton--solid` ve `Badge--action.solid` da taşır: üçü de
+  `action` dolgusunu kullanıyor ve aynı zeminlerde aynı şekilde kayboluyordu.
+
+⚠ **`on-blue` bu değişiklikle DOĞDU.** `on-action` bir zamanlar mavi dolgunun
+metnini de taşıyordu (`Pagination` etkin sayfa, `Tile` madalyon, `Steps`
+geçerli adım, `Badge--link.solid`). İki dolgunun aydınlığı **ters yönlere**
+gidiyor: birincil eylem iki temada da koyu, mavi ise koyu temada **açılıyor**
+(`#51d2d6`). `on-action` beyaza sabitlenince mavi dolgudaki metin 2,1:1'e
+düşerdi. Tek token ikisini taşıyamaz.
+
+### Marka şeridi — `band-*`, temaya göre DÖNMEZ
+
+`nav-*` bandın temayla dönen gövdesidir (açık temada beyaz). `band-*` ise
+**iki temada da birebir aynı**: kurumsal koyu yeşil zemin + kâğıt gövde metni
+(12,67:1) + sis ikincil metin (6,15:1) + `BAND.darkLine` ayırıcı.
+
+Vitrindeki kargo sözü şeridi (`Header.promise`) bunu kullanıyor: o satır
+sayfanın değil **markanın** sesi ve açık temada beyaz bandın üstünde gri bir
+satır olarak bandın kendisine eriyordu.
+
+⚠ Böyle bir yüzeyde `nav-fg-2` **kullanılamaz** — açık temada slate ve çam
+üzerinde **1,82:1**. Şerit üzerine yazan her şey `band-fg` / `band-fg-2`
+kullanır; hover zemini `band-hover`.
+
+⚠ Tema alt ağaca **kapsamlandırılamaz**: `_tokens.generated.scss` `light`/`dark`
+karışımlarını yalnızca `:root`a bağlar. "Bu şeridi koyu temaya sabitle" demek
+için `data-hanui-theme`i bir `<div>`e yazmak **çalışmaz**; doğru yol tam olarak
+budur — temadan bağımsız bir token ailesi.
 
 ### Rol rengi artık TEAL — `blue*` adları kaldı, değerleri değişti
 

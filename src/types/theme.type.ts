@@ -69,8 +69,12 @@ export type HanuiContextValue = {
   /** Uygulanan tema ezmeleri. Salt okunur; değiştirmek için `HanuiProvider`. */
   theme?: HanuiThemeConfig;
   /**
-   * Arayüz metinleri. Bir bileşen metnini prop olarak almadıysa buradan okur
-   * (bkz. `theme/labels.ts`).
+   * Arayüz metinleri. Bir bileşen metnini prop olarak almadıysa buradan okur;
+   * varsayılanlar `HanuiLabels` alanlarının yanında yazılı.
+   *
+   * ⚠ Referans bir dönem `theme/labels.ts`yi gösteriyordu; o dosya yalnızca
+   * tek satırlık bir başlık yorumu taşıyordu (sıfır export, sıfır import) ve
+   * kaldırıldı — belge var olmayan bir yeri işaret ediyordu.
    */
   labels?: HanuiLabels;
 };

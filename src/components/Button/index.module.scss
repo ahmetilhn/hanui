@@ -95,8 +95,11 @@
     }
   }
 
+  /* Kenarlık DEKORASYON DEĞİL: koyu temada dolgu (çam) koyu kartta 1,04:1
+     veriyor, düğmeyi sınırı görünür kılıyor. Bkz. palette `ACTION_LINE`. */
   &--primary {
     background-color: $action;
+    border-color: $action-line;
     color: $on-action;
     box-shadow: $shadow-xs;
 
@@ -112,6 +115,7 @@
 
     &:disabled {
       background-color: $action-soft;
+      border-color: transparent;
       color: $on-action-soft;
     }
   }

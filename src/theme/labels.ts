@@ -1,1 +1,0 @@
-/** ARAYÜZ METİNLERİ. */
