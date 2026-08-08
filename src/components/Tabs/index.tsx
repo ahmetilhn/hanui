@@ -65,8 +65,26 @@ const Tabs: FC<Props> = ({
   const listRef = useRef<HTMLDivElement>(null);
   const active = items[activeIndex] ?? items[0];
 
-  /* SECILI SEKME GORUNURE KAYDIRILIR. */
+  /*
+   * SECILI SEKME GORUNURE KAYDIRILIR — ama MOUNT'ta DEGIL.
+   *
+   * ⚠ Ilk kosu da kaydiriyordu ve `scrollIntoView` yalnizca serit kabini degil
+   * SAYFAYI da kaydirir: serit ilk boyamada ekranin altindaysa (uzun bir
+   * sayfanin dibindeki sekmeler) sayfa acilir acilmaz kendiliginden oraya
+   * atliyordu. Olculdu: hanparca urun detayinda sayfa her acilista alt
+   * sekmelere kayiyordu ve kullanici sayfanin basini hic gormuyordu.
+   *
+   * Kaydirma yalnizca SECIM DEGISTIGINDE anlamli — o an sekme zaten
+   * gorunurdedir ve hareket yatay serit icinde kalir.
+   */
+  const hasMountedRef = useRef(false);
+
   useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
+    }
+
     scrollIntoViewIfPossible(listRef.current?.querySelector(`[aria-selected="true"]`), {
       block: 'nearest',
       inline: 'nearest',
