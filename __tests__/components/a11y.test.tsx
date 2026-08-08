@@ -194,10 +194,10 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     default: <Checkbox label="Kabul ediyorum" />,
     hint: <Checkbox label="Kabul ediyorum" hint="Sözleşme metni" />,
   },
-  Radio: { default: <Radio name="grup" label="Birinci" /> },
+  Radio: { default: <Radio name="group" label="Birinci" /> },
   RadioCard: {
     default: (
-      <RadioCard name="grup" value="a" isSelected onChange={() => {}}>
+      <RadioCard name="group" value="a" isSelected onChange={() => {}}>
         Kart gövdesi
       </RadioCard>
     ),

@@ -153,7 +153,7 @@ const MEDIA_SAMPLE = `data:image/svg+xml;utf8,${encodeURIComponent(
 
 export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   HanuiProvider: {
-    açıklama: (
+    description: (
       <p style={{ maxWidth: '52ch' }}>
         Sağlayıcı görünür bir şey çizmez: tema ezmelerini belgeye yazar, metinleri ve yönlendirici
         bileşenini ağaca dağıtır. Bu sayfanın tamamı zaten onun içinde.
@@ -563,7 +563,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   },
 
   Accordion: {
-    çoklu: (
+    multiple: (
       <Accordion
         defaultOpenIds={['a']}
         items={[
@@ -573,7 +573,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         ]}
       />
     ),
-    tekAçık: (
+    singleOpen: (
       <Accordion
         isSingle
         defaultOpenIds={['a']}
@@ -605,7 +605,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     indeterminate: <ProgressCircle label="Yükleme" />,
   },
   Popover: {
-    kapalı: (
+    closed: (
       <Popover label="Yardım" trigger={<Button variant={UIVariant.SECONDARY}>Popover aç</Button>}>
         <strong>Uyumluluk nasıl belirlenir?</strong>
         <p style={{ margin: '8px 0 0' }}>Aracın şase numarasından üretici verisi çözümlenir.</p>
@@ -613,7 +613,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     ),
   },
   Menu: {
-    kapalı: (
+    closed: (
       <Menu
         label="Satır eylemleri"
         trigger={<Button variant={UIVariant.SECONDARY}>Eylemler</Button>}
@@ -632,7 +632,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
      * Galeride bir dugme ile ornek uretiliyor — anlik goruntude yalnizca
      * dugmeler gorunur, ki dogrusu bu: bildirim kalici bir yuzey degil.
      */
-    örnek: (
+    example: (
       <>
         <ToastHub />
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -656,7 +656,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   },
 
   SegmentedControl: {
-    metin: (
+    text: (
       <SegmentedControl
         label="Görünüm"
         value="list"
@@ -667,7 +667,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         ]}
       />
     ),
-    üçlü: (
+    triple: (
       <SegmentedControl
         label="Dönem"
         value="year"
@@ -682,7 +682,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     ),
   },
   Steps: {
-    yatay: (
+    horizontal: (
       <Steps
         label="Ödeme adımları"
         currentIndex={1}
@@ -693,7 +693,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         ]}
       />
     ),
-    dikey: (
+    vertical: (
       <Steps
         label="Sipariş durumu"
         orientation="vertical"
@@ -708,7 +708,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     ),
   },
   FileUpload: {
-    boş: (
+    empty: (
       <FileUpload
         files={[]}
         onSelect={noop}
@@ -719,7 +719,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         hint="PDF ya da JPG, en fazla 5 MB"
       />
     ),
-    dosyalı: (
+    withFiles: (
       <FileUpload
         files={[
           { id: '1', name: 'ruhsat-on.jpg', size: 240_000 },
@@ -1011,7 +1011,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     loading: <DataTable columns={COLUMNS} isLoading />,
     empty: <DataTable columns={COLUMNS} />,
     error: <DataTable columns={COLUMNS} error="Liste yüklenemedi" />,
-    sıralanabilir: (
+    sortable: (
       <DataTable
         columns={[
           { key: 'code', label: 'Kod', isSortable: true, ariaSort: 'ascending', isSticky: true },

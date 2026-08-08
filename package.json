@@ -71,7 +71,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:visual": "playwright test --project=masaüstü --project=mobil",
+    "test:visual": "playwright test --project=desktop --project=mobile",
     "test:device": "playwright test --project=ios --project=android",
     "test:device:install": "playwright install webkit chromium",
     "playground": "vite --config playground/vite.config.ts",

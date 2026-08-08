@@ -42,12 +42,12 @@ export default defineConfig({
   /* IKI AYRI KOSU, IKI AYRI PROJE KUMESI. */
   projects: [
     {
-      name: 'masaüstü',
+      name: 'desktop',
       testMatch: VISUAL_SPEC,
       use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } },
     },
     {
-      name: 'mobil',
+      name: 'mobile',
       testMatch: VISUAL_SPEC,
       use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 } },
     },
