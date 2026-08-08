@@ -1,39 +1,71 @@
 /** HAM PALET — kütüphanenin TEK hex kaynağı. */
 
 /**
- * MARKA ÜÇLÜSÜ — sistemin geri kalanı bu üç renkten türer.
+ * MARKA ÜÇLÜSÜ — <strong>Hanparça kurumsal kimlik kılavuzu 2.0</strong>.
  *
- * <p>`pine` birincil eylem ve koyu bantlar, `ink` nötr ekseni ve koyu temanın
- * sayfası, `spring` olumlu/yeşil ailesinin ankoru. Amber, mavi, kırmızı ve
- * yıldız altını marka DEĞİL işlev renkleridir: dönüşüm, gezinme, yıkım ve
- * puan. Onları yeşile çevirmek üç ayrı anlamı tek renge yükler.
+ * <p>Kılavuzun kendi sözleriyle: "Marka üç renkten oluşur: koyu yeşil, açık
+ * yeşil, siyah. Logoda yalnızca bu üçü kullanılır — dördüncü bir renk yoktur."
+ * Amber, mavi, kırmızı ve yıldız altını marka DEĞİL işlev renkleridir:
+ * dönüşüm, gezinme, yıkım ve puan. Kılavuzun "dördüncü renk yok" kuralı
+ * LOGOYU kapsar; bir arayüzün dönüşüm düğmesini ya da hata rengini
+ * kapsamıyor. Onları yeşile çevirmek üç ayrı anlamı tek renge yükler.
+ *
+ * <p>⚠ <strong>`mint` AÇIK ZEMİNDE METİN OLAMAZ.</strong> Kâğıt üzerinde
+ * kontrastı 1,18:1 — neredeyse görünmez. Kılavuzdaki tek kesin renk kuralı
+ * bu. Bu yüzden mint yalnızca KOYU zeminde metin/işaret, ya da üzerine koyu
+ * metin gelen bir DOLGU olarak kullanılır; olumlu durum ailesinin ankoru
+ * ondan türetilmez (bkz. `ACCENT`).
  */
 export const BRAND = {
-  pine: '#003f34',
-  ink: '#0e1419',
-  spring: '#20a45e',
+  /** Koyu yeşil — marka zemini, açık zemindeki logo rengi, birincil eylem. */
+  pine: '#00322a',
+  /** Açık yeşil — imza rengi. Yalnızca koyu zeminde. */
+  mint: '#43ff9c',
+  /** Siyah — en derin mürekkep; gövde metni ve koyu temanın sayfası. */
+  ink: '#00120f',
+} as const;
+
+/**
+ * KURUMSAL YARDIMCI RENKLER — kılavuzun altı token'ından kalan üçü.
+ *
+ * <p>Kılavuz bunları açıkça marka dışında tutuyor: "Kâğıt, slate ve sis
+ * yalnızca materyal zemini ve ikincil metin içindir; logoya girmez." Nötr
+ * ekseni bu üç değer ANKORLAR; ara kademeler onlardan türetildi.
+ */
+export const CORPORATE = {
+  /** Açık zemin. Beyaz yerine bu kullanılır; yeşile hafif kayar. */
+  paper: '#eff4f1',
+  /** Açık zeminde ikincil metin — kâğıt üzerinde 6,96:1. */
+  slate: '#38594f',
+  /** Koyu zeminde ikincil metin — koyu yeşil üzerinde 6,15:1. */
+  mist: '#8fb3a7',
 } as const;
 
 // --- Nötr eksen -------------------------------------------------------
-// Serin gri-mavi. Sıcak kum tonundan ayrıldık: ürün fotoğrafları ağırlıkla
-// metal ve siyah plastik; sıcak zemin onları sarartıp kirli gösteriyordu.
+// Yeşile kayan gri. Önceki eksen serin gri-maviydi (H 207-220) ve kurumsal
+// kâğıt/slate/sis üçlüsü H 144-162'de duruyor: iki eksen yan yana geldiğinde
+// aynı gri iki farklı renk gibi okunuyordu. Uçlar ARTIK VERİLİ — `n100`
+// kâğıdın, `n600` slate'in, `n900` siyahın kendisi; ara kademeler H 152-168
+// bandında onlara bağlandı.
 export const NEUTRAL = {
   n0: '#ffffff',
-  n25: '#fafbfc',
-  n50: '#f6f7f9',
-  n100: '#eef0f4',
-  n150: '#e7eaef',
-  n200: '#e2e6ec',
+  n25: '#f9fbfa',
+  n50: '#f4f8f7',
+  /** Kurumsal kâğıt. */
+  n100: CORPORATE.paper,
+  n150: '#e8efec',
+  n200: '#e3eae7',
   /** Kart/girdi kenarı — `n200` sayfadan ayrılmıyordu. */
-  n250: '#d6dce4',
-  n300: '#c9d0da',
-  n400: '#aab3c0',
-  n500: '#8a94a3',
-  /** İkincil metnin okunur tabanı. */
-  n550: '#626c7a',
-  n600: '#5a6472',
-  n700: '#3a424f',
-  n800: '#232a35',
+  n250: '#d6e1dc',
+  n300: '#c5d3cc',
+  n400: '#9eb3aa',
+  n500: '#749085',
+  /** İkincil metnin okunur tabanı — kâğıt üzerinde 5,09:1. */
+  n550: '#506d63',
+  /** Kurumsal slate. */
+  n600: CORPORATE.slate,
+  n700: '#26403a',
+  n800: '#0f2924',
   /** Ekseni marka mürekkebi kapatır: gövde metni, örtü ve gölge buradan. */
   n900: BRAND.ink,
 } as const;
@@ -44,43 +76,75 @@ export const NEUTRAL = {
  *
  * <p>⚠ Token adları `graphite`/`graphite-2`/`graphite-3` olarak KALDI: onlar
  * kütüphanenin açık sözleşmesi ve yeniden adlandırma büyük sürüm ister.
- * Değerleri artık grafit değil çam yeşili; ad rengi değil ROLÜ anlatıyor.
+ * Değerleri artık grafit değil kurumsal koyu yeşil; ad rengi değil ROLÜ
+ * anlatıyor.
  */
 export const BAND = {
   base: BRAND.pine,
-  two: '#0a5647',
-  three: '#166f5d',
-  /** Koyu temada üst bant; sayfadan (marka mürekkebi) bir tık koyu olmalı. */
-  dark: '#070c10',
-  darkTwo: '#0f161c',
+  two: '#004d40',
+  three: '#0f574a',
+  /*
+   * ⚠ Koyu temada bant sayfadan daha KOYU DEĞİL, daha YEŞİL. Eski kural
+   * "bant sayfadan bir tık koyu olmalı, yoksa yüzüyor görünür" idi ve sayfa
+   * o zaman `#0e1419`ken uygulanabilirdi. Sayfa artık kurumsal siyahın
+   * kendisi (`#00120f`) — altında bir kademe YOK. Bant bu yüzden kılavuzun
+   * "koyu yüzeylerin tamamı" dediği marka zeminine çıkar: koyu yeşil sayfaya
+   * karşı 1,36:1, yani ayrı bir yüzey olduğu görülüyor ve üstündeki logo
+   * mint olduğunda imza eşleşmesi (10,76:1) doğrudan bandın içinde çıkıyor.
+   */
+  dark: BRAND.pine,
+  darkTwo: '#002922',
+  /*
+   * ⚠ Koyu temada bandın ayırıcı çizgisi SAYFA KENARLIĞINDAN gelmez. Sayfa
+   * kenarlığı (`SURFACE_DARK.border`) koyu bir yüzey merdiveni için
+   * ayarlanmıştı ve bant marka zeminine çıkınca aynı ton bandın üzerinde
+   * 1,10:1'e düştü — çizgi çizilmiş ama görünmüyordu. Bant kendi çizgisini
+   * kendi zemininden türetir.
+   */
+  darkLine: '#0a4a3e',
+  darkLineStrong: '#126554',
 } as const;
 
 /**
  * KOYU TEMA YÜZEYLERİ — merdiven marka mürekkebinden başlar.
  *
- * <p>Sayfa `BRAND.ink`in kendisidir; yüzeyler ondan yukarı doğru açılır.
- * Bant (`BAND.dark`) sayfadan aşağı iner, yoksa üst bant sayfanın üzerinde
- * yüzüyor görünür.
+ * <p>Sayfa `BRAND.ink`in kendisidir; yüzeyler ondan yukarı doğru açılır ve
+ * kurumsal yeşil ekseninde kalırlar (H 166-172). Metin katmanları kılavuzdan
+ * doğrudan gelir: gövde kâğıt, ikincil sis.
  */
 export const SURFACE_DARK = {
   page: BRAND.ink,
-  surface: '#151d24',
-  surfaceTwo: '#1d262e',
-  surfaceThree: '#253038',
-  inset: '#111920',
-  border: '#253038',
-  borderStrong: '#37434f',
-  text: '#e6ebef',
-  textTwo: '#9aa6b0',
+  surface: '#08211d',
+  surfaceTwo: '#112d27',
+  surfaceThree: '#1d3a33',
+  inset: '#031614',
+  border: '#193831',
+  borderStrong: '#34564c',
+  text: CORPORATE.paper,
+  textTwo: CORPORATE.mist,
   /*
-   * Açık temanın `text-3`ü ile AYNI HEX DEĞİL, olamaz da: koyu temada aynı ton
-   * zeminden uzaklaşmaz, yaklaşır. Ölçüldü: bir kademe koyusu (`#6b7583`)
-   * `surface` üzerinde 3,69:1 kalıyor — yer tutucu ve üstü çizili fiyat koyu
-   * temada okunmuyordu.
+   * Sisin bir kademe koyusu. Kurumsal palette üçüncü bir koyu-zemin metni
+   * yok; sis `surface-2` üzerinde 6,42:1 verirken bu ton 4,78:1'de duruyor —
+   * yer tutucu ve üstü çizili fiyat için gereken kademe farkı kadar iniyor,
+   * eşiği kırmadan.
    */
-  textThree: '#828e99',
+  textThree: '#799a8f',
   /** Pasif dolgu; koyu temada ortada bir nötr (metin AÇIK olmalı). */
-  actionSoft: '#3c4750',
+  actionSoft: '#3f5a53',
+} as const;
+
+/**
+ * KOYU TEMANIN BİRİNCİL EYLEMİ — kurumsal imza eşleşmesi.
+ *
+ * <p>Koyu temada koyu yeşil dolgu sayfadan ayırt edilemiyor. Önceki sürüm bu
+ * yüzden açık bir nötre (`n150`) dönüyordu: okunur ama markasız bir gri
+ * düğme. Kılavuzun en güçlü eşleşmesi tam olarak burada işe yarıyor —
+ * mint dolgu + siyah metin, 14,65:1.
+ */
+export const MINT = {
+  base: BRAND.mint,
+  hover: '#70ffb3',
+  active: '#2ce883',
 } as const;
 
 // --- Amber ------------------------------------------------------------
@@ -88,6 +152,11 @@ export const SURFACE_DARK = {
 // hiçbir yerde dolgu olarak kullanılmaz. Marka yeşiliyle çarpışmaz çünkü
 // işleri farklı — ve dönüşüm düğmesi yeşil olsaydı olumlu durum etiketiyle
 // aynı aileye düşer, tek doygun rengin taşıdığı vurgu dağılırdı.
+//
+// ⚠ Koyu temada birincil eylem artık mint: aynı ekranda amber dönüşüm
+// düğmesiyle iki doygun dolgu bulunabilir. Kural değişmedi — bir ekranda
+// tek `PRIMARY` vardır ve dönüşüm noktası taşıyan ekranda birincil eylem
+// çerçeveli forma döner.
 export const AMBER = {
   base: '#f59e0b',
   hover: '#d98706',
@@ -103,7 +172,7 @@ export const AMBER = {
 
 // --- Mavi -------------------------------------------------------------
 // Gezinme ve keşif: bağlantı, etkin filtre, odak halkası. Odak halkası
-// MARKA RENGİ OLAMAZ: birincil düğme çam yeşili ve yeşil bir halka yeşil
+// MARKA RENGİ OLAMAZ: birincil düğme koyu yeşil ve yeşil bir halka yeşil
 // dolgunun üzerinde görünmez.
 export const BLUE = {
   base: '#2f6fed',
@@ -120,28 +189,33 @@ export const BLUE = {
 } as const;
 
 /**
- * ANKORLAR: kırmızı ve marka yeşili.
+ * ANKORLAR: kırmızı ve İŞLEV YEŞİLİ.
  *
- * <p>⚠ ANKORLAR METİN RENGİ DEĞİLDİR. `green` beyaz üzerinde 3,21:1 — gövde
+ * <p>⚠ `green` marka renginin kendisi DEĞİL. Kurumsal mint açık zeminde
+ * 1,18:1 veriyor: ne metin ne ikon olabilir. Olumlu durum ailesi bu yüzden
+ * mintin ton açısında (H 154) ama açık zeminde ölçülebilir bir aydınlıkta
+ * ayrı bir ankordan türetildi.
+ *
+ * <p>⚠ ANKORLAR METİN RENGİ DEĞİLDİR. `green` beyaz üzerinde 3,58:1 — gövde
  * metni olarak WCAG'i geçmez. Bu yüzden aile iki katmanlı: ankor İKON ve
  * DOLGU için, ondan türetilen koyu ton METİN için.
  */
 export const ANCHOR = {
   red: '#dc2626',
-  green: BRAND.spring,
+  green: '#1d9a64',
 } as const;
 
 /** DURUM RENKLERİ. */
 export const STATUS = {
-  /* Yeşil ailesi `BRAND.spring`den türetildi (L +44 / S −24, L +33 / S −14). */
-  okBg: '#e6f4ec',
-  /** 5,76:1 tint üzerinde — metin katmanı. */
-  okFg: '#0f6b46',
-  okLine: '#a4dcbf',
-  okBgDark: '#0f2a1d',
-  /** Ankorun bir kademe açığı; koyu tint üzerinde 6,87:1. */
-  okFgDark: '#3ec47f',
-  okLineDark: '#1e5539',
+  /* Yeşil ailesi `ANCHOR.green`den türetildi (L +57 / S −30, L +19 / S −8). */
+  okBg: '#e6f4ed',
+  /** 5,42:1 tint üzerinde — metin katmanı. */
+  okFg: '#156f4e',
+  okLine: '#a8dcc4',
+  okBgDark: '#0b2d23',
+  /** Ankorun bir kademe açığı; koyu tint üzerinde 7,63:1. */
+  okFgDark: '#47d191',
+  okLineDark: '#1e5742',
 
   warnBg: '#fdf0dd',
   warnFg: '#7a3e02',
@@ -150,12 +224,15 @@ export const STATUS = {
   warnFgDark: '#f5c86b',
   warnLineDark: '#55401a',
 
-  offBg: '#f1f2f5',
-  offFg: '#3a424f',
-  offLine: '#ccd2db',
-  offBgDark: '#212630',
-  offFgDark: '#a3adbb',
-  offLineDark: '#333b47',
+  /* Nötr tint de yeşil eksene taşındı: `off` "tükendi" demek ve serin gri bir
+     rozet, yanındaki yeşil/kâğıt yüzeylerde ayrı bir sistemden gelmiş gibi
+     duruyordu. */
+  offBg: '#f0f4f3',
+  offFg: NEUTRAL.n700,
+  offLine: '#cddad4',
+  offBgDark: '#192e29',
+  offFgDark: '#a2b9b0',
+  offLineDark: '#2a423b',
 
   /*
    * Kırmızı ailesi `ANCHOR.red`den türetildi. Önceki `badFg` (#7f1d1d) bir
@@ -164,7 +241,7 @@ export const STATUS = {
    * okunur yapıyor.
    */
   badBg: '#f8ebeb',
-  /** 5,45:1 tint üzerinde. */
+  /** 5,44:1 tint üzerinde. */
   badFg: '#bb1e1e',
   badLine: '#e6a6a6',
   badBgDark: '#310f0f',
@@ -202,30 +279,30 @@ export const DANGER_SOLID = {
  * İKON DOLGULARI — favori kalbi, kopyalandı tiki gibi metin olmayan ve doygun
  * kalması gereken yerler. Eşik WCAG 1.4.11: grafik öğesi 3:1.
  *
- * <p>⚠ Marka ankorunun kendisi eşiği GEÇMİYOR (`#20a45e` `surface-2` üzerinde
- * 2,81:1) ve `CopyField`in tiki, kopyalamanın başarısını söyleyen tek görsel
- * sinyal. İkon katmanı bu yüzden ankordan ayrıldı; nöbetçi
- * `scripts/check-contrast.mjs`.
+ * <p>⚠ Kurumsal mint bu eşiği açık zeminde GEÇMİYOR (`#43ff9c` kâğıt üzerinde
+ * 1,18:1) ve `CopyField`in tiki, kopyalamanın başarısını söyleyen tek görsel
+ * sinyal. İkon katmanı bu yüzden marka renginden değil `ANCHOR.green`den
+ * türetildi; nöbetçi `scripts/check-contrast.mjs`.
  */
 export const ACCENT = {
   red: '#dc2626',
   redDark: '#e35252',
-  /** 3,17:1 `surface-2` üzerinde — ailenin ikon katmanı, ankor değil. */
-  green: '#199a53',
-  greenDark: '#43ce7d',
+  /** 3,22:1 kâğıt üzerinde — ailenin ikon katmanı, marka rengi değil. */
+  green: ANCHOR.green,
+  greenDark: '#43d08a',
   /** İKON hover'ı; metin taşıyan dolgunun hover'ı değil (yukarıdaki not). */
-  greenHover: '#158548',
-  greenHoverDark: '#63dd94',
-  /** Yeşil dolgu üzerindeki metin. BEYAZ DEĞİL: `green` üzerinde 3,62:1. */
-  onGreen: '#04200f',
+  greenHover: '#17814f',
+  greenHoverDark: '#63e3a3',
+  /** Yeşil dolgu üzerindeki metin. BEYAZ DEĞİL: `green` üzerinde 3,25:1. */
+  onGreen: '#02180f',
 } as const;
 
 /** İNDİRİM / OLUMLU DEĞİŞİM ETİKETİ. */
 export const SALE = {
-  bg: '#e6f4ec',
-  fg: '#0f6b46',
-  bgDark: '#0f2a1d',
-  fgDark: '#3ec47f',
+  bg: STATUS.okBg,
+  fg: STATUS.okFg,
+  bgDark: STATUS.okBgDark,
+  fgDark: STATUS.okFgDark,
 } as const;
 
 /** YILDIZ ALTINI. */

@@ -71,18 +71,52 @@ neredeyse görünmez (1,05:1). Satır, menü öğesi ve düğme için geçerli D
 
 ## Renk kararları
 
+Palet **Hanparça kurumsal kimlik kılavuzu 2.0**'dan türer; kılavuzun altı
+token'ı `palette.ts` içinde `BRAND` (üç marka rengi) + `CORPORATE` (üç yardımcı)
+olarak ANKOR, geri kalan her kademe onlardan ölçülerek çıkarıldı.
+
+| Kılavuz token'ı | Hex | `palette.ts` | Rolü |
+|---|---|---|---|
+| Koyu yeşil | `#00322a` | `BRAND.pine` | Birincil eylem, bant, açık zeminde logo |
+| Açık yeşil | `#43ff9c` | `BRAND.mint` | İmza; koyu temanın birincil eylemi |
+| Siyah | `#00120f` | `BRAND.ink` | Gövde metni, koyu temanın sayfası |
+| Kâğıt | `#eff4f1` | `CORPORATE.paper` → `n100` | Açık zemin, koyu temada gövde metni |
+| Slate | `#38594f` | `CORPORATE.slate` → `n600` | Açık zeminde ikincil metin |
+| Sis | `#8fb3a7` | `CORPORATE.mist` → `textTwo` | Koyu zeminde ikincil metin |
+
+- ⚠ **Açık yeşil AÇIK ZEMİNDE METİN OLAMAZ** — kâğıt üzerinde 1,18:1.
+  Kılavuzdaki tek kesin renk kuralı bu ve kütüphanede iki yerde karşılığı var:
+  koyu temanın `action` dolgusu (üzerine siyah metin, 14,65:1) ve `glow-1`.
+  Olumlu durum ailesi mintten **türetilmez**; ankoru ayrı (`ANCHOR.green`
+  `#1d9a64`, kâğıt üzerinde 3,22:1).
+- **Nötr eksen yeşile kayar.** Önceki eksen serin gri-maviydi (H 207-220);
+  kurumsal kâğıt/slate/sis H 144-162'de duruyor ve iki eksen yan yana
+  geldiğinde aynı gri iki farklı renk gibi okunuyordu. Ara kademeler H
+  152-168 bandında.
 - **Amber yalnızca dönüşüm eylemi** (`UIVariant.CART`) — ekrandaki tek doygun
   turuncu. Kampanya bandında amber kullanılırsa o ekranda dönüşüm düğmesi
-  marka çamına çevrilir; ikisi aynı anda olmaz.
+  koyu yeşile çevrilir; ikisi aynı anda olmaz. Kılavuzun "dördüncü renk yok"
+  kuralı **logoyu** kapsar, arayüzün işlev renklerini değil.
 - **Doygun dolgu = tıklanabilir.** Durum etiketleri **her zaman** tint zeminli
   (`@include tint`), eylemler her zaman dolgulu veya çerçeveli. Bu ayrım
   bozulursa kullanıcı durum etiketine tıklamayı dener.
-- **Birincil eylem marka çamıdır** (`#003f34`), amber değil; bir ekranda tek
-  `PRIMARY`. `graphite*` token adları sözleşme gereği kaldı, değerleri çam.
-- **Mavi gezinme ve keşiftir**: bağlantı, etkin filtre, odak halkası.
+- **Birincil eylem koyu yeşildir** (`#00322a`), amber değil; bir ekranda tek
+  `PRIMARY`. `graphite*` token adları sözleşme gereği kaldı, değerleri koyu
+  yeşil.
+- **Mavi gezinme ve keşiftir**: bağlantı, etkin filtre, odak halkası. Odak
+  halkası marka rengi OLAMAZ — yeşil halka yeşil dolgunun üzerinde görünmez.
 - **Fiyat siyah kalır.** Güncel fiyat `$text`, üstü çizili eski fiyat `$text-3`,
   indirim küçük bir rozet. Kırmızı fiyat bu sektörde ucuz durur ve kırmızıyı
   "aracına uymaz" anlamından koparır.
+
+⚠ **Koyu temada bant sayfadan daha KOYU DEĞİL, daha YEŞİL.** Eski kural
+"bant bir tık koyu olmalı, yoksa yüzüyor görünür" idi ve sayfa `#0e1419`ken
+uygulanabilirdi. Sayfa artık kurumsal siyahın kendisi — altında kademe **yok**.
+Bant kılavuzun "koyu yüzeylerin tamamı" dediği marka zeminine çıkar (1,36:1
+sayfaya karşı) ve üstündeki logo mint olduğunda imza eşleşmesi bandın içinde
+çıkar. ⚠ Bandın ayırıcı çizgisi bu yüzden sayfa kenarlığından **gelmez**
+(`BAND.darkLine`): aynı ton bant zemininde 1,10:1'e düşüyordu — çizgi çizilmiş
+ama görünmüyordu.
 
 ### Durum tintleri
 
@@ -352,11 +386,19 @@ olarak duruyordu ve ikisi de zaten bu kütüphanenin bileşenlerini sarmalıyord
 | `ToastPortal` | `ToastHub` portal kullanıyor ve `document` olmadan çalışamıyor; sunucuda çizilen ağaçta hidrasyon uyuşmazlığı üretir. Montaj bekleyen sarmalayıcı uygulamanın değil bileşenin sorunu. |
 
 ⚠ **Uygulamalar HENÜZ GEÇMEDİ.** `hanparca-admin` ve `hanparca-frontend`
-hanui'yi npm'den alıyor (`^2.0.10`) ve bu bileşenler `2.1.0`da. Geçiş için
+hanui'yi npm'den alıyor (`2.1.1`) ve bu bileşenler `2.1.0`da. Geçiş için
 sırasıyla: `npm publish` → iki uygulamada bağımlılığı yükselt → yerel
 `components/PasswordInput` ve `components/ToastPortal` klasörlerini sil →
 `import { PasswordInput, ToastPortal } from '@ahmetilhn/hanui'`. Yayın
 yapılmadan yerel kopyaları silmek her iki uygulamayı da kırar.
+
+⚠ **`2.2.0` (kurumsal palet) de aynı kapıda bekliyor.** Bağımlılık tam sürüme
+sabit (`"2.1.1"`, aralık değil), yani yeni palet **yayınlanana ve iki
+uygulamada `@ahmetilhn/hanui@2.2.0`'a yükseltilene kadar** vitrine/panele
+inmez. Uygulamaların kendi dosyalarında duran marka yüzeyleri (logo varlıkları,
+panel rayı, `og.png`, `themeColor`, manifest, mail token'ları) bundan bağımsız
+ve **zaten güncel** — yani geçiş penceresinde kurumsal logo yeni, gövde
+renkleri eski görünür. Doğru sıra: `npm publish` → iki uygulamada dep bump.
 
 ### `ThemeToggle` ve `Logo` neden BURAYA TAŞINMADI
 

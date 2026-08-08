@@ -5,6 +5,7 @@ import {
   BLUE,
   BRAND,
   DANGER_SOLID,
+  MINT,
   NEUTRAL,
   SALE,
   STAR,
@@ -58,7 +59,7 @@ export const LIGHT_THEME = {
   'graphite-2': BAND.two,
   'graphite-3': BAND.three,
 
-  /* BİRİNCİL EYLEM (dolgulu, marka çamı). */
+  /* BİRİNCİL EYLEM (dolgulu, kurumsal koyu yeşil). */
   action: BAND.base,
   'action-hover': BAND.two,
   'action-active': BAND.three,
@@ -183,7 +184,7 @@ export const LIGHT_THEME = {
    * lekeler çok daha hafif: koyu bant için ayarlanmış %22 opaklık açık
    * zeminde lekeyi kirli bir dasa çeviriyordu.
    */
-  'glow-1': alpha(BRAND.spring, 0.1),
+  'glow-1': alpha(BRAND.mint, 0.1),
   'glow-2': alpha(BRAND.pine, 0.06),
   'glow-amber': alpha(AMBER.base, 0.09),
 } as const;
@@ -205,15 +206,19 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
 
   graphite: BAND.dark,
   'graphite-2': BAND.darkTwo,
-  'graphite-3': BAND.base,
+  /* `BAND.base` DEĞİL: koyu temada bant zaten koyu yeşil ve üçüncü kademe
+     ikinciyle aynı hex'e çökerdi. Merdiven yukarı devam eder. */
+  'graphite-3': BAND.two,
 
   /*
-   * Koyu temada grafit dolgu sayfadan ayırt edilemez. Birincil eylem AÇIK bir
-   * nötr yüzeye döner — koyu zeminde en yüksek vurgu budur.
+   * Koyu temada koyu yeşil dolgu sayfadan ayırt edilemez. Birincil eylem
+   * kurumsal İMZA EŞLEŞMESİNE döner: mint dolgu + siyah metin, 14,65:1.
+   * Önceki sürüm açık bir nötre (`n150`) dönüyordu — okunur ama markasız.
    */
-  action: NEUTRAL.n150,
-  'action-hover': NEUTRAL.n0,
-  'action-active': NEUTRAL.n300,
+  action: MINT.base,
+  'action-hover': MINT.hover,
+  'action-active': MINT.active,
+  /* Mavi dolgu da bu metni kullanıyor: siyah `blue-dark` üzerinde 6,45:1. */
   'on-action': NEUTRAL.n900,
   'action-soft': SURFACE_DARK.actionSoft,
   /* Koyu temada pasif dolgu ortada bir gri: metin AÇIK olmali (bkz. LIGHT). */
@@ -276,8 +281,8 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'nav-fg-2': SURFACE_DARK.textTwo,
   /* Açık temadaki kardeşiyle aynı gerekçe: bandın en soluk metni de metindir. */
   'nav-fg-3': SURFACE_DARK.textThree,
-  'nav-line': SURFACE_DARK.border,
-  'nav-line-strong': SURFACE_DARK.borderStrong,
+  'nav-line': BAND.darkLine,
+  'nav-line-strong': BAND.darkLineStrong,
   'nav-hover': alpha(NEUTRAL.n0, 0.07),
   'footer-bg': BAND.dark,
 
@@ -310,7 +315,7 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
 
   'media-bg': SURFACE_DARK.surfaceTwo,
 
-  'glow-1': alpha(BRAND.spring, 0.2),
+  'glow-1': alpha(BRAND.mint, 0.2),
   'glow-2': alpha(BRAND.pine, 0.12),
   'glow-amber': alpha(AMBER.dark, 0.12),
 };
