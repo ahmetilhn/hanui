@@ -78,48 +78,57 @@ export const NEUTRAL = {
  * kütüphanenin açık sözleşmesi ve yeniden adlandırma büyük sürüm ister.
  * Değerleri artık grafit değil kurumsal koyu yeşil; ad rengi değil ROLÜ
  * anlatıyor.
+ *
+ * <p>⚠ Ailenin `dark` ucu artık YALNIZCA marka şeridini (`band-*`) besler.
+ * Bir dönem koyu temanın üst bandını, alt bilgisini ve `graphite` merdivenini
+ * de o besliyordu; koyu temanın zemini kurumsal siyaha çekilince o üç yol
+ * `SURFACE_DARK`e geçti (bkz. oradaki not).
  */
 export const BAND = {
   base: BRAND.pine,
   two: '#004d40',
   three: '#0f574a',
   /*
-   * ⚠ Koyu temada bant sayfadan daha KOYU DEĞİL, daha YEŞİL. Eski kural
-   * "bant sayfadan bir tık koyu olmalı, yoksa yüzüyor görünür" idi ve sayfa
-   * o zaman `#0e1419`ken uygulanabilirdi. Sayfa artık kurumsal siyahın
-   * kendisi (`#00120f`) — altında bir kademe YOK. Bant bu yüzden kılavuzun
-   * "koyu yüzeylerin tamamı" dediği marka zeminine çıkar: koyu yeşil sayfaya
-   * karşı 1,36:1, yani ayrı bir yüzey olduğu görülüyor ve üstündeki logo
-   * mint olduğunda imza eşleşmesi (10,76:1) doğrudan bandın içinde çıkıyor.
+   * Marka şeridinin zemini — iki temada da koyu yeşil. Koyu temada sayfaya
+   * karşı 1,36:1: ayrı bir yüzey olduğu görülüyor ve üstündeki logo mint
+   * olduğunda imza eşleşmesi (10,76:1) doğrudan şeridin içinde çıkıyor.
    */
   dark: BRAND.pine,
-  darkTwo: '#002922',
   /*
-   * ⚠ Koyu temada bandın ayırıcı çizgisi SAYFA KENARLIĞINDAN gelmez. Sayfa
-   * kenarlığı (`SURFACE_DARK.border`) koyu bir yüzey merdiveni için
-   * ayarlanmıştı ve bant marka zeminine çıkınca aynı ton bandın üzerinde
-   * 1,10:1'e düştü — çizgi çizilmiş ama görünmüyordu. Bant kendi çizgisini
-   * kendi zemininden türetir.
+   * ⚠ Şeridin ayırıcı çizgisi SAYFA KENARLIĞINDAN gelmez. Sayfa kenarlığı
+   * (`SURFACE_DARK.border`) nötr bir yüzey merdiveni için ayarlı ve şeridin
+   * koyu yeşili üzerinde 1,10:1'e düşüyor — çizgi çizilmiş ama görünmüyor.
+   * Şerit kendi çizgisini kendi zemininden türetir.
    */
   darkLine: '#0a4a3e',
-  darkLineStrong: '#126554',
 } as const;
 
 /**
- * KOYU TEMA YÜZEYLERİ — merdiven marka mürekkebinden başlar.
+ * KOYU TEMA YÜZEYLERİ — merdivenin TAMAMI marka mürekkebinin karakterinde.
  *
- * <p>Sayfa `BRAND.ink`in kendisidir; yüzeyler ondan yukarı doğru açılır ve
- * kurumsal yeşil ekseninde kalırlar (H 166-172). Metin katmanları kılavuzdan
- * doğrudan gelir: gövde kâğıt, ikincil sis.
+ * <p>Sayfa `BRAND.ink`in kendisi; yüzeyler ondan yukarı açılır ama <b>siyah
+ * kalır</b>: kurumsal yeşil ekseninde (H 161-171) dururlar, doygunlukları
+ * yükseldikçe DÜŞER (S 33 → 23 → 17) ve hiçbiri yeşil bir yüzey olarak
+ * okunmaz. Metin katmanları kılavuzdan doğrudan gelir: gövde kâğıt, ikincil
+ * sis — yani marka yeşili koyu temada METİNDE ve VURGUDA yaşar, zeminde
+ * değil.
+ *
+ * <p>⚠ Önceki merdiven bunun tersiydi: aynı aydınlıklarda S 61/45/33 ile
+ * duruyordu ve üst bant, alt bilgi ve `graphite` bloğu doğrudan marka çamına
+ * (`#00322a`) bağlıydı. Sonuç, koyu temanın <b>genel zemininin</b> siyah değil
+ * koyu yeşil okunmasıydı; kılavuzun siyahı (`#00120f`) yalnızca sayfanın
+ * kendisinde kalıyor, kart/panel/bant üçlüsü onu örtüyordu. Kural artık tek
+ * cümle: <b>koyu temada zemin siyahtır, yeşil vurgudur.</b>
  */
 export const SURFACE_DARK = {
   page: BRAND.ink,
-  surface: '#08211d',
-  surfaceTwo: '#112d27',
-  surfaceThree: '#1d3a33',
-  inset: '#031614',
-  border: '#193831',
-  borderStrong: '#34564c',
+  surface: '#0b1614',
+  surfaceTwo: '#14201d',
+  surfaceThree: '#1f2c28',
+  /** Girinti sayfanın ALTINA iner; önceki değer sayfadan açıktı. */
+  inset: '#000d0b',
+  border: '#26332f',
+  borderStrong: '#3d4f4a',
   text: CORPORATE.paper,
   textTwo: CORPORATE.mist,
   /*
@@ -154,27 +163,43 @@ export const ACTION_LINE = {
   dark: BRAND.mint,
 } as const;
 
-// --- Amber ------------------------------------------------------------
-// EKRANDAKİ TEK DOYGUN TURUNCU: dönüşüm eylemi ("sepete ekle"). Başka
-// hiçbir yerde dolgu olarak kullanılmaz. Marka yeşiliyle çarpışmaz çünkü
-// işleri farklı — ve dönüşüm düğmesi yeşil olsaydı olumlu durum etiketiyle
-// aynı aileye düşer, tek doygun rengin taşıdığı vurgu dağılırdı.
-//
-// ⚠ Koyu temada birincil eylem artık mint: aynı ekranda amber dönüşüm
-// düğmesiyle iki doygun dolgu bulunabilir. Kural değişmedi — bir ekranda
-// tek `PRIMARY` vardır ve dönüşüm noktası taşıyan ekranda birincil eylem
-// çerçeveli forma döner.
-export const AMBER = {
-  base: '#f59e0b',
-  hover: '#d98706',
-  active: '#b87205',
+/**
+ * DÖNÜŞÜM EYLEMİ ("sepete ekle") — ekrandaki tek PARLAK yeşil.
+ *
+ * <p>⚠ <strong>Token adları `amber*` olarak KALDI, değerleri TURUNCU DEĞİL.</strong>
+ * Aynı karar `graphite*` ve `blue*`ta da verildi: ad rengi değil ROLÜ anlatır
+ * ve CSS özel özelliği adı (`--hanui-amber`) kütüphanenin açık sözleşmesi;
+ * yeniden adlandırma büyük sürüm ister. Doğru ad `cart` ve sonraki büyük
+ * sürümde yapılır — bu yüzden ham palet sabiti şimdiden `CART`.
+ *
+ * <p>Dönüşüm düğmesi bir dönem turuncuydu ve gerekçe "hue ile ayrış" idi:
+ * ekranın tek doygun turuncusu, marka yeşiliyle çarpışmasın diye. Kılavuzda
+ * turuncu YOK; ayrım artık ton açısıyla değil <b>aydınlıkla</b> taşınıyor —
+ * birincil eylem kurumsal çamın kendisi (koyu dolgu + beyaz metin), dönüşüm
+ * ise ailenin en parlak yeşili (açık dolgu + siyah metin). İki düğme yan yana
+ * konduğunda ayrım 4,58:1 (açık tema) ve 7,13:1 (koyu tema).
+ *
+ * <p>⚠ Bu <b>mint dolgu değildir.</b> "Açık yeşil zeminli düğme yok" kuralı
+ * kılavuzun imza rengini (`BRAND.mint`, logonun rengi) koruyor; buradaki
+ * zümrüt ondan üç kademe uzakta (H 154 / S 66 vs H 150 / S 100) ve olumlu
+ * durum ailesinin ankoruyla (`ANCHOR.green`) aynı eksende.
+ *
+ * <p>⚠ Etkileşim yönü açık temada TERS: hover AÇILIR, active KOYULUR. Metin
+ * siyah olduğu için koyulaşan her kademe metin eşiğini aşağı çeker; `active`
+ * ailenin 4,5:1'i geçen en koyu tonu (5,14:1) ve altına inilemez.
+ */
+export const CART = {
+  base: '#22a76d',
+  hover: '#2ab97a',
+  active: '#1d9a64',
   /** Pasif dönüşüm düğmesi; saydamlık değil KENDİ dolgusu. */
-  soft: '#f8cd80',
-  dark: '#fbbf24',
-  darkHover: '#f0af12',
-  /** Amber üzerinde metin — beyaz 2,3:1'de kalıyor, okunmuyor. */
-  on: '#291500',
-  darkSoft: '#6d5316',
+  soft: '#8fd3b6',
+  dark: '#43d08a',
+  darkHover: '#5ddf9c',
+  darkActive: '#2fbb7a',
+  darkSoft: '#43906f',
+  /** Yeşil dolgu üzerinde metin — BEYAZ DEĞİL: `base` üzerinde 2,7:1. */
+  on: '#02180f',
 } as const;
 
 /**
@@ -349,8 +374,8 @@ export const ACCENT = {
   /** İKON hover'ı; metin taşıyan dolgunun hover'ı değil (yukarıdaki not). */
   greenHover: '#17814f',
   greenHoverDark: '#63e3a3',
-  /** Yeşil dolgu üzerindeki metin. BEYAZ DEĞİL: `green` üzerinde 3,25:1. */
-  onGreen: '#02180f',
+  /** Yeşil dolgu üzerindeki metin — dönüşüm düğmesiyle TEK KAYNAK. */
+  onGreen: CART.on,
 } as const;
 
 /** İNDİRİM / OLUMLU DEĞİŞİM ETİKETİ. */

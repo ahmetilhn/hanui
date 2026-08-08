@@ -1,10 +1,10 @@
 import {
   ACCENT,
   ACTION_LINE,
-  AMBER,
   BAND,
   BLUE,
   BRAND,
+  CART,
   CORPORATE,
   DANGER_SOLID,
   NEUTRAL,
@@ -72,12 +72,12 @@ export const LIGHT_THEME = {
   /** PASİF DOLGU ÜZERİNDEKİ METİN. */
   'on-action-soft': NEUTRAL.n700,
 
-  // --- Dönüşüm eylemi: ekrandaki tek doygun turuncu ---
-  amber: AMBER.base,
-  'amber-hover': AMBER.hover,
-  'amber-active': AMBER.active,
-  'amber-soft': AMBER.soft,
-  'on-amber': AMBER.on,
+  /* DÖNÜŞÜM EYLEMİ — ailenin en parlak yeşili; token adı turuncu, değeri değil. */
+  amber: CART.base,
+  'amber-hover': CART.hover,
+  'amber-active': CART.active,
+  'amber-soft': CART.soft,
+  'on-amber': CART.on,
 
   // --- Mavi: gezinme ve keşif ---
   blue: BLUE.base,
@@ -216,7 +216,7 @@ export const LIGHT_THEME = {
    */
   'glow-1': alpha(BRAND.mint, 0.1),
   'glow-2': alpha(BRAND.pine, 0.06),
-  'glow-amber': alpha(AMBER.base, 0.09),
+  'glow-amber': alpha(CART.base, 0.09),
 } as const;
 
 /** KOYU TEMA. */
@@ -234,11 +234,13 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'text-2': SURFACE_DARK.textTwo,
   'text-3': SURFACE_DARK.textThree,
 
-  graphite: BAND.dark,
-  'graphite-2': BAND.darkTwo,
-  /* `BAND.base` DEĞİL: koyu temada bant zaten koyu yeşil ve üçüncü kademe
-     ikinciyle aynı hex'e çökerdi. Merdiven yukarı devam eder. */
-  'graphite-3': BAND.two,
+  /* KOYU TEMADA BANT MARKA ÇAMINA ÇIKMAZ, yüzey merdivenine oturur: sayfa
+     kurumsal siyah ve bandın da zemin olması gerekiyor (bkz. `SURFACE_DARK`).
+     Marka yeşili koyu temada yalnızca şeritte (`band-*`) ve birincil eylemin
+     dolgusunda kalır. */
+  graphite: SURFACE_DARK.surface,
+  'graphite-2': SURFACE_DARK.surfaceTwo,
+  'graphite-3': SURFACE_DARK.surfaceThree,
 
   /*
    * ⚠ BİRİNCİL EYLEM İKİ TEMADA DA KURUMSAL KOYU YEŞİL — koyu temada mint
@@ -261,11 +263,11 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   /* Koyu temada pasif dolgu ortada bir gri: metin AÇIK olmali (bkz. LIGHT). */
   'on-action-soft': NEUTRAL.n300,
 
-  amber: AMBER.dark,
-  'amber-hover': AMBER.darkHover,
-  'amber-active': AMBER.base,
-  'amber-soft': AMBER.darkSoft,
-  'on-amber': AMBER.on,
+  amber: CART.dark,
+  'amber-hover': CART.darkHover,
+  'amber-active': CART.darkActive,
+  'amber-soft': CART.darkSoft,
+  'on-amber': CART.on,
 
   blue: BLUE.dark,
   'blue-hover': BLUE.darkHover,
@@ -313,17 +315,22 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'danger-solid-hover': DANGER_SOLID.darkHover,
   'on-danger': DANGER_SOLID.onDark,
 
-  /* Koyu temada bant sayfadan daha KOYU: aynı tonda olsa yüzüyor görünüyor. */
-  'nav-bg': BAND.dark,
-  'nav-bg-2': BAND.darkTwo,
+  /*
+   * ÜST BANT SAYFANIN KENDİSİ: koyu temada en koyu renk kılavuzun siyahı ve
+   * bant onu ÖRTMEZ. Açık temadaki kardeşi de aynı şeyi yapıyor (`nav-bg`
+   * beyaz, sayfa `n50`) — bant sayfanın devamıdır, ayrı bir yüzey değil;
+   * sınırı `nav-line` çizer. Alt bilgi bir kademe yukarıda, ışığa doğru.
+   */
+  'nav-bg': SURFACE_DARK.page,
+  'nav-bg-2': SURFACE_DARK.surfaceTwo,
   'nav-fg': SURFACE_DARK.text,
   'nav-fg-2': SURFACE_DARK.textTwo,
   /* Açık temadaki kardeşiyle aynı gerekçe: bandın en soluk metni de metindir. */
   'nav-fg-3': SURFACE_DARK.textThree,
-  'nav-line': BAND.darkLine,
-  'nav-line-strong': BAND.darkLineStrong,
+  'nav-line': SURFACE_DARK.border,
+  'nav-line-strong': SURFACE_DARK.borderStrong,
   'nav-hover': alpha(NEUTRAL.n0, 0.07),
-  'footer-bg': BAND.dark,
+  'footer-bg': SURFACE_DARK.surface,
 
   /* AÇIK TEMADAKİYLE BİREBİR AYNI — şerit temaya göre dönmez (bkz. LIGHT). */
   'band-bg': BAND.dark,
@@ -363,7 +370,7 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
 
   'glow-1': alpha(BRAND.mint, 0.2),
   'glow-2': alpha(BRAND.pine, 0.12),
-  'glow-amber': alpha(AMBER.dark, 0.12),
+  'glow-amber': alpha(CART.dark, 0.12),
 };
 
 /** ÖLÇÜ TOKEN'LARI — temadan bağımsız, çalışma zamanında EZİLEBİLİR. */

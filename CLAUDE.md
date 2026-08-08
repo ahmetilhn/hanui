@@ -99,16 +99,14 @@ olarak ANKOR, geri kalan her kademe onlardan ölçülerek çıkarıldı.
   kurumsal kâğıt/slate/sis H 144-162'de duruyor ve iki eksen yan yana
   geldiğinde aynı gri iki farklı renk gibi okunuyordu. Ara kademeler H
   152-168 bandında.
-- **Amber yalnızca dönüşüm eylemi** (`UIVariant.CART`) — ekrandaki tek doygun
-  turuncu. Kampanya bandında amber kullanılırsa o ekranda dönüşüm düğmesi
-  koyu yeşile çevrilir; ikisi aynı anda olmaz. Kılavuzun "dördüncü renk yok"
-  kuralı **logoyu** kapsar, arayüzün işlev renklerini değil.
+- **Dönüşüm eylemi** (`UIVariant.CART`) ailenin **en parlak yeşili**, iki
+  temada da. Ayrıntı aşağıda ("Dönüşüm düğmesi turuncudan yeşile geçti").
 - **Doygun dolgu = tıklanabilir.** Durum etiketleri **her zaman** tint zeminli
   (`@include tint`), eylemler her zaman dolgulu veya çerçeveli. Bu ayrım
   bozulursa kullanıcı durum etiketine tıklamayı dener.
-- **Birincil eylem koyu yeşildir** (`#00322a`) — amber değil, **iki temada da
-  aynı**; bir ekranda tek `PRIMARY`. `graphite*` token adları sözleşme gereği
-  kaldı, değerleri koyu yeşil.
+- **Birincil eylem koyu yeşildir** (`#00322a`) — **iki temada da aynı**; bir
+  ekranda tek `PRIMARY`. `graphite*` token adları sözleşme gereği kaldı,
+  değerleri koyu yeşil.
 - **Rol rengi gezinme ve keşiftir**: bağlantı, etkin filtre, seçili satır,
   ilerleme, odak halkası. ⚠ Token adları `blue*` **ama değerleri mavi değil** —
   ayrıntı aşağıdaki "Rol rengi marka ekseninde" bölümünde.
@@ -116,14 +114,69 @@ olarak ANKOR, geri kalan her kademe onlardan ölçülerek çıkarıldı.
   indirim küçük bir rozet. Kırmızı fiyat bu sektörde ucuz durur ve kırmızıyı
   "aracına uymaz" anlamından koparır.
 
-⚠ **Koyu temada bant sayfadan daha KOYU DEĞİL, daha YEŞİL.** Eski kural
-"bant bir tık koyu olmalı, yoksa yüzüyor görünür" idi ve sayfa `#0e1419`ken
-uygulanabilirdi. Sayfa artık kurumsal siyahın kendisi — altında kademe **yok**.
-Bant kılavuzun "koyu yüzeylerin tamamı" dediği marka zeminine çıkar (1,36:1
-sayfaya karşı) ve üstündeki logo mint olduğunda imza eşleşmesi bandın içinde
-çıkar. ⚠ Bandın ayırıcı çizgisi bu yüzden sayfa kenarlığından **gelmez**
-(`BAND.darkLine`): aynı ton bant zemininde 1,10:1'e düşüyordu — çizgi çizilmiş
-ama görünmüyordu.
+### KOYU TEMADA ZEMİN SİYAHTIR, YEŞİL VURGUDUR
+
+Koyu temanın yüzey merdiveni bir dönem marka çamına bağlıydı: üst bant, alt
+bilgi ve `graphite` bloğu doğrudan `#00322a`, kart/panel kademeleri ise aynı
+aydınlıkta **S 61/45/33** ile duruyordu. Ölçüm değil, **okuma** kırılıyordu —
+kılavuzun siyahı (`#00120f`) yalnızca sayfanın kendisinde kalıyor, üstündeki
+her yüzey onu örtüyordu ve koyu tema "siyah tema" değil "koyu yeşil tema"
+görünüyordu.
+
+Merdiven artık **tümüyle mürekkep karakterinde**: aynı ton açısında (H 161-171)
+kalır ama doygunluk aydınlıkla birlikte **düşer** (S 33 → 23 → 17), yani hiçbir
+kademe yeşil bir yüzey olarak okunmaz.
+
+| Token | Önce | Şimdi |
+|---|---|---|
+| `surface` | `#08211d` (S 61) | `#0b1614` (S 33) |
+| `surface-2` | `#112d27` (S 45) | `#14201d` (S 23) |
+| `surface-3` | `#1d3a33` (S 33) | `#1f2c28` (S 17) |
+| `surface-inset` | `#031614` — sayfadan **açık** | `#000d0b` — sayfadan koyu |
+| `nav-bg` / `graphite` | `#00322a` (marka çamı) | sayfanın kendisi / `surface` |
+| `footer-bg` | `#00322a` | `#0b1614` |
+
+Marka yeşili koyu temada **üç yerde** yaşamaya devam eder ve üçü de vurgudur:
+marka şeridi (`band-*`), birincil eylemin dolgusu (`action`) ve mint saç
+çizgisi (`action-line`). Metin katmanları da kurumsal kalır — gövde kâğıt,
+ikincil sis.
+
+⚠ **Bant sayfayı ÖRTMEZ, sayfanın devamıdır.** `nav-bg` artık `page`in kendisi
+ve sınırı `nav-line` çizer; açık temada zaten aynı ilişki vardı (bant beyaz,
+sayfa `n50`). Alt bilgi bir kademe **yukarı** çıkar (`surface`) — açık temadaki
+kardeşiyle aynı yön.
+
+⚠ **Marka şeridinin ayırıcı çizgisi sayfa kenarlığından GELMEZ**
+(`BAND.darkLine`): nötrleşen kenarlık şeridin koyu yeşili üzerinde 1,10:1'e
+düşüyor — çizgi çizilmiş ama görünmüyor. Şerit kendi çizgisini kendi zemininden
+türetir.
+
+### Dönüşüm düğmesi turuncudan yeşile geçti
+
+`UIVariant.CART` ("sepete ekle") ekranın tek doygun turuncusuydu ve gerekçe
+"hue ile ayrış" idi. Kılavuzda turuncu **yok**; ayrım artık ton açısıyla değil
+**aydınlıkla** taşınıyor:
+
+| | Dolgu | Metin | Ayrım (birincil eyleme karşı) |
+|---|---|---|---|
+| Açık tema | `#22a76d` | siyah (5,98:1) | 4,58:1 |
+| Koyu tema | `#43d08a` | siyah (9,32:1) | 7,13:1 |
+
+Yani birincil eylem **koyu dolgu + beyaz metin**, dönüşüm **açık dolgu + siyah
+metin**; ikisi yan yana konduğunda hangisinin dönüşüm olduğu tek bakışta
+görünüyor ve düğme iki temada da **aynı nesne** olarak okunuyor.
+
+⚠ **Bu mint dolgu DEĞİL** — "açık yeşil zeminli düğme yok" kuralı kılavuzun
+imza rengini (logonun rengi) koruyor; buradaki zümrüt ondan uzakta (H 154 / S 66
+vs H 150 / S 100) ve olumlu durum ailesinin ankoruyla aynı eksende.
+
+⚠ **Etkileşim yönü açık temada TERS**: hover **açılır**, active **koyulur**.
+Metin siyah olduğu için koyulaşan her kademe metin eşiğini aşağı çeker;
+`amber-active` ailenin 4,5:1'i geçen en koyu tonu (5,14:1) ve altına inilemez.
+
+⚠ **Token adları `amber*` olarak KALDI, değerleri turuncu değil** — `graphite*`
+ve `blue*` ile birebir aynı karar: `--hanui-amber` kütüphanenin açık sözleşmesi
+ve yeniden adlandırma büyük sürüm ister. Ham palet sabiti şimdiden `CART`.
 
 ### Birincil eylem İKİ TEMADA DA koyu yeşil — sınırı `action-line` taşır
 
