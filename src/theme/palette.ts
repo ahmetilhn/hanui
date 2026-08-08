@@ -170,22 +170,43 @@ export const AMBER = {
   darkSoft: '#6d5316',
 } as const;
 
-// --- Mavi -------------------------------------------------------------
-// Gezinme ve keşif: bağlantı, etkin filtre, odak halkası. Odak halkası
-// MARKA RENGİ OLAMAZ: birincil düğme koyu yeşil ve yeşil bir halka yeşil
-// dolgunun üzerinde görünmez.
+/**
+ * GEZİNME VE KEŞİF ROLÜ — bağlantı, etkin filtre, seçili satır, ilerleme,
+ * odak halkası.
+ *
+ * <p>⚠ <strong>Token adları `blue*` olarak KALDI, değerleri MAVİ DEĞİL</strong>
+ * — kurumsal yeşil eksenin teal ucu (H 182). Aynı karar `graphite*`te de
+ * verildi: ad rengi değil ROLÜ anlatır ve CSS özel özelliği adı
+ * (`--hanui-blue`) kütüphanenin açık sözleşmesi; yeniden adlandırma büyük
+ * sürüm ister. Doğru ad `teal`/`nav` ve sonraki büyük sürümde yapılır.
+ *
+ * <p><strong>Ton açısı ölçülerek seçildi.</strong> Rol rengi olumlu durum
+ * yeşiliyle (`ANCHOR.green`, H 154) aynı ekranda duruyor — "Stokta / aracına
+ * uyar" ile "seçili / bağlantı" ayırt edilebilmeli. Dört aday çizilip
+ * karşılaştırıldı: H 166 olumlu yeşilden **ayırt edilemiyor**, H 190 koyu
+ * temada **mavi/camgöbeği** okunuyor (yani değişikliğin amacını bozuyor).
+ * H 182 ikisinin arasında: kesin biçimde yeşil ailesi, olumlu yeşilden
+ * belirgin biçimde ayrı.
+ *
+ * <p>⚠ <strong>Odak halkası MARKA RENGİ DEĞİL, rol rengidir.</strong> Eski
+ * gerekçe ("yeşil halka yeşil dolgunun üzerinde görünmez") halkanın dolgunun
+ * ÜZERİNE çizildiğini varsayıyordu; `focus-ring` varsayılan `outline-offset`
+ * **+2px**, yani halka sayfanın üzerinde duruyor ve orada 4,63:1 veriyor.
+ * Marka çamının (`#00322a`) kendisi hâlâ halka OLAMAZ — birincil düğmenin
+ * dolgusuyla aynı ton, 2px'lik boşluk onu ayırmaya yetmez.
+ */
 export const BLUE = {
-  base: '#2f6fed',
-  hover: '#1d54c4',
-  active: '#17439c',
-  /** Gövde metni içi bağlantı — `base` 16px'te 4,55:1. */
-  text: '#1d54c4',
-  tint: '#eaf1fe',
-  line: '#bcd2fb',
-  dark: '#5b93ff',
-  darkHover: '#7aa8ff',
-  darkTint: '#16243c',
-  darkLine: '#2a3f63',
+  base: '#1a7c7f',
+  hover: '#106265',
+  active: '#0a4b4d',
+  /** Gövde metni içi bağlantı — beyaz üzerinde 6,00:1. */
+  text: '#146e71',
+  tint: '#e9f6f6',
+  line: '#acd6d8',
+  dark: '#51d2d6',
+  darkHover: '#74e3e7',
+  darkTint: '#113132',
+  darkLine: '#285b5d',
 } as const;
 
 /**
@@ -249,15 +270,27 @@ export const STATUS = {
   badFgDark: '#e97575',
   badLineDark: '#621b1b',
 
-  /** Birincil / orijinal sınıflandırma tonu. */
-  oemBg: '#eaf1fe',
-  oemFg: '#16305c',
-  oemLine: '#a9c6f9',
-  oemBgDark: '#152139',
-  oemFgDark: '#9dc0ff',
-  oemLineDark: '#27395c',
+  /*
+   * Birincil / orijinal sınıflandırma tonu. Rol ailesinin (`BLUE`) bir kademe
+   * KOYU METİNLİ varyantı ve bu ilişki bilinçli: eski palette `oemBg` ile
+   * `blueTint` birebir aynı hex'ti (`#eaf1fe`), yani sistem OEM'i baştan
+   * "rol tinti + daha koyu metin" diye tanımlamıştı. Rol teal'e döndüğünde
+   * OEM de döner, yoksa PDP'de tek başına mavi kalan yüzey olurdu.
+   */
+  oemBg: '#edf7f8',
+  oemFg: '#0d5659',
+  oemLine: '#b5dcde',
+  oemBgDark: '#0f2d2f',
+  oemFgDark: '#7edadd',
+  oemLineDark: '#296365',
 
-  /** İkincil / muadil sınıflandırma tonu. */
+  /*
+   * İkincil / muadil sınıflandırma tonu — MENEKŞE, ve yeşile ÇEVRİLMEDİ.
+   * `oem` ile `alt` bir çiftin iki yarısı ("Orijinal" ↔ "Muadil") ve ayrımı
+   * taşıyan tek görsel sinyal ton açısı; ikisi de yeşil ailesine girseydi
+   * sınıflandırma çökerdi. Menekşe mavi değil (H 250) ve olumlu/rol/uyarı
+   * ailelerinin hiçbiriyle çakışmıyor.
+   */
   altBg: '#eeebfa',
   altFg: '#2e2661',
   altLine: '#c0b6ea',

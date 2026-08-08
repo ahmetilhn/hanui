@@ -485,6 +485,16 @@ başına saklanıyor (`e2e/__screenshots__/{platform}/`); CI'da açılacağı g�
 yol, Playwright'ın resmi konteynerinde koşup `linux` referanslarını orada
 üretmek.
 
+> ⚠ **Referansları yenilerken `--update-snapshots=all` yazın, çıplak
+> `--update-snapshots` DEĞİL.** Ölçüldü (palet değişikliği turunda): çıplak
+> bayrak yalnızca **eksik** referansı yazıyor; eşleşmeyeni ne yeniden üretiyor
+> ne de kırıyor — koşu `40 passed` diyor, dosyalar eski renkte kalıyor ve
+> ardından gelen doğrulama koşusu **eski referansı eski referansla**
+> karşılaştırdığı için yeşil dönüyor. Yani sessizce yanlış bir "temiz" alınıyor.
+> `=all` mod, pikseli değişen her dosyayı yazar (bayt bayt aynı olanlara
+> dokunmaz, o yüzden dosya sayısı toplamdan az çıkabilir). Doğrulama:
+> yenilemeden sonra bir referansın baskın renklerini örnekleyin.
+
 `master`a her push `npm publish` çalıştırır — **`package.json` sürümünü
 yükseltmeyi unutmayın**, aynı sürüm ikinci kez yayımlanamaz ve iş akışı kırmızı
 döner.

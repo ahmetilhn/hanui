@@ -103,8 +103,9 @@ olarak ANKOR, geri kalan her kademe onlardan ölçülerek çıkarıldı.
 - **Birincil eylem koyu yeşildir** (`#00322a`), amber değil; bir ekranda tek
   `PRIMARY`. `graphite*` token adları sözleşme gereği kaldı, değerleri koyu
   yeşil.
-- **Mavi gezinme ve keşiftir**: bağlantı, etkin filtre, odak halkası. Odak
-  halkası marka rengi OLAMAZ — yeşil halka yeşil dolgunun üzerinde görünmez.
+- **Rol rengi gezinme ve keşiftir**: bağlantı, etkin filtre, seçili satır,
+  ilerleme, odak halkası. ⚠ Token adları `blue*` **ama değerleri mavi değil** —
+  ayrıntı aşağıdaki "Rol rengi artık teal" bölümünde.
 - **Fiyat siyah kalır.** Güncel fiyat `$text`, üstü çizili eski fiyat `$text-3`,
   indirim küçük bir rozet. Kırmızı fiyat bu sektörde ucuz durur ve kırmızıyı
   "aracına uymaz" anlamından koparır.
@@ -118,19 +119,61 @@ sayfaya karşı) ve üstündeki logo mint olduğunda imza eşleşmesi bandın i�
 (`BAND.darkLine`): aynı ton bant zemininde 1,10:1'e düşüyordu — çizgi çizilmiş
 ama görünmüyordu.
 
+### Rol rengi artık TEAL — `blue*` adları kaldı, değerleri değişti
+
+Gezinme/keşif rolü (bağlantı, etkin filtre, seçili satır, ilerleme, odak
+halkası) **mavi değil**, kurumsal yeşil eksenin teal ucu. Ölçüldü: rol rengi 28
+bileşende ve vitrinde ~80 çağrı yerinde duruyor — yani arayüzün "mavi
+görünmesinin" tek kaynağı buydu.
+
+**Ad KORUNDU, değer değişti** — `graphite*` ile birebir aynı karar: `--hanui-blue`
+kütüphanenin açık sözleşmesi ve yeniden adlandırma büyük sürüm ister. Doğru ad
+`teal`/`nav` ve sonraki büyük sürümde yapılır. Bugünkü bedeli: kaynakta `$blue`
+yazan 80+ satır teal çiziyor; okuyucu için gerekçe `palette.ts` → `BLUE`
+javadoc'unda.
+
+⚠ **Ton açısı ölçülerek seçildi, seçilmedi.** Rol rengi olumlu durum yeşiliyle
+(H 154) **aynı ekranda** duruyor: "Stokta / aracına uyar" ile "seçili /
+bağlantı" ayırt edilebilmeli. Dört aday çizilip yan yana karşılaştırıldı:
+
+| Aday | Sonuç |
+|---|---|
+| H 166 | Olumlu yeşilden **ayırt edilemiyor** — iki anlam tek renge çöküyor |
+| H 174 | Ayrışıyor ama açık temada zayıf |
+| **H 182** | **Seçildi** — kesin biçimde yeşil ailesi, olumlu yeşilden belirgin ayrı |
+| H 190 | Koyu temada **mavi/camgöbeği** okunuyor — değişikliğin amacını bozuyor |
+
+⚠ **Odak halkası artık rol rengi ve bu bir gerileme DEĞİL.** Eski gerekçe
+("yeşil halka yeşil dolgunun üzerinde görünmez") halkanın dolgunun ÜZERİNE
+çizildiğini varsayıyordu; `focus-ring` varsayılan `outline-offset` **+2px**,
+yani halka sayfanın üzerinde duruyor: 4,63:1. Kaynak tarandı — rol dolgusu
+taşıyan hiçbir bileşen halkayı **negatif** ofsetle çizmiyor (negatif olanlar
+`Tabs`, `Accordion`, `DataTable` ve üçünün de zemini yüzey). Marka çamının
+kendisi hâlâ halka **olamaz**: birincil düğmenin dolgusuyla aynı ton.
+
 ### Durum tintleri
 
 Hepsi **tint zemin + koyu metin + eşleşen hairline**, asla doygun dolgu.
 
-| `tone` | Anlam |
-|---|---|
-| `success` | Stokta / aracına uyar |
-| `warning` | Son N adet |
-| `neutral` | Tükendi |
-| `danger` | Aracınıza uymaz |
-| `oem` | Orijinal OEM |
-| `alt` | Muadil |
-| `info` | Nötr bilgi |
+| `tone` | Anlam | Aile |
+|---|---|---|
+| `success` | Stokta / aracına uyar | olumlu yeşil (H 154) |
+| `warning` | Son N adet | amber |
+| `neutral` | Tükendi | nötr yeşil-gri |
+| `danger` | Aracınıza uymaz | kırmızı |
+| `oem` | Orijinal OEM | rol teali, bir kademe koyu metin |
+| `alt` | Muadil | **menekşe** |
+| `info` | Nötr bilgi | rol teali |
+
+⚠ **`alt` menekşe KALDI, yeşile çevrilmedi.** `oem` ile `alt` bir çiftin iki
+yarısı ("Orijinal" ↔ "Muadil") ve ayrımı taşıyan tek görsel sinyal ton açısı;
+ikisi de yeşil ailesine girseydi sınıflandırma çökerdi. Menekşe mavi değil
+(H 250) ve diğer ailelerin hiçbiriyle çakışmıyor.
+
+⚠ **`oem` rol ailesini İZLER, bu bilinçli.** Eski palette `oemBg` ile `blueTint`
+birebir aynı hex'ti (`#eaf1fe`) — sistem OEM'i baştan "rol tinti + daha koyu
+metin" diye tanımlamıştı. Rol teale dönerken OEM sabit tutulsaydı PDP'de tek
+başına mavi kalan yüzey olurdu.
 
 ⚠ `$danger-solid` ayrıdır: yıkıcı bir **eylem** dolgusu (silme onayı), durum
 tinti değil. Aynı kırmızıyı taşımaları kullanıcının uyarı etiketine tıklamayı
@@ -179,7 +222,7 @@ bildirilir, metnin silinmesiyle değil.
   çarpı, `Stat` ok yönü + okunan metin.
 - **Dokunma hedefi ≥ 44×44** (2.5.8) — görsel kutu büyütülmeden
   `@include tap-target`. Yoğun kipte de küçülmez.
-- **Odak halkası `:focus-visible`**, mavi, asla kaldırılmaz. `outline: none`
+- **Odak halkası `:focus-visible`**, rol rengi (teal), asla kaldırılmaz. `outline: none`
   yalnızca yerine başka bir gösterge çizildiği dört yerde. `:focus` kullanmak
   fareyle tıklandığında da halka gösteriyor ve kullanıcılar bunu hata sanıyordu.
 - **Kaydırılabilir bölge klavyeyle ulaşılabilir** (2.1.1). `ScrollArea` taşmayı
