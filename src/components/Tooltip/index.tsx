@@ -16,6 +16,7 @@ import { isClient } from '@ahmetilhn/handy-utils';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
+import useDismissOnEscape from '../../hooks/useDismissOnEscape';
 import usePositioning from '../../hooks/usePositioning';
 
 import styles from './index.module.scss';
@@ -54,8 +55,18 @@ const CLOSE_DELAY = 120;
 /** Dokunmatikte balonu açan basma süresi. Daha kısası kaydırma jestini yakalıyordu. */
 const LONG_PRESS_DELAY = 500;
 
+/** İmleç öğenin üzerinde beklemeden balon açılmaz. */
+const OPEN_DELAY = 300;
+
 /** İpucu balonu. */
-const Tooltip = ({ content, children, side, position, openDelay = 300, className }: Props) => {
+const Tooltip = ({
+  content,
+  children,
+  side,
+  position,
+  openDelay = OPEN_DELAY,
+  className,
+}: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const id = useId();
 
@@ -96,17 +107,10 @@ const Tooltip = ({ content, children, side, position, openDelay = 300, className
 
   useEffect(() => clearTimer, [clearTimer]);
 
-  /* Escape BELGE duzeyinde dinleniyor. */
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') close(0);
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, close]);
+  /* Escape ANINDA kapatir: gecikme, ipucunu kapatmak icin bastigi tusun
+     islemedigi izlenimi veriyordu. */
+  const closeNow = useCallback(() => close(0), [close]);
+  useDismissOnEscape(isOpen, closeNow);
 
   /* Dokunmatikte ekranin herhangi bir yerine dokunmak kapatir: balonun kendi
      kapatma yolu yok ve `pointer-events: none` oldugu icin ona da

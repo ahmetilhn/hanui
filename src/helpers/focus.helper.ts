@@ -132,7 +132,7 @@ export const pushModal = (): { token: symbol; pop: () => void } => {
 };
 
 /** Verilen panel yığının EN ÜSTÜNDE mi. */
-export const isTopModal = (token: symbol): boolean => modalStack[modalStack.length - 1] === token;
+export const isTopModal = (token: symbol): boolean => modalStack.at(-1) === token;
 
 /** Yalnızca test içindir: modül düzeyindeki yığın testler arasında sızmamalı. */
 export const resetModalStack = (): void => {

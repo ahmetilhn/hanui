@@ -51,11 +51,15 @@ type Props = {
   testId?: string;
 };
 
+/** İkili önek — dosya boyutu KB/MB olarak okunur. */
+const BYTES_PER_KB = 1024;
+const BYTES_PER_MB = BYTES_PER_KB * BYTES_PER_KB;
+
 /** Baytı okunur biçime çevirir. */
 const formatSize = (bytes: number): string => {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  if (bytes < BYTES_PER_KB) return `${bytes} B`;
+  if (bytes < BYTES_PER_MB) return `${Math.round(bytes / BYTES_PER_KB)} KB`;
+  return `${(bytes / BYTES_PER_MB).toFixed(1)} MB`;
 };
 
 /** Dosya yükleme — sürükle-bırak <strong>ve</strong> düğme. */

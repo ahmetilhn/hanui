@@ -61,14 +61,14 @@ const buildPageList = (page: number, totalPages: number): (number | 'gap')[] => 
   if (page + 1 < totalPages) pages.add(page + 1);
 
   const sorted = [...pages].sort((left, right) => left - right);
-  const result: (number | 'gap')[] = [];
+  const pagesWithGaps: (number | 'gap')[] = [];
 
   sorted.forEach((value, index) => {
-    if (index > 0 && value - sorted[index - 1] > 1) result.push('gap');
-    result.push(value);
+    if (index > 0 && value - sorted[index - 1] > 1) pagesWithGaps.push('gap');
+    pagesWithGaps.push(value);
   });
 
-  return result;
+  return pagesWithGaps;
 };
 
 /** Sayfalama. */

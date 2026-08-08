@@ -94,8 +94,9 @@ const TagInput = ({
      * Kosulsuz yazildiginda kullanici bir harf silmek isterken etiketi
      * siliyordu.
      */
-    if (event.key === 'Backspace' && draft === '' && values.length > 0) {
-      remove(values[values.length - 1]);
+    if (event.key === 'Backspace' && draft === '') {
+      const lastValue = values.at(-1);
+      if (lastValue !== undefined) remove(lastValue);
     }
   };
 

@@ -163,8 +163,8 @@ const CommandPalette = ({
 
       case 'Enter': {
         event.preventDefault();
-        const item = visible[activeIndex];
-        if (item) run(item);
+        const activeCommand = visible[activeIndex];
+        if (activeCommand) run(activeCommand);
         break;
       }
 

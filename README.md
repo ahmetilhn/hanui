@@ -416,7 +416,7 @@ import NextLink from 'next/link';
 ```bash
 nvm use            # .nvmrc → 24
 npm install
-npm run verify     # tokens → kontrast → typecheck → lint → kapsam → build → boyut
+npm run verify     # tokens → kontrast → typecheck → lint → kapsam → build → API → animasyon → boyut
 npm run playground # bileşen galerisi → http://localhost:5273
 ```
 
@@ -429,6 +429,7 @@ npm run playground # bileşen galerisi → http://localhost:5273
 | `npm run test:visual`     | görsel regresyon (Playwright); `verify` İÇİNDE DEĞİL, aşağı bkz. |
 | `npm run test:device`     | iOS (WebKit) + Android (Chromium) davranış nöbetçileri, aşağı bkz. |
 | `npm run check:contrast`  | WCAG kontrast ölçümü, iki temada 120 çift                        |
+| `npm run check:api`       | genel API nöbetçisi — `build/index.d.ts` ↔ `scripts/api-baseline.txt` (164 ad) |
 | `npm run size`            | paket boyutu bütçesi (`size-limit`)                              |
 | `npm run playground`      | bileşen galerisi (tema · RTL · yoğunluk anahtarı)                |
 | `npm run lint`            | ESLint (TS) + stylelint (SCSS)                                    |
@@ -447,6 +448,11 @@ npm run playground # bileşen galerisi → http://localhost:5273
   eşleşir. Ayrışma bugüne kadar sessizdi.
 - **Paket boyutu** — tek bileşen import eden bir uygulamanın ne indirdiği
   ölçülür (`Badge` 2,7 kB, `Button` 3,4 kB, tüm paket 22,2 kB gzip).
+- **Genel API** — `build/index.d.ts`teki dışa aktarım kümesi
+  `scripts/api-baseline.txt` ile karşılaştırılır (`npm run check:api`, 164 ad).
+  Düşen bir ad **kırıcı**dır ama bugün görünmez: iki tüketici de sürümü tam
+  pinliyor, yani kırılma bir sonraki yükseltmede ortaya çıkar. Bilinçli
+  değişiklikte `node scripts/check-api.mjs --update` + CLAUDE.md'ye gerekçe.
 - **Odak halkası ve hareket ölçeği** — stylelint, `focus-ring` mixin'i dışında
   `outline` ve bileşen SCSS'inde ham süre değeri (`0.7s`) yazılmasını
   engelliyor. Üç bileşen kendi halkasını, iki bileşen kendi süresini

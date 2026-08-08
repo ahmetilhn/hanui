@@ -1,24 +1,18 @@
 'use client';
 
-import {
-  type KeyboardEvent,
-  type RefObject,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { type KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
 
 import { scrollIntoViewIfPossible } from '../helpers/scroll.helper';
-import { ListboxNavigationOptions } from '@/types/hook.type';
+import type { ListboxNavigation, ListboxNavigationOptions } from '@/types/hook.type';
 
-export type ListboxNavigation<T extends HTMLElement = HTMLElement> = {
-  activeIndex: number;
-  setActiveIndex: (index: number) => void;
-  /** Etkin seçeneği görünür alanda tutmak için LİSTEYE bağlanır. */
-  listRef: RefObject<T | null>;
-  handleKeyDown: (event: KeyboardEvent<HTMLElement>) => void;
-};
+/*
+ * Govde `types/hook.type.ts`e tasindi (kardesleri `VirtualRange`,
+ * `AnnouncePoliteness`, `ListboxNavigationOptions` zaten oradaydi); tip
+ * BURADAN da disa aciliyor cunku `src/index.ts` onu bu yoldan veriyor ve
+ * yalnizca dosya yeri degisti diye bir surum kirilmasi olmamali. Ayni karar
+ * `Combobox` tiplerinde de uygulandi.
+ */
+export type { ListboxNavigation } from '@/types/hook.type';
 
 /** LISTBOX KLAVYE GEZİNMESİ — `Select` ve `Combobox`ın ortak modeli. */
 const useListboxNavigation = <T extends HTMLElement = HTMLElement>(

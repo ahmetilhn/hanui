@@ -8,6 +8,7 @@ import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { matchesSearch } from '../../helpers/text.helper';
+import useAsyncSearch from '../../hooks/useAsyncSearch';
 import useListboxNavigation from '../../hooks/useListboxNavigation';
 import usePositioning from '../../hooks/usePositioning';
 import useVirtualList from '../../hooks/useVirtualList';
@@ -15,7 +16,11 @@ import { useHanui } from '../../theme/context';
 import BottomSheet from '../BottomSheet';
 import Spinner from '../Spinner';
 
-import { OPTION_HEIGHT, VIRTUAL_THRESHOLD } from '../../constants/combobox.constants';
+import {
+  OPTION_HEIGHT,
+  SEARCH_DEBOUNCE_MS,
+  VIRTUAL_THRESHOLD,
+} from '../../constants/combobox.constants';
 import { ComboboxOption, ComboboxProps } from '../../types/combobox.type';
 
 import styles from './index.module.scss';
@@ -122,20 +127,7 @@ const Combobox = <T extends string>({
 
   const displayLabel = selectedOption?.label ?? cachedLabel;
 
-  /*
-   * `onSearch` her render'da yeni bir kapanis olabilir; bagimliliga koymak
-   * sonsuz dongu uretir. Referansta tutulup etkiden cikarilir.
-   */
-  const searchRef = useRef(onSearch);
-  searchRef.current = onSearch;
-
-  useEffect(() => {
-    if (!isOpen || !searchRef.current) return;
-
-    // Her tuşta istek atmamak için 300 ms beklenir.
-    const timer = window.setTimeout(() => searchRef.current?.(query.trim()), 300);
-    return () => window.clearTimeout(timer);
-  }, [query, isOpen]);
+  useAsyncSearch(query, isOpen, onSearch, SEARCH_DEBOUNCE_MS);
 
   const close = useCallback(() => {
     setOpenMode(null);

@@ -1,3 +1,5 @@
+import type { KeyboardEvent, RefObject } from 'react';
+
 export type VirtualRange = {
   /** Çizilecek ilk öğenin dizini. */
   start: number;
@@ -11,6 +13,14 @@ export type VirtualRange = {
 
 /** Duyurunun aciliyeti. */
 export type AnnouncePoliteness = 'polite' | 'assertive';
+
+export type ListboxNavigation<T extends HTMLElement = HTMLElement> = {
+  activeIndex: number;
+  setActiveIndex: (index: number) => void;
+  /** Etkin seçeneği görünür alanda tutmak için LİSTEYE bağlanır. */
+  listRef: RefObject<T | null>;
+  handleKeyDown: (event: KeyboardEvent<HTMLElement>) => void;
+};
 
 export type ListboxNavigationOptions = {
   /** Seçenek sayısı. Liste süzüldüğünde değişir. */

@@ -18,6 +18,7 @@ import { isClient } from '@ahmetilhn/handy-utils';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
+import useDismissOnEscape from '../../hooks/useDismissOnEscape';
 import { captureFocus, focusFirstMeaningful } from '../../helpers/focus.helper';
 import usePositioning from '../../hooks/usePositioning';
 
@@ -87,14 +88,13 @@ const Popover = ({
     };
   }, [isOpen]);
 
-  /* Escape ve DISARI tiklama. Ikisi de belge duzeyinde: odak yuzeyin icinde
-     olmayabilir (fareyle acilmis bir popover). */
+  const close = useCallback(() => setOpen(false), [setOpen]);
+  useDismissOnEscape(isOpen, close);
+
+  /* DISARI tiklama da belge duzeyinde: odak yuzeyin icinde olmayabilir
+     (fareyle acilmis bir popover). */
   useEffect(() => {
     if (!isOpen) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
-    };
 
     const handlePointerDown = (event: globalThis.MouseEvent) => {
       const target = event.target as Node;
@@ -103,15 +103,11 @@ const Popover = ({
       setOpen(false);
     };
 
-    document.addEventListener('keydown', handleKeyDown);
     /* `mousedown`: `click` beklerken kullanici surukleyerek secim yaparsa
        yuzey kapanmiyordu. */
     document.addEventListener('mousedown', handlePointerDown);
 
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('mousedown', handlePointerDown);
-    };
+    return () => document.removeEventListener('mousedown', handlePointerDown);
   }, [isOpen, setOpen]);
 
   if (!isValidElement(trigger)) return null;

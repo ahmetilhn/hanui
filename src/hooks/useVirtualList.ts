@@ -3,8 +3,24 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { VirtualRange } from '@/types/hook.type';
 
+/**
+ * Ölçüm gelmediğinde varsayılan satır yüksekliği.
+ *
+ * ⚠ `constants/combobox.constants.ts` içindeki `OPTION_HEIGHT` ile aynı sayı ama
+ * AYNI ŞEY DEĞİL: bu jenerik bir varsayılan, o bir bileşenin ölçüsü ve
+ * `Combobox` zaten kendi değerini geçiyor. Katlamak, seçim kutusunun satır
+ * yüksekliğini değiştiren birinin her sanal listeyi değiştirmesi olurdu.
+ */
+const DEFAULT_ROW_HEIGHT = 40;
+
+/** Görünen pencerenin altında ve üstünde fazladan çizilen satır. */
+const DEFAULT_OVERSCAN = 6;
+
 /** SANALLAŞTIRMA — yalnızca görünen satırları çiz. */
-const useVirtualList = (count: number, { rowHeight = 40, overscan = 6, isEnabled = true } = {}) => {
+const useVirtualList = (
+  count: number,
+  { rowHeight = DEFAULT_ROW_HEIGHT, overscan = DEFAULT_OVERSCAN, isEnabled = true } = {},
+) => {
   const scrollRef = useRef<HTMLElement | null>(null);
   const [range, setRange] = useState<VirtualRange>({
     start: 0,

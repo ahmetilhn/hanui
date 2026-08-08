@@ -1,5 +1,7 @@
 /** Metin çözümlemesi: prop → sağlayıcı config'i → geliştirme uyarısı. */
 
+import type { Formatter } from '@/types/theme.type';
+
 /* Uyari ANAHTAR BASINA bir kez verilir. */
 const warned = new Set<string>();
 
@@ -37,5 +39,3 @@ export const resolveFormatter = <TArgs extends unknown[]>(
 
   return resolveLabel(key);
 };
-
-type Formatter<TArgs extends unknown[]> = (...args: TArgs) => string;

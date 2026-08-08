@@ -111,7 +111,7 @@ olarak ANKOR, geri kalan her kademe onlardan ölçülerek çıkarıldı.
   kaldı, değerleri koyu yeşil.
 - **Rol rengi gezinme ve keşiftir**: bağlantı, etkin filtre, seçili satır,
   ilerleme, odak halkası. ⚠ Token adları `blue*` **ama değerleri mavi değil** —
-  ayrıntı aşağıdaki "Rol rengi artık teal" bölümünde.
+  ayrıntı aşağıdaki "Rol rengi marka ekseninde" bölümünde.
 - **Fiyat siyah kalır.** Güncel fiyat `$text`, üstü çizili eski fiyat `$text-3`,
   indirim küçük bir rozet. Kırmızı fiyat bu sektörde ucuz durur ve kırmızıyı
   "aracına uymaz" anlamından koparır.
@@ -153,9 +153,9 @@ açmak çamdan çıkmak, iki kademe açmak yeniden minte varmak olurdu.
 ⚠ **`on-blue` bu değişiklikle DOĞDU.** `on-action` bir zamanlar mavi dolgunun
 metnini de taşıyordu (`Pagination` etkin sayfa, `Tile` madalyon, `Steps`
 geçerli adım, `Badge--link.solid`). İki dolgunun aydınlığı **ters yönlere**
-gidiyor: birincil eylem iki temada da koyu, mavi ise koyu temada **açılıyor**
-(`#51d2d6`). `on-action` beyaza sabitlenince mavi dolgudaki metin 2,1:1'e
-düşerdi. Tek token ikisini taşıyamaz.
+gidiyor: birincil eylem iki temada da koyu, rol rengi ise koyu temada
+**açılıyor** (`#51d6bb`). `on-action` beyaza sabitlenince rol dolgusundaki
+metin 2,1:1'e düşerdi. Tek token ikisini taşıyamaz.
 
 ### Marka şeridi — `band-*`, temaya göre DÖNMEZ
 
@@ -176,29 +176,50 @@ karışımlarını yalnızca `:root`a bağlar. "Bu şeridi koyu temaya sabitle" 
 için `data-hanui-theme`i bir `<div>`e yazmak **çalışmaz**; doğru yol tam olarak
 budur — temadan bağımsız bir token ailesi.
 
-### Rol rengi artık TEAL — `blue*` adları kaldı, değerleri değişti
+### Rol rengi MARKA EKSENİNDE — `blue*` adları kaldı, değerleri değişti
 
 Gezinme/keşif rolü (bağlantı, etkin filtre, seçili satır, ilerleme, odak
-halkası) **mavi değil**, kurumsal yeşil eksenin teal ucu. Ölçüldü: rol rengi 28
-bileşende ve vitrinde ~80 çağrı yerinde duruyor — yani arayüzün "mavi
+halkası) **mavi değil**, marka ekseninin ortası (H 162). Ölçüldü: rol
+rengi 28 bileşende ve vitrinde ~80 çağrı yerinde duruyor — yani arayüzün "mavi
 görünmesinin" tek kaynağı buydu.
 
 **Ad KORUNDU, değer değişti** — `graphite*` ile birebir aynı karar: `--hanui-blue`
 kütüphanenin açık sözleşmesi ve yeniden adlandırma büyük sürüm ister. Doğru ad
 `teal`/`nav` ve sonraki büyük sürümde yapılır. Bugünkü bedeli: kaynakta `$blue`
-yazan 80+ satır teal çiziyor; okuyucu için gerekçe `palette.ts` → `BLUE`
-javadoc'unda.
+yazan 80+ satır kurumsal yeşil çiziyor; okuyucu için gerekçe `palette.ts` →
+`BLUE` javadoc'unda.
 
-⚠ **Ton açısı ölçülerek seçildi, seçilmedi.** Rol rengi olumlu durum yeşiliyle
-(H 154) **aynı ekranda** duruyor: "Stokta / aracına uyar" ile "seçili /
-bağlantı" ayırt edilebilmeli. Dört aday çizilip yan yana karşılaştırıldı:
+⚠ **H 182 DENENDİ VE GERİ ALINDI.** Rol rengi bir sürüm boyunca orada durdu;
+ölçüm olarak temizdi (130 kontrast çiftinin tamamı geçiyordu) ve düşen şey
+markaydı. H 182 kurumsal eksenin **dışında** ve doygun kademeleri — özellikle
+koyu temanın `dark`ı (`#51d2d6`) — ekranda **camgöbeği** okunuyordu. Bunun
+göründüğü yer de en kötüsüydü: sayfalamanın etkin sayfası, seçili cip, etkin
+sekme ve odak halkası, yani kullanıcının en sık dokunduğu yüzeyler kılavuzun
+tanımadığı bir renkle çiziliyordu.
+
+**Ton açısı gözle ölçüldü, hesapla değil.** Altı aday koyu temanın dolgu
+aydınlığında (L 58 / S 62) yan yana çizildi; sonuç ilk tahminden **daha
+aşağıda** çıktı:
 
 | Aday | Sonuç |
 |---|---|
-| H 166 | Olumlu yeşilden **ayırt edilemiyor** — iki anlam tek renge çöküyor |
-| H 174 | Ayrışıyor ama açık temada zayıf |
-| **H 182** | **Seçildi** — kesin biçimde yeşil ailesi, olumlu yeşilden belirgin ayrı |
-| H 190 | Koyu temada **mavi/camgöbeği** okunuyor — değişikliğin amacını bozuyor |
+| H 182 | Kullanıldı, **geri alındı** — net camgöbeği |
+| H 174 | Hâlâ camgöbeği-teal |
+| H 168 | Çamın kendi ton açısı ama yüksek aydınlıkta **hâlâ turkuaz** |
+| **H 162** | **Seçildi** — dizideki ilk kesin yeşil, olumlu durumdan hâlâ ayrı |
+| H 156 | Olumlu durum yeşiliyle (H 154) çakışıyor |
+| H 150 | Mintin kendisi — imza rengi, rol rengi olamaz |
+
+⚠ **Çamın hue'suna bağlamak yetmedi.** İlk düzeltme aileyi H 168'e taşımıştı
+(`BRAND.pine` ile aynı ton açısı) ve gerekçe kâğıt üzerinde sağlamdı; ekranda
+tutmadı, çünkü aynı hue yüksek aydınlıkta camgöbeğine kayıyor. Ton açısı bu
+yüzden marka ekseninin ORTASINA çekildi.
+
+⚠ **Olumlu durumla karışma hue ile değil BİÇİMLE çözülür.** Eski gerekçe rolü
+olumlu yeşilden (H 154) uzaklaştırmak için ton açısını marka ekseninin dışına
+kaydırıyordu. Ayrımı taşıyan asıl sinyal zaten ton değil biçim — durum
+**her zaman** tint zemin + kenarlık taşıyan bir rozet, rol ise dolgu ya da
+bağlantı metni. Doygun dolgu tıklanabilir demek; rozet değil.
 
 ⚠ **Odak halkası artık rol rengi ve bu bir gerileme DEĞİL.** Eski gerekçe
 ("yeşil halka yeşil dolgunun üzerinde görünmez") halkanın dolgunun ÜZERİNE
@@ -218,9 +239,9 @@ Hepsi **tint zemin + koyu metin + eşleşen hairline**, asla doygun dolgu.
 | `warning` | Son N adet | amber |
 | `neutral` | Tükendi | nötr yeşil-gri |
 | `danger` | Aracınıza uymaz | kırmızı |
-| `oem` | Orijinal OEM | rol teali, bir kademe koyu metin |
+| `oem` | Orijinal OEM | rol yeşili, bir kademe koyu metin |
 | `alt` | Muadil | **menekşe** |
-| `info` | Nötr bilgi | rol teali |
+| `info` | Nötr bilgi | rol yeşili |
 
 ⚠ **`alt` menekşe KALDI, yeşile çevrilmedi.** `oem` ile `alt` bir çiftin iki
 yarısı ("Orijinal" ↔ "Muadil") ve ayrımı taşıyan tek görsel sinyal ton açısı;
@@ -229,8 +250,8 @@ ikisi de yeşil ailesine girseydi sınıflandırma çökerdi. Menekşe mavi değ
 
 ⚠ **`oem` rol ailesini İZLER, bu bilinçli.** Eski palette `oemBg` ile `blueTint`
 birebir aynı hex'ti (`#eaf1fe`) — sistem OEM'i baştan "rol tinti + daha koyu
-metin" diye tanımlamıştı. Rol teale dönerken OEM sabit tutulsaydı PDP'de tek
-başına mavi kalan yüzey olurdu.
+metin" diye tanımlamıştı. Rol marka eksenine dönerken OEM sabit tutulsaydı
+PDP'de tek başına camgöbeği kalan yüzey olurdu.
 
 ⚠ `$danger-solid` ayrıdır: yıkıcı bir **eylem** dolgusu (silme onayı), durum
 tinti değil. Aynı kırmızıyı taşımaları kullanıcının uyarı etiketine tıklamayı
@@ -279,7 +300,7 @@ bildirilir, metnin silinmesiyle değil.
   çarpı, `Stat` ok yönü + okunan metin.
 - **Dokunma hedefi ≥ 44×44** (2.5.8) — görsel kutu büyütülmeden
   `@include tap-target`. Yoğun kipte de küçülmez.
-- **Odak halkası `:focus-visible`**, rol rengi (teal), asla kaldırılmaz. `outline: none`
+- **Odak halkası `:focus-visible`**, rol rengi (kurumsal yeşil), asla kaldırılmaz. `outline: none`
   yalnızca yerine başka bir gösterge çizildiği dört yerde. `:focus` kullanmak
   fareyle tıklandığında da halka gösteriyor ve kullanıcılar bunu hata sanıyordu.
 - **Kaydırılabilir bölge klavyeyle ulaşılabilir** (2.1.1). `ScrollArea` taşmayı
@@ -370,6 +391,11 @@ dışında kalmış tek isimdi.
 
 ## Kod düzeni ve tasarım prensipleri — ZORUNLU
 
+**Bundan sonraki her geliştirme bu prensiplere uyar; kurallar aşağıdaki
+otomatik denetçilerle zorlanır** — `npm run verify` zinciri: `tokens` →
+`check:contrast` → `typecheck` → `lint` → `test:coverage` (satır ≥ 80) →
+`build` → **`check:api`** → `check:animations` → `size-limit`.
+
 | Prensip | Ne demek |
 |---|---|
 | **KISS** | Uzun ve dolambaçlı yerine sade ve okunur. |
@@ -420,14 +446,54 @@ okunurluğu düşürür. Dosya boyu bir kapı değil sinyaldir — burada sinyal
 yanlış alarm.
 
 ⚠ **Public API DEĞİŞMEDİ, ölçüldü.** `build/index.d.ts` içindeki dışa
-aktarım kümesi taşımadan önce ve sonra **birebir aynı** (144 ad).
+aktarım kümesi taşımadan önce ve sonra **birebir aynı**.
 `src/index.ts` bir cephedir; tip gövdeleri nerede yaşarsa yaşasın tüketici
 (`hanparca-frontend`, `hanparca-admin`) aynı adları aynı yerden alır.
-Taşıma yaparken bu karşılaştırma **tekrarlanmalı**:
+
+### `src/index.ts`teki her ad bir SÜRÜM TAAHHÜDÜDÜR — `check:api` bunu ölçer
+
+Ölçüm artık elle değil: `scripts/check-api.mjs` `build/index.d.ts`ten dışa
+aktarım adlarını çıkarır ve `scripts/api-baseline.txt` ile karşılaştırır
+(**164 ad**). Kapı `verify` içinde, `build`ten hemen sonra.
 
 ```bash
-npm run build && grep -oE 'export (type )?\{[^}]*\}' build/index.d.ts | sort -u
+npm run check:api               # doğrula
+node scripts/check-api.mjs --update   # taban çizgisini BİLİNÇLİ tazele
 ```
+
+⚠ **Eski elle ölçüm yanlış sayıyordu.** CLAUDE.md'de kayıtlı komut
+`grep -oE 'export (type )?\{[^}]*\}'` idi; vite-plugin-dts her bildirimi tek tek
+`export declare …` olarak yazıyor ve dosyanın sonunda yalnızca **boş** bir
+`export { }` bırakıyor. Yani o komut ne değişirse değişsin **tek satır**
+(`export { }`) döndürüyordu: küme hiç ölçülmüyordu ama ölçülüyor sanılıyordu.
+Betiğin deseni `export declare (const|type|function|class|interface|enum) Ad`
+ve **sıfır eşleşmede açıkça düşer** — ölçemediği şeyi yeşil geçmez.
+
+**Tip taşımalarında diff ZORUNLU.** Kırılma bugün görünmez: iki tüketici de
+`"@ahmetilhn/hanui": "2.4.0"` ile **tam pinli** (caret yok), yani düşen bir ad
+ancak bir sonraki yükseltmede, sebebi çoktan unutulmuşken derleme hatası
+üretir. Taban çizgisi bu yüzden repoda duruyor.
+
+**Bu turda taşınan iki tip** ve neden kırıcı olmadıkları:
+
+| Tip | Önce | Sonra | Neden güvenli |
+|---|---|---|---|
+| `Formatter<TArgs>` | `helpers/label.helper.ts` **ve** `types/theme.type.ts` — birebir aynı imza, iki bildirim | tek bildirim `types/theme.type.ts`te | `index.ts`ten **dışa verilmiyor**; `.d.ts`te zaten tek `declare type` olarak görünüyordu |
+| `ListboxNavigation` | `hooks/useListboxNavigation.ts` (kardeşleri `types/hook.type.ts`te) | gövde `types/hook.type.ts`te, **hook yeniden ihraç ediyor** | `Combobox` deseninin aynısı: `src/index.ts` **değişmedi**, ad aynı yoldan geliyor |
+
+**İç kancalar `src/index.ts`e EKLENMEZ.** Bu turda açılan `useDismissOnEscape`
+ve `useAsyncSearch` dışa verilmedi — her ihraç bir sürüm taahhüdüdür ve
+ikisinin de kütüphane dışında çağıranı yok (YAGNI).
+
+⚠ **14 CSS varyant union'ı enum dönüşümünden KALICI MUAF.** `AlertTone`,
+`BadgeTone`, `BadgeVariant`, `ChipSize`, `CardMediaFit`, `ConfirmKind`,
+`IconButtonVariant`, `ModalTone`, `StatTrend`, `TimelineStatus`, `ToastTone`,
+`PositionSide`, `PositionAlign`, `HanuiDensity`, `HanuiColorScheme` —
+hepsi `className` besliyor ve tüketiciler düz dize geçiyor
+(`<Badge tone="success">`). Enum'a çevirmek o çağrıları **derlenmez** yapardı:
+`TS2322` ile, üstelik iki uygulamada onlarca yerde. Monorepodaki "tel değeri
+olan union → enum" kuralı **backend'i aynalayan** değerler içindir; bunların
+telde karşılığı yok, CSS sınıf adı sonekleri.
 
 ### Node 24 · ECMAScript 2025
 
@@ -450,6 +516,28 @@ başarısız da olmuyordu.
 ES2025 API'lerini veren şey `lib: ESNext`. Yayınlanan bir kütüphane için
 `ES2023` çıktısı zaten daha güvenli. Vite/esbuild yükseltildiğinde `ES2024`
 yazılabilir; ölçüm `npm run build 2>&1 | grep -c "Unrecognized target"` → `0`.
+
+**Bu turda uygulanan modern dizi yolları** — kütüphane daha önce hiçbirini
+kullanmıyordu:
+
+| Yer | Ne | Neden |
+|---|---|---|
+| `helpers/focus.helper.ts` `isTopModal` | `.at(-1)` | Yığının tepesi; karşılaştırma, dar tip gerekmiyor |
+| `TagInput` Backspace dalı | `.at(-1)` | `values.length > 0` guard'ı doğal olarak `!== undefined`a dönüştü |
+| `Toast` Escape dalı | `.at(-1)` | Kanca çıkarımı zaten `useCallback` istiyordu |
+
+⚠ **`.at(-1)` HER YERE uygulanmadı ve sebebi tsconfig'de.**
+`noUncheckedIndexedAccess: false` olduğu için `dizi[dizi.length - 1]` **dar**
+tip döner (`number`), `dizi.at(-1)` ise imzası gereği `number | undefined`.
+Yani `Menu:82,155` ve `Avatar:29` gibi **zaten korunmuş** çağrı yerlerinde
+dönüşüm bir okunurluk kazancı değil, `?? …` / `!` gürültüsü üretiyordu
+(`Menu`de liste boşken menü hiç açılmıyor, `Avatar`da `words.length === 0`
+erken dönüyor). Uygulanmayan yer bir eksiklik değil ölçülmüş karar.
+
+⚠ **`Pagination:63` `toSorted`a ÇEVRİLMEDİ.** İfade `[...pages].sort(cmp)` ve
+`pages` bir `Set` — spread zaten **taze bir dizi** üretiyor, yani ortada
+mutasyon riski yok. `toSorted` eklemek ikinci bir kopya ayırmak olurdu:
+immutability kazancı sıfır, allokasyon iki katı.
 
 ⚠ **`memo()` çağrısı `/*#__PURE__*/` OLMADAN yazılmaz — ağaç sarsmayı kırar.**
 `PasswordInput` ve `ToastPortal` eklenirken bu atlandı ve `size-limit`

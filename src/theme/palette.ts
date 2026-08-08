@@ -182,38 +182,52 @@ export const AMBER = {
  * odak halkası.
  *
  * <p>⚠ <strong>Token adları `blue*` olarak KALDI, değerleri MAVİ DEĞİL</strong>
- * — kurumsal yeşil eksenin teal ucu (H 182). Aynı karar `graphite*`te de
- * verildi: ad rengi değil ROLÜ anlatır ve CSS özel özelliği adı
- * (`--hanui-blue`) kütüphanenin açık sözleşmesi; yeniden adlandırma büyük
- * sürüm ister. Doğru ad `teal`/`nav` ve sonraki büyük sürümde yapılır.
+ * — marka ekseninin ortası (H 162; mint H 150 ile çam H 170 arasında). Aynı
+ * karar `graphite*`te de verildi: ad rengi değil ROLÜ anlatır ve CSS özel
+ * özelliği adı (`--hanui-blue`) kütüphanenin açık sözleşmesi; yeniden
+ * adlandırma büyük sürüm ister. Doğru ad `teal`/`nav` ve sonraki büyük
+ * sürümde yapılır.
  *
- * <p><strong>Ton açısı ölçülerek seçildi.</strong> Rol rengi olumlu durum
- * yeşiliyle (`ANCHOR.green`, H 154) aynı ekranda duruyor — "Stokta / aracına
- * uyar" ile "seçili / bağlantı" ayırt edilebilmeli. Dört aday çizilip
- * karşılaştırıldı: H 166 olumlu yeşilden **ayırt edilemiyor**, H 190 koyu
- * temada **mavi/camgöbeği** okunuyor (yani değişikliğin amacını bozuyor).
- * H 182 ikisinin arasında: kesin biçimde yeşil ailesi, olumlu yeşilden
- * belirgin biçimde ayrı.
+ * <p>⚠ <strong>H 182 GERİ GELMEZ.</strong> Rol rengi bir sürüm boyunca orada
+ * durdu ve ölçüm olarak temizdi; düşen şey markaydı. Doygun kademeleri —
+ * özellikle koyu temanın `dark`ı — ekranda <strong>camgöbeği</strong>
+ * okunuyordu ve göründükleri yer en kötüsüydü: sayfalamanın etkin sayfası,
+ * seçili cip, etkin sekme ve odak halkası, yani kullanıcının en sık dokunduğu
+ * yüzeyler kılavuzun tanımadığı bir renkle çiziliyordu.
+ *
+ * <p><strong>Ton açısı gözle ölçüldü, hesapla değil.</strong> Altı aday koyu
+ * temanın dolgu aydınlığında (L 58 / S 62) yan yana çizilip karşılaştırıldı ve
+ * sonuç ilk seferde tahmin edilenden DAHA AŞAĞIDA çıktı: H 174 ve
+ * <strong>H 168 hâlâ turkuaz</strong> okunuyor — çamın kendi ton açısına
+ * bağlamak yetmiyor, çünkü aynı hue yüksek aydınlıkta camgöbeğine kayıyor.
+ * H 162 dizideki ilk kesin yeşil ve `ANCHOR.green`den (H 154) hâlâ ayrışıyor;
+ * H 156 ve aşağısı olumlu durum yeşiliyle çakışıyor.
+ *
+ * <p><strong>Olumlu durumla karışma sorunu hue ile değil BİÇİMLE çözülür.</strong>
+ * Eski gerekçe rolü yeşilden uzaklaştırmak için ton açısını marka ekseninin
+ * dışına kaydırıyordu. Ayrımı taşıyan asıl sinyal zaten ton değil biçim: durum
+ * her zaman tint zemin + kenarlık taşıyan bir rozet, rol ise dolgu ya da
+ * bağlantı metni — doygun dolgu tıklanabilir demek, rozet değil.
  *
  * <p>⚠ <strong>Odak halkası MARKA RENGİ DEĞİL, rol rengidir.</strong> Eski
  * gerekçe ("yeşil halka yeşil dolgunun üzerinde görünmez") halkanın dolgunun
  * ÜZERİNE çizildiğini varsayıyordu; `focus-ring` varsayılan `outline-offset`
- * **+2px**, yani halka sayfanın üzerinde duruyor ve orada 4,63:1 veriyor.
- * Marka çamının (`#00322a`) kendisi hâlâ halka OLAMAZ — birincil düğmenin
- * dolgusuyla aynı ton, 2px'lik boşluk onu ayırmaya yetmez.
+ * **+2px**, yani halka sayfanın üzerinde duruyor. Marka çamının (`#00322a`)
+ * kendisi hâlâ halka OLAMAZ — birincil düğmenin dolgusuyla aynı ton, 2px'lik
+ * boşluk onu ayırmaya yetmez; `base` çamın üç kademe açığı olduğu için ayrışır.
  */
 export const BLUE = {
-  base: '#1a7c7f',
-  hover: '#106265',
-  active: '#0a4b4d',
-  /** Gövde metni içi bağlantı — beyaz üzerinde 6,00:1. */
-  text: '#146e71',
-  tint: '#e9f6f6',
-  line: '#acd6d8',
-  dark: '#51d2d6',
-  darkHover: '#74e3e7',
-  darkTint: '#113132',
-  darkLine: '#285b5d',
+  base: '#1a7f61',
+  hover: '#10654b',
+  active: '#0a4d39',
+  /** Gövde metni içi bağlantı — beyaz üzerinde 5,96:1. */
+  text: '#147155',
+  tint: '#e9f6f2',
+  line: '#acd8cb',
+  dark: '#51d6ae',
+  darkHover: '#74e7c5',
+  darkTint: '#113228',
+  darkLine: '#285d4d',
 } as const;
 
 /**
@@ -281,15 +295,17 @@ export const STATUS = {
    * Birincil / orijinal sınıflandırma tonu. Rol ailesinin (`BLUE`) bir kademe
    * KOYU METİNLİ varyantı ve bu ilişki bilinçli: eski palette `oemBg` ile
    * `blueTint` birebir aynı hex'ti (`#eaf1fe`), yani sistem OEM'i baştan
-   * "rol tinti + daha koyu metin" diye tanımlamıştı. Rol teal'e döndüğünde
-   * OEM de döner, yoksa PDP'de tek başına mavi kalan yüzey olurdu.
+   * "rol tinti + daha koyu metin" diye tanımlamıştı. Rol hangi ton açısına
+   * giderse OEM de gider — yoksa PDP'de tek başına kalan bir yüzey olurdu ve
+   * bu bir kez YAŞANDI: rol H 168'e taşınırken burası atlanmış olsaydı
+   * "Orijinal" rozeti sayfadaki tek camgöbeği leke olarak kalırdı.
    */
-  oemBg: '#edf7f8',
-  oemFg: '#0d5659',
-  oemLine: '#b5dcde',
-  oemBgDark: '#0f2d2f',
-  oemFgDark: '#7edadd',
-  oemLineDark: '#296365',
+  oemBg: '#edf8f5',
+  oemFg: '#0d5942',
+  oemLine: '#b5ded2',
+  oemBgDark: '#0f2f25',
+  oemFgDark: '#7eddc1',
+  oemLineDark: '#296553',
 
   /*
    * İkincil / muadil sınıflandırma tonu — MENEKŞE, ve yeşile ÇEVRİLMEDİ.

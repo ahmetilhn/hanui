@@ -90,8 +90,8 @@ export const LIGHT_THEME = {
    * MAVİ DOLGU ÜZERİNDEKİ METİN — etkin sayfa numarası, etkin karo madalyonu,
    * geçerli adım, dolu bağlantı rozeti. Bir zamanlar `on-action`ı kullanıyordu
    * ve o kestirme birincil eylemin dolgusu iki temada da koyu yeşile
-   * sabitlendiğinde KIRILDI: `on-action` beyaza döndü, mavi ise koyu temada
-   * açık bir teal (`#51d2d6`) ve beyaz metin orada 2,1:1'e düşüyor. İki
+   * sabitlendiğinde KIRILDI: `on-action` beyaza döndü, rol rengi ise koyu
+   * temada açılıyor (`#51d6bb`) ve beyaz metin orada 2,1:1'e düşüyor. İki
    * dolgunun aydınlığı ters yönlere gidiyor, tek metin token'ı ikisini birden
    * taşıyamaz.
    */

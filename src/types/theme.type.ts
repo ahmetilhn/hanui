@@ -1,8 +1,14 @@
 import type { HanuiLinkComponent } from '@/types/link.type';
 import { LIGHT_THEME, METRIC_TOKENS } from '@/theme/tokens';
 
-/** Sayı biçimlendiricileri: değere bağlı metinler dizeyle verilemez. */
-type Formatter<TArgs extends unknown[]> = (...args: TArgs) => string;
+/**
+ * Sayı biçimlendiricileri: değere bağlı metinler dizeyle verilemez.
+ *
+ * ⚠ `helpers/label.helper.ts` de aynı imzayı ELLE taşıyordu. Tip
+ * <strong>index.ts'ten dışa verilmiyor</strong>, yani birleştirmek genel API'yi
+ * değiştirmez — ölçüldü (`npm run check:api`).
+ */
+export type Formatter<TArgs extends unknown[]> = (...args: TArgs) => string;
 
 /**
  * Dışarıdan verilebilecek tema yapılandırması.

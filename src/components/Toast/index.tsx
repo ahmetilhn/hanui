@@ -14,6 +14,7 @@ import {
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import { resolveLabel } from '../../helpers/label.helper';
+import useDismissOnEscape from '../../hooks/useDismissOnEscape';
 import { useHanui } from '../../theme/context';
 import IconButton from '../IconButton';
 
@@ -213,17 +214,12 @@ const ToastHub = ({ closeLabel, className }: HubProps) => {
 
   /* Escape en YENI bildirimi kapatir: yigilmis bildirimleri tek tek
      kapatmanin klavyeyle tek yolu buydu. */
-  useEffect(() => {
-    if (toasts.length === 0) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return;
-      dismiss(toasts[toasts.length - 1].id);
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+  const dismissLatest = useCallback(() => {
+    const latest = toasts.at(-1);
+    if (latest) dismiss(latest.id);
   }, [toasts]);
+
+  useDismissOnEscape(toasts.length > 0, dismissLatest);
 
   /* HIDRASYON: `isClient()` RENDER İÇİNDE OKUNAMAZ */
   const [isMounted, setIsMounted] = useState(false);

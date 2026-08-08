@@ -1,6 +1,6 @@
 {
   "name": "@ahmetilhn/hanui",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Accessible, theme-driven React component library built on SCSS Modules. Bootstrap Icons for shell iconography, two built-in themes and a fully overridable design-token contract.",
   "author": "Ahmet ilhan <ahmetilhan.dev@gmail.com>",
   "license": "MIT",
@@ -67,6 +67,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,scss}\" \"playground/**/*.{ts,tsx,css}\" \"__tests__/**/*.{ts,tsx}\"",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:animations": "node scripts/check-animations.mjs",
+    "check:api": "node scripts/check-api.mjs",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -76,7 +77,7 @@
     "playground": "vite --config playground/vite.config.ts",
     "playground:build": "npm run tokens && vite build --config playground/vite.config.ts",
     "size": "npm run build && size-limit",
-    "verify": "npm run tokens && npm run check:contrast && npm run typecheck && npm run lint && npm run test:coverage && npm run build && npm run check:animations && size-limit"
+    "verify": "npm run tokens && npm run check:contrast && npm run typecheck && npm run lint && npm run test:coverage && npm run build && npm run check:api && npm run check:animations && size-limit"
   },
   "peerDependencies": {
     "@ahmetilhn/handy-utils": ">=3.2.0",
