@@ -19,7 +19,17 @@ type Props = {
   nextLabel: string;
   /** Sayfa göstergesinin ad üreticisi (`index` 1 tabanlı). */
   formatDotLabel?: (index: number, total: number) => string;
-  /** Bir kartın asgari genişliği. Şerit buna göre kaç kart göstereceğine karar verir. */
+  /**
+   * Bir kartın genişliği. Şerit her kartı bu genişlikte çizer.
+   * Duyarlı genişlik ya da "yarım kart görünsün" gibi bir ölçü gerekiyorsa
+   * CSS'ten `--hanui-carousel-item` ezilir; buradaki değer yalnızca varsayılan.
+   */
+  itemWidth?: number;
+  /**
+   * @deprecated `itemWidth` kullanın. Ad bir ASGARİ genişlik vaat ediyordu ama
+   * şerit artık kartları germiyor: verilen değer kartın genişliğinin kendisi.
+   * Eski yol bir sürüm daha çalışır; `CLAUDE.md` → Göç.
+   */
   itemMinWidth?: number;
   className?: string;
   testId?: string;
@@ -32,7 +42,8 @@ const Carousel: FC<Props> = ({
   previousLabel,
   nextLabel,
   formatDotLabel,
-  itemMinWidth = 240,
+  itemWidth,
+  itemMinWidth,
   className,
   testId,
 }) => {
@@ -114,7 +125,16 @@ const Carousel: FC<Props> = ({
       <div
         ref={trackRef}
         className={styles.carousel__track}
-        style={{ '--hanui-carousel-item': `${itemMinWidth}px` } as React.CSSProperties}
+        /* ⚠ Sutun genisligi SABIT, `1fr` DEGIL: `minmax(item, 1fr)` yalnizca
+           serit DOLMADIGINDA devreye giriyor ve kartlari gerdiriyordu — iki
+           kartlik bir seritte biri basta biri ortada duruyordu. Deger inline
+           degil `--hanui-carousel-item-default` olarak yaziliyor ki tuketici
+           medya sorgusundan `--hanui-carousel-item` ile ezebilsin. */
+        style={
+          {
+            '--hanui-carousel-item-default': `${itemWidth ?? itemMinWidth ?? 240}px`,
+          } as React.CSSProperties
+        }
         /* Yalnizca odaklanabilir cocugu OLMAYAN bir seride durak: aksi halde
            klavye kullanicisi hicbir sey yapmayan bir durak geciyordu. */
         tabIndex={needsTabStop ? 0 : undefined}

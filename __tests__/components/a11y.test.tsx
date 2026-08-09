@@ -615,7 +615,7 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         previousLabel="Önceki"
         nextLabel="Sonraki"
         formatDotLabel={(index, total) => `${total} sayfadan ${index}.`}
-        itemMinWidth={160}
+        itemWidth={160}
       >
         <Card>Kart 1</Card>
         <Card>Kart 2</Card>

@@ -442,6 +442,32 @@ sığmazsa karşı kenara çevrilir.
 Ölçü/ton/varyant için sistemde **tek ad** kullanılır; `kind` o sözleşmenin
 dışında kalmış tek isimdi.
 
+### `Carousel.itemMinWidth` → `itemWidth` — şerit artık kart GERMİYOR
+
+Ad davranışla birlikte değişti. Şerit `grid-auto-columns: minmax(item, 1fr)`
+yazıyordu ve o `1fr` **yalnızca şerit dolmadığında** devreye giriyor: kart
+sayısı görünümü doldurmuyorsa sütunlar boş alanı paylaşıp genişliyordu.
+Ölçülen sonuç iki kartlık bir şeritte **biri başta, biri tam ortada** —
+kartın kendi genişliği sabitse (tüketiciler öyle yazıyor) aradaki fark boşluk
+olarak görünüyor, kart genişliği serbestse bu sefer kartlar absürt geniş
+çiziliyordu. İki durumda da "şerit" izlenimi kayboluyordu.
+
+Sütun genişliği artık **sabit** ve dolmayan şerit `justify-content: start` ile
+başa yaslanıyor. `itemMinWidth` bir sürüm daha çalışır (`itemWidth` verilirse
+o kazanır), ama adı artık yalan: değer asgari değil, kartın genişliğinin
+kendisi.
+
+⚠ **Duyarlı genişlik prop'tan GELMEZ.** Sayı tek bir kırılma noktası
+anlatabilir; kart genişliği ise mobilde ayrı, masaüstünde ayrıdır. Inline
+yazılan değer bu yüzden `--hanui-carousel-item-default` adını taşıyor ve
+tüketici kendi medya sorgusundan `--hanui-carousel-item` ile eziyor — inline
+stil bir sınıf kuralına yenilmediği için tek isim kullanılsaydı ezme
+**imkânsız** olurdu. "Yarım kart görünsün" gibi ölçüler de aynı kapıdan:
+`--hanui-carousel-item: max(232px, calc((100% - 4.3 * 16px) / 4.3))`.
+
+Nöbetçi: `__tests__/components/Carousel.track.test.ts` — `fr` biriminin ya da
+`minmax(`in geri gelmesi ve ezme zincirinin düşmesi ayrı ayrı kırar.
+
 ## Kod düzeni ve tasarım prensipleri — ZORUNLU
 
 **Bundan sonraki her geliştirme bu prensiplere uyar; kurallar aşağıdaki
