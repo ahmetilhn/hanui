@@ -292,6 +292,24 @@ Yönlendiriciye özgü props `linkProps` ile geçer:
 
 ---
 
+## Sayfalamada başa dönme
+
+Sayfa değiştiren tıklamadan sonra pencereyi başa almak bir **prop**tur; çağıran
+tarafta kaydırma kodu yazılmaz:
+
+```tsx
+<Pagination page={page} totalPages={totalPages} scrollTo="top" … />
+```
+
+İki kipte de çalışır (`buildHref` ve `onPageChange`). Kaydırma anidir ve üç
+durumda **yapılmaz**: etkin sayfaya basıldığında, yeni sekmede açan tıklamada
+(Ctrl/Cmd/orta tuş) ve prop verilmediğinde.
+
+⚠ Sayfa içindeki bir listenin sayfalamasında (sekme içi değerlendirme listesi
+gibi) **verilmez** — kullanıcıyı okuduğu bölümden sayfanın tepesine atar.
+
+---
+
 ## Yapışkan başlık
 
 Sayfa kaydırmasına yapışan bileşenler (`DirectoryGroup`, `DirectoryJump`,

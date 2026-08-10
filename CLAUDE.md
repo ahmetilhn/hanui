@@ -410,6 +410,37 @@ olmasını geciktiremez. `::backdrop` için **ayrı** mixin
 
 `prefers-reduced-motion` her animasyonda karşılanır.
 
+### `Pagination.scrollTo="top"` — kaydırma kodu ÇAĞIRANDA yazılmaz
+
+Sayfa değiştikten sonra başa dönme her tüketicide elle yazılıyordu (ya da hiç
+yazılmıyordu: uzun katalog listesinde 2. sayfaya geçen kullanıcı listenin
+**dibinde** kalıyordu). Kural artık bileşende: `scrollTo="top"` iki kipte de
+(`buildHref` ve `onPageChange`) çalışır.
+
+⚠ **Kaydırma ANİDİR** (`behavior: 'instant'`), yumuşak değil. Yumuşak kaydırma
+içerik değişirken sürüyor olur — kullanıcı yeni listeyi hareket hâlinde görür —
+ve uzun sayfada tıklama ile üste varış arasında saniyeler geçer. Anî kaydırma
+ayrıca `prefers-reduced-motion` sorusunu tamamen ortadan kaldırır.
+
+⚠ **Üç durumda kaydırılmaz:** etkin sayfaya basıldığında (içerik değişmiyor),
+yeni sekmede açan tıklamada (Ctrl/Cmd/Shift/orta tuş — mevcut sayfa yerinde
+kalmalı) ve `linkProps.onClick` `preventDefault` çağırdığında (gezinme iptal
+edilmiş).
+
+⚠ **`linkProps.onClick` DÜŞMEZ:** bileşenin kendi `onClick`i spread'den sonra
+yazılıyor, bu yüzden tüketicininki zincirlenerek önce çağrılır.
+
+### ⚠ Bağlantı kipinde OKLAR ölü tuştu
+
+Aynı turda ölçüldü: `buildHref` verildiğinde sayfa numaraları `<a>` oluyordu ama
+önceki/sonraki okları `onPageChange` çağıran birer `<button>` olarak kalıyordu —
+o kipte `onPageChange` tanımsız olduğu için **tıklama hiçbir şey yapmıyordu**.
+Hata yok, log yok; yalnızca çalışmayan iki tuş. Oklar artık numaralarla aynı
+kipi izler.
+
+⚠ **Sınırdaki ok bağlantı DEĞİL devre dışı düğmedir** — bir `<a>` devre dışı
+bırakılamaz ve `aria-disabled` taşıyan bir bağlantı hâlâ tıklanır.
+
 ## Göç ve `@deprecated` yollar
 
 **Kural:** bir prop adı ya da davranışı değişecekse eski yol **bir sürüm boyunca

@@ -1,11 +1,12 @@
 'use client';
 
-import { type FC, memo, useEffect, useMemo, useRef } from 'react';
+import { type FC, type MouseEvent, type ReactNode, memo, useEffect, useMemo, useRef } from 'react';
 
 import { CaretLeftFill, CaretRightFill } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
+import { scrollWindowToTop } from '../../helpers/scroll.helper';
 import useAnnounce from '../../hooks/useAnnounce';
 import { useHanui } from '../../theme/context';
 import UISize from '../../enums/ui-size.enum';
@@ -31,6 +32,11 @@ type BaseProps = {
    * ("3. sayfa · 1.248 sonuç").
    */
   formatAnnouncement?: (page: number, totalPages: number) => string;
+  /**
+   * Sayfa değiştiren bir tıklamadan sonra kaydırma. `'top'` verilirse pencere
+   * en üste alınır — çağıran tarafta kaydırma kodu yazılmaz.
+   */
+  scrollTo?: 'top';
   className?: string;
   testId?: string;
 };
@@ -82,6 +88,7 @@ const Pagination: FC<Props> = ({
   onPageChange,
   linkProps,
   formatAnnouncement,
+  scrollTo,
   className,
   testId,
 }) => {
@@ -105,8 +112,68 @@ const Pagination: FC<Props> = ({
 
   if (totalPages <= 1) return null;
 
+  /* Sayfa GERCEKTEN degistiyse kaydirilir: etkin sayfaya basmak icerigi
+     degistirmiyor, oyleyse gorunumu de degistirmemeli. */
+  const scrollAfterChange = (target: number) => {
+    if (scrollTo === 'top' && target !== page) scrollWindowToTop();
+  };
+
   const goTo = (target: number) => {
-    if (onPageChange) onPageChange(target);
+    if (!onPageChange) return;
+
+    onPageChange(target);
+    scrollAfterChange(target);
+  };
+
+  const extraOnClick = linkProps?.onClick as
+    ((event: MouseEvent<HTMLAnchorElement>) => void) | undefined;
+
+  /*
+   * Yeni sekmede acan tiklamada (orta tus, Ctrl/Cmd) MEVCUT sayfa yerinde
+   * kalir; onu basa almak kullanicinin okudugu yeri elinden almak olurdu.
+   */
+  const handleLinkClick = (event: MouseEvent<HTMLAnchorElement>, target: number) => {
+    extraOnClick?.(event);
+
+    if (event.defaultPrevented || event.button !== 0) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+    scrollAfterChange(target);
+  };
+
+  /*
+   * Baglanti kipinde oklar da BAGLANTIDIR. Eskiden ikisi de `goTo` cagiran
+   * birer dugmeydi ve `goTo` o kipte `onPageChange` olmadigi icin hicbir sey
+   * yapmiyordu: onceki/sonraki tuslari OLU tuslardi, hicbir katman uyarmiyordu.
+   * Sinirda baglanti degil devre disi dugme cizilir — bir `<a>` devre disi
+   * birakilamaz.
+   */
+  const renderArrow = (target: number, arrowLabel: string, icon: ReactNode) => {
+    const isDisabled = target < 1 || target > totalPages;
+
+    if (buildHref && !isDisabled)
+      return (
+        <HanuiLink
+          href={buildHref(target)}
+          className={styles.pagination__arrow}
+          aria-label={arrowLabel}
+          {...linkProps}
+          onClick={event => handleLinkClick(event, target)}
+        >
+          {icon}
+        </HanuiLink>
+      );
+
+    return (
+      <IconButton
+        className={styles.pagination__arrow}
+        icon={icon}
+        label={arrowLabel}
+        variant="outline"
+        disabled={isDisabled}
+        onClick={() => goTo(target)}
+      />
+    );
   };
 
   return (
@@ -115,18 +182,11 @@ const Pagination: FC<Props> = ({
       aria-label={resolveLabel('Pagination.label', label, labels?.pagination?.label)}
       data-testid={testId}
     >
-      <IconButton
-        className={styles.pagination__arrow}
-        icon={<CaretLeftFill aria-hidden />}
-        label={resolveLabel(
-          'Pagination.previousLabel',
-          previousLabel,
-          labels?.pagination?.previous,
-        )}
-        variant="outline"
-        disabled={page <= 1}
-        onClick={() => goTo(page - 1)}
-      />
+      {renderArrow(
+        page - 1,
+        resolveLabel('Pagination.previousLabel', previousLabel, labels?.pagination?.previous),
+        <CaretLeftFill aria-hidden />,
+      )}
 
       <ul className={styles.pagination__list}>
         {pages.map((value, index) =>
@@ -145,6 +205,7 @@ const Pagination: FC<Props> = ({
                   )}
                   aria-current={value === page ? 'page' : undefined}
                   {...linkProps}
+                  onClick={event => handleLinkClick(event, value)}
                 >
                   {value}
                 </HanuiLink>
@@ -167,14 +228,11 @@ const Pagination: FC<Props> = ({
         )}
       </ul>
 
-      <IconButton
-        className={styles.pagination__arrow}
-        icon={<CaretRightFill aria-hidden />}
-        label={resolveLabel('Pagination.nextLabel', nextLabel, labels?.pagination?.next)}
-        variant="outline"
-        disabled={page >= totalPages}
-        onClick={() => goTo(page + 1)}
-      />
+      {renderArrow(
+        page + 1,
+        resolveLabel('Pagination.nextLabel', nextLabel, labels?.pagination?.next),
+        <CaretRightFill aria-hidden />,
+      )}
     </nav>
   );
 };
