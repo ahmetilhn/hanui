@@ -142,9 +142,27 @@ marka şeridi (`band-*`), birincil eylemin dolgusu (`action`) ve mint saç
 ikincil sis.
 
 ⚠ **Bant sayfayı ÖRTMEZ, sayfanın devamıdır.** `nav-bg` artık `page`in kendisi
-ve sınırı `nav-line` çizer; açık temada zaten aynı ilişki vardı (bant beyaz,
-sayfa `n50`). Alt bilgi bir kademe **yukarı** çıkar (`surface`) — açık temadaki
-kardeşiyle aynı yön.
+ve sınırı `nav-line` çizer; açık temada da öyle (ikisi de beyaz — bkz. "Açık
+temada sayfa BEYAZ"). Alt bilgi bir kademe **yukarı** çıkar (`surface`) — açık
+temadaki kardeşiyle aynı yön.
+
+### Açık temada sayfa BEYAZ, kâğıt değil
+
+`page` bir dönem `NEUTRAL.n50` (`#f4f8f7`) idi ve gerekçe kılavuzun "açık zemin
+için beyaz yerine kâğıt" kuralıydı. Kural yüzey merdiveninin geri kalanında
+duruyor (`surface-2`, `footer-bg`, `nav-bg-2`, `media-bg`, `skeleton-a` hâlâ
+kâğıt ailesinde); çıkarılan yalnızca **sayfanın kendisi** — `NEUTRAL.n0`.
+
+⚠ **Bedeli: `surface` de beyaz, yani KART SAYFADAN DOLGUYLA AYRIŞMAZ.** Ayrımı
+`card` / `panel` mixin'lerinin `border`ı (beyaz üzerinde 1,34:1) ve `shadow-sm`
+taşır. Kenarlığı olmayan her yeni yüzey bileşeni beyaz üzerinde **görünmez**
+olur ve nöbetçisi yoktur: `check-contrast` kenarlık çiftlerini advisory
+listesinde tutar, kırmaz.
+
+⚠ Değişiklik tüketicilerde iki yerde daha yankılanır ve ikisi de **elle**
+izlenir: `hanparca-frontend` `manifest.ts` → `background_color` (PWA açılış
+ekranı sayfayla aynı olmak zorunda) ve `hanparca-admin` `layout.tsx` →
+açık tema `themeColor`. Otomatik nöbetçi kurulamaz.
 
 ⚠ **Marka şeridinin ayırıcı çizgisi sayfa kenarlığından GELMEZ**
 (`BAND.darkLine`): nötrleşen kenarlık şeridin koyu yeşili üzerinde 1,10:1'e

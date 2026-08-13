@@ -40,7 +40,17 @@ const BLACK = '#000000';
 /** AÇIK TEMA — varsayılan. */
 export const LIGHT_THEME = {
   // --- Yüzey ---
-  page: NEUTRAL.n50,
+  /*
+   * ⚠ SAYFA BEYAZ, kâğıt DEĞİL. Kılavuzun "açık zeminde beyaz yerine kâğıt"
+   * kuralı yüzey merdiveninin geri kalanında duruyor (`surface-2`, `footer-bg`,
+   * `nav-bg-2`, `media-bg`); sayfanın kendisi ondan çıkarıldı.
+   *
+   * <p>Bedeli ölçülü ve kabul edilmiş: `surface` de beyaz, yani KART SAYFADAN
+   * DOLGUYLA AYRIŞMAZ — ayrımı `card` mixin'inin kenarlığı (`border`) ve
+   * `shadow-sm` taşır. Kartın kenarlığını kaldıran her yeni bileşen beyaz
+   * üzerinde görünmez olur.
+   */
+  page: NEUTRAL.n0,
   surface: NEUTRAL.n0,
   'surface-2': NEUTRAL.n100,
   'surface-3': NEUTRAL.n150,
