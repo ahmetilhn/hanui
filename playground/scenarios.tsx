@@ -96,6 +96,7 @@ import { SOLO_ONLY } from './solo';
 
 export const LABELS: HanuiLabels = {
   close: 'Kapat',
+  notifications: 'Bildirimler',
   cancel: 'Vazgeç',
   submit: 'Kaydet',
   loading: 'Yükleniyor',
@@ -887,6 +888,25 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         }
       >
         Gövde metni.
+      </Modal>
+    ),
+    /*
+     * ⚠ ÜST KATMAN SENARYOSU — süs değil, nöbetçi. `<dialog>.showModal()`
+     * elemanı üst katmana taşır ve orası `z-index`ten bağımsız olarak her
+     * şeyin üstünde boyanır; `document.body`ye portallanan bir menü modalin
+     * ALTINDA kalır, yani görünmez olur. jsdom'da üst katman yok, dolayısıyla
+     * bu ancak gerçek tarayıcıda ölçülebilir: `__tests__/e2e/top-layer.spec.ts`.
+     */
+    withMenu: (
+      <Modal isOpen onClose={noop} title="Satırı düzenle">
+        <Menu
+          label="Satır eylemleri"
+          trigger={<Button variant={UIVariant.SECONDARY}>Eylemler</Button>}
+          items={[
+            { id: 'copy', label: 'Kopyala', onSelect: noop },
+            { id: 'delete', label: 'Sil', onSelect: noop, isDanger: true },
+          ]}
+        />
       </Modal>
     ),
   },

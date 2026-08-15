@@ -20,6 +20,7 @@ import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import useDismissOnEscape from '../../hooks/useDismissOnEscape';
 import { captureFocus, focusFirstMeaningful } from '../../helpers/focus.helper';
+import { POPOVER_RESET, resolvePortalTarget, showTopLayer } from '../../helpers/portal.helper';
 import usePositioning from '../../hooks/usePositioning';
 
 import styles from './index.module.scss';
@@ -65,6 +66,14 @@ const Popover = ({
   const isOpen = isControlled ? controlledOpen : uncontrolledOpen;
 
   const positioning = usePositioning(anchorRef, surfaceRef, { side, align, isOpen });
+
+  /* Portal hedefi yalnizca acikken cozulur; gerekce `helpers/portal.helper.ts`. */
+  const portal = isOpen && isClient() ? resolvePortalTarget(anchorRef.current) : null;
+
+  useEffect(() => {
+    if (!isOpen || !portal?.needsTopLayer) return;
+    return showTopLayer(surfaceRef.current);
+  }, [isOpen, portal?.needsTopLayer]);
 
   const setOpen = useCallback(
     (next: boolean) => {
@@ -130,11 +139,13 @@ const Popover = ({
       {anchor}
 
       {isOpen &&
-        isClient() &&
+        portal &&
         createPortal(
           <div
             ref={surfaceRef}
             id={id}
+            /* ⚠ Modal içinden açıldığında üst katman ZORUNLU — `portal.helper`. */
+            {...(portal.needsTopLayer ? { popover: 'manual' as const } : {})}
             /*
              * `role="dialog"` ama `aria-modal` YOK: yuzey kipsel degil ve
              * `aria-modal="true"` yazmak ekran okuyucuya sayfanin geri
@@ -145,20 +156,45 @@ const Popover = ({
             className={cx(styles.popover, styles[`popover--${positioning.side}`], className)}
             style={{
               ...positioning.style,
+              ...(portal.needsTopLayer ? POPOVER_RESET : {}),
               visibility: positioning.isPositioned ? 'visible' : 'hidden',
             }}
             data-testid={testId}
-            /* Odak yuzeyin DISINA ciktiginda kapanir: kipsel olmayan bir
-               yuzeyde odagi hapsetmek kullaniciyi sayfadan koparirdi. */
+            /*
+             * Odak yuzeyin DISINA ciktiginda kapanir: kipsel olmayan bir
+             * yuzeyde odagi hapsetmek kullaniciyi sayfadan koparirdi.
+             *
+             * ⚠ AMA "DISI" DOM AGACIYLA OLCULEMEZ. Yuzeyin icindeki bir
+             * `Select`/`Combobox`/`Menu` acildiginda kendi panelini
+             * `document.body`ye (ya da ust katmana) PORTALLIYOR; odak oraya
+             * gectiginde `relatedTarget` bu yuzeyin ICINDE degil, dolayisiyla
+             * eski kural popover'i KAPATIYORDU — kullanicinin az once actigi
+             * listeyle birlikte.
+             *
+             * `relatedTarget === null` de kapatmaz: odagin pencereden cikmasi
+             * (sekme degistirme, gelistirici araclari) yuzeyi kapatmamali.
+             */
             onBlur={event => {
-              if (event.currentTarget.contains(event.relatedTarget as Node)) return;
-              if (anchorRef.current?.contains(event.relatedTarget as Node)) return;
+              const next = event.relatedTarget as HTMLElement | null;
+              if (!next) return;
+              if (event.currentTarget.contains(next)) return;
+              if (anchorRef.current?.contains(next)) return;
+
+              /*
+               * Bu yuzeyden PORTALLANMIS bir katman mi? `Menu`/`Select`/
+               * `Combobox` panelleri `aria-controls`/`id` zinciriyle degil,
+               * acildiklari an odagi tasiyarak baglaniyor; en guvenilir olcut
+               * hedefin kipsel bir yuzeyin ya da bir listbox/menu'nun icinde
+               * olmasi.
+               */
+              if (next.closest('[role="listbox"],[role="menu"],[role="dialog"]')) return;
+
               setOpen(false);
             }}
           >
             {children}
           </div>,
-          document.body,
+          portal.container,
         )}
     </>
   );

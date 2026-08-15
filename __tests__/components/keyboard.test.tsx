@@ -139,7 +139,16 @@ describe('Select klavye sözleşmesi', () => {
 
     render(<Select options={SELECT_OPTIONS} value="a" onChange={onChange} label="Sıralama" />);
 
-    return { user, onChange, trigger: screen.getByRole('combobox', { name: 'Sıralama' }) };
+    /*
+     * ⚠ Ad artik REGEX ile araniyor. `Select`/`Combobox` tetikleyicisinin
+     * erisilebilir adi bir donem YALNIZCA etiketti (`aria-label`) ve o
+     * `aria-label` secili degeri MASKELIYORDU — ekran okuyucu secimi hic
+     * duymuyordu. Bugun ARIA APG'nin "select-only combobox" desenine uygun
+     * olarak ad `aria-labelledby="etiket deger"` ile kuruluyor, yani
+     * "Siralama Fiyat" gibi. Tam esitlik iddiasi eski/hatali bicimi
+     * sabitlerdi.
+     */
+    return { user, onChange, trigger: screen.getByRole('combobox', { name: /Sıralama/ }) };
   };
 
   it.each(['{ArrowDown}', '{ArrowUp}', '{Enter}', ' '])('`%s` paneli açar', async key => {
@@ -156,7 +165,7 @@ describe('Select klavye sözleşmesi', () => {
     const user = userEvent.setup();
     render(<Select options={SELECT_OPTIONS} value="c" onChange={jest.fn()} label="Sıralama" />);
 
-    const trigger = screen.getByRole('combobox', { name: 'Sıralama' });
+    const trigger = screen.getByRole('combobox', { name: /Sıralama/ });
     trigger.focus();
     await user.keyboard('{Enter}');
 

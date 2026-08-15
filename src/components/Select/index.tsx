@@ -222,6 +222,7 @@ const Select = <T extends string>({
           styles[`trigger--${size}`],
           !selectedOption && styles['trigger--empty'],
           isOpen && styles['trigger--open'],
+          isInvalid && styles['trigger--invalid'],
         )}
         disabled={isDisabled}
         aria-haspopup="listbox"
@@ -230,7 +231,12 @@ const Select = <T extends string>({
         aria-activedescendant={
           openMode === 'popover' && options[activeIndex] ? optionId(activeIndex) : undefined
         }
-        aria-label={label}
+        /*
+         * ⚠ `aria-label` KULLANILMAZ — SECILI DEGERI MASKELIYORDU. Gerekce ve
+         * olculen sonuc `Combobox`takiyle birebir ayni: `aria-label` elemanin
+         * icerigini ezer, icerik ise tam da secili secenegin etiketi.
+         */
+        aria-labelledby={selectedOption ? `${baseId}-name ${baseId}-value` : `${baseId}-name`}
         aria-describedby={describedBy}
         aria-invalid={isInvalid}
         onClick={() => (isOpen ? close() : open())}
@@ -242,7 +248,14 @@ const Select = <T extends string>({
           </span>
         )}
 
-        <span className={styles.trigger__value}>{selectedOption?.label ?? emptyText}</span>
+        {/* Kontrolün adı — yalnızca erişilebilirlik ağacında. */}
+        <span id={`${baseId}-name`} className={styles.trigger__srName}>
+          {label}
+        </span>
+
+        <span id={`${baseId}-value`} className={styles.trigger__value}>
+          {selectedOption?.label ?? emptyText}
+        </span>
 
         {/*
          * Ok DOLU CARET: ince chevron, kutunun sag ucunda `$text-2` tonunda

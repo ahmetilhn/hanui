@@ -61,6 +61,15 @@ $clear-size: 22px;
     width: $clear-size;
     height: $clear-size;
     padding: 0;
+
+    /*
+     * ⚠ VURUS ALANI 44px, GORUNEN OLCU 22px. Dugme gorsel olarak kucuk kalmak
+     * zorunda (alanin icinde duruyor, buyutmek metni kaydirir) ama parmakla
+     * 22px'lik bir hedefe basmak WCAG 2.5.5'in altinda — kullanici temizlemek
+     * isterken listeyi aciyordu. `tap-target` gorunumu DEGISTIRMEZ, yalnizca
+     * `::after` ile isitilebilir alani buyutur.
+     */
+    @include tap-target;
     border: none;
     background: none;
     border-radius: $radius-pill;
@@ -236,4 +245,13 @@ $clear-size: 22px;
     font-size: $font-size-sm;
     color: $text-2;
   }
+}
+
+/*
+ * Kontrolün adı — yalnızca erişilebilirlik ağacında.
+ * ⚠ `display: none` ya da `visibility: hidden` OLAMAZ: ikisi de elemanı
+ * erişilebilirlik ağacından da çıkarır, yani `aria-labelledby` onu bulamaz.
+ */
+.combobox__srName {
+  @include visually-hidden;
 }

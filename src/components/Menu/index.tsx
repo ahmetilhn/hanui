@@ -21,6 +21,7 @@ import { isClient } from '@ahmetilhn/handy-utils';
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import { captureFocus } from '../../helpers/focus.helper';
+import { POPOVER_RESET, resolvePortalTarget, showTopLayer } from '../../helpers/portal.helper';
 import usePositioning from '../../hooks/usePositioning';
 
 import styles from './index.module.scss';
@@ -74,6 +75,23 @@ const Menu = ({
 
   const positioning = usePositioning(anchorRef, surfaceRef, { side, align, isOpen });
   const enabled = enabledIndexes(items);
+
+  /*
+   * Portal hedefi HER RENDER'DA degil, yalnizca acikken cozulur. `closest`
+   * ucuzdur ama tetikleyicinin DOM konumu acilistan sonra degismedigi icin
+   * tekrar hesaplamanin da bir anlami yok — `isOpen` false iken `null`.
+   */
+  const portal = isOpen && isClient() ? resolvePortalTarget(anchorRef.current) : null;
+
+  /*
+   * ⚠ `popover` niteligi TEK BASINA yetmez: eleman `showPopover()` cagrilana
+   * kadar `display: none` kalir. Cagri yuzey MONTE EDILDIKTEN sonra olmali,
+   * bu yuzden `useEffect` — render sirasinda ref henuz dolu degil.
+   */
+  useEffect(() => {
+    if (!isOpen || !portal?.needsTopLayer) return;
+    return showTopLayer(surfaceRef.current);
+  }, [isOpen, portal?.needsTopLayer]);
 
   const open = useCallback(
     (target: 'first' | 'last') => {
@@ -209,16 +227,22 @@ const Menu = ({
       {anchor}
 
       {isOpen &&
-        isClient() &&
+        portal &&
         createPortal(
           <div
             ref={surfaceRef}
             id={id}
             role="menu"
             aria-label={label}
+            /*
+             * ⚠ Modalin ICINDEN acildiginda yuzey UST KATMANA cikmak ZORUNDA.
+             * Gerekce ve olculen dort senaryo: `helpers/portal.helper.ts`.
+             */
+            {...(portal.needsTopLayer ? { popover: 'manual' as const } : {})}
             className={cx(styles.menu, styles[`menu--${positioning.side}`], className)}
             style={{
               ...positioning.style,
+              ...(portal.needsTopLayer ? POPOVER_RESET : {}),
               visibility: positioning.isPositioned ? 'visible' : 'hidden',
             }}
             data-testid={testId}
@@ -242,9 +266,19 @@ const Menu = ({
                   item.onSelect();
                   close();
                 }}
-                /* Fare imleci ogenin uzerindeyken etkin oge de oraya tasinir;
-                   iki ayri vurgu kullaniciyi sasirtiyordu. */
-                onMouseEnter={() => !item.isDisabled && setActiveIndex(index)}
+                /*
+                 * ⚠ `onMouseEnter` KALDIRILDI. Eskiden fare bir ogenin uzerine
+                 * geldiginde `setActiveIndex` cagriliyordu; asagidaki etki de
+                 * `activeIndex` degisince `.focus()` cagirdigi icin sonuc
+                 * **farenin klavye odagini calmasi** oluyordu: kullanici ok
+                 * tuslariyla gezinirken imlecin durdugu yer ya da menunun
+                 * imlecin altinda kaymasi odagi geri firlatiyordu.
+                 *
+                 * Kaldirilan yorumun gerekcesi "iki ayri vurgu kullaniciyi
+                 * sasirtiyordu" idi; o sorun VURGULARI AYIRARAK cozuldu:
+                 * hover = arka plan, klavye odagi = halka (`index.module.scss`).
+                 * Ikisi artik farkli sey soyluyor, cakismiyor.
+                 */
               >
                 {item.icon && (
                   <span className={styles.menu__icon} aria-hidden>
@@ -255,7 +289,7 @@ const Menu = ({
               </button>
             ))}
           </div>,
-          document.body,
+          portal.container,
         )}
     </>
   );

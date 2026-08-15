@@ -194,11 +194,18 @@ const ToastItem = ({ toast: record, closeLabel, onDismiss }: ItemProps) => {
 type HubProps = {
   /** Kapatma düğmelerinin erişilebilir adı. Verilmezse `labels.close`. */
   closeLabel?: string;
+  /**
+   * Yığının erişilebilir adı ("Bildirimler").
+   *
+   * ⚠ Yığın artık bir `role="region"` ve canlı bölge; adsız bir bölge ekran
+   * okuyucuda yalnızca "bölge" diye okunur.
+   */
+  regionLabel?: string;
   className?: string;
 };
 
 /** Bildirim yığını — uygulamada <strong>BİR KEZ</strong> çizilir. */
-const ToastHub = ({ closeLabel, className }: HubProps) => {
+const ToastHub = ({ closeLabel, regionLabel, className }: HubProps) => {
   const { labels } = useHanui();
   const [toasts, setToasts] = useState<ToastRecord[]>([]);
 
@@ -229,7 +236,26 @@ const ToastHub = ({ closeLabel, className }: HubProps) => {
   if (!isMounted) return null;
 
   return createPortal(
-    <div className={cx(styles.hub, className)}>
+    /*
+     * ⚠ CANLI BÖLGE YIĞININ KENDİSİNDE, tek tek bildirimlerde DEĞİL.
+     *
+     * Bildirimin üzerindeki `role="status"`/`role="alert"` öğe DOM'a
+     * girdiği ANDA yaratılıyordu; canlı bölge semantiği ise bölgenin içerik
+     * değişmeden ÖNCE var olmasını şart koşar. Sonuç ölçülemez değil ama
+     * güvenilmezdi: NVDA/JAWS/VoiceOver bazı sürümlerde yeni eklenen bir
+     * canlı bölgeyi hiç duyurmuyordu.
+     *
+     * Yığın her zaman DOM'da; `aria-live="polite"` burada duruyor ve
+     * içine giren her bildirim onun bir MUTASYONU olarak duyuruluyor.
+     * `aria-relevant="additions"`: kapanan bir bildirim yeniden okunmasın.
+     */
+    <div
+      className={cx(styles.hub, className)}
+      role="region"
+      aria-label={resolveLabel('ToastHub.regionLabel', regionLabel, labels?.notifications)}
+      aria-live="polite"
+      aria-relevant="additions"
+    >
       {toasts.map(record => (
         <ToastItem
           key={record.id}

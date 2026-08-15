@@ -465,7 +465,14 @@ npm run playground # bileşen galerisi → http://localhost:5273
 - **Token sözleşmesi** — açık/koyu anahtar kümeleri ve üretilmiş SCSS kaynakla
   eşleşir. Ayrışma bugüne kadar sessizdi.
 - **Paket boyutu** — tek bileşen import eden bir uygulamanın ne indirdiği
-  ölçülür (`Badge` 2,7 kB, `Button` 3,4 kB, tüm paket 22,2 kB gzip).
+  ölçülür. Ölçülen (2026-08-15): `Badge` **3,53 kB** · `Button` **4,16 kB** ·
+  `styles.css` **21,11 kB** · tüm paket **37,54 kB** gzip.
+  ⚠ **Bütçe 38 kB, yani başlıkta kalan pay %1,2.** Bu satır bir dönem
+  `Badge 2,7 / Button 3,4 / paket 22,2` diyordu — ölçüm değil, bayat bir
+  kopyaydı ve okuyana **%70 boş alan** olduğunu düşündürüyordu. Yeni bir
+  bileşen eklerken bütçenin fiilen dolu olduğu bilinerek girilir; `size-limit`
+  kırmızıya döndüğünde doğru tepki limiti yükseltmek değil, ne eklendiğini
+  ölçmektir (`npm run size`).
 - **Genel API** — `build/index.d.ts`teki dışa aktarım kümesi
   `scripts/api-baseline.txt` ile karşılaştırılır (`npm run check:api`, 164 ad).
   Düşen bir ad **kırıcı**dır ama bugün görünmez: iki tüketici de sürümü tam

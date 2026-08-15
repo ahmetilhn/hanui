@@ -35,6 +35,16 @@ export type DataTableColumn = {
 type Props = {
   columns: DataTableColumn[];
   /**
+   * Tablonun erişilebilir adı ("Bekleyen siparişler").
+   *
+   * ⚠ ADSIZ TABLO EKRAN OKUYUCUDA YALNIZCA "tablo" DİYE OKUNUR. Panelde
+   * aynı anda birden fazla tablo bulunabiliyor ve kullanıcı hangisinde
+   * olduğunu ayırt edemiyordu. `<caption>` yerine `aria-label` seçildi:
+   * başlık zaten `PageHeader`/`Panel` içinde görünür durumda, ikinci kez
+   * çizmek görsel tekrar olurdu.
+   */
+  label?: string;
+  /**
    * Gövde satırları (`<tr>`). Ekranların özel hücreleri, bağlantıları ve satır
    * tintleri burada yaşar; tablo yalnızca kabuğu ve durum satırlarını
    * üstlenir. Uyarı tinti için {@link DataTableRow}.
@@ -70,6 +80,7 @@ type Props = {
 /** Operasyon veri tablosu — durum satırlı tablo sözleşmesi. */
 const DataTable: FC<Props> = ({
   columns,
+  label,
   children,
   isLoading,
   error,
@@ -107,7 +118,7 @@ const DataTable: FC<Props> = ({
     >
       {bulkBar && <div className={styles.bulkBar}>{bulkBar}</div>}
 
-      <table className={styles.table}>
+      <table className={styles.table} aria-label={label}>
         <thead>
           <tr>
             {columns.map(column => {

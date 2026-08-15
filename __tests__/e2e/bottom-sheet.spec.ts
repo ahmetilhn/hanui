@@ -5,7 +5,10 @@ const MIN_USABLE_BODY = 120;
 const openSortSheet = async (page: import('@playwright/test').Page) => {
   await page.goto('/?theme=light');
   await page.evaluate(() => document.fonts.ready);
-  await page.getByRole('combobox', { name: 'Sıralama' }).first().click();
+  await page
+    .getByRole('combobox', { name: /Sıralama/ })
+    .first()
+    .click();
 
   const sheet = page.locator('dialog[open]');
   await expect(sheet).toBeVisible();

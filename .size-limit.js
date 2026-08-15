@@ -1,9 +1,22 @@
-/** BOYUT BÜTÇESİ. */
+/**
+ * BOYUT BÜTÇESİ.
+ *
+ * ⚠ KURAL: bütçe **yeşile boyamak için** yükseltilmez. Önce `npm run size` ile
+ * ölçülür, artışın NEDEN olduğu yazılır, sonra ölçülen değerin üstüne
+ * tanımlı bir pay konur.
+ *
+ * ⚠ 38 → 42 kB (2026-08-15). Gerekçe: 38 kB, paket **~22 kB**ken konmuştu ve
+ * README hâlâ o eski sayıyı yazıyordu (düzeltildi). Kütüphane aradaki sürümlerde
+ * meşru şekilde 37,83 kB'ye büyümüş, yani bütçe *kasıtlı olarak* değil
+ * *kazara* daralmıştı: kalan pay **170 bayt**tı ve bu, gerçek bir hatayı
+ * düzelten sonraki her değişikliği bloklardı (üst katman düzeltmesi tek başına
+ * 290 bayt yedi). 42 kB, bugünkü ölçümün ~%11 üstü.
+ */
 export default [
   {
     name: 'ESM giriş noktası (tüm paket)',
     path: 'build/index.js',
-    limit: '38 kB',
+    limit: '42 kB',
     gzip: true,
   },
   {

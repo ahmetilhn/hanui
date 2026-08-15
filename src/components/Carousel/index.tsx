@@ -95,10 +95,21 @@ const Carousel: FC<Props> = ({
 
   /* Bir GORUNUM genisligi kaydirir: sabit bir kart sayisi, farkli genislikteki
      kartlarda serit ortasinda duruyordu. */
+  /*
+   * ⚠ HAREKET TERCİHİ JS TARAFINDA OKUNUR. `index.module.scss` içinde
+   * `@include reduced-motion { scroll-behavior: auto }` vardı ama JS'in
+   * verdiği `behavior: 'smooth'` CSS'i EZER — yani hareket duyarlılığı ayarı
+   * bu bileşende tamamen etkisizdi. Tercih burada okunup davranışa çevrilir.
+   */
+  const scrollBehavior = (): ScrollBehavior =>
+    typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+      ? 'auto'
+      : 'smooth';
+
   const scrollByPage = (direction: 1 | -1) =>
     trackRef.current?.scrollBy({
       left: direction * trackRef.current.clientWidth,
-      behavior: 'smooth',
+      behavior: scrollBehavior(),
     });
 
   return (
@@ -161,7 +172,7 @@ const Carousel: FC<Props> = ({
               onClick={() =>
                 trackRef.current?.scrollTo({
                   left: index * trackRef.current.clientWidth,
-                  behavior: 'smooth',
+                  behavior: scrollBehavior(),
                 })
               }
             />

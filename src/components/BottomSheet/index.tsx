@@ -95,8 +95,21 @@ const BottomSheet = ({
 
   useEffect(() => {
     const query = window.matchMedia(closeAbove);
-    query.addEventListener('change', onClose);
-    return () => query.removeEventListener('change', onClose);
+
+    /*
+     * ⚠ YALNIZCA EŞİĞİN ÜSTÜNE ÇIKARKEN kapanır. Eskiden `onClose` doğrudan
+     * dinleyici olarak veriliyordu, yani `change` olayı HER İKİ YÖNDE de
+     * kapatıyordu: eşiğin altına inmek (masaüstü → mobil) de alt sayfayı
+     * kapatıyordu. Cihazını döndüren bir kullanıcı yatay→dikey geçişte
+     * paneli kaybediyordu — üstelik `closeAbove` sözleşmesi "BU GENİŞLİĞİN
+     * ÜSTÜNDE kapan" diyor, "her sınır geçişinde kapan" demiyor.
+     */
+    const handleChange = (event: MediaQueryListEvent) => {
+      if (event.matches) onClose();
+    };
+
+    query.addEventListener('change', handleChange);
+    return () => query.removeEventListener('change', handleChange);
   }, [closeAbove, onClose]);
 
   const setDialogRef = useCallback((node: HTMLDialogElement | null) => {

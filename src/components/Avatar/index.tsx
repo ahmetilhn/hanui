@@ -56,10 +56,23 @@ const Avatar: FC<Props> = ({ name, imageUrl, locale, size = 'md', className, tes
         !imageUrl && styles[`avatar--tone-${resolveTone(name, TONE_COUNT)}`],
         className,
       )}
-      aria-hidden
+      /*
+       * ⚠ `aria-hidden` KALDIRILDI. Kök üzerindeki `aria-hidden` yalnızca
+       * madalyonu değil KİŞİNİN ADINI da erişilebilirlik ağacından çıkarıyordu;
+       * `name` prop'unun kendi dokümantasyonu (`:9`) onu "görsel yoksa `alt`
+       * metnidir" diye tanımladığı hâlde o metin hiçbir zaman duyurulmuyordu.
+       * Ölçülen sonuç: yalnızca avatar çizilen bir kullanıcı listesi ekran
+       * okuyucuda TAMAMEN BOŞ görünüyordu.
+       *
+       * Ad `role="img"` + `aria-label` ile taşınır: baş harfler ("AY") görsel
+       * bir kısaltma, okunması gereken şey tam ad.
+       */
+      role="img"
+      aria-label={name}
       data-testid={testId}
     >
       {imageUrl ? (
+        /* `alt=""`: ad zaten kökte `aria-label` ile duyuruluyor, iki kez okunmasın. */
         <img className={styles.avatar__image} src={imageUrl} alt="" />
       ) : (
         resolveInitials(name, locale ?? labels?.locale)

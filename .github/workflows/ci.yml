@@ -1,0 +1,66 @@
+name: CI
+
+# ⚠ Bu dosya ACILANA KADAR bir pull request'te HICBIR kontrol kosmuyordu:
+# depodaki tek workflow `publish.yml`di ve tetikleyicisi yalniz
+# `push: branches: [master]`. Yani `verify` ilk kez YAYIN aninda kosuyor,
+# kirmizi bir degisiklik ancak master'a girdikten sonra goruluyordu — ve o
+# noktada npm surumu de yayimlanmamis oluyordu (kirik bir yayin degil, ama
+# master kirmizi ve bir sonraki push'a kadar oyle kaliyor).
+#
+# `workflow_call` ZORUNLU: `publish.yml` ayni kapiyi `needs:` ile kullanir,
+# boylece kapi tanimi TEK YERDE durur. Adimlar iki dosyaya kopyalansaydi
+# yeni bir kapi (kontrast, kapsam, boyut) eklendiginde birine yazilip
+# digerine yazilmamasi kacinilmazdi — `publish.yml:30-33` bu tuzagi zaten
+# kendi icinde anlatiyor.
+on:
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+
+# ⚠ `cancel-in-progress` YALNIZCA pull request'te acik. Cagrilan bir is
+# akisinin `concurrency` blogu cagiran kosuya DA uygulanir — sabit `true`
+# birakilsaydi master'a arka arkaya iki push atildiginda birinci push'un
+# YAYIN kosusu ortasindan iptal edilirdi (npm publish yarida kalmis bir
+# `verify` ile ya hic kosmaz ya da yarim kalir). PR'da iptal dogru, yayinda
+# degil.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          # package.json `engines` >= 24.
+          node-version: 24
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      # ⚠ `format:check` `verify`nin ICINDE DEGIL ve bilincli olarak burada
+      # ayri bir adim: bicimlendirme bir KALITE kapisi degil bir DIFF
+      # gurultusu kapisi, ve `verify` yerelde pre-commit kancasindan da
+      # kosuyor. Kancada Prettier zaten `--write` ile calisiyor, yani orada
+      # `--check` her zaman yesil — CI'da ise gercek bir sinyal.
+      - name: Format
+        run: npm run format:check
+
+      # Tek kapi: tokens -> kontrast -> typecheck -> lint -> kapsam -> build
+      # -> public API -> animasyon -> boyut butcesi.
+      - name: Verify
+        run: npm run verify
+
+      # ⚠ GORSEL REGRESYON BURADA KOSMAZ. 336 referans goruntusu yalniz
+      # `__tests__/e2e/__screenshots__/darwin/` altinda; linux referansi
+      # URETILMEDI, yani `playwright test` CI'da YAPISAL OLARAK kirmizi
+      # doner. Referanslari container icinde uretmek ayri bir is (plan 1.A5)
+      # ve o is bitene kadar bu adimin eklenmesi kapiyi degil yalnizca
+      # guveni bozar.

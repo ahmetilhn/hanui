@@ -58,12 +58,30 @@
 
   @include interactive-surface($rest: transparent, $hover: $surface-2, $pressed: $surface-3);
 
-  &:focus-visible {
-    background-color: $surface-2;
-  }
-
+  /*
+   * ⚠ SIRA ONEMLI: `:focus` sifirlamasi `:focus-visible`ten ONCE gelmek
+   * zorunda. Ikisi de tek sinif-benzeri secici, yani AYNI ozgullukte; kaynak
+   * sirasinda sonra gelen kazanir. Bir donem `:focus { outline: none }` daha
+   * ASAGIDAYDI ve `:focus-visible`in ciziminimi eziyordu.
+   */
   &:focus {
     outline: none;
+  }
+
+  /*
+   * ⚠ ODAK GOSTERGESI ARTIK HALKA — yalniz arka plan YETMIYOR. Onceki hal
+   * `background-color: $surface-2` idi ve olculdu: acik temada `#eff4f1`
+   * uzerinde `#ffffff` = **1,10:1**. WCAG 2.4.11 (Focus Appearance) 3:1
+   * istiyor, ve bu deger hover ile BIREBIR AYNI oldugu icin klavye kullanicisi
+   * "neredeyim" sorusunu hic cevaplayamiyordu.
+   *
+   * Offset NEGATIF: oge menu panelinin kenarina bitisik, disari tasan bir
+   * halka panelin `overflow`u tarafindan kirpiliyordu.
+   */
+  @include focus-ring($offset: -2px);
+
+  &:focus-visible {
+    background-color: $surface-2;
   }
 
   &:disabled {

@@ -1,6 +1,6 @@
 'use client';
 
-import { type KeyboardEvent, memo, useId, useRef, useState } from 'react';
+import { type KeyboardEvent, memo, useEffect, useId, useRef, useState } from 'react';
 
 import { XLg } from 'react-bootstrap-icons';
 
@@ -49,6 +49,21 @@ const TagInput = ({
   const generatedId = useId();
   const inputId = id ?? generatedId;
   const inputRef = useRef<HTMLInputElement>(null);
+
+  /*
+   * ⚠ Yinelenen etiket uyarısının zamanlayıcısı REF'te tutulur ve unmount'ta
+   * temizlenir. Eskiden `window.setTimeout(...)` çıplak çağrılıyordu: bileşen
+   * 1 sn dolmadan sökülürse zamanlayıcı ateşleniyor ve sökülmüş bir ağaçta
+   * `setDuplicate` çağırıyordu.
+   */
+  const duplicateTimerRef = useRef(0);
+
+  useEffect(
+    () => () => {
+      if (duplicateTimerRef.current) window.clearTimeout(duplicateTimerRef.current);
+    },
+    [],
+  );
   const announce = useAnnounce();
 
   const [draft, setDraft] = useState('');
@@ -64,7 +79,8 @@ const TagInput = ({
     if (values.includes(value)) {
       /* Sessizce yutmak yerine GOSTER: kullanici "yazdim, kayboldu" diyordu. */
       setDuplicate(value);
-      window.setTimeout(() => setDuplicate(null), 1_000);
+      if (duplicateTimerRef.current) window.clearTimeout(duplicateTimerRef.current);
+      duplicateTimerRef.current = window.setTimeout(() => setDuplicate(null), 1_000);
       announce(`${value} zaten ekli`, 'assertive');
       setDraft('');
       return;

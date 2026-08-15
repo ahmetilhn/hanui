@@ -22,10 +22,29 @@ let previous: {
   scrollY: number;
 } | null = null;
 
-/** iOS Safari mi? Gövdeyi sabitleme bedeli yalnızca orada ödenir. */
-const isIOS = (): boolean =>
-  /iP(hone|ad|od)/.test(navigator.platform) ||
-  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+/**
+ * iOS Safari mi? Gövdeyi sabitleme bedeli yalnızca orada ödenir.
+ *
+ * ⚠ `navigator.platform` KULLANILMAZ — spesifikasyondan KALDIRILDI ve
+ * tarayıcılar onu dondurulmuş/uydurma değerlerle döndürüyor. Eski kural
+ * ayrıca `MacIntel` + `maxTouchPoints > 1` sezgisine dayanıyordu ve bu,
+ * dokunmatik ekranlı ya da Sihirli Yüzey bağlı bir **masaüstü Mac**'te
+ * YANLIŞ POZİTİF veriyordu: gövde gereksizce `position: fixed` yapılıp
+ * sayfa kaydırma konumu sıfırlanıyordu.
+ *
+ * `userAgent` üzerinden Apple dokunmatik cihazı testi hem kaldırılmamış hem
+ * daha dar: iPadOS 13+ masaüstü UA'sı gönderdiği için `Macintosh` + dokunma
+ * noktası koşulu orada da tutar, ama dokunmatik olmayan Mac'te tutmaz.
+ */
+const isIOS = (): boolean => {
+  if (typeof navigator === 'undefined') return false;
+
+  const ua = navigator.userAgent;
+  if (/iP(hone|ad|od)/.test(ua)) return true;
+
+  /* iPadOS 13+ kendini masaüstü Safari gibi tanıtıyor. */
+  return /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
+};
 
 const lock = (): void => {
   lockCount += 1;

@@ -94,10 +94,36 @@ describe('Combobox sunucu araması', () => {
 describe('Combobox seçim', () => {
   beforeEach(useDesktopViewport);
 
-  it('seçilen değer tetikleyicide görünür', () => {
+  it('seçilen değer tetikleyicide görünür VE erişilebilir adda duyurulur', () => {
     render(<Combobox options={OPTIONS} value="sisli" onChange={jest.fn()} labels={LABELS} />);
 
-    expect(screen.getByRole('button', { name: LABELS.placeholder })).toHaveTextContent('Şişli');
+    const trigger = screen.getByRole('button', { name: /Şişli/ });
+
+    expect(trigger).toHaveTextContent('Şişli');
+
+    /*
+     * ⚠ ASIL İDDİA BU. Eskiden tetikleyici `aria-label={placeholder}` taşıyordu
+     * ve `aria-label` elemanın İÇERİĞİNİN yerine geçer — yani bir şehir seçili
+     * olsun olmasın ekran okuyucu hep "Şehir seçin, düğme" diyordu ve
+     * KULLANICI KENDİ SEÇİMİNİ HİÇ DUYMUYORDU. Bu testin eski hâli
+     * `name: LABELS.placeholder` ile sorguladığı için o hatayı SABİTLİYORDU:
+     * metin doğruydu, ad yanlıştı, test yeşildi.
+     *
+     * Bugün ad ARIA APG'nin "select-only combobox" deseniyle kuruluyor —
+     * `aria-labelledby="ad değer"` — ve hem etiketi hem seçimi taşıyor.
+     */
+    expect(trigger).toHaveAccessibleName(expect.stringContaining('Şişli'));
+    expect(trigger).toHaveAccessibleName(expect.stringContaining(LABELS.placeholder));
+  });
+
+  it('seçim yokken erişilebilir ad YALNIZCA etikettir', () => {
+    render(<Combobox options={OPTIONS} value={null} onChange={jest.fn()} labels={LABELS} />);
+
+    /*
+     * Değer span'i seçim yokken yer tutucuyu taşıyor; ikisini birden bağlamak
+     * aynı metni iki kez okuturdu ("Şehir seçin Şehir seçin").
+     */
+    expect(screen.getByRole('button')).toHaveAccessibleName(LABELS.placeholder);
   });
 
   it('seçenek tıklanınca `onChange` çağrılır ve panel kapanır', async () => {

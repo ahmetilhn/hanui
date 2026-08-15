@@ -19,8 +19,21 @@ const OPPOSITE: Record<PositionSide, PositionSide> = {
 };
 
 /** Bir sayıyı [min, max] aralığına kırpar. */
+/**
+ * Değeri aralığa sıkıştırır.
+ *
+ * ⚠ TERS ARALIK GÜVENLİ. Önceki hâli düz `Math.min(Math.max(v, min), max)` idi
+ * ve yüzey görünüm alanından UZUNSA `max` (`viewport - surface - padding`)
+ * `min`in altına, çoğu zaman NEGATİFE düşüyordu; `Math.min` onu seçiyor ve
+ * yüzey ekranın dışına, üst/sol tarafa konumlanıyordu — yani içeriği uzun bir
+ * `Popover` (bileşenin `max-height`i yok) hiç görünmüyordu.
+ *
+ * Aralık geçersizse `min` kazanır: yüzey kenara yaslanır ve aşağı doğru taşar.
+ * Taşan kısım sayfa kaydırmasıyla erişilebilir kalır; ekran dışı bir konum
+ * erişilemez.
+ */
 const clamp = (value: number, min: number, max: number): number =>
-  Math.min(Math.max(value, min), max);
+  max < min ? min : Math.min(Math.max(value, min), max);
 
 /** Verilen kenarda yüzeyin sol-üst köşesi nereye düşer. */
 const place = (
@@ -155,6 +168,17 @@ const usePositioning = (
     measure();
 
     window.addEventListener('resize', schedule);
+
+    /*
+     * ⚠ `visualViewport` AYRICA dinlenir. Mobil klavye açıldığında `window`
+     * `resize` olayı çoğu tarayıcıda ATEŞLENMEZ — değişen şey görsel görünüm
+     * alanı (`visualViewport`), düzen görünüm alanı değil. Bu yüzden klavye
+     * açılınca menü/ipucu eski yerinde kalıyor, çoğu zaman klavyenin altında.
+     * `useSheetViewport` bunu alt sayfalar için zaten yapıyordu; konumlandırma
+     * yapmıyordu.
+     */
+    window.visualViewport?.addEventListener('resize', schedule);
+    window.visualViewport?.addEventListener('scroll', schedule);
     /* `capture: true` — kaydirma olayi BALONCUKLANMAZ; yakalama evresinde
        dinlemek, tetikleyicinin kaydirilan HER atasini tek dinleyiciyle
        kapsar. */
@@ -168,6 +192,8 @@ const usePositioning = (
 
     return () => {
       window.removeEventListener('resize', schedule);
+      window.visualViewport?.removeEventListener('resize', schedule);
+      window.visualViewport?.removeEventListener('scroll', schedule);
       document.removeEventListener('scroll', schedule, true);
       observer?.disconnect();
 

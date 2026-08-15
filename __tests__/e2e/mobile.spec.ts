@@ -89,7 +89,10 @@ for (const name of SOLO_ONLY)
 test('alt sayfa açılışında odak metin alanına düşmez', async ({ page }) => {
   await openGallery(page);
 
-  await page.getByRole('combobox', { name: 'Sıralama' }).first().click();
+  await page
+    .getByRole('combobox', { name: /Sıralama/ })
+    .first()
+    .click();
   await expect(page.locator('dialog[open]')).toBeVisible();
 
   const focused = await page.evaluate(() => {

@@ -26,17 +26,40 @@ export default {
   transformIgnorePatterns: ['/node_modules/(?!(@ahmetilhn)/)'],
   testMatch: ['<rootDir>/__tests__/**/*.test.{ts,tsx}'],
 
-  /* KAPSAM YALNIZ UC SAF-MANTIK KATMANINDA OLCULUR. */
+  /*
+   * KAPSAM TUM `src/` UZERINDE OLCULUR.
+   *
+   * ⚠ Payda bir donem yalniz `helpers`+`hooks`+`theme` idi — 17 dosya,
+   * 469 satir. Kutuphanenin ASIL yuzeyi olan 64 bilesen (125 dosya,
+   * ~8.000 satir) paydanin DISINDAYDI, yani `lines: 80` kapisi kaynagin
+   * %4,4'unu olcup gerisi hakkinda hicbir sey soylemiyordu. Olculdu:
+   * dar paydada satir %97,22, genis paydada **%87,51**.
+   *
+   * `index.ts` disarida: saf re-export, calistirilacak bir satiri yok ve
+   * paydada durmasi orani mekanik olarak sisirir.
+   */
   collectCoverageFrom: [
-    'src/helpers/**/*.ts',
-    'src/hooks/**/*.ts',
-    'src/theme/**/*.{ts,tsx}',
+    'src/**/*.{ts,tsx}',
+    '!src/index.ts',
+    '!src/**/*.d.ts',
   ],
 
   /*
+   * Esikler OLCULEN degerin ~2-3 puan altina kuruldu (2026-08-15 olcumu:
+   * satir 87,51 · ifade 84,57 · fonksiyon 75,10 · dal 73,04). Bu bir HEDEF
+   * degil GERILEME kapisi: kapsam dusemez, ama kucuk dalgalanmada kirmizi
+   * yanmaz.
+   *
+   * ⚠ DORT METRIGIN DE OLMASI ZORUNLU. Yalniz `lines` kilitliyken bir
+   * bilesenin RENDER edilmesi satirlari isaretliyor ama tiklama/klavye
+   * dallari hic kosmuyor: bugunku fark tam olarak bu — satir %87,5 iken
+   * fonksiyon %75,1 ve dal %73,0. Test acigi "hangi dosya" degil "hangi
+   * DAVRANIS" sorusunda ve onu yalnizca `functions`/`branches` gosterir.
+   *
    * Esigi DUSUREREK yesile boyamak yasak. Tutmuyorsa davranisi kilitleyen
-   * gercek bir test yazilir — kapsam bir hedef degil, testsiz kalan bir
-   * katmani gorunur kilan bir olcum.
+   * gercek bir test yazilir.
    */
-  coverageThreshold: { global: { lines: 80 } },
+  coverageThreshold: {
+    global: { lines: 85, statements: 82, functions: 72, branches: 70 },
+  },
 };

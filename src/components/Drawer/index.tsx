@@ -23,6 +23,7 @@ import {
 } from '../../helpers/focus.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import useScrollLock from '../../hooks/useScrollLock';
+import useSheetViewport from '../../hooks/useSheetViewport';
 import { useHanui } from '../../theme/context';
 import IconButton from '../IconButton';
 
@@ -92,6 +93,16 @@ const Drawer = ({
   }, [isOpen]);
 
   useScrollLock(isOpen);
+
+  /*
+   * ⚠ GÖRSEL GÖRÜNÜM ALANI TAKİBİ — `BottomSheet` ve `Modal` bunu zaten
+   * yapıyordu, `Drawer` YAPMIYORDU. Mobilde çekmece `100dvh` yüksekliğinde ve
+   * altbilgisi `safe-bottom` ile hizalanıyor; klavye açıldığında görsel
+   * görünüm alanı küçülüyor ama `dvh` değişmediği için ALTBİLGİ KLAVYENİN
+   * ALTINDA KALIYORDU — yani formu olan bir çekmecede "Kaydet" düğmesine
+   * ulaşılamıyordu.
+   */
+  useSheetViewport();
 
   useEffect(() => {
     const dialog = dialogRef.current;

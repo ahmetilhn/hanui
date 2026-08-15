@@ -9,6 +9,13 @@
   accent-color: $blue;
   cursor: pointer;
 
+  /*
+   * ⚠ 18x18 — deponun EN KUCUK etkilesimli hedefi ve bir tablo hucresinin
+   * icinde duruyor, yani cevresinde tiklanabilir bir sarmalayici da yok.
+   * Satir secmek isteyen dokunmatik kullanici sik sik isabetsiz kaliyordu.
+   * Gorunen kutu ayni boyutta kalir; buyuyen yalnizca vurus alani.
+   */
+  @include tap-target;
   @include focus-ring;
 
   &:disabled {

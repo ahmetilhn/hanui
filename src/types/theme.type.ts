@@ -88,6 +88,13 @@ export type HanuiContextValue = {
 export type HanuiLabels = Partial<{
   /** Kip pencere ve alt sayfanın kapatma düğmesi. `Modal`, `BottomSheet`. */
   close: string;
+  /**
+   * Bildirim yığınının bölge adı ("Bildirimler"). `ToastHub`.
+   *
+   * ⚠ Yığın bir `role="region"` ve `aria-live` bölgesi; adsız bir bölge
+   * ekran okuyucuda yalnızca "bölge" diye okunur.
+   */
+  notifications: string;
   /** Vazgeçme eylemi. `ConfirmDialog`, `PromptDialog`. */
   cancel: string;
   /** Kaydetme/gönderme eylemi. `PromptDialog`. */

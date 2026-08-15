@@ -294,42 +294,51 @@ const Combobox = <T extends string>({
           const isChosen = option.value === value;
 
           return (
-            <li key={option.value}>
-              <div
-                id={`${baseId}-option-${index}`}
-                role="option"
-                data-index={index}
-                /*
-                 * EKRAN OKUYUCU GERCEK SAYIYI DUYMALI. Cizilmeyen satirlar
-                 * yuzunden "16 secenekten 3." deniyordu; dogrusu "1121
-                 * secenekten 3.". Ikisi de yalnizca sanallastirma acikken
-                 * yazilir — tam cizilen listede tarayici zaten dogru sayiyor ve
-                 * elle yazmak iki kaynak demek olurdu.
-                 */
-                aria-setsize={isVirtual ? visibleOptions.length : undefined}
-                aria-posinset={isVirtual ? index + 1 : undefined}
-                aria-selected={isChosen}
-                aria-disabled={option.isDisabled}
-                className={cx(
-                  styles.combobox__option,
-                  isActive && styles['combobox__option--active'],
-                  isChosen && styles['combobox__option--selected'],
-                  option.isDisabled && styles['combobox__option--disabled'],
+            /*
+             * ⚠ `role="option"` `<li>`NIN KENDISINDE. Bir donem araya bir
+             * `<div role="option">` giriyordu, yani agac
+             * `listbox > li > option` seklindeydi ve `<li>` sahipsiz bir ara
+             * dugumdu: `aria-required-children` sozlesmesi kirilir, ekran
+             * okuyucu seceneklerin sayisini ve sirasini guvenilir bicimde
+             * bildiremez. Kardes `Select` bunu bastan dogru yapiyordu
+             * (`Select/index.tsx` — `<li role="option">`), yani desen zaten
+             * depodaydi.
+             */
+            <li
+              key={option.value}
+              id={`${baseId}-option-${index}`}
+              role="option"
+              data-index={index}
+              /*
+               * EKRAN OKUYUCU GERCEK SAYIYI DUYMALI. Cizilmeyen satirlar
+               * yuzunden "16 secenekten 3." deniyordu; dogrusu "1121
+               * secenekten 3.". Ikisi de yalnizca sanallastirma acikken
+               * yazilir — tam cizilen listede tarayici zaten dogru sayiyor ve
+               * elle yazmak iki kaynak demek olurdu.
+               */
+              aria-setsize={isVirtual ? visibleOptions.length : undefined}
+              aria-posinset={isVirtual ? index + 1 : undefined}
+              aria-selected={isChosen}
+              aria-disabled={option.isDisabled}
+              className={cx(
+                styles.combobox__option,
+                isActive && styles['combobox__option--active'],
+                isChosen && styles['combobox__option--selected'],
+                option.isDisabled && styles['combobox__option--disabled'],
+              )}
+              // Fare imleci seçeneğin üstündeyken etkin seçenek de oraya
+              // taşınır; iki ayrı vurgu kullanıcıyı şaşırtıyordu.
+              onMouseEnter={() => setActiveIndex(index)}
+              onClick={() => selectOption(option)}
+            >
+              <span className={styles.combobox__optionText}>
+                <span className={styles.combobox__optionLabel}>{option.label}</span>
+                {option.description && (
+                  <span className={styles.combobox__optionDescription}>{option.description}</span>
                 )}
-                // Fare imleci seçeneğin üstündeyken etkin seçenek de oraya
-                // taşınır; iki ayrı vurgu kullanıcıyı şaşırtıyordu.
-                onMouseEnter={() => setActiveIndex(index)}
-                onClick={() => selectOption(option)}
-              >
-                <span className={styles.combobox__optionText}>
-                  <span className={styles.combobox__optionLabel}>{option.label}</span>
-                  {option.description && (
-                    <span className={styles.combobox__optionDescription}>{option.description}</span>
-                  )}
-                </span>
+              </span>
 
-                {isChosen && <CheckLg aria-hidden className={styles.combobox__check} />}
-              </div>
+              {isChosen && <CheckLg aria-hidden className={styles.combobox__check} />}
             </li>
           );
         })}
@@ -362,7 +371,19 @@ const Combobox = <T extends string>({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         aria-controls={isOpen ? listboxId : undefined}
-        aria-label={labels.placeholder}
+        /*
+         * ⚠ `aria-label` KULLANILMAZ — SECILI DEGERI MASKELIYORDU. `aria-label`
+         * elemanin ICERIGININ yerine gecer; tetikleyicinin icerigi ise tam da
+         * secili secenegin etiketi. Sonuc olculdu: ekran okuyucu bir marka
+         * secili olsun olmasin hep "Marka secin, dugme" diyordu, yani
+         * KULLANICI SECIMINI HIC DUYMUYORDU.
+         *
+         * Yerine `aria-labelledby`: once kontrolun ADI (gorunmez span), sonra
+         * DEGERI. Secim yokken yalnizca ad gosterilir — deger span'i o durumda
+         * yer tutucuyu tasidigi icin ikisini birden baglamak ayni metni iki kez
+         * okuturdu.
+         */
+        aria-labelledby={displayLabel ? `${baseId}-name ${baseId}-value` : `${baseId}-name`}
         /*
          * Hata `aria-invalid` ile DEGIL `aria-describedby` ile duyurulur:
          * `aria-invalid`, `role="button"` uzerinde tanimsizdir ve ekran
@@ -378,7 +399,14 @@ const Combobox = <T extends string>({
           </span>
         )}
 
-        <span className={styles.combobox__value}>{displayLabel ?? labels.placeholder}</span>
+        {/* Kontrolün adı — yalnızca erişilebilirlik ağacında. */}
+        <span id={`${baseId}-name`} className={styles.combobox__srName}>
+          {labels.placeholder}
+        </span>
+
+        <span id={`${baseId}-value`} className={styles.combobox__value}>
+          {displayLabel ?? labels.placeholder}
+        </span>
 
         {/* Dolu caret — gerekcesi `Select` ile ayni. */}
         <CaretDownFill

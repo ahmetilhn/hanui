@@ -17,6 +17,7 @@ import { isClient } from '@ahmetilhn/handy-utils';
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import useDismissOnEscape from '../../hooks/useDismissOnEscape';
+import { POPOVER_RESET, resolvePortalTarget, showTopLayer } from '../../helpers/portal.helper';
 import usePositioning from '../../hooks/usePositioning';
 
 import styles from './index.module.scss';
@@ -84,6 +85,14 @@ const Tooltip = ({
     isOpen,
   });
 
+  /* Portal hedefi yalnizca acikken cozulur; gerekce `helpers/portal.helper.ts`. */
+  const portal = isOpen && isClient() ? resolvePortalTarget(anchorRef.current) : null;
+
+  useEffect(() => {
+    if (!isOpen || !portal?.needsTopLayer) return;
+    return showTopLayer(bubbleRef.current);
+  }, [isOpen, portal?.needsTopLayer]);
+
   const clearTimer = useCallback(() => {
     if (timerRef.current) window.clearTimeout(timerRef.current);
     timerRef.current = 0;
@@ -106,6 +115,20 @@ const Tooltip = ({
   );
 
   useEffect(() => clearTimer, [clearTimer]);
+
+  /*
+   * ⚠ UZUN BASMA zamanlayıcısı AYRI temizlenir. `clearTimer` yalnızca açılış/
+   * kapanış gecikmesini iptal ediyor; `longPressRef` ise `onPointerUp`,
+   * `onPointerLeave` ve `onPointerCancel` ile iptal ediliyordu — yani parmak
+   * hâlâ ekrandayken bileşen sökülürse (liste yeniden çizildi, satır silindi)
+   * zamanlayıcı ateşlenip sökülmüş bir ağaçta `setIsOpen(true)` çağırıyordu.
+   */
+  useEffect(
+    () => () => {
+      if (longPressRef.current) window.clearTimeout(longPressRef.current);
+    },
+    [],
+  );
 
   /* Escape ANINDA kapatir: gecikme, ipucunu kapatmak icin bastigi tusun
      islemedigi izlenimi veriyordu. */
@@ -168,15 +191,18 @@ const Tooltip = ({
         aciyordu.
       */}
       {isOpen &&
-        isClient() &&
+        portal &&
         createPortal(
           <span
             ref={bubbleRef}
+            /* ⚠ Modal içinden açıldığında üst katman ZORUNLU — `portal.helper`. */
+            {...(portal.needsTopLayer ? { popover: 'manual' as const } : {})}
             id={id}
             role="tooltip"
             className={cx(styles.bubble, styles[`bubble--${positioning.side}`])}
             style={{
               ...positioning.style,
+              ...(portal.needsTopLayer ? POPOVER_RESET : {}),
               /* Olculmeden cizilen balon bir kare boyunca sol ust kosede
                  parliyordu. */
               visibility: positioning.isPositioned ? 'visible' : 'hidden',
@@ -188,7 +214,7 @@ const Tooltip = ({
           >
             {content}
           </span>,
-          document.body,
+          portal.container,
         )}
     </>
   );

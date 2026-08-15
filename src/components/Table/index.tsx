@@ -12,6 +12,14 @@ type ScrollerProps = HTMLAttributes<HTMLDivElement> & {
    * görünüyordu.
    */
   hasFrame?: boolean;
+  /**
+   * Kaydırma bölgesinin erişilebilir adı ("Sipariş kalemleri").
+   *
+   * ⚠ ZORUNLU değil ama VERİLMELİ: kutu klavyeyle odaklanabilir bir
+   * `region` ve adsız bir bölge ekran okuyucuda yalnızca "bölge" diye
+   * okunur — kullanıcı neyin içinde olduğunu bilemez.
+   */
+  label?: string;
 };
 
 /**
@@ -19,8 +27,21 @@ type ScrollerProps = HTMLAttributes<HTMLDivElement> & {
  * kaymaz" kuralının tek uygulaması.
  */
 export const TableScroller: FC<ScrollerProps> = /*#__PURE__*/ named(
-  /*#__PURE__*/ memo(({ hasFrame = true, className, children, ...rest }) => (
+  /*#__PURE__*/ memo(({ hasFrame = true, label, className, children, ...rest }) => (
+    /*
+     * ⚠ `tabIndex={0}` + `role="region"` + ad ZORUNLU. Kutu `overflow: auto`
+     * taşıyor, yani içeriği yatayda kayabiliyor — ama klavye kullanıcısı
+     * odaklanamadığı bir kutuyu KAYDIRAMAZ (WCAG 2.1.1). Fareyle ya da
+     * dokunmayla erişilebilen içerik klavyeyle erişilemez durumdaydı.
+     *
+     * Adsız bir `region` ekran okuyucuda "bölge" diye okunur ve hiçbir şey
+     * söylemez; `label` bu yüzden var. `ScrollArea` aynı sorunu zaten böyle
+     * çözüyordu — desen depodaydı, `Table` kullanmıyordu.
+     */
     <div
+      tabIndex={0}
+      role="region"
+      aria-label={label}
       className={cx(styles.scroller, hasFrame && styles['scroller--frame'], className)}
       {...rest}
     >

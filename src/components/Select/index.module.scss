@@ -25,6 +25,17 @@
     box-shadow: $ring;
   }
 
+  /*
+   * ⚠ HATA DURUMU GORSEL OLARAK DA CIZILIR. Bilesen `aria-invalid`i zaten
+   * yaziyordu (`role="combobox"` uzerinde gecerli) ama KARSILIGI OLAN SINIF
+   * YOKTU: ekran okuyucu "gecersiz" diyor, goz goren kullanici hicbir sey
+   * gormuyordu. Kardes `Combobox` gorseli tasiyip duyuruyu `aria-describedby`e
+   * birakiyor — iki bilesen ayni durumu ters yarim olarak uyguluyordu.
+   */
+  &--invalid {
+    border-color: $danger-solid;
+  }
+
   &--sm {
     min-height: 36px;
     padding-block: 0;
@@ -38,6 +49,15 @@
     color: $text-2;
     flex-shrink: 0;
     font-size: $icon-md;
+  }
+
+  /*
+   * Kontrolün adı — yalnızca erişilebilirlik ağacında.
+   * ⚠ `display: none` OLAMAZ: erişilebilirlik ağacından da çıkarır ve
+   * `aria-labelledby` elemanı bulamaz.
+   */
+  &__srName {
+    @include visually-hidden;
   }
 
   &__value {

@@ -105,6 +105,11 @@
 }
 
 .toast__action {
+  /*
+   * ⚠ Toast eylemi ("Geri al") KISA OMURLU: kullanicinin birkac saniyesi var
+   * ve hedef ~26px'ti. Kacirilan her dokunus geri alinamaz bir islem demek.
+   */
+  @include tap-target;
   flex-shrink: 0;
   padding: $space-1 $space-2;
   border: none;
