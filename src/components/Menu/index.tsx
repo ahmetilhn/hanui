@@ -111,6 +111,28 @@ const Menu = ({
     restoreRef.current = null;
   }, []);
 
+  /*
+   * ⚠ SOKULME de bir kapanistir.
+   *
+   * Geri yukleme YALNIZCA `close()` icindeydi, yani menu ACIKKEN sokuldugunde
+   * hic calismiyordu. Somut yol: satir eylemleri menusundeki "Sil" ogesi.
+   * `onSelect()` kaydi siliyor, satir (ve icindeki menu) bir sonraki render'da
+   * sokuluyor ve `close()` ya hic kosmuyor ya da artik DOM'da olmayan bir
+   * dugume odaklanmaya calisiyor. Odak `<body>`ye dusuyor ve klavye kullanicisi
+   * tam da yukaridaki yorumun engellemeyi vaat ettigi yere — sayfanin basina —
+   * atiliyordu.
+   *
+   * `Modal`, `Drawer`, `Popover` ve `BottomSheet` bunu temizlikte zaten
+   * yapiyor; ayrisan tek yuzey `Menu`ydu.
+   */
+  useEffect(
+    () => () => {
+      restoreRef.current?.();
+      restoreRef.current = null;
+    },
+    [],
+  );
+
   /* Etkin oge GERCEKTEN odaklanir (APG menu deseni). */
   useEffect(() => {
     if (!isOpen) return;

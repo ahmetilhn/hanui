@@ -85,7 +85,7 @@ const Tooltip = ({
    * Cocuk kendi basina odak alabiliyor mu — capaya `tabIndex` verilip
    * verilmeyecegini bu belirler.
    */
-  const hasFocusableChild = useMemo(() => {
+  const staticallyFocusableChild = useMemo(() => {
     if (!isValidElement(children)) return false;
     const type = children.type;
     const props = children.props as { href?: unknown; tabIndex?: unknown; disabled?: unknown };
@@ -97,6 +97,39 @@ const Tooltip = ({
 
     return ['button', 'input', 'select', 'textarea'].includes(type);
   }, [children]);
+
+  /*
+   * ⚠ STATIK KONTROL TEK BASINA YANLIS CEVAP VERIYORDU.
+   *
+   * `typeof type !== 'string'` her BILESENI "odaklanamaz" sayiyor; hanui'nin
+   * her bileseni bir `memo` NESNESI, yani `<Tooltip><Button/></Tooltip>` icin
+   * kontrol `false` donuyor ve capaya `tabIndex={0}` yaziliyordu — iki satir
+   * asagidaki kuralin tam ihlali. Olculen bedel: panelde satir basina bir
+   * `<Tooltip><IconButton/></Tooltip>` var ve 25 satirlik bir kaynak
+   * tablosunda klavye kullanicisi 25 OLU SEKME DURAGI geciyordu (span ->
+   * dugme, span -> dugme...).
+   *
+   * Cocugun ne oldugu TAHMIN EDILEMEZ, ancak OLCULUR: mount'tan sonra capanin
+   * icinde gercekten odaklanabilir bir oge var mi diye bakilir. Ayni refleks
+   * `ScrollArea`nin tasmayi olcup `tabindex`i yalnizca gerekiyorsa yazmasinda
+   * da var.
+   */
+  const [hasFocusableDescendant, setHasFocusableDescendant] = useState(false);
+
+  useEffect(() => {
+    const node = anchorRef.current;
+    if (!node) return;
+
+    setHasFocusableDescendant(
+      Boolean(
+        node.querySelector(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ),
+    );
+  }, [children]);
+
+  const hasFocusableChild = staticallyFocusableChild || hasFocusableDescendant;
 
   const positioning = usePositioning(anchorRef, bubbleRef, {
     side: resolvedSide,
@@ -237,10 +270,6 @@ const Tooltip = ({
                  parliyordu. */
               visibility: positioning.isPositioned ? 'visible' : 'hidden',
             }}
-            /* Imlec balona giderken tetikleyiciden cikiyor; balon uzerindeyken
-               kapanis iptal edilir ve metin secilebilir kalir. */
-            onPointerEnter={clearTimer}
-            onPointerLeave={() => close()}
           >
             {content}
           </span>,

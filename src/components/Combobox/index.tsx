@@ -1,6 +1,15 @@
 'use client';
 
-import { memo, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import {
+  type KeyboardEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { CaretDownFill, CheckLg, Search, XLg } from 'react-bootstrap-icons';
 
@@ -45,6 +54,7 @@ const Combobox = <T extends string>({
   isClearable,
   icon,
   id,
+  required,
   className,
   testId,
   'aria-describedby': describedBy,
@@ -227,6 +237,38 @@ const Combobox = <T extends string>({
 
   const handleInputKeyDown = handleKeyDown;
 
+  /*
+   * ⚠ ARAMA KUTUSU GIZLIYKEN KLAVYE SOZLESMESI TETIKLEYICIYE GECER.
+   *
+   * Olculen ariza: `handleKeyDown` YALNIZCA arama girdisine bagliydi
+   * (`onKeyDown={handleInputKeyDown}`) ve `isSearchHidden` iken o girdi hic
+   * cizilmiyor. Sonuc, bilesenin TAMAMEN klavye disi kalmasi: tetikleyicide
+   * `onKeyDown` yok, `<ul role="listbox">`te `tabIndex` yok,
+   * `<li role="option">` odaklanabilir degil. Panel Enter ile aciliyor ama
+   * ArrowDown/ArrowUp/Home/End/Escape hicbir sey yapmiyor, Enter yalnizca
+   * dugmenin `onClick`ini yeniden atesleyip paneli kapatiyordu.
+   *
+   * Somut bedel: vitrinin ODEME sayfasindaki TAKSIT SECICISI bu kipte —
+   * klavye kullanicisi taksit planini secemiyordu.
+   *
+   * Bicim `Select.onKeyDown` ile birebir ayni; iki bilesen ayni modeli
+   * paylasiyor ve ayrismalari icin bir sebep yok.
+   */
+  const handleTriggerKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    /* Arama kutusu VARSA sozlesme oradadir; tetikleyici yalnizca acar. */
+    if (!isSearchHidden) return;
+
+    if (!isOpen) {
+      if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) {
+        event.preventDefault();
+        open();
+      }
+      return;
+    }
+
+    handleKeyDown(event);
+  };
+
   const clearSelection = () => {
     onChange(null);
     setCachedLabel(null);
@@ -391,7 +433,10 @@ const Combobox = <T extends string>({
          * ile bagliyor; buradaki gorev yalnizca gorsel.
          */
         aria-describedby={describedBy}
+        /* Tetikleyici bir `<button>`; yerel `required` yok, karsiligi bu. */
+        aria-required={required || undefined}
         onClick={() => (isOpen ? close() : open())}
+        onKeyDown={handleTriggerKeyDown}
       >
         {icon && (
           <span className={styles.combobox__leadingIcon} aria-hidden>

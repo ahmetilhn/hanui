@@ -1,6 +1,15 @@
 'use client';
 
-import { type FC, memo, type ReactNode, useCallback, useId, useState } from 'react';
+import {
+  type FC,
+  memo,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from 'react';
 
 import { CaretRightFill } from 'react-bootstrap-icons';
 
@@ -62,6 +71,31 @@ const Accordion: FC<Props> = ({
     [isControlled, isSingle, onChange, openIds],
   );
 
+  /*
+   * ⚠ `open` PROP'U TEK BASINA YETMEZ — kontrollu kipte kalici desenkronizasyon
+   * uretiyordu.
+   *
+   * `<details>` YERLI bir aciliyor/kapaniyor ogesi: kullanici tikladiginda DOM
+   * ozelligini TARAYICI degistirir. Ebeveyn `openIds`i degistirmezse React ayni
+   * `open` degeriyle yeniden render eder, fark gormedigi icin DOM yazimini
+   * ATLAR ve oge kullanicinin biraktigi halde kalir. Sonrasinda `onToggle`in
+   * `next !== isOpen` korumasi BAYAT React degerini okur ve sonraki tiklamalar
+   * `onChange` bile uretmez: bolum kilitlenir, cagiranin durumu onu bir daha
+   * suremez.
+   *
+   * Cozum DOM'u her render'dan sonra niyetle hizalamak. Bagimlilik dizisi YOK
+   * ve bu bilincli: hizalanmasi gereken sey React'in gordugu degisiklik degil,
+   * TARAYICININ arkamizdan yaptigi degisiklik.
+   */
+  const detailsRefs = useRef(new Map<string, HTMLDetailsElement>());
+
+  useEffect(() => {
+    items.forEach(item => {
+      const node = detailsRefs.current.get(item.id);
+      if (node) node.open = openIds.includes(item.id);
+    });
+  });
+
   return (
     <div className={cx(styles.accordion, className)} data-testid={testId}>
       {items.map(item => {
@@ -70,10 +104,15 @@ const Accordion: FC<Props> = ({
         return (
           <details
             key={item.id}
+            ref={node => {
+              if (node) detailsRefs.current.set(item.id, node);
+              else detailsRefs.current.delete(item.id);
+            }}
             className={cx(
               styles.accordion__item,
               item.isDisabled && styles['accordion__item--disabled'],
             )}
+            /* Ilk boyama ve SSR icin; surekliligi yukaridaki effect tutuyor. */
             open={isOpen}
             /*
              * `onToggle` YEREL olaydir ve tarayici durumu DEGISTIRDIKTEN sonra

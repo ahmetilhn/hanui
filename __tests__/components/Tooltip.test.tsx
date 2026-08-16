@@ -69,20 +69,34 @@ describe('Tooltip', () => {
     await waitForElementToBeRemoved(bubble);
   });
 
-  it('imleç BALONA girerse kapanış iptal olur', async () => {
+  /*
+   * ⚠ DAVRANIS DEGISTI: balon artik ISARETCI ALMAZ.
+   *
+   * Onceki surum balona `onPointerEnter={clearTimer}` / `onPointerLeave`
+   * bagliyordu ve buradaki test onu olcuyordu ("imlec balona girerse kapanis
+   * iptal olur"). Ama bu, `CLAUDE.md`in ve bilesenin KENDI yorumunun iki ayri
+   * yerde ilan ettigi sozlesmeyle celisiyordu: *Tooltip bir aciklamadir, eylem
+   * degil — `pointer-events: none`.* Dokunmatikteki kapatma yolu (ekranin
+   * herhangi bir yerine dokunmak) da balonun tiklanamaz olmasina dayaniyor.
+   *
+   * Olculen bedel celiskinin bulundugu taraftaydi: `side="bottom"` bir ipucu
+   * altindaki dugmenin (orn. "Sepete ekle") ustune biniyor, imlec tetikleyiciden
+   * cikinca kapanis basliyor ama balonun uzerinden gecmek onu IPTAL ediyor ve
+   * balon orada kalip kullanicinin tiklamasini yutuyordu.
+   *
+   * Sozlesme artik CSS'te uygulaniyor; test de onu olcuyor.
+   */
+  it('balon işaretçi almaz — altındaki öğenin tıklaması yutulmaz', async () => {
     renderTooltip({ openDelay: 0 });
 
     await userEvent.hover(trigger());
     const bubble = await screen.findByRole('tooltip');
 
+    /* Tetikleyiciden cikilinca balonun uzerinden gecmek kapanisi IPTAL ETMEZ. */
     await userEvent.unhover(trigger());
     await userEvent.hover(bubble);
 
-    await new Promise(resolve => {
-      setTimeout(resolve, 300);
-    });
-
-    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole('tooltip')).not.toBeInTheDocument());
   });
 
   it('`Escape` fareyle açılmış balonu da kapatır', async () => {

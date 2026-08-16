@@ -3,8 +3,17 @@ import type { KeyboardEvent } from 'react';
 
 import useListboxNavigation from '@/hooks/useListboxNavigation';
 
+/*
+ * `stopPropagation` da taşınır: `Escape` kolu onu çağırıyor (iç içe yüzeylerde
+ * tuşun `Popover`a kadar çıkıp paneli de kapatmasını engelliyor) ve sahte olay
+ * onsuz kalırsa test ürünü değil kendi eksiğini ölçer.
+ */
 const key = (name: string): KeyboardEvent<HTMLElement> =>
-  ({ key: name, preventDefault: jest.fn() }) as unknown as KeyboardEvent<HTMLElement>;
+  ({
+    key: name,
+    preventDefault: jest.fn(),
+    stopPropagation: jest.fn(),
+  }) as unknown as KeyboardEvent<HTMLElement>;
 
 const setup = (
   overrides: Partial<Parameters<typeof useListboxNavigation>[0]> = {},

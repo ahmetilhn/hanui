@@ -27,6 +27,8 @@ type Props = {
   maxTags?: number;
   isDisabled?: boolean;
   id?: string;
+  /** Zorunluluk — `Field`in `FieldChildProps` sözleşmesi. Bkz. `Select.required`. */
+  required?: boolean;
   'aria-describedby'?: string;
   'aria-invalid'?: boolean;
   className?: string;
@@ -44,6 +46,7 @@ const TagInput = ({
   maxTags,
   isDisabled,
   id,
+  required,
   className,
   testId,
   'aria-describedby': describedBy,
@@ -170,6 +173,13 @@ const TagInput = ({
         aria-label={label}
         aria-describedby={describedBy}
         aria-invalid={isInvalid}
+        /*
+         * ⚠ Yerel `required` YAZILMAZ: alanin degeri etiket listesidir, girdi
+         * kutusu ise commit'ten sonra BOSALIR. Yerel kisit bos kutuyu gecersiz
+         * sayip dolu bir listede formu bloke ederdi. `aria-required` niyeti
+         * bildirir, dogrulama cagirana kalir.
+         */
+        aria-required={required || undefined}
         disabled={isDisabled || isFull}
         onChange={event => setDraft(event.target.value)}
         onKeyDown={handleKeyDown}

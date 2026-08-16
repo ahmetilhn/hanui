@@ -82,25 +82,33 @@
   }
 }
 
+/*
+ * ⚠ PANEL SABIT KONUMLU, MUTLAK DEGIL — `Combobox`, `Menu`, `Popover` ve
+ * `Tooltip` ile ayni model.
+ *
+ * `position: absolute` panelin kaydirilabilen/kirpan HER ustu tarafindan
+ * kesilmesine yol aciyordu ve kutuphanedeki tek portallanmayan acilir yuzey
+ * buydu. Olculdu: `Modal`in govdesi `overflow-y: auto`, yani panelin bir
+ * `Modal` icinde acilan hali (panelde tarayici isi penceresi) govdenin
+ * kenarinda KIRPILIYOR ve operator listenin yalnizca ilk bir iki seceneğini
+ * gorebiliyordu. Ayni sey `Card` (`overflow: hidden`), `DataTable` sarmalayici
+ * ve `ScrollArea` icin de gecerliydi. Ikinci kazanc carpisma: `usePositioning`
+ * yer kalmadiginda paneli YUKARI cevirir; mutlak konumda liste sayfanin
+ * altindan tasiyordu.
+ *
+ * Konum `usePositioning` tarafindan satir ici stille yaziliyor; hizalama
+ * degiskenleri (`--start`/`--end`) bu yuzden dustu.
+ */
 .panel {
-  position: absolute;
-  top: calc(100% + #{$space-1});
+  position: fixed;
   z-index: $z-dropdown;
-  min-width: max(100%, 200px);
+  min-width: 200px;
   background-color: $surface;
   border: 1px solid $border;
   border-radius: $radius-lg;
   box-shadow: $shadow-lg;
   overflow: hidden;
   animation: $anim-fade-in-up $duration-fast $ease-out;
-
-  &--start {
-    inset-inline-start: 0;
-  }
-
-  &--end {
-    inset-inline-end: 0;
-  }
 
   @include reduced-motion {
     animation: none;

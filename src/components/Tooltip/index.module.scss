@@ -13,6 +13,15 @@
 .bubble {
   z-index: $z-tooltip;
 
+  /*
+   * Balon isaretci ALMAZ — sozlesme iki yerde yaziliydi, hicbirinde
+   * uygulanmiyordu. Tooltip bir ACIKLAMADIR, eylem degil; dokunmatikteki
+   * kapatma yolu da (ekranin herhangi bir yerine dokunmak) balonun
+   * tiklanamaz olmasina dayaniyor. Olculen ariza: `side="bottom"` bir ipucu
+   * altindaki dugmenin ustune biniyor ve kullanicinin tiklamasini yutuyordu.
+   */
+  pointer-events: none;
+
   width: max-content;
   max-width: min(280px, calc(100vw - #{$space-6}));
 
@@ -26,8 +35,6 @@
   font-weight: $weight-regular;
   line-height: $leading-normal;
   text-align: start;
-
-  user-select: text;
 
   &--top {
     animation: $anim-fade-in-up $duration-fast $ease-out;

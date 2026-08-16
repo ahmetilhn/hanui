@@ -83,6 +83,17 @@ const useListboxNavigation = <T extends HTMLElement = HTMLElement>(
 
         case 'Escape':
           event.preventDefault();
+          /*
+           * ⚠ `stopPropagation` ZORUNLU. Liste bir `Popover`ın içindeyse tuş
+           * bize kadar geliyor, biz kapaniyoruz ve olay BELGEYE kadar cikip
+           * Popover'in dinleyicisini de atesliyordu: kullanici yalnizca listeyi
+           * kapatmak isterken uzerinde calistigi panel de kapaniyordu.
+           *
+           * React 17+ dinleyiciyi KOK KAPSAYICIYA bagliyor, yani sentetik
+           * olayda propagasyonu durdurmak yerel olayin `document`e ulasmasini
+           * da engeller.
+           */
+          event.stopPropagation();
           onClose();
           break;
 

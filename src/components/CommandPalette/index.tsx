@@ -216,7 +216,19 @@ const CommandPalette = ({
           const isNewGroup = item.group !== undefined && item.group !== visible[index - 1]?.group;
 
           return (
-            <li key={item.id}>
+            /*
+             * ⚠ `role="presentation"` ZORUNLU. Agac `listbox > li > option`
+             * seklinde ve aradaki `<li>` SAHIPSIZ bir dugum: `listbox` yalnizca
+             * `option`/`group` cocugu kabul eder, yani `aria-required-children`
+             * kiriliyor ve ekran okuyucu konum sayimini ("3 / 12") yanlis
+             * kapsayicidan okuyup ya bozuk bildiriyor ya hic bildirmiyordu.
+             * `Combobox` ayni arizayi `role="option"`u `<li>`ye tasiyarak
+             * cozdu; burada o yol grup basligini da secenegin ICINE alir ve
+             * basliga yapilan tiklama komutu calistirirdi. `presentation` ara
+             * dugumu SEFFAF yapar: sahiplik dogrudan listbox'a doner, tiklama
+             * hedefi degismez.
+             */
+            <li key={item.id} role="presentation">
               {isNewGroup && (
                 /* `aria-hidden`: baslik bir SECENEK degil; listbox'in cocugu
                    olarak okunsaydi ekran okuyucu sayimi bozuluyordu. */
@@ -260,7 +272,12 @@ const CommandPalette = ({
           );
         })}
 
-        {visible.length === 0 && <li className={styles.palette__empty}>{emptyMessage}</li>}
+        {/* Bos durum bir SECENEK degil; o da sahipsiz kalmamali. */}
+        {visible.length === 0 && (
+          <li role="presentation" className={styles.palette__empty}>
+            {emptyMessage}
+          </li>
+        )}
       </ul>
     </dialog>
   );

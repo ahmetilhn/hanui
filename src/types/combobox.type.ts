@@ -44,6 +44,8 @@ export type ComboboxProps<T extends string> = {
   /** Tetikleyicinin solundaki ikon. */
   icon?: ReactNode;
   id?: string;
+  /** Zorunluluk — `Field`in `FieldChildProps` sözleşmesi. Bkz. `Select.required`. */
+  required?: boolean;
   'aria-describedby'?: string;
   'aria-invalid'?: boolean;
   className?: string;

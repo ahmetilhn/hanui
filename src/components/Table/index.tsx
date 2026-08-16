@@ -1,4 +1,14 @@
-import { type FC, type HTMLAttributes, memo, type TableHTMLAttributes } from 'react';
+'use client';
+
+import {
+  type FC,
+  type HTMLAttributes,
+  memo,
+  type TableHTMLAttributes,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
@@ -27,27 +37,55 @@ type ScrollerProps = HTMLAttributes<HTMLDivElement> & {
  * kaymaz" kuralının tek uygulaması.
  */
 export const TableScroller: FC<ScrollerProps> = /*#__PURE__*/ named(
-  /*#__PURE__*/ memo(({ hasFrame = true, label, className, children, ...rest }) => (
+  /*#__PURE__*/ memo(({ hasFrame = true, label, className, children, ...rest }) => {
+    const ref = useRef<HTMLDivElement>(null);
+    const [isScrollable, setIsScrollable] = useState(false);
+
     /*
-     * ⚠ `tabIndex={0}` + `role="region"` + ad ZORUNLU. Kutu `overflow: auto`
-     * taşıyor, yani içeriği yatayda kayabiliyor — ama klavye kullanıcısı
-     * odaklanamadığı bir kutuyu KAYDIRAMAZ (WCAG 2.1.1). Fareyle ya da
-     * dokunmayla erişilebilen içerik klavyeyle erişilemez durumdaydı.
+     * ⚠ `tabIndex` + `role` YALNIZCA GERÇEKTEN KAYABİLEN kutuda.
      *
-     * Adsız bir `region` ekran okuyucuda "bölge" diye okunur ve hiçbir şey
-     * söylemez; `label` bu yüzden var. `ScrollArea` aynı sorunu zaten böyle
-     * çözüyordu — desen depodaydı, `Table` kullanmıyordu.
+     * Kutu `overflow: auto` taşıyor ve klavye kullanıcısı odaklanamadığı bir
+     * kutuyu KAYDIRAMAZ (WCAG 2.1.1) — o yüzden kaydırılabilirken ikisi de
+     * ZORUNLU. Ama koşulsuz yazmak ters yönde bir arıza üretiyordu: içeriğine
+     * rahat sığan bir tablo da bir sekme durağı ve adsız bir "bölge" oluyordu.
+     * Ölçüldü — sipariş/iade detayında yan yana dört küçük tablo var ve hiçbiri
+     * kaymıyor; klavye kullanıcısı dördünü de geçmek zorunda kalıyor, NVDA
+     * dördünü de yalnızca "bölge" diye okuyordu.
+     *
+     * Sığmayan bir kutu bir "bölge" değil sıradan bir sarmalayıcıdır. Ölçüm
+     * `ScrollArea` ile birebir aynı: desen zaten depodaydı, `Table`
+     * kullanmıyordu.
      */
-    <div
-      tabIndex={0}
-      role="region"
-      aria-label={label}
-      className={cx(styles.scroller, hasFrame && styles['scroller--frame'], className)}
-      {...rest}
-    >
-      {children}
-    </div>
-  )),
+    useEffect(() => {
+      const node = ref.current;
+      /* `ScrollArea` ile aynı koruma: jsdom `ResizeObserver` sağlamıyor. */
+      if (!node || typeof ResizeObserver === 'undefined') return;
+
+      const measure = () => setIsScrollable(node.scrollWidth > node.clientWidth + 1);
+
+      measure();
+
+      /* İçerik DE kutu DA değişebiliyor: ikisi de izleniyor. */
+      const observer = new ResizeObserver(measure);
+      observer.observe(node);
+      for (const child of node.children) observer.observe(child);
+
+      return () => observer.disconnect();
+    }, [children]);
+
+    return (
+      <div
+        ref={ref}
+        tabIndex={isScrollable ? 0 : undefined}
+        role={isScrollable ? 'region' : undefined}
+        aria-label={isScrollable ? label : undefined}
+        className={cx(styles.scroller, hasFrame && styles['scroller--frame'], className)}
+        {...rest}
+      >
+        {children}
+      </div>
+    );
+  }),
   'TableScroller',
 );
 

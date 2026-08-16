@@ -14,6 +14,7 @@ import {
 import { CaretDownFill, CheckLg } from 'react-bootstrap-icons';
 
 import useListboxNavigation from '../../hooks/useListboxNavigation';
+import usePositioning from '../../hooks/usePositioning';
 
 import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
 import { cx } from '../../helpers/class-name.helper';
@@ -53,6 +54,18 @@ type Props<T extends string> = {
   align?: 'start' | 'end';
   isDisabled?: boolean;
   id?: string;
+  /**
+   * Zorunluluk — `Field`in `FieldChildProps` sözleşmesinden gelir.
+   *
+   * ⚠ Bileşen `...rest` YAYMIYOR, yani `Props`ta bildirilmeyen her alan
+   * sessizce buharlaşır. `required` bir dönem tam olarak öyleydi: `<Field
+   * isRequired>{props => <Select {...props} …/>}</Field>` yazan çağıran
+   * görsel `*` ve sr-only "(zorunlu)" alıyor ama KONTROLDE hiçbir işaret
+   * olmuyordu — doğrudan kutuya atlayan ekran okuyucu kullanıcısı alanın
+   * zorunlu olduğunu hiç duymuyordu. `props` taze bir nesne literali olmadığı
+   * için TypeScript'in fazla-özellik denetimi de uyarmıyordu.
+   */
+  required?: boolean;
   'aria-describedby'?: string;
   'aria-invalid'?: boolean;
   className?: string;
@@ -74,6 +87,7 @@ const Select = <T extends string>({
   id,
   className,
   testId,
+  required,
   'aria-describedby': describedBy,
   'aria-invalid': isInvalid,
 }: Props<T>) => {
@@ -86,7 +100,15 @@ const Select = <T extends string>({
 
   const rootRef = useRef<HTMLSpanElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const [openMode, setOpenMode] = useState<OpenMode | null>(null);
+
+  /* PANEL SABIT KONUMLU, MUTLAK DEGIL — gerekce SCSS'te (`.panel`). */
+  const positioning = usePositioning(triggerRef, panelRef, {
+    side: 'bottom',
+    align,
+    isOpen: openMode === 'popover',
+  });
 
   const isOpen = openMode !== null;
   const selectedIndex = options.findIndex(option => option.value === value);
@@ -239,6 +261,8 @@ const Select = <T extends string>({
         aria-labelledby={selectedOption ? `${baseId}-name ${baseId}-value` : `${baseId}-name`}
         aria-describedby={describedBy}
         aria-invalid={isInvalid}
+        /* Tetikleyici bir `<button>`; yerel `required` yok, karsiligi bu. */
+        aria-required={required || undefined}
         onClick={() => (isOpen ? close() : open())}
         onKeyDown={onKeyDown}
       >
@@ -269,7 +293,19 @@ const Select = <T extends string>({
       </button>
 
       {openMode === 'popover' && (
-        <div className={cx(styles.panel, styles[`panel--${align}`])}>{renderList(false)}</div>
+        <div
+          ref={panelRef}
+          className={styles.panel}
+          style={{
+            ...positioning.style,
+            /* Panel tetikleyiciyle EN AZ ayni genislikte. */
+            minWidth: triggerRef.current?.offsetWidth,
+            /* Ilk karede olcu yok; yanlis yerde bir kare parlamasin. */
+            visibility: positioning.isPositioned ? undefined : 'hidden',
+          }}
+        >
+          {renderList(false)}
+        </div>
       )}
 
       {/* Dar ekranda liste alt sayfada acilir; panel klavye acilinca sikisiyor

@@ -114,7 +114,19 @@ export const focusFirstMeaningful = (
   container.focus({ preventScroll: true });
 };
 
-/** KİPSEL YIĞIN — üst üste binen paneller. */
+/**
+ * KİPSEL YIĞIN — üst üste binen paneller.
+ *
+ * ⚠ Yığın yalnızca `<dialog>` tabanlı kipsel yüzeyleri DEĞİL, `Escape` ile
+ * kapanan HER yüzeyi taşır (`Popover`, `Toast`, `Tooltip` —
+ * `useDismissOnEscape` üzerinden). Sebep ölçüldü: o üç yüzey belge düzeyinde
+ * dinliyor ve hiçbiri "ben en üstte miyim" diye sormuyordu, yani tek bir
+ * `Escape` birden fazla yüzeyi birden kapatıyordu — bir `ConfirmDialog`ı
+ * kapatan tuş aynı anda "Geri al" eylemli toast'ı da siliyor, bir filtre
+ * `Popover`ı içindeki `Select` kapatılırken panelin tamamı da kapanıyordu.
+ *
+ * Sahiplik LIFO: en son açılan yüzey tuşu tüketir.
+ */
 const modalStack: symbol[] = [];
 
 /** Yığına katılır; dönen fonksiyon çıkarır. */

@@ -1,6 +1,13 @@
 'use client';
 
-import { type ButtonHTMLAttributes, forwardRef, memo, type ReactNode } from 'react';
+import {
+  type AnchorHTMLAttributes,
+  type ButtonHTMLAttributes,
+  forwardRef,
+  memo,
+  type MouseEvent,
+  type ReactNode,
+} from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
@@ -52,13 +59,32 @@ const IconButton = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
       className,
     );
 
+    /*
+     * ⚠ BAGLANTI DALI DA `...rest` YAYAR — `Button` ile ayni ariza.
+     *
+     * Onceki bicim yalnizca `href`/`className`/`aria-label`/`title`/`testId`
+     * iletiyordu; `onClick`, `disabled`, `id`, `aria-current`, `data-*` ve
+     * iletilen `ref` sessizce dusuyordu. `<IconButton href="/ayarlar"
+     * onClick={cekmeceyiKapat} />` geziniyor ama cekmeceyi kapatmiyordu.
+     */
+    const isInert = Boolean(rest.disabled);
+
     if (href)
       return (
         <HanuiLink
+          {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}
           href={href}
           className={classNames}
           aria-label={label}
-          title={rest.title}
+          aria-disabled={isInert || undefined}
+          tabIndex={isInert ? -1 : rest.tabIndex}
+          onClick={(event: MouseEvent<HTMLAnchorElement>) => {
+            if (isInert) {
+              event.preventDefault();
+              return;
+            }
+            rest.onClick?.(event as unknown as MouseEvent<HTMLButtonElement>);
+          }}
           data-testid={testId}
           {...linkProps}
         >

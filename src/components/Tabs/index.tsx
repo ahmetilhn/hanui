@@ -66,6 +66,30 @@ const Tabs: FC<Props> = ({
   const active = items[activeIndex] ?? items[0];
 
   /*
+   * ⚠ `focusIndex` HAM OKUNMAZ — iki ayri ariza uretiyordu.
+   *
+   * 1. COKME: `items` kisaldiginda indeks kirpilmiyordu. Filtrelenen bir sekme
+   *    seridinde 4. indekse gidip liste 3'e dusunce manuel kipteki Enter
+   *    `items[4].id` okuyup `Cannot read properties of undefined` atiyor ve
+   *    cevreleyen sayfayi dusuruyordu.
+   * 2. BAYAT ODAK: indeks yalnizca ilk render'da tohumlaniyordu. Kontrollu
+   *    `activeId` disaridan degistiginde (serit disindaki bir dugme
+   *    `setTab(...)` cagirinca) donen `tabindex` eski sekmede kaliyor ve Tab
+   *    kullaniciyi SECILI OLMAYAN sekmeye goturuyordu.
+   */
+  const safeFocusIndex =
+    focusIndex >= 0 && focusIndex < items.length ? focusIndex : Math.max(activeIndex, 0);
+
+  useEffect(() => {
+    /*
+     * Secim degistiginde odak da ona hizalanir. Manuel kipte bu bir kayip
+     * DEGIL: kullanici ok tuslariyla gezerken `activeId` degismiyor, yani
+     * effect kosmuyor; Enter'a basinca zaten iki indeks esitleniyor.
+     */
+    setFocusIndex(activeIndex < 0 ? 0 : activeIndex);
+  }, [activeIndex]);
+
+  /*
    * SECILI SEKME GORUNURE KAYDIRILIR — ama MOUNT'ta DEGIL.
    *
    * ⚠ Ilk kosu da kaydiriyordu ve `scrollIntoView` yalnizca serit kabini degil
@@ -100,7 +124,8 @@ const Tabs: FC<Props> = ({
   const handleKeyDown = (event: KeyboardEvent) => {
     if (isManualActivation && (event.key === 'Enter' || event.key === ' ')) {
       event.preventDefault();
-      select(items[focusIndex].id);
+      const focused = items[safeFocusIndex];
+      if (focused) select(focused.id);
       return;
     }
 
@@ -109,7 +134,7 @@ const Tabs: FC<Props> = ({
 
     event.preventDefault();
     const next =
-      ((isManualActivation ? focusIndex : activeIndex) + offset + items.length) % items.length;
+      ((isManualActivation ? safeFocusIndex : activeIndex) + offset + items.length) % items.length;
 
     setFocusIndex(next);
     if (!isManualActivation) select(items[next].id);
@@ -146,13 +171,19 @@ const Tabs: FC<Props> = ({
               type="button"
               role="tab"
               aria-selected={isActive}
-              aria-controls={hasPanel ? `${baseId}-panel-${item.id}` : undefined}
+              /*
+               * ⚠ YALNIZCA SECILI SEKMEDE. Panel tek tanedir ve kimligi
+               * `active.id` tasir; pasif sekmelere de yazmak var OLMAYAN bir
+               * kimligi isaret ederdi (axe `aria-valid-attr-value`) — iki
+               * satir yukaridaki kuralin tam ihlali.
+               */
+              aria-controls={isActive && hasPanel ? `${baseId}-panel-${item.id}` : undefined}
               // Yalnızca seçili sekme sekme sırasında; gezinme ok tuşlarıyla.
               /* Donen `tabindex` ODAKLANANI izler: manuel kipte secili sekme
                  ile odaklanan sekme ayri ve Tab'in geri donecegi yer
                  odaklanan olmali. */
               tabIndex={
-                (isManualActivation ? items[focusIndex]?.id === item.id : isActive) ? 0 : -1
+                (isManualActivation ? items[safeFocusIndex]?.id === item.id : isActive) ? 0 : -1
               }
               className={cx(styles.tabs__tab, isActive && styles['tabs__tab--active'])}
               onClick={() => select(item.id)}

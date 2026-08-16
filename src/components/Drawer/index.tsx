@@ -101,8 +101,18 @@ const Drawer = ({
    * görünüm alanı küçülüyor ama `dvh` değişmediği için ALTBİLGİ KLAVYENİN
    * ALTINDA KALIYORDU — yani formu olan bir çekmecede "Kaydet" düğmesine
    * ulaşılamıyordu.
+   *
+   * ⚠ BAYRAK ZORUNLU — `BottomSheet`ten farkı burada. `Drawer` `<dialog>`ı
+   * KOŞULSUZ çiziyor (yalnızca `showModal()`/`close()` `isOpen`e bağlı), yani
+   * bayraksız çağrı hook'un JSDoc'unda tarif edilen tam duruma düşüyordu:
+   * uygulama kabuğunda duran çekmece yüzünden her mobil sayfa yüklemesinde
+   * `visualViewport` dinleyicileri OTURUM BOYUNCA açık kalıyor ve `openCount`
+   * hiç 0'a dönmediği için `--hanui-sheet-inset-bottom` kalıcı yazılıyordu —
+   * bunun ikinci etkisi, klavye açıkken açılan bir `Modal`ın ekranın çok
+   * yukarısında yüzmesi (`Modal` o değişkeni `margin-bottom`da okuyor).
+   * İki uygulamada da çekmece kabukta: `Sidebar` ve `Header`.
    */
-  useSheetViewport();
+  useSheetViewport(isOpen);
 
   useEffect(() => {
     const dialog = dialogRef.current;
