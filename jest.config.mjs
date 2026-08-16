@@ -60,6 +60,13 @@ export default {
    * gercek bir test yazilir.
    */
   coverageThreshold: {
-    global: { lines: 85, statements: 82, functions: 72, branches: 70 },
+    /*
+     * ⚠ Esikler OLCULENIN ~2 puan altinda — regresyon kapisi, hedef degil.
+     * Olculdu (2026-08-16, `Toast` + `Select` + `FileUpload` testleri
+     * eklendikten sonra): satir 91,67 · ifade 88,61 · fonksiyon 83,02 ·
+     * dal 77,12. Onceki degerler (85/82/72/70) o testlerden ONCEKI olcume
+     * gore konmustu ve artik dort puanlik bir bosluk birakiyordu.
+     */
+    global: { lines: 89, statements: 86, functions: 80, branches: 75 },
   },
 };
