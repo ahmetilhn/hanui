@@ -110,7 +110,18 @@ describe('FileUpload', () => {
   it('yüklenmiş dosya KALDIRILABİLİR ve düğmenin adı dosyayı söyler', async () => {
     const user = userEvent.setup();
     const { onRemove } = renderUpload({
-      files: [{ id: 'f1', name: 'fatura.pdf', size: 120, status: 'done' }],
+      /*
+       * ⚠ `status` ALANI YOK ve eklenmemeli. Bir dönem burada `status: 'done'`
+       * duruyordu; `UploadFile` böyle bir bileşen taşımıyor, bileşen de onu
+       * hiçbir yerde okumuyor — yani iddiaya hiçbir şey katmayan, yalnızca
+       * `tsc`yi düşüren ölü bir alandı (`npm test` tipleri denetlemediği için
+       * hata YALNIZCA CI'daki `typecheck` adımında görünüyordu).
+       *
+       * Dosyanın durumu zaten `progress` + `error` ile ifade ediliyor:
+       * `progress` yok → başlamadı ya da bitti, `error` var → düştü. Tipe bir
+       * `status` eklemek aynı gerçeğin İKİNCİ kaynağı olurdu.
+       */
+      files: [{ id: 'f1', name: 'fatura.pdf', size: 120 }],
     });
 
     /*
