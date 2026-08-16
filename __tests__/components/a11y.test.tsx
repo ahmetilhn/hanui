@@ -1,3 +1,4 @@
+import { LABELS } from '../fixtures/labels';
 import { type ReactElement } from 'react';
 
 import { render } from '@testing-library/react';
@@ -89,42 +90,6 @@ const {
   ToastPortal,
   Tooltip,
 } = hanui;
-
-const LABELS: hanui.HanuiLabels = {
-  close: 'Kapat',
-  cancel: 'Vazgeç',
-  submit: 'Kaydet',
-  loading: 'Yükleniyor',
-  required: 'zorunlu',
-  filters: 'Filtreler',
-  breadcrumb: 'Yol',
-  directoryJump: 'Harfe atla',
-  selectPlaceholder: 'Seçin',
-  passwordShow: 'Şifreyi göster',
-  passwordHide: 'Şifreyi gizle',
-  locale: 'tr-TR',
-  currency: 'TL',
-  combobox: {
-    searchPlaceholder: 'Ara',
-    emptyMessage: 'Sonuç yok',
-    loadingMessage: 'Aranıyor',
-    clearLabel: 'Temizle',
-  },
-  pagination: { label: 'Sayfalar', previous: 'Önceki', next: 'Sonraki' },
-  quantity: { label: 'Adet', decrease: 'Azalt', increase: 'Artır' },
-  range: { min: 'En az', max: 'En çok' },
-  dataTable: { empty: 'Kayıt yok', loading: 'Yükleniyor' },
-  copyField: {
-    copy: value => `${value} kopyala`,
-    copied: value => `${value} kopyalandı`,
-    announcement: 'Kopyalandı',
-  },
-  rating: {
-    srLabel: (value, count) => `5 üzerinden ${value}${count ? ` — ${count} oy` : ''}`,
-    starCount: star => `${star} yıldız`,
-    scale: { 1: 'Çok kötü', 2: 'Kötü', 3: 'Orta', 4: 'İyi', 5: 'Çok iyi' },
-  },
-};
 
 const OPTIONS = [
   { value: 'a', label: 'Birinci' },

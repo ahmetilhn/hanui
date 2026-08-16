@@ -37,6 +37,7 @@ CopyField
 Crumb
 DARK_THEME
 DEFAULT_FONTS
+DENSITY_ATTRIBUTE
 DataTable
 DataTableColumn
 DataTableRow
@@ -125,6 +126,7 @@ Steps
 Switch
 TABLET_BREAKPOINT
 TABLET_PORTRAIT_BREAKPOINT
+THEME_ATTRIBUTE
 TabItem
 Table
 TableCheckbox
@@ -146,12 +148,11 @@ UISize
 UIVariant
 UploadFile
 VirtualRange
+applyThemeConfig
 buildThemeCss
 initHanui
-isKeyboardOpeningElement
 matchesSearch
 normalizeSearchTerm
-preventAutoKeyboard
 resolveTokens
 toast
 useAnnounce
@@ -159,6 +160,4 @@ useHanui
 useHanuiTheme
 useListboxNavigation
 usePositioning
-useScrollLock
-useSheetViewport
 useVirtualList

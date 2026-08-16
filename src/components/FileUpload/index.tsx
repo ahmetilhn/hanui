@@ -6,9 +6,12 @@ import { CloudArrowUpFill, ExclamationCircleFill, XLg } from 'react-bootstrap-ic
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
+import { resolveFormatter } from '../../helpers/label.helper';
 import useAnnounce from '../../hooks/useAnnounce';
 import IconButton from '../IconButton';
 import Progress from '../Progress';
+
+import { useHanui } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -74,7 +77,7 @@ const FileUpload = ({
   maxSize,
   removeLabel,
   dropLabel,
-  sizeErrorText = '{name} çok büyük (en fazla {max}).',
+  sizeErrorText,
   isDisabled,
   error,
   children,
@@ -84,6 +87,7 @@ const FileUpload = ({
   const inputId = useId();
   const hintId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
+  const { labels } = useHanui();
   const announce = useAnnounce();
 
   const [isDragging, setIsDragging] = useState(false);
@@ -96,14 +100,27 @@ const FileUpload = ({
     const tooLarge = maxSize === undefined ? [] : incoming.filter(file => file.size > maxSize);
     const accepted = incoming.filter(file => !tooLarge.includes(file));
 
+    /*
+     * ⚠ METIN SABIT DEGIL. Bir donem varsayilan bir Turkce sablon
+     * (`'{name} çok büyük (en fazla {max}).'`) prop varsayilaniydi ve
+     * kutuphanenin "sabit varsayilan yok" sozlesmesini ihlal ediyordu.
+     * Prop hala kabul ediliyor — cagiran kendi metnini gecebilir.
+     */
     const messages = tooLarge.map(file =>
-      sizeErrorText.replace('{name}', file.name).replace('{max}', formatSize(maxSize ?? 0)),
+      sizeErrorText === undefined
+        ? resolveFormatter(
+            'FileUpload.tooLarge',
+            labels?.fileUpload?.tooLarge,
+            file.name,
+            formatSize(maxSize ?? 0),
+          )
+        : sizeErrorText.replace('{name}', file.name).replace('{max}', formatSize(maxSize ?? 0)),
     );
     setRejected(messages);
 
     if (accepted.length > 0) {
       onSelect(accepted);
-      announce(`${accepted.length} dosya eklendi`);
+      announce(resolveFormatter('FileUpload.added', labels?.fileUpload?.added, accepted.length));
     }
 
     /* Reddedilen dosya ekranda YAZIYOR ama duyurulmali da: gormeyen kullanici
@@ -200,7 +217,11 @@ const FileUpload = ({
               {file.progress !== undefined && (
                 <Progress
                   value={file.progress}
-                  label={`${file.name} yükleniyor`}
+                  label={resolveFormatter(
+                    'FileUpload.uploading',
+                    labels?.fileUpload?.uploading,
+                    file.name,
+                  )}
                   size="sm"
                   className={styles.upload__progress}
                 />

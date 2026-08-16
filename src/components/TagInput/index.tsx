@@ -6,7 +6,10 @@ import { XLg } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
+import { resolveFormatter } from '../../helpers/label.helper';
 import useAnnounce from '../../hooks/useAnnounce';
+
+import { useHanui } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -64,6 +67,7 @@ const TagInput = ({
     },
     [],
   );
+  const { labels } = useHanui();
   const announce = useAnnounce();
 
   const [draft, setDraft] = useState('');
@@ -90,12 +94,12 @@ const TagInput = ({
 
     onChange([...values, value]);
     setDraft('');
-    announce(`${value} eklendi`);
+    announce(resolveFormatter('TagInput.added', labels?.tagInput?.added, value));
   };
 
   const remove = (value: string) => {
     onChange(values.filter(item => item !== value));
-    announce(`${value} kaldırıldı`);
+    announce(resolveFormatter('TagInput.removed', labels?.tagInput?.removed, value));
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {

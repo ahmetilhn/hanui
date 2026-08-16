@@ -34,13 +34,32 @@ $breakpoint-tablet-portrait: 768px;
 $breakpoint-tablet: 1024px;
 $breakpoint-desktop: 1360px;
 
+/*
+ * YIGIN OLCEGI — YALNIZCA KUTUPHANENIN KENDI KATMANLARI.
+ *
+ * ⚠ Sekiz adimin DORDU OLUYDU (`$z-header`, `$z-sticky-bar`, `$z-overlay`,
+ * `$z-modal`) ve dordu de bir uygulama kavramini anlatiyordu — kutuphanenin
+ * bir "site basligi" ya da "yapiskan seridi" yok. Degiskenler SCSS'e ozel,
+ * yani tuketici onlari okuyamiyor bile: olcek okuyana var olmayan bir
+ * sozlesme vaat ediyordu.
+ *
+ * ⚠ `$z-modal` OZELLIKLE ANLAMSIZDI: modal yuzeyleri `<dialog>.showModal()`
+ * kullaniyor ve UST KATMANA cikiyor — orasi `z-index`ten TAMAMEN bagimsiz.
+ * Bir sayi yazmak, calismadigi olculmus bir mekanizmayi hala varmis gibi
+ * gostermekti.
+ */
 $z-base: 1;
 $z-raised: 10;
-$z-header: 100;
 $z-dropdown: 200;
-$z-sticky-bar: 300;
-$z-overlay: 380;
-$z-modal: 400;
+
+/*
+ * ⚠ TOOLTIP ILE TOAST AYNI ADIMI PAYLASIYORDU (`$z-toast`) ve sira
+ * kaynaktaki DOM sirasina kaliyordu: ikisi de `document.body`ye portalanan
+ * kardesler, yani ustte kalan "sonra eklenen" oluyor. Bir bildirimin
+ * ipucunun altinda kalmasi kabul edilemez — toast kisa omurlu ve
+ * kacirildiginda geri gelmiyor.
+ */
+$z-tooltip: 450;
 $z-toast: 500;
 
 $anim-shimmer: var(--hanui-anim-shimmer);

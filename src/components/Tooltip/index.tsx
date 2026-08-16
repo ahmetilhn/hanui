@@ -1,12 +1,14 @@
 'use client';
 
 import {
+  isValidElement,
   memo,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
   useCallback,
   useEffect,
   useId,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -78,6 +80,23 @@ const Tooltip = ({
   const bubbleRef = useRef<HTMLSpanElement>(null);
   const timerRef = useRef(0);
   const longPressRef = useRef(0);
+
+  /*
+   * Cocuk kendi basina odak alabiliyor mu — capaya `tabIndex` verilip
+   * verilmeyecegini bu belirler.
+   */
+  const hasFocusableChild = useMemo(() => {
+    if (!isValidElement(children)) return false;
+    const type = children.type;
+    const props = children.props as { href?: unknown; tabIndex?: unknown; disabled?: unknown };
+
+    if (props.tabIndex !== undefined) return true;
+    if (props.disabled === true) return false;
+    if (typeof type !== 'string') return false;
+    if (type === 'a') return props.href !== undefined;
+
+    return ['button', 'input', 'select', 'textarea'].includes(type);
+  }, [children]);
 
   const positioning = usePositioning(anchorRef, bubbleRef, {
     side: resolvedSide,
@@ -166,6 +185,17 @@ const Tooltip = ({
       <span
         ref={anchorRef}
         className={cx(styles.tooltip, className)}
+        /*
+         * ⚠ CAPA ODAKLANABILIR OLMAK ZORUNDA. `onFocus`/`onBlur` zaten
+         * bagli ama `<span>` varsayilan olarak odak almiyor: cocuk kendisi
+         * odaklanabilir DEGILSE (duz metin, ikon, `<img>`) ipucu YALNIZCA
+         * FAREYLE aciliyordu — klavye ve ekran okuyucu kullanicisi icerigi
+         * hic goremiyordu.
+         *
+         * ⚠ Cocuk zaten odaklanabiliyorsa (dugme, baglanti) `tabIndex`
+         * KONULMAZ: aksi halde ayni ipucu icin sekmede IKI durak olusur.
+         */
+        tabIndex={hasFocusableChild ? undefined : 0}
         onPointerEnter={event => event.pointerType === 'mouse' && open(openDelay)}
         onPointerLeave={event => {
           cancelLongPress();

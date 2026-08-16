@@ -6,6 +6,9 @@ import { ArrowDownShort, ArrowUpShort, DashLg } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
+import { resolveLabel } from '../../helpers/label.helper';
+
+import { useHanui } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -45,11 +48,15 @@ const TREND_ICON: Record<StatTrend, ReactNode> = {
   flat: <DashLg aria-hidden />,
 };
 
-/** Yönün ekran okuyucuya okunan karşılığı. */
-const TREND_TEXT: Record<StatTrend, string> = {
-  up: 'artış',
-  down: 'azalış',
-  flat: 'değişim yok',
+/*
+ * ⚠ YON METNI SR-ONLY ve SAGLAYICIDAN gelir. Ok isareti gorsel bir sinyal;
+ * ekran okuyucuya hicbir sey soylemiyor. Metin bir donem BILESENE gomuluydu
+ * ve kutuphanenin "sabit varsayilan yok" sozlesmesini ihlal ediyordu.
+ */
+const TREND_KEY: Record<StatTrend, 'increase' | 'decrease' | 'unchanged'> = {
+  up: 'increase',
+  down: 'decrease',
+  flat: 'unchanged',
 };
 
 /** Ölçüm kutusu (KPI). */
@@ -67,6 +74,8 @@ const Stat: FC<Props> = ({
   className,
   testId,
 }) => {
+  const { labels } = useHanui();
+
   /* Yonun IYI mi KOTU mu oldugu ayri bir karar: "artis" her zaman iyi degil. */
   const isPositive = trend === 'flat' ? undefined : (trend === 'up') === isUpPositive;
 
@@ -104,7 +113,9 @@ const Stat: FC<Props> = ({
           {TREND_ICON[trend]}
           {delta}
           {/* Yon METIN olarak da okunur: ok ve renk ekran okuyucuya gecmiyor. */}
-          <span className={styles.stat__srOnly}>{TREND_TEXT[trend]}</span>
+          <span className={styles.stat__srOnly}>
+            {resolveLabel(`Stat.${TREND_KEY[trend]}`, labels?.stat?.[TREND_KEY[trend]])}
+          </span>
         </span>
       )}
 

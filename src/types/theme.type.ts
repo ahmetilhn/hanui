@@ -163,6 +163,54 @@ export type HanuiLabels = Partial<{
     announcement: string;
   }>;
 
+  /**
+   * Dosya yukleme.
+   *
+   * ⚠ `tooLarge` bir BICIMLENDIRICI: mesaj dosya adini ve siniri TASIMALI.
+   * Sabit bir "cok buyuk" metni, on dosyalik bir listede hangisinin
+   * reddedildigini soylemiyordu.
+   */
+  fileUpload: Partial<{
+    tooLarge: Formatter<[name: string, max: string]>;
+    /** Yukleme sirasindaki ekran okuyucu duyurusu. */
+    uploading: Formatter<[name: string]>;
+    /** Dosya secildiginde yapilan duyuru. */
+    added: Formatter<[count: number]>;
+  }>;
+
+  /**
+   * Sayisal gostergenin YON metni.
+   *
+   * ⚠ Uc deger de SR-ONLY: ok isareti gorsel bir sinyal ve ekran okuyucuya
+   * hicbir sey soylemiyor. Verilmezse gosterge "yuzde 12" der, artis mi
+   * azalis mi belirsiz kalir.
+   */
+  stat: Partial<{
+    increase: string;
+    decrease: string;
+    unchanged: string;
+  }>;
+
+  /** Adim gostergesinin DURUM metinleri — hepsi sr-only. */
+  steps: Partial<{
+    completed: string;
+    current: string;
+    upcoming: string;
+  }>;
+
+  /** Zaman cizelgesinin DURUM metinleri — hepsi sr-only. */
+  timeline: Partial<{
+    completed: string;
+    current: string;
+    failed: string;
+  }>;
+
+  /** Etiket girisi. `removed` bir bicimlendirici: hangi etiketin kalktigi. */
+  tagInput: Partial<{
+    added: Formatter<[value: string]>;
+    removed: Formatter<[value: string]>;
+  }>;
+
   rating: Partial<{
     /** Yıldızların ekran okuyucu karşılığı ("5 üzerinden 4,5 — 12 değerlendirme"). */
     srLabel: Formatter<[value: number, count: number | undefined]>;

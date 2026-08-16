@@ -86,7 +86,19 @@ const QuantityStepper: FC<Props> = ({
         }}
         inputMode="numeric"
         disabled={isDisabled}
-        aria-label={`${groupLabel} (${min}-${max})`}
+        /*
+         * ⚠ ARALIK ETIKETE GOMULMEZ, ROLE ILE BILDIRILIR. Onceki hâl
+         * `"Adet (1-99)"` diyordu: ekran okuyucu bunu duz bir ad olarak
+         * okuyor, GUNCEL degeri ve sinirlari ayri birer bilgi olarak
+         * bildirmiyordu. `spinbutton` tam da bu kutu icin var ve
+         * `aria-valuenow/min/max` degistiginde okuyucu farki kendisi
+         * duyuruyor.
+         */
+        role="spinbutton"
+        aria-valuenow={value}
+        aria-valuemin={min}
+        aria-valuemax={max}
+        aria-label={groupLabel}
       />
 
       <button

@@ -6,6 +6,9 @@ import { CheckLg } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
+import { resolveLabel } from '../../helpers/label.helper';
+
+import { useHanui } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -40,11 +43,14 @@ const statusOf = (index: number, currentIndex: number): 'done' | 'current' | 'up
   return 'upcoming';
 };
 
-/** Durumun ekran okuyucuya okunan karşılığı. */
-const STATUS_TEXT: Record<'done' | 'current' | 'upcoming', string> = {
-  done: 'tamamlandı',
-  current: 'şu anki adım',
-  upcoming: 'sıradaki',
+/*
+ * ⚠ DURUM METNI SR-ONLY ve SAGLAYICIDAN gelir; gorsel isaret (tik, dolu
+ * daire) ekran okuyucuya hicbir sey soylemiyor.
+ */
+const STATUS_KEY: Record<'done' | 'current' | 'upcoming', 'completed' | 'current' | 'upcoming'> = {
+  done: 'completed',
+  current: 'current',
+  upcoming: 'upcoming',
 };
 
 /** Adım göstergesi (stepper) — çok adımlı akışta NEREDE olunduğu. */
@@ -56,57 +62,63 @@ const Steps: FC<Props> = ({
   orientation = 'horizontal',
   className,
   testId,
-}) => (
-  <ol
-    className={cx(styles.steps, styles[`steps--${orientation}`], className)}
-    aria-label={label}
-    data-testid={testId}
-  >
-    {steps.map((step, index) => {
-      const status = statusOf(index, currentIndex);
-      /* Ileri atlamak YOK: atlanan adimin verisi toplanmadan devam edilemez. */
-      const isClickable = Boolean(onStepClick) && status === 'done';
+}) => {
+  const { labels } = useHanui();
 
-      const body = (
-        <>
-          <span className={styles.steps__marker} aria-hidden>
-            {status === 'done' ? <CheckLg /> : index + 1}
-          </span>
+  return (
+    <ol
+      className={cx(styles.steps, styles[`steps--${orientation}`], className)}
+      aria-label={label}
+      data-testid={testId}
+    >
+      {steps.map((step, index) => {
+        const status = statusOf(index, currentIndex);
+        /* Ileri atlamak YOK: atlanan adimin verisi toplanmadan devam edilemez. */
+        const isClickable = Boolean(onStepClick) && status === 'done';
 
-          <span className={styles.steps__text}>
-            <span className={styles.steps__label}>{step.label}</span>
-            {step.description && (
-              <span className={styles.steps__description}>{step.description}</span>
-            )}
-          </span>
+        const body = (
+          <>
+            <span className={styles.steps__marker} aria-hidden>
+              {status === 'done' ? <CheckLg /> : index + 1}
+            </span>
 
-          {/* Durum METIN olarak da okunur: gorsel isaret ekran okuyucuya
+            <span className={styles.steps__text}>
+              <span className={styles.steps__label}>{step.label}</span>
+              {step.description && (
+                <span className={styles.steps__description}>{step.description}</span>
+              )}
+            </span>
+
+            {/* Durum METIN olarak da okunur: gorsel isaret ekran okuyucuya
               gecmiyor ve `aria-current` yalnizca bulunulan adimi soyluyor. */}
-          <span className={styles.steps__status}>{STATUS_TEXT[status]}</span>
-        </>
-      );
+            <span className={styles.steps__status}>
+              {resolveLabel(`Steps.${STATUS_KEY[status]}`, labels?.steps?.[STATUS_KEY[status]])}
+            </span>
+          </>
+        );
 
-      return (
-        <li
-          key={step.id}
-          className={cx(styles.steps__item, styles[`steps__item--${status}`])}
-          aria-current={status === 'current' ? 'step' : undefined}
-        >
-          {isClickable ? (
-            <button
-              type="button"
-              className={styles.steps__button}
-              onClick={() => onStepClick?.(index)}
-            >
-              {body}
-            </button>
-          ) : (
-            <span className={styles.steps__button}>{body}</span>
-          )}
-        </li>
-      );
-    })}
-  </ol>
-);
+        return (
+          <li
+            key={step.id}
+            className={cx(styles.steps__item, styles[`steps__item--${status}`])}
+            aria-current={status === 'current' ? 'step' : undefined}
+          >
+            {isClickable ? (
+              <button
+                type="button"
+                className={styles.steps__button}
+                onClick={() => onStepClick?.(index)}
+              >
+                {body}
+              </button>
+            ) : (
+              <span className={styles.steps__button}>{body}</span>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  );
+};
 
 export default /*#__PURE__*/ memo(/*#__PURE__*/ named(Steps, 'Steps')) as typeof Steps;

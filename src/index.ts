@@ -20,7 +20,23 @@ export {
   LIGHT_THEME,
   METRIC_TOKENS,
 } from './theme/tokens';
-export { resolveTokens, buildThemeCss } from './helpers/theme.helper';
+/*
+ * ⚠ `applyThemeConfig` DE PUBLIC ve bu zorunlu: onsuz `resolveTokens` +
+ * `buildThemeCss` cifti ISE YARAMIYORDU — tuketici CSS'i uretebiliyor ama
+ * uygulayamiyordu. Ucu birlikte bir yetenek; ikisi tek basina olu agirlik.
+ *
+ * ⚠ `THEME_ATTRIBUTE` / `DENSITY_ATTRIBUTE` de disariya veriliyor: iki
+ * tuketici de `data-hanui-theme` dizesini ELLE yaziyor
+ * (`theme.constants.ts`, `Logo/index.module.scss`) — sabit degistiginde
+ * ayrisan ve hicbir katmanin uyarmadigi bir bag.
+ */
+export {
+  applyThemeConfig,
+  buildThemeCss,
+  DENSITY_ATTRIBUTE,
+  resolveTokens,
+  THEME_ATTRIBUTE,
+} from './helpers/theme.helper';
 
 // --- Kancalar ---------------------------------------------------------
 export { default as useAnnounce } from './hooks/useAnnounce';
@@ -31,8 +47,15 @@ export {
 } from './hooks/useListboxNavigation';
 export { default as usePositioning } from './hooks/usePositioning';
 export { default as useVirtualList } from './hooks/useVirtualList';
-export { default as useScrollLock } from './hooks/useScrollLock';
-export { default as useSheetViewport } from './hooks/useSheetViewport';
+/*
+ * ⚠ `useScrollLock` ve `useSheetViewport` PUBLIC DEGIL.
+ *
+ * Ikisi de MODUL DUZEYINDE sayac tutuyor (`lockCount`/`previous`,
+ * `openCount`/`frame`): tuketici bunlari kendi bileseninde cagirdiginda
+ * kutuphanenin kendi sayimini bozuyor — bir kip pencere kapandiginda govde
+ * kilidi acilmiyor ya da erken aciliyor. Yetenek duruyor, yalnizca disariya
+ * verilmiyor.
+ */
 
 // --- Enum ve tipler ---------------------------------------------------
 export { default as UIVariant } from './enums/ui-variant.enum';
@@ -51,7 +74,11 @@ export {
 
 // --- Yardımcılar ------------------------------------------------------
 export { matchesSearch, normalizeSearchTerm } from './helpers/text.helper';
-export { isKeyboardOpeningElement, preventAutoKeyboard } from './helpers/focus.helper';
+/*
+ * ⚠ `preventAutoKeyboard` / `isKeyboardOpeningElement` PUBLIC DEGIL: uc kip
+ * yuzeyinin (`Modal`, `Drawer`, `BottomSheet`) ic ayrintisi. Disaridan
+ * cagrildiginda kutuphanenin acilis sirasiyla yarisir.
+ */
 
 // --- Eylem ------------------------------------------------------------
 export { default as Button } from './components/Button';
