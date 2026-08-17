@@ -570,7 +570,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         items={[
           { id: 'a', title: 'Kargo ne zaman çıkar?', content: 'Saat 16:00`a kadar aynı gün.' },
           { id: 'b', title: 'İade koşulları', meta: '2 madde', content: 'On dört gün içinde.' },
-          { id: 'c', title: 'Garanti', content: 'Üretici garantisi 2 yıl.' },
+          { id: 'c', title: 'Ödeme seçenekleri', content: 'Kredi kartı, havale/EFT.' },
         ]}
       />
     ),
