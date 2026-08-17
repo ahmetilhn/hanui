@@ -86,7 +86,7 @@
     "react-dom": ">=18"
   },
   "devDependencies": {
-    "@ahmetilhn/handy-utils": "^4.1.0",
+    "@ahmetilhn/handy-utils": "latest",
     "@eslint/js": "^9.18.0",
     "@playwright/test": "^1.62.1",
     "@size-limit/preset-small-lib": "^13.0.3",
