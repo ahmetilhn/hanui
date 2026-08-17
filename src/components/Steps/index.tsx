@@ -21,8 +21,13 @@ export type StepItem = {
 
 type Props = {
   steps: StepItem[];
-  /** Bulunulan adımın DİZİNİ (0 tabanlı). Öncesi tamamlanmış sayılır. */
-  currentIndex: number;
+  /**
+   * Bulunulan adımın DİZİNİ (0 tabanlı). Öncesi tamamlanmış sayılır.
+   * VERİLMEZSE liste ilerleme değil SIRALI TALİMAT olarak çizilir: durum
+   * metni yok, tik yok, `aria-current` yok — yalnızca numaralı adımlar
+   * ("olası nedenler — kontrol sırasıyla" gibi teşhis listeleri).
+   */
+  currentIndex?: number;
   /**
    * Bir adıma dönülebiliyorsa verilir. Verilmediğinde adımlar düğme DEĞİL
    * düz metin olur — tıklanabilir görünüp hiçbir şey yapmayan bir adım,
@@ -67,12 +72,18 @@ const Steps: FC<Props> = ({
 
   return (
     <ol
-      className={cx(styles.steps, styles[`steps--${orientation}`], className)}
+      className={cx(
+        styles.steps,
+        styles[`steps--${orientation}`],
+        currentIndex === undefined && styles['steps--static'],
+        className,
+      )}
       aria-label={label}
       data-testid={testId}
     >
       {steps.map((step, index) => {
-        const status = statusOf(index, currentIndex);
+        /* Statik listede durum kavrami YOK — hicbir adim "bulunulan" degil. */
+        const status = currentIndex === undefined ? undefined : statusOf(index, currentIndex);
         /* Ileri atlamak YOK: atlanan adimin verisi toplanmadan devam edilemez. */
         const isClickable = Boolean(onStepClick) && status === 'done';
 
@@ -91,16 +102,18 @@ const Steps: FC<Props> = ({
 
             {/* Durum METIN olarak da okunur: gorsel isaret ekran okuyucuya
               gecmiyor ve `aria-current` yalnizca bulunulan adimi soyluyor. */}
-            <span className={styles.steps__status}>
-              {resolveLabel(`Steps.${STATUS_KEY[status]}`, labels?.steps?.[STATUS_KEY[status]])}
-            </span>
+            {status && (
+              <span className={styles.steps__status}>
+                {resolveLabel(`Steps.${STATUS_KEY[status]}`, labels?.steps?.[STATUS_KEY[status]])}
+              </span>
+            )}
           </>
         );
 
         return (
           <li
             key={step.id}
-            className={cx(styles.steps__item, styles[`steps__item--${status}`])}
+            className={cx(styles.steps__item, status && styles[`steps__item--${status}`])}
             aria-current={status === 'current' ? 'step' : undefined}
           >
             {isClickable ? (

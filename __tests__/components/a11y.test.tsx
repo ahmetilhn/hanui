@@ -24,6 +24,7 @@ const {
   Checkbox,
   Chip,
   ChipGroup,
+  CodeBadge,
   Combobox,
   CommandPalette,
   ConfirmDialog,
@@ -76,6 +77,7 @@ const {
   Spinner,
   Stat,
   Steps,
+  SummaryCard,
   Switch,
   Table,
   TableCheckbox,
@@ -261,6 +263,10 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       </Card>
     ),
   },
+  CodeBadge: {
+    default: <CodeBadge code="P0101" />,
+    copyable: <CodeBadge code="P0101" isCopyable />,
+  },
   CopyField: { default: <CopyField value="SP-123" /> },
   Divider: { default: <Divider />, labelled: <Divider label="veya" /> },
   Directory: {
@@ -424,6 +430,16 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         ]}
       />
     ),
+    static: (
+      <Steps
+        label="Kontrol sırası"
+        orientation="vertical"
+        steps={[
+          { id: 'a', label: 'Hava filtresi', description: 'En düşük maliyetli ihtimal' },
+          { id: 'b', label: 'Sensör değişimi' },
+        ]}
+      />
+    ),
     clickable: (
       <Steps
         label="Ödeme adımları"
@@ -505,6 +521,24 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       />
     ),
     flat: <Stat label="Aktif kullanıcı" value="1.204" delta="0" trend="flat" />,
+  },
+  SummaryCard: {
+    default: (
+      <SummaryCard
+        title="Periyodik Bakım (Yağ + Filtreler)"
+        href="/bakim-ucretleri/periyodik-bakim"
+        description="Motor yağı, yağ filtresi, hava filtresi ve genel kontrol."
+        meta={<Badge tone="info">1.500 – 18.000 TL</Badge>}
+      />
+    ),
+    withMedia: (
+      <SummaryCard
+        title="Araba titriyor"
+        href="/ariza-belirtileri/araba-titriyor"
+        headingLevel={2}
+        media={<HeartFill />}
+      />
+    ),
     plain: <Stat label="Toplam ürün" value="12.480" unit="adet" />,
   },
   Timeline: {

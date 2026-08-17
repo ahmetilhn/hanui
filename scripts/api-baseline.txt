@@ -25,6 +25,8 @@ Chip
 ChipGroup
 ChipOption
 ChipSize
+CodeBadge
+CodeBadgeSize
 Combobox
 ComboboxLabels
 ComboboxOption
@@ -123,6 +125,8 @@ Stat
 StatTrend
 StepItem
 Steps
+SummaryCard
+SummaryCardHeadingLevel
 Switch
 TABLET_BREAKPOINT
 TABLET_PORTRAIT_BREAKPOINT

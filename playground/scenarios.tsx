@@ -19,6 +19,7 @@ import {
   Checkbox,
   Chip,
   ChipGroup,
+  CodeBadge,
   Combobox,
   CommandPalette,
   ConfirmDialog,
@@ -71,6 +72,7 @@ import {
   Spinner,
   Stat,
   Steps,
+  SummaryCard,
   Switch,
   Table,
   TableCheckbox,
@@ -422,6 +424,10 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       </Card>
     ),
   },
+  CodeBadge: {
+    default: <CodeBadge code="P0101" />,
+    copyable: <CodeBadge code="P0101" isCopyable size="lg" />,
+  },
   CopyField: { default: <CopyField value="SP-2026-000123" /> },
   Divider: { plain: <Divider />, labelled: <Divider label="veya" /> },
   Directory: {
@@ -694,6 +700,17 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         ]}
       />
     ),
+    static: (
+      <Steps
+        label="Kontrol sırası"
+        orientation="vertical"
+        steps={[
+          { id: 'a', label: 'Hava filtresi', description: 'En düşük maliyetli ihtimal' },
+          { id: 'b', label: 'Sensör temizliği' },
+          { id: 'c', label: 'Sensör değişimi' },
+        ]}
+      />
+    ),
     vertical: (
       <Steps
         label="Sipariş durumu"
@@ -783,6 +800,25 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     valueOnly: <Stat label="Toplam ürün" value="12.480" unit="adet" />,
     /* Kutusuz olcum: kendi zemini olan bandin uzerinde kullanilir. */
     plain: <Stat variant="plain" label="Toplam ürün" value="12.480" unit="adet" />,
+  },
+  SummaryCard: {
+    default: (
+      <SummaryCard
+        title="Periyodik Bakım (Yağ + Filtreler)"
+        href="#"
+        description="Motor yağı, yağ filtresi, hava filtresi, polen filtresi ve genel kontrol."
+        meta={<Badge tone="info">1.500 – 18.000 TL</Badge>}
+      />
+    ),
+    withMedia: (
+      <SummaryCard
+        title="Araba titriyor"
+        href="#"
+        headingLevel={2}
+        description="Buji, bobin veya motor takozu kaynaklı olabilir."
+        media={<HeartFill />}
+      />
+    ),
   },
   Timeline: {
     default: (

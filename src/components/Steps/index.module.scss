@@ -21,6 +21,16 @@
     flex-direction: column;
     gap: $space-1;
   }
+
+  // Statik talimat listesi: etiket birincil icerik, kirpilmaz ve soluk degil.
+  &--static {
+    .steps__label {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      color: $text;
+    }
+  }
 }
 
 .steps__item {
