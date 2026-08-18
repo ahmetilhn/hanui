@@ -1,0 +1,92 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  max-width: 100%;
+  min-width: 0;
+  background-color: $action;
+  color: $on-action;
+
+  // Acik temada dolgunun kendisi (gorunmez), koyu temada mint sac cizgisi —
+  // mail sablonlarindaki `action-line` kararinin birebir kendisi: kenarlik iki
+  // temada da yazilir ki rozetin olcusu temaya gore oynamasin.
+  border: 1px solid $action-line;
+  border-radius: $radius-sm;
+
+  &--sm {
+    padding: $space-1 $space-2;
+
+    .badge__code {
+      @include technical-text($font-size-sm);
+    }
+  }
+
+  &--md {
+    padding: $space-1 $space-3;
+
+    .badge__code {
+      @include technical-text($font-size-lg);
+    }
+  }
+
+  &--lg {
+    padding: $space-2 $space-4;
+
+    .badge__code {
+      @include technical-text($font-size-2xl);
+    }
+  }
+
+  &__code {
+    @include truncate;
+
+    user-select: all;
+    color: inherit;
+    font-weight: $weight-bold;
+    letter-spacing: 0.04em;
+  }
+
+  &__button {
+    @include tap-target;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    padding: 0;
+    border: none;
+    border-radius: $radius-xs;
+    background: none;
+    color: $on-action-soft;
+    font-size: $icon-sm;
+    cursor: pointer;
+    transition: color $duration-fast $ease-out;
+
+    &:hover {
+      color: $on-action;
+    }
+
+    @include focus-ring($action-line, 1px);
+
+    @include reduced-motion {
+      transition: none;
+    }
+
+    &--done {
+      color: $action-line;
+
+      &:hover {
+        color: $action-line;
+      }
+    }
+  }
+
+  &__srOnly {
+    @include visually-hidden;
+  }
+}

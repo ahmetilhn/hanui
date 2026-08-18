@@ -130,6 +130,7 @@ export {
   CardOverlay,
 } from './components/Card';
 export { default as Carousel } from './components/Carousel';
+export { default as CodeBadge, type CodeBadgeSize } from './components/CodeBadge';
 export { default as CopyField } from './components/CopyField';
 export { default as Divider } from './components/Divider';
 export {
@@ -152,6 +153,7 @@ export {
   SkeletonTable,
 } from './components/Skeleton';
 export { default as Stat, type StatTrend } from './components/Stat';
+export { default as SummaryCard, type SummaryCardHeadingLevel } from './components/SummaryCard';
 export { default as Progress, ProgressCircle } from './components/Progress';
 export { default as Spinner } from './components/Spinner';
 export { default as ToastHub, toast, type ToastOptions, type ToastTone } from './components/Toast';

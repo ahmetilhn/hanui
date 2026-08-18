@@ -1,0 +1,72 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.card {
+  @include card(true);
+
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-4;
+  height: 100%;
+
+  &__media {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: $radius-sm;
+    background-color: $surface-2;
+    color: $text-2;
+    font-size: $icon-md;
+  }
+
+  &__content {
+    @include stack($space-1);
+
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: $font-size-base;
+    font-weight: $weight-semibold;
+    line-height: $leading-snug;
+  }
+
+  &__link {
+    color: $text;
+    text-decoration: none;
+
+    @include focus-ring;
+
+    // Yuzeyi kaplayan katman: kartin tamami tiklanir, sekme duragi tek.
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: $radius-lg;
+    }
+  }
+
+  &__description {
+    @include muted;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__meta {
+    position: relative;
+    z-index: $z-raised;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-2;
+  }
+}

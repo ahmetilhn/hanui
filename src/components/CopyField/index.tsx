@@ -1,11 +1,12 @@
 'use client';
 
-import { type FC, memo, useCallback, useEffect, useRef, useState } from 'react';
+import { type FC, memo } from 'react';
 
 import { ClipboardCheckFill, ClipboardFill } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
 import { resolveFormatter, resolveLabel } from '../../helpers/label.helper';
+import { useCopyFeedback } from '../../hooks/useCopyFeedback';
 import { useHanui } from '../../theme/context';
 
 import styles from './index.module.scss';
@@ -26,10 +27,10 @@ type Props = {
   testId?: string;
 };
 
-/** "Kopyalandı" geri bildiriminin ekranda kalma suresi (ms). */
-const COPIED_FEEDBACK_MS = 1600;
-
-/** Kopyalanabilir teknik değer — <strong>tek dokunuşla panoya</strong>. */
+/**
+ * Kopyalanabilir teknik değer — <strong>tek dokunuşla panoya</strong>.
+ * Pano mantığı `useCopyFeedback`te, `CodeBadge` ile ortak.
+ */
 const CopyField: FC<Props> = ({
   value,
   copyLabel,
@@ -41,35 +42,7 @@ const CopyField: FC<Props> = ({
   testId,
 }) => {
   const { labels } = useHanui();
-  const [isCopied, setIsCopied] = useState(false);
-  const codeRef = useRef<HTMLSpanElement>(null);
-  const timerRef = useRef<number | undefined>(undefined);
-
-  // Bilesen sokulurse zamanlayici da gitmeli; aksi halde React "unmounted
-  // component" uyarisi veriyor.
-  useEffect(() => () => window.clearTimeout(timerRef.current), []);
-
-  const selectValue = useCallback(() => {
-    const node = codeRef.current;
-    if (!node) return;
-
-    const range = document.createRange();
-    range.selectNodeContents(node);
-    const selection = window.getSelection();
-    selection?.removeAllRanges();
-    selection?.addRange(range);
-  }, []);
-
-  const handleCopy = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(value);
-      setIsCopied(true);
-      timerRef.current = window.setTimeout(() => setIsCopied(false), COPIED_FEEDBACK_MS);
-    } catch {
-      // Pano yoksa/izin verilmediyse en azindan secili birakilir.
-      selectValue();
-    }
-  }, [value, selectValue]);
+  const { isCopied, copy, nodeRef } = useCopyFeedback(value);
 
   return (
     <span className={cx(styles.copy, styles[`copy--${size}`], className)} data-testid={testId}>
@@ -77,7 +50,7 @@ const CopyField: FC<Props> = ({
         `user-select: all` (CSS): tek tiklama degerin TAMAMINI secer.
         Kullanicilar fareyle surukleyip yarim deger kopyaliyordu.
       */}
-      <span className={styles.copy__code} ref={codeRef}>
+      <span className={styles.copy__code} ref={nodeRef}>
         {value}
       </span>
 
@@ -85,7 +58,7 @@ const CopyField: FC<Props> = ({
         <button
           type="button"
           className={cx(styles.copy__button, isCopied && styles['copy__button--done'])}
-          onClick={handleCopy}
+          onClick={copy}
           aria-label={
             isCopied
               ? (copiedLabel ??

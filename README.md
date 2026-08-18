@@ -341,8 +341,8 @@ büyür, bir duyuru şeridi çıkıp kaybolduğunda değişir.
 | Eylem      | `Button` · `IconButton` · `TextLink` · `Tooltip`                                                                                              |
 | Seçim      | `Chip` · `ChipGroup` · `Select` · `Combobox` · `Checkbox` · `Radio` · `RadioCard` · `RangeSlider` · `RatingInput` · `QuantityStepper` · `TableCheckbox` |
 | Girdi      | `Input` · `Textarea` · `Field`                                                                                                                |
-| Yüzey      | `Card` (+ `CardMedia`, `CardOverlay`, `CardBody`, `CardFooter`) · `Panel` (+ `PanelForm`, `PanelRow`) · `PageHeader` · `SectionHeader` · `Tile` · `Directory` |
-| Geri bild. | `Alert` · `Badge` · `EmptyState` · `Skeleton` · `Spinner` · `Divider` · `Avatar` · `Rating` · `Price` · `CopyField` · `Breadcrumb`             |
+| Yüzey      | `Card` (+ `CardMedia`, `CardOverlay`, `CardBody`, `CardFooter`) · `SummaryCard` · `Panel` (+ `PanelForm`, `PanelRow`) · `PageHeader` · `SectionHeader` · `Tile` · `Directory` |
+| Geri bild. | `Alert` · `Badge` · `CodeBadge` · `EmptyState` · `Skeleton` · `Spinner` · `Divider` · `Avatar` · `Rating` · `Price` · `CopyField` · `Breadcrumb`             |
 | Kipsel     | `Modal` · `BottomSheet` · `ConfirmDialog` · `PromptDialog`                                                                                     |
 | Veri       | `Table` (+ `TableScroller`) · `DataTable` (+ `DataTableRow`) · `FilterBar` (+ `FilterBarField`) · `Pagination`                                 |
 
