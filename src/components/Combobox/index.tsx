@@ -11,6 +11,7 @@ import {
   useState,
 } from 'react';
 
+import { createPortal } from 'react-dom';
 import { CaretDownFill, CheckLg, Search, XLg } from 'react-bootstrap-icons';
 
 import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
@@ -19,6 +20,7 @@ import { resolveLabel } from '../../helpers/label.helper';
 import { matchesSearch } from '../../helpers/text.helper';
 import useAsyncSearch from '../../hooks/useAsyncSearch';
 import useListboxNavigation from '../../hooks/useListboxNavigation';
+import usePortalSurface from '../../hooks/usePortalSurface';
 import usePositioning from '../../hooks/usePositioning';
 import useVirtualList from '../../hooks/useVirtualList';
 import { useHanui } from '../../theme/context';
@@ -155,12 +157,19 @@ const Combobox = <T extends string>({
   /*
    * Disari tiklamada kapanir. `mousedown` kullanilir: `click` beklerken
    * kullanici surukleyerek secim yaparsa panel kapanmiyordu.
+   *
+   * ⚠ PANEL ARTIK KOKUN ICINDE DEGIL — portallandi. `rootRef` tek basina
+   * bakilsaydi panelin ICINE yapilan `mousedown` "disari" sayilir ve panel
+   * secenegin `onClick`i atesleneceden kapanirdi: liste acilir ama HICBIR
+   * secenek secilemez. `Menu` ayni kontrolu iki ref ile yapiyor.
    */
   useEffect(() => {
     if (openMode !== 'popover') return;
 
     const handlePointerDown = (event: globalThis.MouseEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) close();
+      const target = event.target as Node;
+      if (rootRef.current?.contains(target) || panelRef.current?.contains(target)) return;
+      close();
     };
 
     document.addEventListener('mousedown', handlePointerDown);
@@ -187,12 +196,16 @@ const Combobox = <T extends string>({
   }, [isOpen]);
 
   /* KLAVYE MODELI `useListboxNavigation`da — `Select`le AYNI kanca. */
-  /* PANEL SABIT KONUMLU, MUTLAK DEGIL */
+  /* PANEL SABIT KONUMLU, MUTLAK DEGIL — gerekce SCSS'te (`.combobox__panel`). */
   const positioning = usePositioning(triggerRef, panelRef, {
     side: 'bottom',
     align: 'start',
     isOpen: isOpen && openMode === 'popover',
   });
+
+  /* Panel BODY'e (ya da icinde bulundugu acik `<dialog>`a) portallanir; gerekce
+     `hooks/usePortalSurface.ts`. */
+  const portal = usePortalSurface(openMode === 'popover', triggerRef, panelRef);
 
   const { activeIndex, setActiveIndex, listRef, handleKeyDown } =
     useListboxNavigation<HTMLUListElement>({
@@ -483,24 +496,29 @@ const Combobox = <T extends string>({
         </button>
       )}
 
-      {/* Masaüstü: tetikleyiciye yapışan panel. */}
-      {openMode === 'popover' && (
-        <div
-          ref={panelRef}
-          className={styles.combobox__panel}
-          style={{
-            ...positioning.style,
-            /* Panel tetikleyiciyle AYNI genislikte: sabit konum onu
-               kapsayicidan kopardigi icin genislik artik miras alinmiyor. */
-            width: triggerRef.current?.offsetWidth,
-            /* Ilk karede olcu yok; yanlis yerde bir kare parlamasin. */
-            visibility: positioning.isPositioned ? undefined : 'hidden',
-          }}
-        >
-          {search}
-          {renderList(false)}
-        </div>
-      )}
+      {/* Masaüstü: tetikleyiciye yapışan panel — DOM'da kökün değil portalın içinde. */}
+      {openMode === 'popover' &&
+        portal.container &&
+        createPortal(
+          <div
+            ref={panelRef}
+            className={styles.combobox__panel}
+            {...portal.attributes}
+            style={{
+              ...positioning.style,
+              ...portal.style,
+              /* Panel tetikleyiciyle AYNI genislikte: sabit konum + portal onu
+                 kapsayicidan kopardigi icin genislik artik miras alinmiyor. */
+              width: positioning.anchorWidth || undefined,
+              /* Ilk karede olcu yok; yanlis yerde bir kare parlamasin. */
+              visibility: positioning.isPositioned ? undefined : 'hidden',
+            }}
+          >
+            {search}
+            {renderList(false)}
+          </div>,
+          portal.container,
+        )}
 
       {/*
         Dar ekran: alt sayfa. Yapışkan panel telefonda klavye açılınca sıkışıyor

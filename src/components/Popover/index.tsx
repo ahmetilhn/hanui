@@ -14,13 +14,11 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import { isClient } from '@ahmetilhn/handy-utils';
-
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import useDismissOnEscape from '../../hooks/useDismissOnEscape';
 import { captureFocus, focusFirstMeaningful } from '../../helpers/focus.helper';
-import { POPOVER_RESET, resolvePortalTarget, showTopLayer } from '../../helpers/portal.helper';
+import usePortalSurface from '../../hooks/usePortalSurface';
 import usePositioning from '../../hooks/usePositioning';
 
 import styles from './index.module.scss';
@@ -67,13 +65,7 @@ const Popover = ({
 
   const positioning = usePositioning(anchorRef, surfaceRef, { side, align, isOpen });
 
-  /* Portal hedefi yalnizca acikken cozulur; gerekce `helpers/portal.helper.ts`. */
-  const portal = isOpen && isClient() ? resolvePortalTarget(anchorRef.current) : null;
-
-  useEffect(() => {
-    if (!isOpen || !portal?.needsTopLayer) return;
-    return showTopLayer(surfaceRef.current);
-  }, [isOpen, portal?.needsTopLayer]);
+  const portal = usePortalSurface(isOpen, anchorRef, surfaceRef);
 
   const setOpen = useCallback(
     (next: boolean) => {
@@ -139,13 +131,13 @@ const Popover = ({
       {anchor}
 
       {isOpen &&
-        portal &&
+        portal.container &&
         createPortal(
           <div
             ref={surfaceRef}
             id={id}
             /* ⚠ Modal içinden açıldığında üst katman ZORUNLU — `portal.helper`. */
-            {...(portal.needsTopLayer ? { popover: 'manual' as const } : {})}
+            {...portal.attributes}
             /*
              * `role="dialog"` ama `aria-modal` YOK: yuzey kipsel degil ve
              * `aria-modal="true"` yazmak ekran okuyucuya sayfanin geri
@@ -156,7 +148,7 @@ const Popover = ({
             className={cx(styles.popover, styles[`popover--${positioning.side}`], className)}
             style={{
               ...positioning.style,
-              ...(portal.needsTopLayer ? POPOVER_RESET : {}),
+              ...portal.style,
               visibility: positioning.isPositioned ? 'visible' : 'hidden',
             }}
             data-testid={testId}

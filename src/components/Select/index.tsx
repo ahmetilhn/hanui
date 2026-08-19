@@ -11,9 +11,11 @@ import {
   useState,
 } from 'react';
 
+import { createPortal } from 'react-dom';
 import { CaretDownFill, CheckLg } from 'react-bootstrap-icons';
 
 import useListboxNavigation from '../../hooks/useListboxNavigation';
+import usePortalSurface from '../../hooks/usePortalSurface';
 import usePositioning from '../../hooks/usePositioning';
 
 import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
@@ -110,6 +112,10 @@ const Select = <T extends string>({
     isOpen: openMode === 'popover',
   });
 
+  /* Panel BODY'e (ya da icinde bulundugu acik `<dialog>`a) portallanir; gerekce
+     `hooks/usePortalSurface.ts`. */
+  const portal = usePortalSurface(openMode === 'popover', triggerRef, panelRef);
+
   const isOpen = openMode !== null;
   const selectedIndex = options.findIndex(option => option.value === value);
   const selectedOption = selectedIndex >= 0 ? options[selectedIndex] : null;
@@ -137,12 +143,21 @@ const Select = <T extends string>({
     wasOpenRef.current = isOpen;
   }, [isOpen]);
 
-  /* Disari tiklamada panel kapanir. Alt sayfada bu is perdenin. */
+  /*
+   * Disari tiklamada panel kapanir. Alt sayfada bu is perdenin.
+   *
+   * ⚠ PANEL ARTIK KOKUN ICINDE DEGIL — portallandi. `rootRef` tek basina
+   * bakilsaydi panelin ICINE yapilan `mousedown` "disari" sayilir ve panel
+   * secenegin `onClick`i atesleneceden kapanirdi: liste acilir ama HICBIR
+   * secenek secilemez.
+   */
   useEffect(() => {
     if (openMode !== 'popover') return;
 
     const handlePointerDown = (event: globalThis.MouseEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) close();
+      const target = event.target as Node;
+      if (rootRef.current?.contains(target) || panelRef.current?.contains(target)) return;
+      close();
     };
 
     document.addEventListener('mousedown', handlePointerDown);
@@ -292,21 +307,26 @@ const Select = <T extends string>({
         />
       </button>
 
-      {openMode === 'popover' && (
-        <div
-          ref={panelRef}
-          className={styles.panel}
-          style={{
-            ...positioning.style,
-            /* Panel tetikleyiciyle EN AZ ayni genislikte. */
-            minWidth: triggerRef.current?.offsetWidth,
-            /* Ilk karede olcu yok; yanlis yerde bir kare parlamasin. */
-            visibility: positioning.isPositioned ? undefined : 'hidden',
-          }}
-        >
-          {renderList(false)}
-        </div>
-      )}
+      {openMode === 'popover' &&
+        portal.container &&
+        createPortal(
+          <div
+            ref={panelRef}
+            className={styles.panel}
+            {...portal.attributes}
+            style={{
+              ...positioning.style,
+              ...portal.style,
+              /* Panel tetikleyiciyle EN AZ ayni genislikte. */
+              minWidth: positioning.anchorWidth || undefined,
+              /* Ilk karede olcu yok; yanlis yerde bir kare parlamasin. */
+              visibility: positioning.isPositioned ? undefined : 'hidden',
+            }}
+          >
+            {renderList(false)}
+          </div>,
+          portal.container,
+        )}
 
       {/* Dar ekranda liste alt sayfada acilir; panel klavye acilinca sikisiyor
           ve alt ucu ekranin disinda kaliyordu (bkz. `BottomSheet`). */}

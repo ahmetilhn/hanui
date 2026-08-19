@@ -94,6 +94,7 @@ const usePositioning = (
   const [state, setState] = useState<PositioningState>({
     style: { position: 'fixed', top: 0, left: 0 },
     side,
+    anchorWidth: 0,
     isPositioned: false,
   });
 
@@ -140,6 +141,7 @@ const usePositioning = (
         left: Math.round(clamp(placed.left, padding, viewport.width - surfaceRect.width - padding)),
       },
       side: resolvedSide,
+      anchorWidth: anchorRect.width,
       isPositioned: true,
     });
   }, [anchorRef, surfaceRef, side, align, offset, padding]);

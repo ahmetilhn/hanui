@@ -455,6 +455,18 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
   }
 }
 
+/*
+ * ⚠ BU MIXIN `position` YAZAR — CAGRI YERINDE EN BASTA INCLUDE EDILMELI.
+ *
+ * `::after` çapası için `position: relative` şart, ama aynı kural içinde
+ * çağıranın kendi `position` bildiriminden SONRA include edilirse onu sessizce
+ * ezer (aynı özgüllük, son bildirim kazanır). Ölçüldü: `Combobox`ın temizleme
+ * düğmesi `position: absolute` yazıyordu, mixin sonradan `relative` yapıyordu
+ * ve düğme akışta kalıp bileşenin dışına düşüyordu — üstelik kök kutusunu
+ * şişirdiği için caret'i de kaydırıyordu (gerekçe `Combobox/index.module.scss`).
+ *
+ * Kural: `@include tap-target` ÖNCE, `position` ezmesi SONRA.
+ */
 @mixin tap-target($size: $tap-target-size) {
   position: relative;
 

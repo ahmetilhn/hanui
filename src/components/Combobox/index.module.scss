@@ -30,10 +30,24 @@ $clear-size: 22px;
       border-color: $danger-solid;
     }
 
-    &--clearable {
-      padding-inline-end: calc(
-        #{$space-3} + #{$icon-sm} + #{$space-2} + #{$clear-size} + #{$space-2}
-      );
+    /*
+     * ⚠ TEMİZLEME DÜĞMESİNİN YERİ DOLGUYLA DEĞİL CARET'İN MARJIYLA AYRILIR.
+     *
+     * Caret mutlak konumluyken (eski hâl) esnek akışta hiç yer tutmuyordu ve
+     * dolgu İKİSİNİN payını birlikte ayırıyordu:
+     * `$space-3 + $icon-sm + $space-2 + $clear-size + $space-2` = 66px.
+     * Caret düz bir esnek çocuk olunca o dolgu onu içe itiyor — ölçüldü, caret
+     * sağ kenardan **67px** kopuyor ve `✕`in SOLUNA düşüyor, yani iki süsün
+     * sırası ters çiziliyordu.
+     *
+     * Bugün dolgu temel hâlinde ($space-3) kalır: caret'in sağ kenarı
+     * tetikleyicinin sağ kenarından `$space-3` uzakta, yani `Select` ile ve
+     * temizlenebilir olmayan varyantla BİREBİR aynı yerde. `✕`in payını
+     * caret'in kendi marjı açar; `✕` mutlak konumlu olduğu için tam o boşluğa
+     * oturur ve `flex: 1` olan değer metni onun altına akamaz.
+     */
+    &--clearable .combobox__chevron {
+      margin-inline-start: calc(#{$clear-size} + #{$space-2});
     }
   }
 
@@ -51,6 +65,40 @@ $clear-size: 22px;
   }
 
   &__clear {
+    /*
+     * ⚠ VURUS ALANI 44px, GORUNEN OLCU 22px. Dugme gorsel olarak kucuk kalmak
+     * zorunda (alanin icinde duruyor, buyutmek metni kaydirir) ama parmakla
+     * 22px'lik bir hedefe basmak WCAG 2.5.5'in altinda — kullanici temizlemek
+     * isterken listeyi aciyordu. `tap-target` gorunumu DEGISTIRMEZ, yalnizca
+     * `::after` ile isitilebilir alani buyutur.
+     */
+    @include tap-target;
+
+    /*
+     * ⚠ `position` `tap-target`TAN SONRA YAZILIR — ONCE YAZILMIŞTI VE MİXİN
+     * ONU SESSİZCE EZİYORDU.
+     *
+     * `tap-target` `::after`ını çapalamak için `position: relative` yazıyor;
+     * kural içinde `position: absolute`tan SONRA geldiği için aynı özgüllükte
+     * son bildirim olarak KAZANIYORDU. Ölçülen sonuç (2026-08-19, chromium,
+     * `?solo=Combobox`, `isClearable` + seçili değer):
+     *
+     * | ne | beklenen | ölçülen |
+     * |---|---|---|
+     * | `position` | `absolute` | **`relative`** |
+     * | `.combobox` kök yüksekliği | 48px (tetikleyici) | **73px** |
+     * | `✕` yatay konumu | tetikleyicinin içinde | **kökün 36px SOLUNDA** |
+     * | caret'in dikey kayması | 0px | **12px** |
+     *
+     * Zincir tek yönlü: düğme akışta kaldığı için tetikleyicinin ALTINA blok
+     * olarak diziliyor (kök 48 → 73px), `right: 36px` bir GÖRELİ öteleme olarak
+     * yorumlanıp onu bileşenin tümüyle dışına atıyor, ve kök şiştiği için
+     * caret'in `top: 50%`i artık tetikleyicinin merkezini göstermiyor. Yani tek
+     * bir sıralama hatası ÜÇ görsel arıza üretiyordu ve hiçbir katman uyarmadı
+     * — `absolute` bildirimi dosyada duruyor, okuyan kişi doğru sanıyor.
+     *
+     * `absolute` de konumlu bir kutu kurar, yani `::after` çapası korunuyor.
+     */
     position: absolute;
     inset-inline-end: calc(#{$space-3} + #{$icon-sm} + #{$space-2});
     top: 50%;
@@ -61,15 +109,6 @@ $clear-size: 22px;
     width: $clear-size;
     height: $clear-size;
     padding: 0;
-
-    /*
-     * ⚠ VURUS ALANI 44px, GORUNEN OLCU 22px. Dugme gorsel olarak kucuk kalmak
-     * zorunda (alanin icinde duruyor, buyutmek metni kaydirir) ama parmakla
-     * 22px'lik bir hedefe basmak WCAG 2.5.5'in altinda — kullanici temizlemek
-     * isterken listeyi aciyordu. `tap-target` gorunumu DEGISTIRMEZ, yalnizca
-     * `::after` ile isitilebilir alani buyutur.
-     */
-    @include tap-target;
     border: none;
     background: none;
     border-radius: $radius-pill;
@@ -93,11 +132,27 @@ $clear-size: 22px;
     }
   }
 
+  /*
+   * ⚠ CARET DÜZ BİR ESNEK ÇOCUK — `position: absolute` DEĞİL.
+   *
+   * Ölçülen arıza: caret `position: absolute; inset-inline-end; top: 50%` ile
+   * çiziliyordu ve mutlak konumun kapsayıcı bloğu **tetikleyici değil `.combobox`
+   * köküydü** (`input-base` `position` yazmıyor, yani en yakın konumlu ata kök).
+   * İki kutu ancak kök ile tetikleyici birebir çakıştığında aynı yere düşer;
+   * çakışma bozulan her yerde caret tetikleyicinin dışına kayıyordu. Ölçüldü:
+   * köke 28px üst dolgu veren bir sarmalayıcıda caret dikey merkezden **14px**
+   * kaçıyor (`__tests__/e2e/anchored-panel.spec.ts`).
+   *
+   * Kardeş `Select` aynı caret'i baştan düz bir esnek çocuk olarak çiziyordu
+   * (`Select/index.module.scss` → `.trigger__chevron`) ve bu arızayı hiç
+   * taşımadı; desen zaten depodaydı. Esnek çocuk olarak hizalamayı
+   * tetikleyicinin `align-items: center`ı yapar — kapsayıcı bloktan
+   * BAĞIMSIZ olarak.
+   *
+   * ⚠ Boşluğu `padding-inline-end` DEĞİL esnek düzen verir; tetikleyicideki
+   * dolgu bu yüzden caret payını taşımaz.
+   */
   &__chevron {
-    position: absolute;
-    inset-inline-end: $space-3;
-    top: 50%;
-    transform: translateY(-50%);
     color: $text-2;
     font-size: $icon-sm;
     flex-shrink: 0;
@@ -105,7 +160,7 @@ $clear-size: 22px;
     transition: transform $duration-fast $ease-out;
 
     &--open {
-      transform: translateY(-50%) rotate(180deg);
+      transform: rotate(180deg);
     }
 
     @include reduced-motion {

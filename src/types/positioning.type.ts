@@ -5,6 +5,19 @@ export type PositioningState = {
   style: { position: 'fixed'; top: number; left: number };
   /** ÇÖZÜLMÜŞ kenar: çarpışma yüzünden tercih edilenin karşıtı olabilir. */
   side: PositionSide;
+  /**
+   * Tetikleyicinin ölçülen genişliği (px) — açılır listeler panelin genişliğini
+   * buna bağlıyor.
+   *
+   * ⚠ ÖLÇÜM BURADA, ÇAĞIRANDA DEĞİL. `Combobox` ve `Select` bu değeri render
+   * sırasında `triggerRef.current?.offsetWidth` ile okuyordu; render sırasında
+   * DOM okumak iki şeyi birden kırıyor: ilk render'da ref henüz boş olabilir
+   * (`undefined` genişlik) ve değer bir daha GÜNCELLENMEZ — pencere yeniden
+   * boyutlandığında ya da yazı tipi geldiğinde panel bayat genişlikte kalır.
+   * Kanca tetikleyiciyi `ResizeObserver` ile zaten izliyor, yani ölçüm burada
+   * bedavaya reaktif.
+   */
+  anchorWidth: number;
   /** İlk ölçüm yapıldı mı. Yapılmadan çizilen yüzey sol üst köşede parlıyor. */
   isPositioned: boolean;
 };

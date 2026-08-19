@@ -459,6 +459,112 @@ kipi izler.
 ⚠ **Sınırdaki ok bağlantı DEĞİL devre dışı düğmedir** — bir `<a>` devre dışı
 bırakılamaz ve `aria-disabled` taşıyan bir bağlantı hâlâ tıklanır.
 
+## Ankrajlı yüzeyler — panel tetikleyicisine bağlı kalır
+
+Açılır her yüzey (`Menu`, `Popover`, `Tooltip`, `Combobox`, `Select`) konumunu
+`usePositioning`ten alır; kanca **viewport koordinatı** üretir ve yüzeye
+`position: fixed` + `top`/`left` yazar.
+
+⚠ **`position: fixed` TEK BAŞINA "viewport'a göre konumlan" DEMEK DEĞİL.**
+`none` olmayan bir `transform`/`translate`/`scale`/`rotate`, bir `filter`,
+`backdrop-filter`, `perspective`, `will-change` ya da `contain: paint|layout`
+taşıyan **her ata** sabit konumlu torunları için kapsayıcı blok yaratır. Kapsayıcı
+blok kayınca kancanın ürettiği koordinatlar atanın sol üstüne göre yorumlanır ve
+yüzey **atanın sayfa içindeki konumu kadar kayar**; aynı ata `overflow: hidden`
+de taşıyorsa yüzey ayrıca **kırpılır**.
+
+**Kural: ankrajlı yüzey PORTALLANIR.** Tek yol `hooks/usePortalSurface` —
+hedef seçimi (`document.body` ya da en yakın açık `<dialog>`) ve üst katman
+kararı `helpers/portal.helper.ts`te.
+
+⚠ **`Combobox` ve `Select` bu düzeltmeyi ALMAMIŞTI** ve ikisi de panelini kökün
+içinde çiziyordu. Ölçüldü (2026-08-19, chromium 1280×900, `.gallery__stage`
+üzerinde `transform: translateZ(0)`):
+
+| yüzey | panelin tetikleyiciden yatay kayması |
+|---|---|
+| `Menu` / `Popover` / `Tooltip` | 0px (portallanmış) |
+| `Combobox` | **46px** |
+| `Select` | **46px** |
+
+Kırpan bir ata eklendiğinde (`overflow: hidden`) panel isabet testini de
+kaybediyordu — yani görünür sayılıyor ama tıklanamıyordu.
+
+⚠ **PORTALLAMAK DIŞARI-TIKLAMA DENETİMİNİ KIRAR ve kırılma SESSİZDİR.** Panel
+artık kökün içinde olmadığı için `rootRef.current.contains(target)` tek başına
+panelin **içine** yapılan `mousedown`u "dışarı" sayar: panel, seçeneğin
+`onClick`i ateşlenmeden kapanır ve liste açılır ama **hiçbir seçenek
+seçilemez**. Denetim iki ref'e birden bakmak zorunda (`Menu` baştan öyle
+yapıyordu). Nöbetçi `__tests__/components/Combobox.portal.test.tsx`.
+
+⚠ **Panel genişliği render sırasında DOM'dan okunmaz.** İki bileşen de
+`triggerRef.current?.offsetWidth` yazıyordu; render sırasında DOM okumak ilk
+render'da `undefined` verir ve değer bir daha **güncellenmez** — pencere yeniden
+boyutlandığında panel bayat genişlikte kalır. Ölçüm `usePositioning`in kendi
+`ResizeObserver`ında: `PositioningState.anchorWidth`.
+
+### ⚠ Tetikleyici içi süsler — `tap-target` SIRALAMASI üç arıza üretiyordu
+
+`.combobox__clear` `position: absolute` yazıyor, ama `@include tap-target`
+ondan **sonra** gelip `position: relative` yazıyordu; aynı özgüllükte son
+bildirim kazanır ve `absolute` **ölü** kalıyordu. Dosyayı okuyan kişi doğru
+sanıyor — bildirim orada duruyor.
+
+Ölçüldü (2026-08-19, `?solo=Combobox`, `isClearable` + seçili değer):
+
+| ne | beklenen | ölçülen |
+|---|---|---|
+| `✕` `position` | `absolute` | **`relative`** |
+| `.combobox` kök yüksekliği | 48px (tetikleyici) | **73px** |
+| `✕` yatay konumu | tetikleyicinin içinde | kökün **36px SOLUNDA** |
+| caret dikey kayması | 0px | **12px** |
+
+Zincir tek yönlü ve üç arıza **tek** hatadan doğuyor: düğme akışta kaldı →
+tetikleyicinin altına blok olarak dizildi → kök 48'den 73px'e şişti →
+`right: 36px` göreli bir öteleme olarak yorumlanıp düğmeyi bileşenin tümüyle
+dışına attı → köke çapalı caret'in `top: 50%`i artık tetikleyicinin merkezini
+göstermiyor.
+
+**İki düzeltme, iki ayrı gerekçe:**
+
+| ne | nasıl |
+|---|---|
+| `✕` | `position` artık `@include tap-target`TAN SONRA yazılır. `absolute` de konumlu kutu kurar, `::after` çapası korunur |
+| caret | mutlak konum bırakıldı, **düz esnek çocuk** oldu — hizalamayı tetikleyicinin `align-items: center`ı yapar, kapsayıcı bloktan bağımsız. Kardeş `Select` baştan böyleydi ve arızayı hiç taşımadı |
+
+⚠ **Caret esnek akışa girince `--clearable` DOLGUSU DÜŞTÜ.** Eski dolgu
+(`$space-3 + $icon-sm + $space-2 + $clear-size + $space-2` = 66px) iki süsün
+payını birlikte ayırıyordu; caret artık gerçek yer tuttuğu için o dolgu onu içe
+itiyor ve caret sağ kenardan **67px** kopup `✕`in soluna düşüyordu. `✕`in payı
+bugün caret'in `margin-inline-start`ıyla açılır.
+
+⚠ **Mixin artık uyarıyor:** `tap-target` `position` yazar, yani çağrı yerinde
+**en başta** include edilmeli. Kalan yedi kullanıcı tarandı; sıralama hatası
+yalnızca burada vardı.
+
+### Nöbetçiler ve ölçülemeyen boşluk
+
+| nöbetçi | ne tutuyor |
+|---|---|
+| `__tests__/e2e/anchored-panel.spec.ts` (7) | panelin dönüştürülmüş/kırpan atada kaymaması, caret ve `✕`in tetikleyici içinde kalması, kök yüksekliği == tetikleyici yüksekliği |
+| `__tests__/components/Combobox.portal.test.tsx` (7) | panelin kökün DIŞINA çizilmesi; portallanan panelde seçim ve arama kutusunun paneli kapatmaması |
+
+⚠ **`desktop-behavior` PLAYWRIGHT PROJESİ BU TUR AÇILDI ve boşluk yapısaldı.**
+Öncesinde davranış ölçen her spec yalnızca `ios` + `android` projelerinde
+koşuyordu (tek masaüstü projesi `visual` ekran görüntüsü alıyor) ve
+`Combobox`/`Select` dar ekranda **alt sayfa** açıyor. Yani bu iki bileşenin
+`popover` dalı — panelin konumlandırıldığı **tek** dal — hiçbir tarayıcı testi
+tarafından çalıştırılmıyordu.
+
+⚠ **Görsel nöbetçi arızayı ZATEN GÖRMÜŞTÜ, kimse bakmadı.** Depodaki
+`Combobox-light.png` **1232×155**; hatalı kod aynı bölümü **1232×180** çiziyor,
+yani taban çizgisi hatadan ÖNCE kaydedilmiş ve `visual.spec.ts` o günden beri
+kırmızı. Düzeltme taban çizgisini **bayt bayt** geri getiriyor — güncelleme
+gerekmedi. ⚠ `ızgara` testi ilk uyuşmazlıkta durduğu için tek bir bileşen
+bildiriyor; arkasında kalan bayat taban çizgileri (`Accordion`, `CopyField`,
+`Modal`, `rtl`, `compact`, `forced-colors` ve taban çizgisi **hiç olmayan**
+`CodeBadge`) bu turda **kapsam dışı** ve hâlâ kırmızı.
+
 ## Göç ve `@deprecated` yollar
 
 **Kural:** bir prop adı ya da davranışı değişecekse eski yol **bir sürüm boyunca

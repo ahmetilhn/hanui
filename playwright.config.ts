@@ -4,6 +4,18 @@ import { defineConfig, devices } from '@playwright/test';
 /** Piksel karsilastiran tek dosya; cihaz projeleri onu dislar. */
 const VISUAL_SPEC = /visual\.spec\.ts/;
 
+/**
+ * MASAÜSTÜ DAVRANIŞ TESTLERİ — geniş ekranda ölçülmesi ZORUNLU olanlar.
+ *
+ * ⚠ ÖLÇÜLMÜŞ BOŞLUK. Bu proje eklenmeden önce davranış ölçen HER spec yalnızca
+ * `ios` + `android` projelerinde koşuyordu (tek masaüstü projesi `visual`
+ * ekran görüntüsü alıyor) ve `Combobox`/`Select` dar ekranda **alt sayfa**
+ * açıyor. Yani bu iki bileşenin `popover` dalı — yapışkan panelin
+ * konumlandırıldığı tek dal — hiçbir tarayıcı testi tarafından
+ * çalıştırılmıyordu. Panelin kapsayıcı blok kayması bu yüzden görünmedi.
+ */
+const DESKTOP_BEHAVIOR_SPEC = /anchored-panel\.spec\.ts/;
+
 export default defineConfig({
   testDir: './__tests__/e2e',
   /* Bir bilesenin degismesi digerlerinin ciktisini etkilemiyor: tam paralel. */
@@ -53,6 +65,16 @@ export default defineConfig({
     },
 
     /*
+     * Piksel DEGIL geometri: yapışkan panelin tetikleyicisine bağlı kalması
+     * yalnızca geniş ekranda ölçülebilir (dar ekranda panel alt sayfaya döner).
+     */
+    {
+      name: 'desktop-behavior',
+      testMatch: DESKTOP_BEHAVIOR_SPEC,
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } },
+    },
+
+    /*
      * iOS = WEBKIT, ve bu bir tercih degil: App Store kurali geregi iOS'taki
      * HER tarayici (Chrome dahil) WebKit kullaniyor. Chromium'da dogru olan
      * orada dogru olmak zorunda degil — bu depoda kayitli iki hata da
@@ -61,12 +83,12 @@ export default defineConfig({
      */
     {
       name: 'ios',
-      testIgnore: VISUAL_SPEC,
+      testIgnore: [VISUAL_SPEC, DESKTOP_BEHAVIOR_SPEC],
       use: { ...devices['iPhone 14'] },
     },
     {
       name: 'android',
-      testIgnore: VISUAL_SPEC,
+      testIgnore: [VISUAL_SPEC, DESKTOP_BEHAVIOR_SPEC],
       use: { ...devices['Pixel 7'] },
     },
   ],

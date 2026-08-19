@@ -16,12 +16,10 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import { isClient } from '@ahmetilhn/handy-utils';
-
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import { captureFocus } from '../../helpers/focus.helper';
-import { POPOVER_RESET, resolvePortalTarget, showTopLayer } from '../../helpers/portal.helper';
+import usePortalSurface from '../../hooks/usePortalSurface';
 import usePositioning from '../../hooks/usePositioning';
 
 import styles from './index.module.scss';
@@ -81,17 +79,7 @@ const Menu = ({
    * ucuzdur ama tetikleyicinin DOM konumu acilistan sonra degismedigi icin
    * tekrar hesaplamanin da bir anlami yok — `isOpen` false iken `null`.
    */
-  const portal = isOpen && isClient() ? resolvePortalTarget(anchorRef.current) : null;
-
-  /*
-   * ⚠ `popover` niteligi TEK BASINA yetmez: eleman `showPopover()` cagrilana
-   * kadar `display: none` kalir. Cagri yuzey MONTE EDILDIKTEN sonra olmali,
-   * bu yuzden `useEffect` — render sirasinda ref henuz dolu degil.
-   */
-  useEffect(() => {
-    if (!isOpen || !portal?.needsTopLayer) return;
-    return showTopLayer(surfaceRef.current);
-  }, [isOpen, portal?.needsTopLayer]);
+  const portal = usePortalSurface(isOpen, anchorRef, surfaceRef);
 
   const open = useCallback(
     (target: 'first' | 'last') => {
@@ -249,7 +237,7 @@ const Menu = ({
       {anchor}
 
       {isOpen &&
-        portal &&
+        portal.container &&
         createPortal(
           <div
             ref={surfaceRef}
@@ -260,11 +248,11 @@ const Menu = ({
              * ⚠ Modalin ICINDEN acildiginda yuzey UST KATMANA cikmak ZORUNDA.
              * Gerekce ve olculen dort senaryo: `helpers/portal.helper.ts`.
              */
-            {...(portal.needsTopLayer ? { popover: 'manual' as const } : {})}
+            {...portal.attributes}
             className={cx(styles.menu, styles[`menu--${positioning.side}`], className)}
             style={{
               ...positioning.style,
-              ...(portal.needsTopLayer ? POPOVER_RESET : {}),
+              ...portal.style,
               visibility: positioning.isPositioned ? 'visible' : 'hidden',
             }}
             data-testid={testId}

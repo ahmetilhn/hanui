@@ -14,12 +14,10 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import { isClient } from '@ahmetilhn/handy-utils';
-
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import useDismissOnEscape from '../../hooks/useDismissOnEscape';
-import { POPOVER_RESET, resolvePortalTarget, showTopLayer } from '../../helpers/portal.helper';
+import usePortalSurface from '../../hooks/usePortalSurface';
 import usePositioning from '../../hooks/usePositioning';
 
 import styles from './index.module.scss';
@@ -137,13 +135,7 @@ const Tooltip = ({
     isOpen,
   });
 
-  /* Portal hedefi yalnizca acikken cozulur; gerekce `helpers/portal.helper.ts`. */
-  const portal = isOpen && isClient() ? resolvePortalTarget(anchorRef.current) : null;
-
-  useEffect(() => {
-    if (!isOpen || !portal?.needsTopLayer) return;
-    return showTopLayer(bubbleRef.current);
-  }, [isOpen, portal?.needsTopLayer]);
+  const portal = usePortalSurface(isOpen, anchorRef, bubbleRef);
 
   const clearTimer = useCallback(() => {
     if (timerRef.current) window.clearTimeout(timerRef.current);
@@ -254,18 +246,18 @@ const Tooltip = ({
         aciyordu.
       */}
       {isOpen &&
-        portal &&
+        portal.container &&
         createPortal(
           <span
             ref={bubbleRef}
             /* ⚠ Modal içinden açıldığında üst katman ZORUNLU — `portal.helper`. */
-            {...(portal.needsTopLayer ? { popover: 'manual' as const } : {})}
+            {...portal.attributes}
             id={id}
             role="tooltip"
             className={cx(styles.bubble, styles[`bubble--${positioning.side}`])}
             style={{
               ...positioning.style,
-              ...(portal.needsTopLayer ? POPOVER_RESET : {}),
+              ...portal.style,
               /* Olculmeden cizilen balon bir kare boyunca sol ust kosede
                  parliyordu. */
               visibility: positioning.isPositioned ? 'visible' : 'hidden',
