@@ -5,7 +5,7 @@
   display: inline-block;
   border-radius: $radius-pill;
   border: 2px solid $track;
-  border-top-color: $blue;
+  border-top-color: $role;
   animation: $anim-spin $duration-spin linear infinite;
 
   &__label {
@@ -30,7 +30,7 @@
 
   @include reduced-motion {
     animation: none;
-    border-top-color: $blue;
+    border-top-color: $role;
     opacity: 0.7;
   }
 }

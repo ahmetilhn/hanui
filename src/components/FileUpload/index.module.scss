@@ -21,7 +21,7 @@
 
   &:hover {
     border-color: $ring-color;
-    background-color: $blue-tint;
+    background-color: $role-tint;
   }
 
   &:has(.upload__input:focus-visible) {
@@ -31,7 +31,7 @@
   &--dragging {
     border-style: solid;
     border-color: $ring-color;
-    background-color: $blue-tint;
+    background-color: $role-tint;
   }
 
   &--invalid {

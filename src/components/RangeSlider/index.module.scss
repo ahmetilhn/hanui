@@ -45,7 +45,7 @@
     position: absolute;
     height: 4px;
     border-radius: $radius-pill;
-    background-color: $blue;
+    background-color: $role;
   }
 
   &__input {
@@ -76,7 +76,7 @@
       margin-top: -8px;
       border-radius: $radius-pill;
       background-color: $surface;
-      border: 2px solid $blue;
+      border: 2px solid $role;
       box-shadow: $shadow-sm;
       cursor: grab;
       transition:
@@ -90,7 +90,7 @@
       height: 20px;
       border-radius: $radius-pill;
       background-color: $surface;
-      border: 2px solid $blue;
+      border: 2px solid $role;
       box-shadow: $shadow-sm;
       cursor: grab;
       transition:
@@ -122,12 +122,12 @@
 
     &:focus-visible::-webkit-slider-thumb {
       box-shadow: $ring;
-      border-color: $blue-active;
+      border-color: $role-active;
     }
 
     &:focus-visible::-moz-range-thumb {
       box-shadow: $ring;
-      border-color: $blue-active;
+      border-color: $role-active;
     }
 
     @include reduced-motion {

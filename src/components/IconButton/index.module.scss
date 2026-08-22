@@ -81,16 +81,16 @@
   }
 
   &--cart {
-    background-color: $amber;
-    color: $on-amber;
+    background-color: $cart;
+    color: $on-cart;
 
     &:hover:not(:disabled) {
-      background-color: $amber-hover;
+      background-color: $cart-hover;
     }
 
     &:disabled {
-      background-color: $amber-soft;
-      color: $on-amber;
+      background-color: $cart-soft;
+      color: $on-cart;
     }
   }
 

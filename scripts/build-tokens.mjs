@@ -9,8 +9,15 @@ const STYLES_DIR = resolve(ROOT, 'src/styles');
 /** CSS özel özelliği öneki. Tüketicinin kendi değişkenleriyle çakışmaz. */
 const PREFIX = '--hanui-';
 
-const { LIGHT_THEME, DARK_THEME, DEFAULT_FONTS, METRIC_TOKENS, COMPACT_DENSITY } =
-  await loadTokens();
+const {
+  LIGHT_THEME,
+  DARK_THEME,
+  DEFAULT_FONTS,
+  METRIC_TOKENS,
+  COMPACT_DENSITY,
+  NARROW_METRICS,
+  NARROW_BREAKPOINT,
+} = await loadTokens();
 
 // Üretilen `.scss` dosyalari YORUM TASIMAZ; sozlesme burada, kaynakta yazili.
 const BANNER = '';
@@ -71,6 +78,12 @@ ${fontDeclarations()}
 
 :root[data-hanui-density='compact'] {
 ${declarations(COMPACT_DENSITY)}
+}
+
+@media (max-width: ${NARROW_BREAKPOINT}) {
+  :root {
+${declarations(NARROW_METRICS, '    ')}
+  }
 }
 `;
 

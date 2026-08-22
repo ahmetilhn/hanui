@@ -49,12 +49,12 @@
     font-weight: $weight-semibold;
 
     @include for-touch {
-      font-size: $font-size-base;
+      font-size: $font-size-control;
     }
 
     &:focus {
       outline: none;
-      background-color: $blue-tint;
+      background-color: $role-tint;
     }
 
     &:disabled {
@@ -73,7 +73,7 @@
       font-size: $font-size-xs;
 
       @include for-touch {
-        font-size: $font-size-base;
+        font-size: $font-size-control;
       }
     }
   }

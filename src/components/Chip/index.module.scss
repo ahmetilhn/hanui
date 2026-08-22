@@ -94,23 +94,23 @@
   }
 
   &--selected {
-    border-color: $blue;
-    color: $blue-hover;
-    background-color: $blue-tint;
+    border-color: $role;
+    color: $role-hover;
+    background-color: $role-tint;
     font-weight: $weight-semibold;
 
     .chip__icon {
-      color: $blue;
+      color: $role;
     }
 
     .chip__count {
-      color: $blue-text;
+      color: $role-text;
     }
 
     &:hover:not(:disabled) {
-      border-color: $blue-hover;
-      color: $blue-hover;
-      background-color: $blue-tint;
+      border-color: $role-hover;
+      color: $role-hover;
+      background-color: $role-tint;
     }
   }
 }

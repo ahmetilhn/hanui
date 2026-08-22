@@ -37,7 +37,7 @@ $jump-height: 49px;
     transition: color $duration-fast $ease-out;
 
     &:hover {
-      color: $blue-text;
+      color: $role-text;
       text-decoration: underline;
       text-underline-offset: 3px;
     }
@@ -82,10 +82,10 @@ $jump-height: 49px;
   &:hover {
     background-color: $surface;
     border-color: $border;
-    color: $blue-text;
+    color: $role-text;
 
     .row__name {
-      color: $blue-text;
+      color: $role-text;
     }
   }
 
@@ -166,8 +166,8 @@ $jump-height: 49px;
       color $duration-fast $ease-out;
 
     &:hover {
-      background-color: $blue-tint;
-      color: $blue-text;
+      background-color: $role-tint;
+      color: $role-text;
     }
 
     @include focus-ring;

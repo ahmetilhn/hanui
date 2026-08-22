@@ -77,8 +77,8 @@
   }
 
   &.badge--outline {
-    border-color: $blue-line;
-    color: $blue-text;
+    border-color: $role-line;
+    color: $role-text;
   }
 }
 
@@ -144,13 +144,13 @@
   }
 
   &.badge--solid {
-    background-color: $blue;
-    border-color: $blue;
-    color: $on-blue;
+    background-color: $role;
+    border-color: $role;
+    color: $on-role;
   }
 
   &.badge--outline {
-    border-color: $blue;
-    color: $blue-text;
+    border-color: $role;
+    color: $role-text;
   }
 }

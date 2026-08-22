@@ -98,15 +98,15 @@
   }
 
   & &__page--active {
-    background-color: $blue;
-    border-color: $blue;
-    color: $on-blue;
+    background-color: $role;
+    border-color: $role;
+    color: $on-role;
 
     &:hover:not(:disabled),
     &:active:not(:disabled) {
-      background-color: $blue-text;
-      border-color: $blue-text;
-      color: $on-blue;
+      background-color: $role-text;
+      border-color: $role-text;
+      color: $on-role;
     }
   }
 
