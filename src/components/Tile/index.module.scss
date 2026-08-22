@@ -52,20 +52,20 @@
   }
 
   &:hover &__medallion {
-    background-color: $blue-tint;
-    color: $blue-hover;
+    background-color: $role-tint;
+    color: $role-hover;
   }
 
   &--active {
-    border-color: $blue;
+    border-color: $role;
 
     .tile__medallion {
-      background-color: $blue;
-      color: $on-blue;
+      background-color: $role;
+      color: $on-role;
     }
 
     .tile__label {
-      color: $blue-hover;
+      color: $role-hover;
     }
   }
 }

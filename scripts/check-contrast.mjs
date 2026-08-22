@@ -41,7 +41,7 @@ const buildPairs = () => {
 
   // --- Dolgu üzerindeki metin: her etkileşim durumu ayrı ölçülür ---
   for (const fill of ['action', 'action-hover', 'action-active']) add('on-action', fill, 'text');
-  for (const fill of ['amber', 'amber-hover', 'amber-active']) add('on-amber', fill, 'text');
+  for (const fill of ['cart', 'cart-hover', 'cart-active']) add('on-cart', fill, 'text');
 
   /*
    * PASİF DOLGU ÜZERİNDEKİ METİN — WCAG'in muaf tuttuğu ama kütüphanenin
@@ -55,9 +55,9 @@ const buildPairs = () => {
    * karo madalyonu (`Tile`), geçerli adım (`Steps`), dolu bağlantı rozeti
    * (`Badge`). Kendi token'ı var: mavi koyu temada AÇILIYOR, birincil eylem
    * ise iki temada da koyu yeşil — biri koyu metin isterken diğeri beyaz
-   * istiyor ve tek token ikisini taşıyamıyor (bkz. `tokens.ts` → `on-blue`).
+   * istiyor ve tek token ikisini taşıyamıyor (bkz. `tokens.ts` → `on-role`).
    */
-  for (const fill of ['blue', 'blue-hover']) add('on-blue', fill, 'text');
+  for (const fill of ['role', 'role-hover']) add('on-role', fill, 'text');
 
   /*
    * `on-green` YALNIZCA `green-accent` ile ölçülür, hover'ıyla değil.
@@ -70,8 +70,8 @@ const buildPairs = () => {
   add('on-green', 'green-accent', 'text');
 
   // --- Bağlantı ---
-  for (const surface of ['page', 'surface', 'surface-2', 'blue-tint'])
-    add('blue-text', surface, 'text');
+  for (const surface of ['page', 'surface', 'surface-2', 'role-tint'])
+    add('role-text', surface, 'text');
 
   // --- Durum üçlüleri ---
   for (const tint of TINTS) add(`${tint}-fg`, `${tint}-bg`, 'text');
@@ -87,6 +87,7 @@ const buildPairs = () => {
   /* Marka şeridi: temadan bağımsız, iki temada da aynı çift ölçülür. */
   add('band-fg', 'band-bg', 'text');
   add('band-fg-2', 'band-bg', 'text');
+  add('band-fg-3', 'band-bg', 'text');
 
   // --- Örtü ve cam: saydam; arkalarında sayfa var ---
   add('on-scrim', 'scrim', 'text', 'page');
@@ -129,12 +130,12 @@ const buildAdvisoryPairs = () => {
   }
   add('action-soft', 'surface');
   add('track', 'surface');
-  add('blue-line', 'blue-tint');
+  add('role-line', 'role-tint');
   add('nav-line', 'nav-bg');
   add('nav-line-strong', 'nav-bg');
 
   /* Dolu düğmenin sayfaya karşı sınırı (`amber` beyaz üzerinde 2,14:1). */
-  for (const fill of ['action', 'amber', 'danger-solid', 'blue'])
+  for (const fill of ['action', 'cart', 'danger-solid', 'role'])
     for (const surface of ['page', 'surface']) add(fill, surface);
 
   return pairs;

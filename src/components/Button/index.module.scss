@@ -1,7 +1,17 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
+/*
+ * ⚠ DOKUNMA ALANI GÖRÜNEN KUTUDAN BÜYÜK. `--small` gözle 36px ve öyle
+ * KALMALI — akışkan ölçek zaten "mobilde her şey çok büyük" şikâyetini
+ * çözmek için küçültüyor, düğmeyi geri şişirmek o kazancı geri verirdi.
+ * Erişilebilirliği görünen boyut değil `::after` çapası taşıyor: parmak 44px,
+ * göz 36px. Tüketici uygulamalar kendi kompakt düğmelerini (arama gönder,
+ * sekme) aynı kalıpla çözüyor.
+ */
 .button {
+  @include tap-target;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -121,23 +131,23 @@
   }
 
   &--cart {
-    background-color: $amber;
-    color: $on-amber;
+    background-color: $cart;
+    color: $on-cart;
     box-shadow: $shadow-xs;
 
     &:hover:not(:disabled) {
-      background-color: $amber-hover;
+      background-color: $cart-hover;
       box-shadow: $shadow-sm;
     }
 
     &:active:not(:disabled) {
-      background-color: $amber-active;
+      background-color: $cart-active;
       box-shadow: $shadow-xs;
     }
 
     &:disabled {
-      background-color: $amber-soft;
-      color: $on-amber;
+      background-color: $cart-soft;
+      color: $on-cart;
     }
   }
 
@@ -164,17 +174,17 @@
 
   &--outline {
     background-color: transparent;
-    border-color: $blue;
-    color: $blue-text;
+    border-color: $role;
+    color: $role-text;
 
     &:hover:not(:disabled) {
-      background-color: $blue-tint;
-      border-color: $blue-hover;
+      background-color: $role-tint;
+      border-color: $role-hover;
     }
 
     &:active:not(:disabled) {
-      background-color: $blue-tint;
-      border-color: $blue-active;
+      background-color: $role-tint;
+      border-color: $role-active;
     }
 
     &:disabled {

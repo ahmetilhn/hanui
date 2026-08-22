@@ -8,22 +8,22 @@ describe('buildThemeCss', () => {
   });
 
   it('yalnızca EZİLEN token yazılır, tam eşleme değil', () => {
-    const css = buildThemeCss({ light: { blue: '#0d6efd' } });
+    const css = buildThemeCss({ light: { role: '#0d6efd' } });
 
-    expect(css).toContain('--hanui-blue: #0d6efd');
+    expect(css).toContain('--hanui-role: #0d6efd');
     expect(css).not.toContain('--hanui-surface:');
     expect(css).not.toContain('--hanui-text:');
   });
 
   it('açık tema ezmesi HEM `:root` HEM açık seçim seçicisine yazılır', () => {
-    const css = buildThemeCss({ light: { blue: '#0d6efd' } });
+    const css = buildThemeCss({ light: { role: '#0d6efd' } });
 
-    expect(css).toMatch(/:root\s*\{[^}]*--hanui-blue: #0d6efd/);
+    expect(css).toMatch(/:root\s*\{[^}]*--hanui-role: #0d6efd/);
     expect(css).toContain(`:root[${THEME_ATTRIBUTE}='light']`);
   });
 
   it('koyu tema ezmesi sistem tercihi yedeğine de iner', () => {
-    const css = buildThemeCss({ dark: { blue: '#6ea8fe' } });
+    const css = buildThemeCss({ dark: { role: '#6ea8fe' } });
 
     expect(css).toContain(`:root[${THEME_ATTRIBUTE}='dark']`);
     expect(css).toContain('@media (prefers-color-scheme: dark)');
@@ -47,7 +47,7 @@ describe('buildThemeCss', () => {
 
   it('ölçü verilmediğinde yoğunluk bloğu HİÇ yazılmaz', () => {
     expect(buildThemeCss({ metrics: {} })).toBe('');
-    expect(buildThemeCss({ light: { blue: '#0d6efd' } })).not.toContain('density');
+    expect(buildThemeCss({ light: { role: '#0d6efd' } })).not.toContain('density');
   });
 
   it('font ezmesi tema seçiminden bağımsız `:root`a yazılır', () => {
@@ -60,9 +60,9 @@ describe('buildThemeCss', () => {
 
 describe('resolveTokens', () => {
   it('ezilmeyen her token varsayılanında kalır', () => {
-    const resolved = resolveTokens('light', { light: { blue: '#0d6efd' } });
+    const resolved = resolveTokens('light', { light: { role: '#0d6efd' } });
 
-    expect(resolved.blue).toBe('#0d6efd');
+    expect(resolved.role).toBe('#0d6efd');
     expect(resolved.surface).toBe(LIGHT_THEME.surface);
     expect(resolved.text).toBe(LIGHT_THEME.text);
   });
@@ -73,9 +73,9 @@ describe('resolveTokens', () => {
   });
 
   it('açık ezmesi koyu şemaya SIZMAZ', () => {
-    const config = { light: { blue: '#0d6efd' } };
+    const config = { light: { role: '#0d6efd' } };
 
-    expect(resolveTokens('dark', config).blue).toBe(DARK_THEME.blue);
+    expect(resolveTokens('dark', config).role).toBe(DARK_THEME.role);
   });
 });
 

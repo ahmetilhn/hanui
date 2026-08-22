@@ -346,9 +346,9 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
     border: 1px solid $alt-line;
     color: $alt-fg;
   } @else if $tone == info {
-    background-color: $blue-tint;
-    border: 1px solid $blue-line;
-    color: $blue-text;
+    background-color: $role-tint;
+    border: 1px solid $role-line;
+    color: $role-text;
   } @else {
     background-color: $off-bg;
     border: 1px solid $off-line;
@@ -467,6 +467,12 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
  *
  * Kural: `@include tap-target` ÖNCE, `position` ezmesi SONRA.
  */
+/*
+ * ⚠ ÇAPA `::after`I SAHİPLENİR. Çağıran bileşen aynı sözde-öğeyi kendi
+ * süsü için kullanırsa (etkin sekme çizgisi, rozet noktası) çapa SESSİZCE
+ * yok olur: mixin çağrılmış görünür, dokunma alanı yoktur. Ölçüldü —
+ * `Tabs` tam olarak buydu; süs `::before`a taşındı.
+ */
 @mixin tap-target($size: $tap-target-size) {
   position: relative;
 
@@ -484,7 +490,7 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
 @mixin input-base {
   width: 100%;
   font-family: $font-ui;
-  font-size: $font-size-base;
+  font-size: $font-size-control;
   line-height: $leading-snug;
   color: $text;
   background-color: $surface;

@@ -157,8 +157,8 @@
   }
 
   &--selected {
-    background-color: $blue-tint;
-    color: $blue-text;
+    background-color: $role-tint;
+    color: $role-text;
     font-weight: $weight-semibold;
   }
 
@@ -176,7 +176,7 @@
   }
 
   &__check {
-    color: $blue-text;
+    color: $role-text;
     flex-shrink: 0;
     font-size: $icon-md;
   }

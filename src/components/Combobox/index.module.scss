@@ -212,7 +212,7 @@ $clear-size: 22px;
     padding-block: $space-2;
 
     @include for-touch {
-      font-size: $font-size-base;
+      font-size: $font-size-control;
     }
 
     &::placeholder {
@@ -257,11 +257,11 @@ $clear-size: 22px;
     min-height: 40px;
 
     &--active {
-      background-color: $blue-tint;
+      background-color: $role-tint;
     }
 
     &--selected {
-      color: $blue-text;
+      color: $role-text;
       font-weight: $weight-semibold;
     }
 
@@ -289,7 +289,7 @@ $clear-size: 22px;
   }
 
   &__check {
-    color: $blue;
+    color: $role;
     font-size: $icon-md;
     flex-shrink: 0;
   }

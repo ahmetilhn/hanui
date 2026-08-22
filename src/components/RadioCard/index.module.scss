@@ -23,19 +23,19 @@
   }
 
   &--selected {
-    border-color: $blue;
-    background-color: $blue-tint;
-    box-shadow: inset 0 0 0 1px $blue;
+    border-color: $role;
+    background-color: $role-tint;
+    box-shadow: inset 0 0 0 1px $role;
 
     &:hover {
-      border-color: $blue;
+      border-color: $role;
     }
 
     .radioCard__indicator {
-      border-color: $blue;
+      border-color: $role;
 
       &::after {
-        background-color: $blue;
+        background-color: $role;
       }
     }
   }

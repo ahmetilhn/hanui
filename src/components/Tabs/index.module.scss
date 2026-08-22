@@ -11,6 +11,8 @@
   }
 
   &__tab {
+    @include tap-target;
+
     display: inline-flex;
     align-items: center;
     gap: $space-2;
@@ -30,9 +32,15 @@
       color: $text;
     }
 
+    /*
+     * ⚠ ETKİN SEKME ÇİZGİSİ `::before` — `::after` DEĞİL. `tap-target`
+     * mixin'i dokunma alanını `::after` ile açıyor; çizgi orada yazılınca
+     * ÇAPAYI EZİYOR ve sekme 36px'lik görünen kutusuna düşüyordu. Hata
+     * sessizdi: mixin çağrılmış görünüyor, hit alanı yok.
+     */
     @include focus-ring($ring-color, -2px);
 
-    &::after {
+    &::before {
       content: '';
       position: absolute;
       inset-inline: $space-3;
@@ -44,18 +52,18 @@
     }
 
     &--active {
-      color: $blue-hover;
+      color: $role-hover;
       font-weight: $weight-semibold;
 
-      &::after {
-        background-color: $blue;
+      &::before {
+        background-color: $role;
       }
     }
 
     @include reduced-motion {
       transition: none;
 
-      &::after {
+      &::before {
         transition: none;
       }
     }
