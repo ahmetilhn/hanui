@@ -13,7 +13,7 @@ import styles from './index.module.scss';
 type Props = {
   value: number;
   onChange: (value: number) => void;
-  /** Grubun ve girdinin erişilebilir adı. Verilmezse `labels.quantity.label`. */
+  /** Grubun ve girdinin erişilebilir adı. */
   label?: string;
   /** Verilmezse `labels.quantity.decrease`. */
   decreaseLabel?: string;
@@ -51,13 +51,9 @@ const QuantityStepper: FC<Props> = ({
     setDraft(null);
 
     /*
+     * Onceki bicim `if (!parsed) return;` diyordu ve `0` falsy: `min={0}` ile kurulmus bir alanda
+     * (stok duzeltme formu) kullanici `0` yazip alandan…
      * ⚠ BOSLUK KONTROLU HAM DIZEDEN yapilir, sayidan DEGIL.
-     *
-     * Onceki bicim `if (!parsed) return;` diyordu ve `0` falsy: `min={0}` ile
-     * kurulmus bir alanda (stok duzeltme formu) kullanici `0` yazip alandan
-     * ciktiginda deger sessizce eski haline sicriyor, `onChange` hic
-     * atesienmiyordu. Tek bir kontrol iki ayri soruyu cevapliyordu — "kutu bos
-     * mu" ve "deger sifir mi".
      */
     const digits = raw.replace(/\D/g, '');
     if (digits === '') return;
@@ -91,14 +87,7 @@ const QuantityStepper: FC<Props> = ({
         value={draft ?? String(value)}
         onChange={event => setDraft(event.target.value.replace(/\D/g, '').slice(0, 2))}
         onBlur={event => commit(event.target.value)}
-        /*
-         * ⚠ `spinbutton` ROLU BIR SOZ VERIR: Yukari/Asagi ok, PageUp/PageDown
-         * ve Home/End degeri degistirir. Onceki hal yalnizca `Enter`
-         * isliyordu, yani ekran okuyucu "dondurme dugmesi, 1, en az 1 en fazla
-         * 99" diye duyuruyor, kullanici Yukari ok'a basiyor ve HICBIR SEY
-         * olmuyordu. Rolu tasiyip sozlesmesini uygulamamak, rolu hic
-         * yazmamaktan daha kotu: kullanici calismayan bir yol deniyor.
-         */
+        /* ⚠ `spinbutton` ROLU BIR SOZ VERIR: */
         onKeyDown={event => {
           const step = event.key === 'ArrowUp' ? 1 : event.key === 'ArrowDown' ? -1 : 0;
 
@@ -132,14 +121,7 @@ const QuantityStepper: FC<Props> = ({
         }}
         inputMode="numeric"
         disabled={isDisabled}
-        /*
-         * ⚠ ARALIK ETIKETE GOMULMEZ, ROLE ILE BILDIRILIR. Onceki hâl
-         * `"Adet (1-99)"` diyordu: ekran okuyucu bunu duz bir ad olarak
-         * okuyor, GUNCEL degeri ve sinirlari ayri birer bilgi olarak
-         * bildirmiyordu. `spinbutton` tam da bu kutu icin var ve
-         * `aria-valuenow/min/max` degistiginde okuyucu farki kendisi
-         * duyuruyor.
-         */
+        /* ⚠ ARALIK ETIKETE GOMULMEZ, ROLE ILE BILDIRILIR. */
         role="spinbutton"
         aria-valuenow={value}
         aria-valuemin={min}

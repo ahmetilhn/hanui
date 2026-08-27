@@ -42,11 +42,7 @@ export default defineConfig({
   css: {
     postcss: { plugins: [hanuiLayer()] },
     modules: {
-      /*
-       * Sınıf adları paket adıyla ön eklenir. Tüketicinin kendi CSS modülü
-       * karma değeri bizimkiyle çakışabiliyordu ve çakışma sessiz: iki farklı
-       * bileşen aynı sınıfı paylaşıp birbirinin kuralını alıyordu.
-       */
+      /* Sınıf adları paket adıyla ön eklenir. */
       generateScopedName: 'hanui-[local]-[hash:base64:5]',
     },
     preprocessorOptions: {
@@ -72,10 +68,8 @@ export default defineConfig({
         'react/jsx-runtime',
         '@ahmetilhn/handy-utils',
         /*
-         * İkonlar da EXTERNAL: paket tüketicide zaten var (uygulamalar kendi
-         * içerik ikonlarını aynı setten alıyor). Bundle'a gömülseydi aynı
-         * simgeler iki kez inecek ve ağaç sallama tüketici tarafında hiç
-         * çalışmayacaktı.
+         * İkonlar da EXTERNAL: paket tüketicide zaten var (uygulamalar kendi içerik ikonlarını aynı
+         * setten alıyor).
          */
         'react-bootstrap-icons',
       ],
@@ -88,9 +82,8 @@ export default defineConfig({
         },
       },
       /*
-       * Rollup, dosya başındaki `'use client'` yönergelerini bundle ederken
-       * uyarı veriyor: yönerge modül düzeyinde anlamlı, bundle düzeyinde değil.
-       * Sınırı zaten banner ile paket düzeyinde çiziyoruz; uyarı gürültü.
+       * Rollup, dosya başındaki `'use client'` yönergelerini bundle ederken uyarı veriyor: yönerge
+       * modül düzeyinde anlamlı, bundle düzeyinde değil.
        */
       onwarn(warning, warn) {
         if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;

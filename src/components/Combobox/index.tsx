@@ -37,9 +37,8 @@ import { ComboboxOption, ComboboxProps } from '../../types/combobox.type';
 import styles from './index.module.scss';
 
 /*
- * Tipler `types/`e tasindi ama BURADAN da disa aciliyor: cagiranlar
- * (uygulamalar ve testler) `@ahmetilhn/hanui/components/Combobox` yolundan
- * aliyordu ve yalnizca yeri degisti diye bir surum kirilmasi olmamali.
+ * Tipler `types/`e tasindi ama BURADAN da disa aciliyor: cagiranlar (uygulamalar ve testler)
+ * `@ahmetilhn/hanui/components/Combobox` yolundan aliyordu…
  */
 export type { ComboboxLabels, ComboboxOption, ComboboxProps } from '../../types/combobox.type';
 
@@ -64,11 +63,7 @@ const Combobox = <T extends string>({
 }: ComboboxProps<T>) => {
   const { labels: config } = useHanui();
 
-  /*
-   * Metinler TEMBEL cozulur: cizilmeyen bir ogenin metnini istemek yanlis
-   * alarm uretiyordu — `isSearchHidden` iken arama kutusu hic yok ama toplu
-   * cozumleme yine de "eksik metin" diye uyariyordu.
-   */
+  /* Metinler TEMBEL cozulur: cizilmeyen bir ogenin metnini istemek yanlis alarm uretiyordu */
   const text = {
     get search() {
       return resolveLabel(
@@ -106,16 +101,15 @@ const Combobox = <T extends string>({
   const inputRef = useRef<HTMLInputElement>(null);
 
   /*
-   * Panel NEREDE acilir: masaustunde tetikleyicinin altinda, dar ekranda
-   * ekranin dibinde bir alt sayfada. Karar ACILIRKEN verilir — sunucuda ekran
-   * genisligi bilinmiyor, ilk boyamada verilecek karar yanlis olurdu.
+   * Panel NEREDE acilir: masaustunde tetikleyicinin altinda, dar ekranda ekranin dibinde bir alt
+   * sayfada.
    */
   const [openMode, setOpenMode] = useState<'popover' | 'sheet' | null>(null);
   const isOpen = openMode !== null;
   const [query, setQuery] = useState('');
 
-  // Sunucu araması sırasında seçili kayıt listeden düşebilir; etiketi
-  // hatırlarız ki tetikleyici yer tutucuya dönmesin.
+  // Sunucu araması sırasında seçili kayıt listeden düşebilir; etiketi hatırlarız ki tetikleyici yer
+  // tutucuya dönmesin.
   const [cachedLabel, setCachedLabel] = useState<string | null>(null);
 
   const visibleOptions = useMemo(() => {
@@ -149,19 +143,18 @@ const Combobox = <T extends string>({
   const open = useCallback(() => {
     if (isDisabled) return;
     setOpenMode(window.matchMedia(ABOVE_MOBILE_MEDIA_QUERY).matches ? 'popover' : 'sheet');
-    /* Panel acilinca etkin secenek SECILI olan olur (kancanin `initialIndex`i);
-       kullanici listeyi bastan taramak zorunda kalmaz. */
+    /*
+     * Panel acilinca etkin secenek SECILI olan olur (kancanin `initialIndex`i); kullanici listeyi
+     * bastan taramak zorunda kalmaz.
+     */
     setQuery('');
   }, [isDisabled]);
 
   /*
-   * Disari tiklamada kapanir. `mousedown` kullanilir: `click` beklerken
-   * kullanici surukleyerek secim yaparsa panel kapanmiyordu.
-   *
-   * ⚠ PANEL ARTIK KOKUN ICINDE DEGIL — portallandi. `rootRef` tek basina
-   * bakilsaydi panelin ICINE yapilan `mousedown` "disari" sayilir ve panel
-   * secenegin `onClick`i atesleneceden kapanirdi: liste acilir ama HICBIR
-   * secenek secilemez. `Menu` ayni kontrolu iki ref ile yapiyor.
+   * Disari tiklamada kapanir. `mousedown` kullanilir: `click` beklerken kullanici surukleyerek
+   * secim yaparsa panel kapanmiyordu.
+   * ⚠ PANEL ARTIK KOKUN ICINDE DEGIL — portallandi. `rootRef` tek basina bakilsaydi panelin ICINE
+   * yapilan `mousedown` "disari" sayilir ve panel…
    */
   useEffect(() => {
     if (openMode !== 'popover') return;
@@ -203,8 +196,10 @@ const Combobox = <T extends string>({
     isOpen: isOpen && openMode === 'popover',
   });
 
-  /* Panel BODY'e (ya da icinde bulundugu acik `<dialog>`a) portallanir; gerekce
-     `hooks/usePortalSurface.ts`. */
+  /*
+   * Panel BODY'e (ya da icinde bulundugu acik `<dialog>`a) portallanir; gerekce
+   * `hooks/usePortalSurface.ts`.
+   */
   const portal = usePortalSurface(openMode === 'popover', triggerRef, panelRef);
 
   const { activeIndex, setActiveIndex, listRef, handleKeyDown } =
@@ -233,16 +228,15 @@ const Combobox = <T extends string>({
     isEnabled: isVirtual,
   });
 
-  /*
-   * Etkin secenek CIZILMEMIS olabilir: `scrollIntoView` o satirda calismaz.
-   * Konum once hesaplanir, satir sonra cizilir.
-   */
+  /* Etkin secenek CIZILMEMIS olabilir: `scrollIntoView` o satirda calismaz. */
   useEffect(() => {
     if (isVirtual) scrollToIndex(activeIndex);
   }, [activeIndex, isVirtual, scrollToIndex]);
 
-  /* Iki kanca da AYNI `<ul>`e baglanir: biri etkin secenegi gorunur tutuyor,
-     digeri kaydirmayi olcuyor. */
+  /*
+   * Iki kanca da AYNI ` `e baglanir: biri etkin secenegi gorunur tutuyor, digeri kaydirmayi
+   * olcuyor.
+   */
   const attachList = (node: HTMLUListElement | null) => {
     listRef.current = node;
     scrollRef.current = node;
@@ -251,21 +245,9 @@ const Combobox = <T extends string>({
   const handleInputKeyDown = handleKeyDown;
 
   /*
-   * ⚠ ARAMA KUTUSU GIZLIYKEN KLAVYE SOZLESMESI TETIKLEYICIYE GECER.
-   *
    * Olculen ariza: `handleKeyDown` YALNIZCA arama girdisine bagliydi
-   * (`onKeyDown={handleInputKeyDown}`) ve `isSearchHidden` iken o girdi hic
-   * cizilmiyor. Sonuc, bilesenin TAMAMEN klavye disi kalmasi: tetikleyicide
-   * `onKeyDown` yok, `<ul role="listbox">`te `tabIndex` yok,
-   * `<li role="option">` odaklanabilir degil. Panel Enter ile aciliyor ama
-   * ArrowDown/ArrowUp/Home/End/Escape hicbir sey yapmiyor, Enter yalnizca
-   * dugmenin `onClick`ini yeniden atesleyip paneli kapatiyordu.
-   *
-   * Somut bedel: vitrinin ODEME sayfasindaki TAKSIT SECICISI bu kipte —
-   * klavye kullanicisi taksit planini secemiyordu.
-   *
-   * Bicim `Select.onKeyDown` ile birebir ayni; iki bilesen ayni modeli
-   * paylasiyor ve ayrismalari icin bir sebep yok.
+   * (`onKeyDown={handleInputKeyDown}`) ve `isSearchHidden` iken o girdi hic cizilmiyor.
+   * ⚠ ARAMA KUTUSU GIZLIYKEN KLAVYE SOZLESMESI TETIKLEYICIYE GECER.
    */
   const handleTriggerKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     /* Arama kutusu VARSA sozlesme oradadir; tetikleyici yalnizca acar. */
@@ -287,10 +269,7 @@ const Combobox = <T extends string>({
     setCachedLabel(null);
   };
 
-  /*
-   * Arama ve liste IKI YERDE ayni: masaustu panelinde ve alt sayfada. Ayri
-   * ayri yazilsalardi biri guncellenip digeri unutulurdu.
-   */
+  /* Arama ve liste IKI YERDE ayni: masaustu panelinde ve alt sayfada. */
   const search = isSearchHidden ? null : (
     <div className={styles.combobox__search}>
       <Search aria-hidden className={styles.combobox__searchIcon} />
@@ -320,11 +299,7 @@ const Combobox = <T extends string>({
   );
 
   const renderList = (isSheet: boolean) => {
-    /*
-     * Cizilen dilim. Sanallastirma kapaliyken aralik tum listeyi kapsiyor
-     * (`useVirtualList` olcum yoksa tam listeye duser), yani burada ayri bir
-     * kosula gerek yok.
-     */
+    /* Cizilen dilim. */
     const slice = visibleOptions.slice(range.start, range.end);
 
     return (
@@ -349,28 +324,13 @@ const Combobox = <T extends string>({
           const isChosen = option.value === value;
 
           return (
-            /*
-             * ⚠ `role="option"` `<li>`NIN KENDISINDE. Bir donem araya bir
-             * `<div role="option">` giriyordu, yani agac
-             * `listbox > li > option` seklindeydi ve `<li>` sahipsiz bir ara
-             * dugumdu: `aria-required-children` sozlesmesi kirilir, ekran
-             * okuyucu seceneklerin sayisini ve sirasini guvenilir bicimde
-             * bildiremez. Kardes `Select` bunu bastan dogru yapiyordu
-             * (`Select/index.tsx` — `<li role="option">`), yani desen zaten
-             * depodaydi.
-             */
+            /* ⚠ `role="option"` ` `NIN KENDISINDE. */
             <li
               key={option.value}
               id={`${baseId}-option-${index}`}
               role="option"
               data-index={index}
-              /*
-               * EKRAN OKUYUCU GERCEK SAYIYI DUYMALI. Cizilmeyen satirlar
-               * yuzunden "16 secenekten 3." deniyordu; dogrusu "1121
-               * secenekten 3.". Ikisi de yalnizca sanallastirma acikken
-               * yazilir — tam cizilen listede tarayici zaten dogru sayiyor ve
-               * elle yazmak iki kaynak demek olurdu.
-               */
+              /* EKRAN OKUYUCU GERCEK SAYIYI DUYMALI. */
               aria-setsize={isVirtual ? visibleOptions.length : undefined}
               aria-posinset={isVirtual ? index + 1 : undefined}
               aria-selected={isChosen}
@@ -381,8 +341,8 @@ const Combobox = <T extends string>({
                 isChosen && styles['combobox__option--selected'],
                 option.isDisabled && styles['combobox__option--disabled'],
               )}
-              // Fare imleci seçeneğin üstündeyken etkin seçenek de oraya
-              // taşınır; iki ayrı vurgu kullanıcıyı şaşırtıyordu.
+              // Fare imleci seçeneğin üstündeyken etkin seçenek de oraya taşınır; iki ayrı vurgu
+              // kullanıcıyı şaşırtıyordu.
               onMouseEnter={() => setActiveIndex(index)}
               onClick={() => selectOption(option)}
             >
@@ -427,23 +387,14 @@ const Combobox = <T extends string>({
         aria-expanded={isOpen}
         aria-controls={isOpen ? listboxId : undefined}
         /*
-         * ⚠ `aria-label` KULLANILMAZ — SECILI DEGERI MASKELIYORDU. `aria-label`
-         * elemanin ICERIGININ yerine gecer; tetikleyicinin icerigi ise tam da
-         * secili secenegin etiketi. Sonuc olculdu: ekran okuyucu bir marka
-         * secili olsun olmasin hep "Marka secin, dugme" diyordu, yani
-         * KULLANICI SECIMINI HIC DUYMUYORDU.
-         *
-         * Yerine `aria-labelledby`: once kontrolun ADI (gorunmez span), sonra
-         * DEGERI. Secim yokken yalnizca ad gosterilir — deger span'i o durumda
-         * yer tutucuyu tasidigi icin ikisini birden baglamak ayni metni iki kez
-         * okuturdu.
+         * Yerine `aria-labelledby`: once kontrolun ADI (gorunmez span), sonra DEGERI.
+         * ⚠ `aria-label` KULLANILMAZ — SECILI DEGERI MASKELIYORDU. `aria-label` elemanin ICERIGININ
+         * yerine gecer
          */
         aria-labelledby={displayLabel ? `${baseId}-name ${baseId}-value` : `${baseId}-name`}
         /*
-         * Hata `aria-invalid` ile DEGIL `aria-describedby` ile duyurulur:
-         * `aria-invalid`, `role="button"` uzerinde tanimsizdir ve ekran
-         * okuyucular onu yok sayar. `Field` hata metnini zaten `role="alert"`
-         * ile bagliyor; buradaki gorev yalnizca gorsel.
+         * Hata `aria-invalid` ile DEGIL `aria-describedby` ile duyurulur: `aria-invalid`,
+         * `role="button"` uzerinde tanimsizdir ve ekran okuyucular onu yok…
          */
         aria-describedby={describedBy}
         /* Tetikleyici bir `<button>`; yerel `required` yok, karsiligi bu. */
@@ -507,8 +458,10 @@ const Combobox = <T extends string>({
             style={{
               ...positioning.style,
               ...portal.style,
-              /* Panel tetikleyiciyle AYNI genislikte: sabit konum + portal onu
-                 kapsayicidan kopardigi icin genislik artik miras alinmiyor. */
+              /*
+               * Panel tetikleyiciyle AYNI genislikte: sabit konum + portal onu kapsayicidan
+               * kopardigi icin genislik artik miras alinmiyor.
+               */
               width: positioning.anchorWidth || undefined,
               /* Ilk karede olcu yok; yanlis yerde bir kare parlamasin. */
               visibility: positioning.isPositioned ? undefined : 'hidden',

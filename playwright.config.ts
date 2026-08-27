@@ -6,13 +6,8 @@ const VISUAL_SPEC = /visual\.spec\.ts/;
 
 /**
  * MASAÜSTÜ DAVRANIŞ TESTLERİ — geniş ekranda ölçülmesi ZORUNLU olanlar.
- *
- * ⚠ ÖLÇÜLMÜŞ BOŞLUK. Bu proje eklenmeden önce davranış ölçen HER spec yalnızca
- * `ios` + `android` projelerinde koşuyordu (tek masaüstü projesi `visual`
- * ekran görüntüsü alıyor) ve `Combobox`/`Select` dar ekranda **alt sayfa**
- * açıyor. Yani bu iki bileşenin `popover` dalı — yapışkan panelin
- * konumlandırıldığı tek dal — hiçbir tarayıcı testi tarafından
- * çalıştırılmıyordu. Panelin kapsayıcı blok kayması bu yüzden görünmedi.
+ * ⚠ ÖLÇÜLMÜŞ BOŞLUK. Bu proje eklenmeden önce davranış ölçen HER spec yalnızca `ios` + `android`
+ * projelerinde koşuyordu (tek masaüstü projesi…
  */
 const DESKTOP_BEHAVIOR_SPEC = /anchored-panel\.spec\.ts/;
 
@@ -29,9 +24,8 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:5273',
     /*
-     * Animasyon KAPALI ve imlec gizli: donen gosterge (`Spinner`) ile iskelet
-     * parlamasi (`Skeleton`) her karede baska bir goruntu verir; imlec de
-     * yanip soner. Ucu de "degisiklik" olarak raporlanip gercek diff'i gomer.
+     * Animasyon KAPALI ve imlec gizli: donen gosterge (`Spinner`) ile iskelet parlamasi
+     * (`Skeleton`) her karede baska bir goruntu verir
      */
     launchOptions: { args: ['--font-render-hinting=none'] },
   },
@@ -40,12 +34,7 @@ export default defineConfig({
     toHaveScreenshot: {
       animations: 'disabled',
       caret: 'hide',
-      /*
-       * Sifir tolerans DEGIL. Ayni platformda bile GPU/derleyici surumu bir
-       * kac pikselde yuvarlama farki birakabiliyor; sifir esik bu gurultuyu
-       * hata olarak raporlar. 0,2 tek bir pikselin gozle gorulur sekilde
-       * degismesini yine yakalar.
-       */
+      /* Sifir tolerans DEGIL. */
       maxDiffPixelRatio: 0.002,
       threshold: 0.2,
     },
@@ -65,8 +54,8 @@ export default defineConfig({
     },
 
     /*
-     * Piksel DEGIL geometri: yapışkan panelin tetikleyicisine bağlı kalması
-     * yalnızca geniş ekranda ölçülebilir (dar ekranda panel alt sayfaya döner).
+     * Piksel DEGIL geometri: yapışkan panelin tetikleyicisine bağlı kalması yalnızca geniş ekranda
+     * ölçülebilir (dar ekranda panel alt sayfaya döner).
      */
     {
       name: 'desktop-behavior',
@@ -74,13 +63,7 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } },
     },
 
-    /*
-     * iOS = WEBKIT, ve bu bir tercih degil: App Store kurali geregi iOS'taki
-     * HER tarayici (Chrome dahil) WebKit kullaniyor. Chromium'da dogru olan
-     * orada dogru olmak zorunda degil — bu depoda kayitli iki hata da
-     * (`bottom-sheet` gorunen alan payi, `<dialog>` ust katman gecisleri)
-     * once gercek bir iPhone'da bildirildi.
-     */
+    /* iOS = WEBKIT, ve bu bir tercih degil: */
     {
       name: 'ios',
       testIgnore: [VISUAL_SPEC, DESKTOP_BEHAVIOR_SPEC],
@@ -94,9 +77,8 @@ export default defineConfig({
   ],
 
   /*
-   * Gelistirme sunucusu DEGIL onizleme: dev sunucusu modulleri tek tek servis
-   * ediyor ve ilk boyama, modul sayisina bagli olarak degisen bir gecikmeyle
-   * geliyor — anlik goruntu bazen yari cizilmis bir sayfayi yakaliyordu.
+   * Gelistirme sunucusu DEGIL onizleme: dev sunucusu modulleri tek tek servis ediyor ve ilk boyama,
+   * modul sayisina bagli olarak degisen bir gecikmeyle…
    */
   webServer: {
     command: 'npm run playground:build && npx vite preview --config playground/vite.config.ts',

@@ -55,10 +55,10 @@ const MAX_VISIBLE = 3;
 
 /* YAYIN MERKEZI — modul duzeyinde, saglayicidan BAGIMSIZ. */
 let counter = 0;
-/* `new Set()` modul duzeyinde bir CAGRI ve acilama olmadan bundler onu yan
-   etkili sayabilir — Faz 0'da `memo()` cagrilarinda tam olarak bu olmustu.
-   Burada olculebilir bir fark yaratmadi; acilama yine de duruyor cunku kural
-   modul duzeyindeki HER cagri icin gecerli ve istisnasi olmamali. */
+/*
+ * `new Set()` modul duzeyinde bir CAGRI ve acilama olmadan bundler onu yan etkili sayabilir — Faz
+ * 0'da `memo()` cagrilarinda tam olarak bu olmustu.
+ */
 const listeners = /*#__PURE__*/ new Set<(toasts: ToastRecord[]) => void>();
 let queue: ToastRecord[] = [];
 
@@ -74,10 +74,8 @@ const push = (message: string, options: ToastOptions = {}): number => {
   const id = counter;
 
   /*
-   * SIRAYA ALMA: ekranda en fazla `MAX_VISIBLE` bildirim durur, fazlasi EN
-   * ESKIsini duserek yerini alir. Sinirsiz birakildiginda hizli art arda
-   * gelen istekler (toplu kaydetme) ekrani bastan asagi bildirimle
-   * dolduruyor ve altindaki arayuze ulasilamiyordu.
+   * SIRAYA ALMA: ekranda en fazla `MAX_VISIBLE` bildirim durur, fazlasi EN ESKIsini duserek yerini
+   * alir.
    */
   queue = [...queue, { ...options, id, message }].slice(-MAX_VISIBLE);
   emit();
@@ -87,10 +85,7 @@ const push = (message: string, options: ToastOptions = {}): number => {
 
 /**
  * BİLDİRİM SÖZLEŞMESİ — süre, ikon ve renk kararları TEK YERDE.
- *
- * @example
- * toast.success('Adres kaydedildi');
- * toast.error('Kart reddedildi', { action: { label: 'Yeniden dene', onClick: retry } });
+ * @example toast.success('Adres kaydedildi'); toast.error('Kart reddedildi', { action: { label…
  */
 export const toast = {
   show: push,
@@ -131,8 +126,10 @@ const ToastItem = ({ toast: record, closeLabel, onDismiss }: ItemProps) => {
 
     return () => {
       window.clearTimeout(timer);
-      /* Kalan sure KORUNUR: imlec ayrilinca sayac bastan baslasaydi, uzerine
-         bir kez gelinen bildirim ekranda cok daha uzun kaliyordu. */
+      /*
+       * Kalan sure KORUNUR: imlec ayrilinca sayac bastan baslasaydi, uzerine bir kez gelinen
+       * bildirim ekranda cok daha uzun kaliyordu.
+       */
       remainingRef.current = Math.max(0, remainingRef.current - (Date.now() - startedRef.current));
     };
   }, [duration, isPaused, onDismiss, record.id]);
@@ -141,17 +138,17 @@ const ToastItem = ({ toast: record, closeLabel, onDismiss }: ItemProps) => {
     <div
       className={cx(styles.toast, styles[`toast--${tone}`])}
       /*
-       * `role="alert"` YALNIZCA hatada: o rol `aria-live="assertive"` demek ve
-       * kullanicinin okudugu seyi BOLER. Basarili bir kaydetmeyi duyurmak icin
-       * kullaniciyi bolmek gurultu; `status` sirasini bekler.
+       * `role="alert"` YALNIZCA hatada: o rol `aria-live="assertive"` demek ve kullanicinin okudugu
+       * seyi BOLER.
        */
       role={tone === 'danger' ? 'alert' : 'status'}
-      /* Fare uzerindeyken sayac DURUR: kullanici bildirimi okuyor ya da
-         icindeki eylemi tiklamaya gidiyor. */
+      /*
+       * Fare uzerindeyken sayac DURUR: kullanici bildirimi okuyor ya da icindeki eylemi tiklamaya
+       * gidiyor.
+       */
       onPointerEnter={() => setIsPaused(true)}
       onPointerLeave={() => setIsPaused(false)}
-      /* Klavye odagi da duraklatir: Tab ile "Geri al"a ulasmaya calisan
-         kullanicinin altindan bildirim kayboluyordu. */
+      /* Klavye odagi da duraklatir: */
       onFocus={() => setIsPaused(true)}
       onBlur={() => setIsPaused(false)}
     >
@@ -192,19 +189,18 @@ const ToastItem = ({ toast: record, closeLabel, onDismiss }: ItemProps) => {
 };
 
 type HubProps = {
-  /** Kapatma düğmelerinin erişilebilir adı. Verilmezse `labels.close`. */
+  /** Kapatma düğmelerinin erişilebilir adı. */
   closeLabel?: string;
   /**
    * Yığının erişilebilir adı ("Bildirimler").
-   *
-   * ⚠ Yığın artık bir `role="region"` ve canlı bölge; adsız bir bölge ekran
-   * okuyucuda yalnızca "bölge" diye okunur.
+   * ⚠ Yığın artık bir `role="region"` ve canlı bölge; adsız bir bölge ekran okuyucuda yalnızca
+   * "bölge" diye okunur.
    */
   regionLabel?: string;
   className?: string;
 };
 
-/** Bildirim yığını — uygulamada <strong>BİR KEZ</strong> çizilir. */
+/** Bildirim yığını — uygulamada BİR KEZ çizilir. */
 const ToastHub = ({ closeLabel, regionLabel, className }: HubProps) => {
   const { labels } = useHanui();
   const [toasts, setToasts] = useState<ToastRecord[]>([]);
@@ -219,8 +215,10 @@ const ToastHub = ({ closeLabel, regionLabel, className }: HubProps) => {
 
   const handleDismiss = useCallback((id: number) => dismiss(id), []);
 
-  /* Escape en YENI bildirimi kapatir: yigilmis bildirimleri tek tek
-     kapatmanin klavyeyle tek yolu buydu. */
+  /*
+   * Escape en YENI bildirimi kapatir: yigilmis bildirimleri tek tek kapatmanin klavyeyle tek yolu
+   * buydu.
+   */
   const dismissLatest = useCallback(() => {
     const latest = toasts.at(-1);
     if (latest) dismiss(latest.id);
@@ -237,17 +235,8 @@ const ToastHub = ({ closeLabel, regionLabel, className }: HubProps) => {
 
   return createPortal(
     /*
+     * Bildirimin üzerindeki `role="status"`/`role="alert"` öğe DOM'a girdiği ANDA yaratılıyordu
      * ⚠ CANLI BÖLGE YIĞININ KENDİSİNDE, tek tek bildirimlerde DEĞİL.
-     *
-     * Bildirimin üzerindeki `role="status"`/`role="alert"` öğe DOM'a
-     * girdiği ANDA yaratılıyordu; canlı bölge semantiği ise bölgenin içerik
-     * değişmeden ÖNCE var olmasını şart koşar. Sonuç ölçülemez değil ama
-     * güvenilmezdi: NVDA/JAWS/VoiceOver bazı sürümlerde yeni eklenen bir
-     * canlı bölgeyi hiç duyurmuyordu.
-     *
-     * Yığın her zaman DOM'da; `aria-live="polite"` burada duruyor ve
-     * içine giren her bildirim onun bir MUTASYONU olarak duyuruluyor.
-     * `aria-relevant="additions"`: kapanan bir bildirim yeniden okunmasın.
      */
     <div
       className={cx(styles.hub, className)}

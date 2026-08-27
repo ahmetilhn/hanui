@@ -36,11 +36,11 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   /**
-   * Onaylandığında çalışır. `Promise` dönerse düğme beklerken yükleme
-   * durumuna geçer ve pencere <strong>kapanmaz</strong>.
+   * Onaylandığında çalışır. `Promise` dönerse düğme beklerken yükleme durumuna geçer ve pencere
+   * kapanmaz.
    */
   onConfirm: () => void | Promise<void>;
-  /** Soru cümlesi. Eylem odaklı yazılır: "…silinsin mi?". */
+  /** Soru cümlesi. */
   title: string;
   /** Sonucu açıklar: neyin geri alınamaz olduğu burada yazılır. */
   description?: ReactNode;
@@ -52,7 +52,7 @@ type Props = {
   closeLabel?: string;
   /** Onayın türü — ikon, ton ve onay düğmesinin varyantını birlikte belirler. */
   variant?: ConfirmKind;
-  /** @deprecated `variant` kullanın. Bir sonraki büyük sürümde kalkacak. */
+  /** @deprecated `variant` kullanın. */
   kind?: ConfirmKind;
   /** Ek bağlam: silinecek kaydın özeti, uyarı kutusu. */
   children?: ReactNode;
@@ -60,9 +60,7 @@ type Props = {
 
 /**
  * Onay penceresi.
- *
- * @example
- * const [target, setTarget] = useState<Address | null>(null);
+ * @example const [target, setTarget] = useState<Address | null>(null);
  */
 const ConfirmDialog: FC<Props> = ({
   isOpen,
@@ -88,11 +86,7 @@ const ConfirmDialog: FC<Props> = ({
     try {
       await onConfirm();
     } finally {
-      /*
-       * `finally`: istek hata verse de yukleme durumu birakilir. Aksi halde
-       * dugme sonsuza kadar donuyor ve kullanici tekrar deneyemiyordu.
-       * Pencereyi KAPATMAK cagirana ait — hata varsa acik kalmali.
-       */
+      /* `finally`: istek hata verse de yukleme durumu birakilir. */
       setIsRunning(false);
     }
   };

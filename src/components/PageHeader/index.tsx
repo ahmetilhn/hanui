@@ -10,14 +10,11 @@ type Props = {
   eyebrow?: string;
   /** Bir cümlelik açıklama. 68ch ile sınırlı tutulur. */
   description?: ReactNode;
-  /** Sağ tarafta duran eylemler. Dar ekranda başlığın altına düşer. */
+  /** Sağ tarafta duran eylemler. */
   actions?: ReactNode;
   /** Başlık satırının üstündeki kırıntı yolu. */
   breadcrumb?: ReactNode;
-  /**
-   * Başlığın yanındaki sayaç ("1.248 kayıt"). Açıklamanın değil BAŞLIĞIN
-   * hizasında durur; kullanıcı sayıyı başlıkla birlikte okur.
-   */
+  /** Başlığın yanındaki sayaç ("1.248 kayıt"). */
   meta?: ReactNode;
   /** Başlık bloğunun altında duran ek içerik (filtre şeridi, sekmeler). */
   children?: ReactNode;

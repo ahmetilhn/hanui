@@ -16,25 +16,19 @@ import { named } from '../../helpers/component.helper';
 import styles from './index.module.scss';
 
 type ScrollerProps = HTMLAttributes<HTMLDivElement> & {
-  /**
-   * Çerçeve (hairline + yarıçap + yüzey). Gömülü tablolarda kapatılır: orada
-   * tablo zaten bir kartın içinde ve ikinci bir çerçeve kutu içinde kutu
-   * görünüyordu.
-   */
+  /** Çerçeve (hairline + yarıçap + yüzey). */
   hasFrame?: boolean;
   /**
    * Kaydırma bölgesinin erişilebilir adı ("Sipariş kalemleri").
-   *
-   * ⚠ ZORUNLU değil ama VERİLMELİ: kutu klavyeyle odaklanabilir bir
-   * `region` ve adsız bir bölge ekran okuyucuda yalnızca "bölge" diye
-   * okunur — kullanıcı neyin içinde olduğunu bilemez.
+   * ⚠ ZORUNLU değil ama VERİLMELİ: kutu klavyeyle odaklanabilir bir `region` ve adsız bir bölge
+   * ekran okuyucuda yalnızca "bölge" diye okunur
    */
   label?: string;
 };
 
 /**
- * Tablo kaydırma kutusu — "tablo kendi kutusunda kayar, sayfa asla yatay
- * kaymaz" kuralının tek uygulaması.
+ * Tablo kaydırma kutusu — "tablo kendi kutusunda kayar, sayfa asla yatay kaymaz" kuralının tek
+ * uygulaması.
  */
 export const TableScroller: FC<ScrollerProps> = /*#__PURE__*/ named(
   /*#__PURE__*/ memo(({ hasFrame = true, label, className, children, ...rest }) => {
@@ -42,19 +36,9 @@ export const TableScroller: FC<ScrollerProps> = /*#__PURE__*/ named(
     const [isScrollable, setIsScrollable] = useState(false);
 
     /*
+     * Kutu `overflow: auto` taşıyor ve klavye kullanıcısı odaklanamadığı bir kutuyu KAYDIRAMAZ
+     * (WCAG 2.1.1) — o yüzden kaydırılabilirken ikisi de ZORUNLU.
      * ⚠ `tabIndex` + `role` YALNIZCA GERÇEKTEN KAYABİLEN kutuda.
-     *
-     * Kutu `overflow: auto` taşıyor ve klavye kullanıcısı odaklanamadığı bir
-     * kutuyu KAYDIRAMAZ (WCAG 2.1.1) — o yüzden kaydırılabilirken ikisi de
-     * ZORUNLU. Ama koşulsuz yazmak ters yönde bir arıza üretiyordu: içeriğine
-     * rahat sığan bir tablo da bir sekme durağı ve adsız bir "bölge" oluyordu.
-     * Ölçüldü — sipariş/iade detayında yan yana dört küçük tablo var ve hiçbiri
-     * kaymıyor; klavye kullanıcısı dördünü de geçmek zorunda kalıyor, NVDA
-     * dördünü de yalnızca "bölge" diye okuyordu.
-     *
-     * Sığmayan bir kutu bir "bölge" değil sıradan bir sarmalayıcıdır. Ölçüm
-     * `ScrollArea` ile birebir aynı: desen zaten depodaydı, `Table`
-     * kullanmıyordu.
      */
     useEffect(() => {
       const node = ref.current;
@@ -91,18 +75,9 @@ export const TableScroller: FC<ScrollerProps> = /*#__PURE__*/ named(
 
 type Props = TableHTMLAttributes<HTMLTableElement> &
   Partial<{
-    /**
-     * Hücre dolgusu. Tablolar aynı iskeleti paylaşır ama yoğunlukları içeriğe
-     * göre değişir: yüzlerce satırlık bir liste sıkı, karşılaştırma matrisi
-     * ferah durur.
-     */
+    /** Hücre dolgusu. */
     density: 'compact' | 'regular' | 'spacious';
-    /**
-     * Başlık satırı `$surface-2` zeminle kutunun içinde YAPIŞKAN kalır.
-     * Zemin zorunlu: saydam başlığın arkasından kayan satırlar geçiyordu.
-     * `top: 0` doğru olan — referans üst bant değil, tablonun kendi kaydırma
-     * kutusu.
-     */
+    /** Başlık satırı `$surface-2` zeminle kutunun içinde YAPIŞKAN kalır. */
     hasStickyHead: boolean;
     /** Satır hover zemini: çok sütunlu tabloda göz satırını kaybediyor. */
     hasRowHover: boolean;

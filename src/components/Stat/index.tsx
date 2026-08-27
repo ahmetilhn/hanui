@@ -18,7 +18,7 @@ export type StatTrend = 'up' | 'down' | 'flat';
 type Props = {
   /** Ölçülen şeyin adı ("Bugünkü sipariş"). */
   label: string;
-  /** Değerin KENDİSİ — biçimlendirilmiş dize. Bileşen hesap yapmaz. */
+  /** Değerin KENDİSİ — biçimlendirilmiş dize. */
   value: ReactNode;
   /** Değerin yanındaki birim ("₺", "adet"). */
   unit?: string;
@@ -26,16 +26,13 @@ type Props = {
   delta?: string;
   /** Değişimin yönü. */
   trend?: StatTrend;
-  /** Artış İYİ mi. Varsayılan `true`. */
+  /** Artış İYİ mi. */
   isUpPositive?: boolean;
   /** Değerin altındaki bir cümlelik bağlam ("geçen haftaya göre"). */
   description?: ReactNode;
   /** Sol üstte duran ikon madalyonu. */
   icon?: ReactNode;
-  /**
-   * `plain` KUTUYU kaldırır: zemin, kenarlık ve dolgu gider, yalnızca sayı
-   * kalır. Varsayılan `card`.
-   */
+  /** `plain` KUTUYU kaldırır: zemin, kenarlık ve dolgu gider, yalnızca sayı kalır. */
   variant?: 'card' | 'plain';
   size?: 'sm' | 'md';
   className?: string;
@@ -48,11 +45,7 @@ const TREND_ICON: Record<StatTrend, ReactNode> = {
   flat: <DashLg aria-hidden />,
 };
 
-/*
- * ⚠ YON METNI SR-ONLY ve SAGLAYICIDAN gelir. Ok isareti gorsel bir sinyal;
- * ekran okuyucuya hicbir sey soylemiyor. Metin bir donem BILESENE gomuluydu
- * ve kutuphanenin "sabit varsayilan yok" sozlesmesini ihlal ediyordu.
- */
+/* ⚠ YON METNI SR-ONLY ve SAGLAYICIDAN gelir. */
 const TREND_KEY: Record<StatTrend, 'increase' | 'decrease' | 'unchanged'> = {
   up: 'increase',
   down: 'decrease',
@@ -80,11 +73,7 @@ const Stat: FC<Props> = ({
   const isPositive = trend === 'flat' ? undefined : (trend === 'up') === isUpPositive;
 
   return (
-    /*
-     * `card` icin ayri bir sinif YOK: taban sinifin kendisi kart. Arama
-     * `undefined` doner ve `cx` onu atar — varsayilan gorunum tek yerde kalir,
-     * iki sinif arasinda bolunmez.
-     */
+    /* `card` icin ayri bir sinif YOK: taban sinifin kendisi kart. */
     <div
       className={cx(styles.stat, styles[`stat--${size}`], styles[`stat--${variant}`], className)}
       data-testid={testId}

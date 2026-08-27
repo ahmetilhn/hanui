@@ -6,7 +6,7 @@ import { loadTokens, ROOT } from './lib/load-tokens.mjs';
 
 const STYLES_DIR = resolve(ROOT, 'src/styles');
 
-/** CSS özel özelliği öneki. Tüketicinin kendi değişkenleriyle çakışmaz. */
+/** CSS özel özelliği öneki. */
 const PREFIX = '--hanui-';
 
 const {
@@ -33,9 +33,8 @@ const fontDeclarations = (indent = '  ') =>
     .map(([role, stack]) => `${indent}${PREFIX}font-${role}: ${stack};`)
     .join('\n');
 
-// Tema yayini: secim `<html data-hanui-theme>` ile tasinir, yoksa
-// `prefers-color-scheme` yedegi devreye girer. Cikti yalnizca `base.scss`
-// tarafindan bir kez import edilir; bilesenler `_variables.scss` adlarini kullanir.
+// Tema yayini: secim `<html data-hanui-theme>` ile tasinir, yoksa `prefers-color-scheme` yedegi
+// devreye girer.
 const tokensFile = `${BANNER}@mixin light {
 ${declarations(LIGHT_THEME)}
 
@@ -88,11 +87,8 @@ ${declarations(NARROW_METRICS, '    ')}
 `;
 
 // Renk sozlesmesi: her ad bir `var(--hanui-…)` isaret eder.
-//
-// ⚠ Bunun iki sonucu var ve ikisi de sessizce kiriliyor: (1) renk uzerinde SCSS
-// renk fonksiyonu CALISMAZ — `rgba($surface, .9)` gecersiz CSS uretir ve bildirim
-// duser, hazir saydam token'lar kullanilir ($scrim, $glass, $ring, $track…);
-// (2) tema `prefers-color-scheme` ile degil `data-hanui-theme` ile secilir.
+// ⚠ Bunun iki sonucu var ve ikisi de sessizce kiriliyor: (1) renk uzerinde SCSS renk fonksiyonu
+// CALISMAZ
 const colorsFile = `${BANNER}${Object.keys(LIGHT_THEME)
   .map(name => `$${name}: var(${PREFIX}${name});`)
   .join('\n')}
@@ -108,11 +104,8 @@ $sheet-height: var(${PREFIX}sheet-height, 100dvh);
 `;
 
 // Olcu sozlesmesi: bunlar da `var(--hanui-…)` isaret ediyor.
-//
-// ⚠ Bedeli: SCSS ARITMETIGI CALISMAZ (`$space-8 - $space-2` derlenmez, Sass iki
-// `var()` cagrisini cikaramaz) — her hesap `calc()` ile tarayicida yapilir.
-// Karsilastirma (`@if $size >= $font-size-lg`) ise hic calismaz; `heading()`
-// bu yuzden punto degil KADEME ADI alir.
+// ⚠ Bedeli: SCSS ARITMETIGI CALISMAZ (`$space-8 - $space-2` derlenmez, Sass iki `var()` cagrisini
+// cikaramaz)
 const metricsFile = `${BANNER}${Object.keys(METRIC_TOKENS)
   .map(name => `$${name}: var(${PREFIX}${name});`)
   .join('\n')}

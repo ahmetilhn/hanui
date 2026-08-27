@@ -12,8 +12,10 @@ const hanuiLayer = ({ layer = 'hanui' } = {}) => ({
   OnceExit(root, { AtRule }) {
     if (!isLibrarySource(root.source?.input?.file)) return;
 
-    /* Ikinci kez sarmalamayi engelle: eklenti iki yapilandirmada birden
-       tanimliysa (kutuphane + galeri) ayni dosya iki kez gecebilir. */
+    /*
+     * Ikinci kez sarmalamayi engelle: eklenti iki yapilandirmada birden tanimliysa (kutuphane +
+     * galeri) ayni dosya iki kez gecebilir.
+     */
     if (root.first?.type === 'atrule' && root.first.name === 'layer') return;
 
     const moved = root.nodes.filter(

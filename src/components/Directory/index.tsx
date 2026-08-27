@@ -16,13 +16,7 @@ type DirectoryProps = {
 
 /**
  * Dizin — harf veya konu başlıklı, gruplanmış bağlantı listesi.
- *
- * @example
- * <Directory>
- * <DirectoryGroup label="A">
- * <DirectoryRow href="/marka/ate" name="ATE" media={<img … />} />
- * </DirectoryGroup>
- * </Directory>
+ * @example <Directory> <DirectoryGroup label="A"> <DirectoryRow href="/marka/ate" name="ATE"…
  */
 const Directory: FC<DirectoryProps> = ({ children, className }) => (
   <div className={cx(styles.directory, className)}>{children}</div>
@@ -31,10 +25,7 @@ const Directory: FC<DirectoryProps> = ({ children, className }) => (
 type DirectoryGroupProps = {
   /** Grup başlığı: harf ("A", "0-9") veya konu ("Fren sistemi"). */
   label: string;
-  /**
-   * Başlık kendisi bir hedefe götürüyorsa. Harf gruplarında verilmez — "A"
-   * diye bir sayfa yok.
-   */
+  /** Başlık kendisi bir hedefe götürüyorsa. */
   href?: string;
   /** Yönlendiriciye geçirilecek ek props. */
   linkProps?: HanuiLinkExtraProps;
@@ -71,7 +62,7 @@ export const DirectoryGroup: FC<DirectoryGroupProps> = /*#__PURE__*/ named(
 type DirectoryRowProps = {
   href: string;
   name: string;
-  /** Logo, ikon veya baş harf madalyonu. Satırın solunda. */
+  /** Logo, ikon veya baş harf madalyonu. */
   media?: ReactNode;
   /** Sağ uçta duran işaret: rozet, kayıt sayısı. */
   marker?: ReactNode;
@@ -99,15 +90,17 @@ type DirectoryJumpProps = {
   labels: string[];
   /** Çıpa kimliğini üretir; `DirectoryGroup id` ile aynı olmalı. */
   toId: (label: string) => string;
-  /** Şeridin erişilebilir adı. Verilmezse `labels.directoryJump`. */
+  /** Şeridin erişilebilir adı. */
   label?: string;
 };
 
 /** Alfabe atlama şeridi. */
 export const DirectoryJump: FC<DirectoryJumpProps> = /*#__PURE__*/ named(
   /*#__PURE__*/ memo(({ labels, toId, label }) => {
-    /* Prop adi `labels` (grup etiketleri) config'in adiyla cakisiyor; config
-     `config` olarak alinir. */
+    /*
+     * Prop adi `labels` (grup etiketleri) config'in adiyla cakisiyor; config `config` olarak
+     * alinir.
+     */
     const { labels: config } = useHanui();
 
     return (

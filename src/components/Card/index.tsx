@@ -19,16 +19,7 @@ type CardProps = {
 
 /**
  * Kart — medya + gövde + eylem şeridi.
- *
- * @example
- * <Card as="article" isInteractive>
- * <CardMedia href="/urun/x" ratio={1}>
- * <CardOverlay position="top-left"><Badge>Yeni</Badge></CardOverlay>
- * <img src={…} alt="" />
- * </CardMedia>
- * <CardBody>…</CardBody>
- * <CardFooter>…</CardFooter>
- * </Card>
+ * @example <Card as="article" isInteractive> <CardMedia href="/urun/x" ratio={1}>…
  */
 const Card: FC<CardProps> = ({ children, isInteractive, as: Tag = 'div', className, testId }) => (
   <Tag
@@ -44,20 +35,15 @@ export type CardMediaFit = 'cover' | 'contain' | 'inset';
 
 type CardMediaProps = {
   children: ReactNode;
-  /** Genişlik / yükseklik oranı. Sabit oran yükleme sırasında kaymayı önler. */
+  /** Genişlik / yükseklik oranı. */
   ratio?: number;
   /** Medya alanı tıklanabilirse: görsel bağlantının içine alınır. */
   href?: string;
   /** Yönlendiriciye geçirilecek ek props. */
   linkProps?: HanuiLinkExtraProps;
-  /** Görsel çerçeveyi nasıl doldurur — bkz. {@link CardMediaFit}. */
+  /** Görsel çerçeveyi nasıl doldurur — bkz. */
   fit?: CardMediaFit;
-  /**
-   * @deprecated `fit` kullanın: `isContained` → `fit="contain"`,
-   * `isContained={false}` → `fit="cover"`. Boolean yalnızca iki durumu
-   * anlatabiliyordu, üçüncüsü (`inset`) ona sığmadı. Eski yol bir sürüm daha
-   * çalışır; `CLAUDE.md` → Göç.
-   */
+  /** @deprecated `fit` kullanın: `isContained` → `fit="contain"`, `isContained={false}` →… */
   isContained?: boolean;
   className?: string;
 };
@@ -83,10 +69,8 @@ export const CardMedia: FC<CardMediaProps> = /*#__PURE__*/ named(
     return (
       <div className={cx(styles.media, className)}>
         {href ? (
-          // `tabIndex={-1}` + `aria-hidden`: aynı hedefe giden başlık bağlantısı
-          // zaten sekme sırasında. Görseli ikinci bir durak yapmak klavye
-          // gezinmesini iki katına çıkarıyor, ekran okuyucuda da aynı kayıt
-          // arka arkaya iki kez duyuruluyordu.
+          // `tabIndex={-1}` + `aria-hidden`: aynı hedefe giden başlık bağlantısı zaten sekme
+          // sırasında.
           <HanuiLink
             href={href}
             className={styles.media__link}
@@ -132,7 +116,7 @@ export const CardBody: FC<CardSectionProps> = /*#__PURE__*/ named(
   'CardBody',
 );
 
-/** Eylem şeridi — tutar, düğmeler. Kartın dibine yapışır. */
+/** Eylem şeridi — tutar, düğmeler. */
 export const CardFooter: FC<CardSectionProps> = /*#__PURE__*/ named(
   /*#__PURE__*/ memo(({ children, className }) => (
     <div className={cx(styles.footer, className)}>{children}</div>

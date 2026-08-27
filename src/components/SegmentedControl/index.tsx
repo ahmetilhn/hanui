@@ -19,7 +19,7 @@ type Props<T extends string> = {
   options: SegmentOption<T>[];
   value: T;
   onChange: (value: T) => void;
-  /** Grubun erişilebilir adı ("Görünüm"). ZORUNLU. */
+  /** Grubun erişilebilir adı ("Görünüm"). */
   label: string;
   /** Etiketler gizlenir, yalnızca ikon çizilir. `label` yine okunur. */
   isIconOnly?: boolean;
@@ -28,7 +28,7 @@ type Props<T extends string> = {
   testId?: string;
 };
 
-/** Bölmeli denetim — <strong>görünüm</strong> değiştirme. */
+/** Bölmeli denetim — görünüm değiştirme. */
 const SegmentedControl = <T extends string>({
   options,
   value,
@@ -85,19 +85,15 @@ const SegmentedControl = <T extends string>({
             aria-label={isIconOnly ? option.label : undefined}
             data-value={option.value}
             disabled={option.isDisabled}
-            /* Donen `tabindex`: grup Tab sirasinda TEK durak. Dort segmentin
-               her biri durak olsaydi klavye kullanicisi icerige ulasmak icin
-               dort kez Tab'liyordu. */
+            /* Donen `tabindex`: grup Tab sirasinda TEK durak. */
             tabIndex={isSelected ? 0 : -1}
             className={cx(
               styles.segmented__item,
               isSelected && styles['segmented__item--selected'],
             )}
             /*
-             * Secili ogeye ikinci kez basmak HICBIR SEY yapmaz: gorunum
-             * anahtarinda "hicbiri" diye bir hal yok. `ChipGroup`ta ayni
-             * hareket secimi kaldiriyor ve iki bileseni ayiran sey tam olarak
-             * bu.
+             * Secili ogeye ikinci kez basmak HICBIR SEY yapmaz: gorunum anahtarinda "hicbiri" diye
+             * bir hal yok. `ChipGroup`ta ayni hareket secimi kaldiriyor ve iki…
              */
             onClick={() => !isSelected && onChange(option.value)}
           >

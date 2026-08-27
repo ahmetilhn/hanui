@@ -18,33 +18,15 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'role'> & {
 };
 
 /**
- * Anahtar (switch) — <strong>anında</strong> uygulanan aç/kapa.
- *
- * @example
- * <Switch
- * label="Kampanya bildirimleri"
- * hint="E-posta ile ayda en fazla iki ileti"
- * checked={isSubscribed}
- * onChange={event => subscribe(event.target.checked)}
- * />
+ * Anahtar (switch) — anında uygulanan aç/kapa.
+ * @example <Switch label="Kampanya bildirimleri" hint="E-posta ile ayda en fazla iki…
  */
 const Switch = forwardRef<HTMLInputElement, Props>(
   ({ label, hint, isLabelFirst, className, id, testId, ...rest }, ref) => {
     /*
+     * Prop'un dokumani `aria-describedby` diyordu ama hicbir `id` uretilmiyor, metin yalnizca
+     * sarmalayan `<label>`in icinde duruyordu
      * ⚠ IPUCU ERISILEBILIR ADA DEGIL ACIKLAMAYA BAGLANIR.
-     *
-     * Prop'un dokumani `aria-describedby` diyordu ama hicbir `id` uretilmiyor,
-     * metin yalnizca sarmalayan `<label>`in icinde duruyordu — yani ADIN
-     * PARCASI oluyordu. Sonuc: `label="Kampanya bildirimleri"` +
-     * `hint="E-posta ile ayda en fazla iki ileti"` icin erisilebilir ad
-     * "Kampanya bildirimleri E-posta ile ayda en fazla iki ileti" olarak
-     * okunuyordu. Ayar listesinde ekran okuyucu her satirda tam cumleyi
-     * okuyor, kullanici ipucunu atlayamiyor ve ayri olarak yeniden
-     * okutamiyordu.
-     *
-     * Ad ve aciklama artik ayri: `<label>`in adlandirma kapsami ipucunu
-     * gormuyor (`aria-labelledby` yalnizca etiket metnini isaret ediyor),
-     * ipucu `aria-describedby` ile bagli.
      */
     const generatedId = useId();
     const baseId = id ?? generatedId;
@@ -60,9 +42,8 @@ const Switch = forwardRef<HTMLInputElement, Props>(
           ref={ref}
           type="checkbox"
           /*
-           * `role="switch"` YEREL onay kutusunun UZERINE yazilir: davranis
-           * checkbox'tan gelir, DUYURU switch olur. Ekran okuyucu "acik/kapali"
-           * der; "isaretli" demek kullaniciya yanlis bir soz veriyordu.
+           * `role="switch"` YEREL onay kutusunun UZERINE yazilir: davranis checkbox'tan gelir,
+           * DUYURU switch olur.
            */
           role="switch"
           id={baseId}

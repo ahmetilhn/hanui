@@ -18,7 +18,7 @@ export type Crumb = {
 
 type Props = {
   items: Crumb[];
-  /** Gezinme bölgesinin erişilebilir adı. Verilmezse `labels.breadcrumb`. */
+  /** Gezinme bölgesinin erişilebilir adı. */
   label?: string;
   /** Yönlendiriciye geçirilecek ek props. */
   linkProps?: HanuiLinkExtraProps;

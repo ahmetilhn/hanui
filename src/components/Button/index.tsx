@@ -34,10 +34,7 @@ type Props = BaseProps &
   ButtonHTMLAttributes<HTMLButtonElement> & {
     /** Verilirse düğme bir bağlantı olarak çizilir. */
     href?: string;
-    /**
-     * Uygulama dışına çıkan bağlantı: yeni sekmede açılır ve yönlendirici
-     * devreye girmez.
-     */
+    /** Uygulama dışına çıkan bağlantı: yeni sekmede açılır ve yönlendirici devreye girmez. */
     isExternal?: boolean;
     /** Yönlendiriciye geçirilecek ek props (`{ scroll: false }`, `{ replace: true }`). */
     linkProps?: HanuiLinkExtraProps;
@@ -45,11 +42,7 @@ type Props = BaseProps &
 
 /**
  * Düğme.
- *
- * @example
- * <Button variant={UIVariant.PRIMARY} isLoading={isSaving} onClick={save}>
- * Kaydet
- * </Button>
+ * @example <Button variant={UIVariant.PRIMARY} isLoading={isSaving} onClick={save}> Kaydet…
  */
 const Button = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
   (
@@ -90,18 +83,9 @@ const Button = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
     );
 
     /*
+     * Olculen ariza: tip `ButtonHTMLAttributes` oldugu icin `onClick`, `aria-*`, `data-*`, `id`,
+     * `title`, `onBlur` hepsi TIP DENETIMINDEN geciyordu ama…
      * ⚠ BAGLANTI DALLARI DA `...rest` YAYAR.
-     *
-     * Olculen ariza: tip `ButtonHTMLAttributes` oldugu icin `onClick`,
-     * `aria-*`, `data-*`, `id`, `title`, `onBlur` hepsi TIP DENETIMINDEN
-     * geciyordu ama yalnizca `<button>` dali onlari DOM'a yaziyordu. `<Button
-     * href=... onClick={izle}>` yazan cagiran derleme hatasi almiyor, analitik
-     * cagrisi hic calismiyor ve erisilebilir ad sessizce gorunen metne
-     * dusuyordu. Vitrinde 14 `<Button href>` cagri yeri var.
-     *
-     * `disabled` bir baglantida DOM ozelligi olarak yok: `aria-disabled` +
-     * tiklamayi yutmak dogru karsilik. Yukleniyorken de ayni yol — yoksa
-     * "yukleniyor" gorunen bir baglanti ikinci kez gezinme baslatir.
      */
     const isInert = Boolean(disabled) || Boolean(isLoading);
 

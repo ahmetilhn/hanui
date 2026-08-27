@@ -25,24 +25,21 @@ import styles from './index.module.scss';
 import type { PositionAlign, PositionSide } from '@/types/positioning.type';
 
 type Props = {
-  /**
-   * Tetikleyici. TEK bir öğe olmak zorunda: bileşen ona `ref`, `onClick` ve
-   * `aria-expanded` ekliyor.
-   */
+  /** Tetikleyici. */
   trigger: ReactElement;
   children: ReactNode;
-  /** Yüzeyin erişilebilir adı. ZORUNLU — adsız bir bölge "grup" diye okunur. */
+  /** Yüzeyin erişilebilir adı. */
   label: string;
   side?: PositionSide;
   align?: PositionAlign;
-  /** Kontrollü kullanım. Verilmezse bileşen durumu kendisi tutar. */
+  /** Kontrollü kullanım. */
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   className?: string;
   testId?: string;
 };
 
-/** Popover — <strong>eylem taşıyabilen</strong>, odaklanabilir yüzey. */
+/** Popover — eylem taşıyabilen, odaklanabilir yüzey. */
 const Popover = ({
   trigger,
   children,
@@ -92,8 +89,10 @@ const Popover = ({
   const close = useCallback(() => setOpen(false), [setOpen]);
   useDismissOnEscape(isOpen, close);
 
-  /* DISARI tiklama da belge duzeyinde: odak yuzeyin icinde olmayabilir
-     (fareyle acilmis bir popover). */
+  /*
+   * DISARI tiklama da belge duzeyinde: odak yuzeyin icinde olmayabilir (fareyle acilmis bir
+   * popover).
+   */
   useEffect(() => {
     if (!isOpen) return;
 
@@ -104,8 +103,7 @@ const Popover = ({
       setOpen(false);
     };
 
-    /* `mousedown`: `click` beklerken kullanici surukleyerek secim yaparsa
-       yuzey kapanmiyordu. */
+    /* `mousedown`: `click` beklerken kullanici surukleyerek secim yaparsa yuzey kapanmiyordu. */
     document.addEventListener('mousedown', handlePointerDown);
 
     return () => document.removeEventListener('mousedown', handlePointerDown);
@@ -139,9 +137,8 @@ const Popover = ({
             /* ⚠ Modal içinden açıldığında üst katman ZORUNLU — `portal.helper`. */
             {...portal.attributes}
             /*
-             * `role="dialog"` ama `aria-modal` YOK: yuzey kipsel degil ve
-             * `aria-modal="true"` yazmak ekran okuyucuya sayfanin geri
-             * kalaninin erisilemez oldugunu soyluyordu — oysa erisilebilir.
+             * `role="dialog"` ama `aria-modal` YOK: yuzey kipsel degil ve `aria-modal="true"`
+             * yazmak ekran okuyucuya sayfanin geri kalaninin erisilemez oldugunu…
              */
             role="dialog"
             aria-label={label}
@@ -153,18 +150,9 @@ const Popover = ({
             }}
             data-testid={testId}
             /*
-             * Odak yuzeyin DISINA ciktiginda kapanir: kipsel olmayan bir
-             * yuzeyde odagi hapsetmek kullaniciyi sayfadan koparirdi.
-             *
-             * ⚠ AMA "DISI" DOM AGACIYLA OLCULEMEZ. Yuzeyin icindeki bir
-             * `Select`/`Combobox`/`Menu` acildiginda kendi panelini
-             * `document.body`ye (ya da ust katmana) PORTALLIYOR; odak oraya
-             * gectiginde `relatedTarget` bu yuzeyin ICINDE degil, dolayisiyla
-             * eski kural popover'i KAPATIYORDU — kullanicinin az once actigi
-             * listeyle birlikte.
-             *
-             * `relatedTarget === null` de kapatmaz: odagin pencereden cikmasi
-             * (sekme degistirme, gelistirici araclari) yuzeyi kapatmamali.
+             * Odak yuzeyin DISINA ciktiginda kapanir: kipsel olmayan bir yuzeyde odagi hapsetmek
+             * kullaniciyi sayfadan koparirdi.
+             * ⚠ AMA "DISI" DOM AGACIYLA OLCULEMEZ.
              */
             onBlur={event => {
               const next = event.relatedTarget as HTMLElement | null;
@@ -173,11 +161,8 @@ const Popover = ({
               if (anchorRef.current?.contains(next)) return;
 
               /*
-               * Bu yuzeyden PORTALLANMIS bir katman mi? `Menu`/`Select`/
-               * `Combobox` panelleri `aria-controls`/`id` zinciriyle degil,
-               * acildiklari an odagi tasiyarak baglaniyor; en guvenilir olcut
-               * hedefin kipsel bir yuzeyin ya da bir listbox/menu'nun icinde
-               * olmasi.
+               * Bu yuzeyden PORTALLANMIS bir katman mi? `Menu`/`Select`/ `Combobox` panelleri
+               * `aria-controls`/`id` zinciriyle degil, acildiklari an odagi tasiyarak…
                */
               if (next.closest('[role="listbox"],[role="menu"],[role="dialog"]')) return;
 

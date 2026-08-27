@@ -16,13 +16,9 @@ import styles from './index.module.scss';
 
 type BaseProps = {
   isOpen: boolean;
-  /** Vazgeçme ve perde/Escape kapanışı. Başarı kapanışını bileşen kendisi yapar. */
+  /** Vazgeçme ve perde/Escape kapanışı. */
   onClose: () => void;
-  /**
-   * Girilen değerle çalışır (değer kırpılmış gönderilir). Reddederse pencere
-   * AÇIK kalır ve metin korunur; hata bildirimi çağıranın işi — bildirimi
-   * gösterip hatayı yeniden fırlatın ya da hiç yakalamayın.
-   */
+  /** Girilen değerle çalışır (değer kırpılmış gönderilir). */
   onSubmit: (value: string) => void | Promise<void>;
   title: string;
   /** Girdi alanının etiketi. */
@@ -31,18 +27,14 @@ type BaseProps = {
   submitLabel?: string;
   /** Verilmezse `labels.cancel`. */
   cancelLabel?: string;
-  /** Kapatma düğmesinin erişilebilir adı. Verilmezse `labels.close`. */
+  /** Kapatma düğmesinin erişilebilir adı. */
   closeLabel?: string;
   /** Başlığın altındaki bir cümlelik bağlam. */
   description?: ReactNode;
   hint?: string;
   placeholder?: string;
   defaultValue?: string;
-  /**
-   * `text` tek satır, `multiline` gerekçe gibi uzun metin, `number` adet/fark
-   * gibi sayılar. Değer her durumda dize döner; ayrıştırmak çağıranın işi
-   * (bir stok farkı `-5` gibi işaretli olabiliyor).
-   */
+  /** `text` tek satır, `multiline` gerekçe gibi uzun metin, `number` adet/fark gibi sayılar. */
   inputMode?: 'text' | 'multiline' | 'number';
   maxLength?: number;
   rows?: number;
@@ -81,9 +73,8 @@ const PromptDialog: FC<Props> = ({
   const [isBusy, setIsBusy] = useState(false);
 
   /*
-   * Deger yalnizca ACILIS kenarinda tazelenir. `isOpen`'a bagli duz bir etki,
-   * pencere acikken gelen her ust render'da yazilani ezebilirdi; hatada acik
-   * kalan penceredeki metin de korunmali.
+   * Deger yalnizca ACILIS kenarinda tazelenir. `isOpen`'a bagli duz bir etki, pencere acikken gelen
+   * her ust render'da yazilani ezebilirdi
    */
   const wasOpenRef = useRef(false);
   useEffect(() => {

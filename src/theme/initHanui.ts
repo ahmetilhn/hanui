@@ -4,14 +4,8 @@ import { applyThemeConfig, DENSITY_ATTRIBUTE, THEME_ATTRIBUTE } from '../helpers
 import type { InitHanuiOptions } from '@/types/theme.type';
 
 /**
- * Kütüphaneyi <strong>React ağacının dışından</strong> yapılandırır.
- *
- * @example
- * // app/layout.tsx — <head> içine, boyamadan önce.
- * <script dangerouslySetInnerHTML={{ __html: `
- * document.documentElement.dataset.hanuiTheme =
- * localStorage.getItem('theme') ?? 'light';
- * ` }} />
+ * Kütüphaneyi React ağacının dışından yapılandırır.
+ * @example // app/layout.tsx — <head> içine, boyamadan önce. <script…
  */
 export const initHanui = (options: InitHanuiOptions = {}): void => {
   applyThemeConfig(options.theme);

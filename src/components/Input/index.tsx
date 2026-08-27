@@ -5,17 +5,13 @@ import { named } from '../../helpers/component.helper';
 
 import styles from './index.module.scss';
 
-/*
- * `prefix` HTML'in RDFa nitelikleri arasinda yer alir ve React onu `string`
- * olarak tanimlar. Kaldirilmazsa kendi `ReactNode` tanimimizla kesisip
- * `string & ReactNode` uretiyor ve ikon vermeyi imkansiz kiliyordu.
- */
+/* `prefix` HTML'in RDFa nitelikleri arasinda yer alir ve React onu `string` olarak tanimlar. */
 type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix'> & {
   /** Solda gösterilen ikon veya ön ek (arama simgesi, para birimi). */
   prefix?: ReactNode;
   /** Sağda gösterilen ikon veya birim (göz simgesi, "kg"). */
   suffix?: ReactNode;
-  /** Teknik veri: SKU, kod, seri numarası — monospace ve harf aralıklı. */
+  /** Teknik veri: */
   isTechnical?: boolean;
   testId?: string;
 };
@@ -33,8 +29,10 @@ const Input = /*#__PURE__*/ forwardRef<HTMLInputElement, Props>(
         ref={ref}
         className={cx(
           styles.input,
-          /* `Boolean(...)`: `prefix` bir `ReactNode` ve `0` da gecerli bir
-             deger — `prefix &&` ifadesi o durumda dize degil sayi donuyordu. */
+          /*
+           * `Boolean(...)`: `prefix` bir `ReactNode` ve `0` da gecerli bir deger — `prefix &&`
+           * ifadesi o durumda dize degil sayi donuyordu.
+           */
           Boolean(prefix) && styles['input--hasPrefix'],
           Boolean(suffix) && styles['input--hasSuffix'],
           isTechnical && styles['input--technical'],

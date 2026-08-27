@@ -52,9 +52,8 @@ export const luminance = ({ r, g, b }) => {
 };
 
 /**
- * İki rengin kontrast oranı. `foreground` saydamsa `background` üzerine
- * düzlenir; `background` saydamsa `base` üzerine (varsayılan beyaz — bir
- * saydam zeminin arkasında en kötü hâlde sayfa durur).
+ * İki rengin kontrast oranı. `foreground` saydamsa `background` üzerine düzlenir; `background`
+ * saydamsa `base` üzerine (varsayılan beyaz
  */
 export const contrast = (foreground, background, base = '#ffffff') => {
   const backdrop = flatten(parseColor(background), parseColor(base));

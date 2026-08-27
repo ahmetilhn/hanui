@@ -1,10 +1,6 @@
 /**
- * @ahmetilhn/hanui — açık genel API.
- *
- * <p>Dışa verilen her ad bir SÖZLEŞMEDİR: bir sonraki büyük sürüme kadar
- * kaldırılmaz ve davranışı sessizce değişmez. İç yardımcılar (`HanuiLink`,
- * ikonlar, `cx`) bilinçli olarak dışarıda — dışa verilseler tüketiciler onlara
- * dayanır ve iç yapıyı değiştirmek kırıcı bir değişikliğe dönüşür.
+ * @ahmetilhn/hanui — açık genel API. Dışa verilen her ad bir SÖZLEŞMEDİR: bir sonraki büyük sürüme
+ * kadar kaldırılmaz ve davranışı sessizce değişmez.
  */
 
 import './styles/base.scss';
@@ -21,14 +17,10 @@ export {
   METRIC_TOKENS,
 } from './theme/tokens';
 /*
- * ⚠ `applyThemeConfig` DE PUBLIC ve bu zorunlu: onsuz `resolveTokens` +
- * `buildThemeCss` cifti ISE YARAMIYORDU — tuketici CSS'i uretebiliyor ama
- * uygulayamiyordu. Ucu birlikte bir yetenek; ikisi tek basina olu agirlik.
- *
- * ⚠ `THEME_ATTRIBUTE` / `DENSITY_ATTRIBUTE` de disariya veriliyor: iki
- * tuketici de `data-hanui-theme` dizesini ELLE yaziyor
- * (`theme.constants.ts`, `Logo/index.module.scss`) — sabit degistiginde
- * ayrisan ve hicbir katmanin uyarmadigi bir bag.
+ * ⚠ `applyThemeConfig` DE PUBLIC ve bu zorunlu: onsuz `resolveTokens` + `buildThemeCss` cifti ISE
+ * YARAMIYORDU
+ * ⚠ `THEME_ATTRIBUTE` / `DENSITY_ATTRIBUTE` de disariya veriliyor: iki tuketici de
+ * `data-hanui-theme` dizesini ELLE yaziyor…
  */
 export {
   applyThemeConfig,
@@ -48,13 +40,9 @@ export {
 export { default as usePositioning } from './hooks/usePositioning';
 export { default as useVirtualList } from './hooks/useVirtualList';
 /*
+ * Ikisi de MODUL DUZEYINDE sayac tutuyor (`lockCount`/`previous`, `openCount`/`frame`): tuketici
+ * bunlari kendi bileseninde cagirdiginda kutuphanenin…
  * ⚠ `useScrollLock` ve `useSheetViewport` PUBLIC DEGIL.
- *
- * Ikisi de MODUL DUZEYINDE sayac tutuyor (`lockCount`/`previous`,
- * `openCount`/`frame`): tuketici bunlari kendi bileseninde cagirdiginda
- * kutuphanenin kendi sayimini bozuyor — bir kip pencere kapandiginda govde
- * kilidi acilmiyor ya da erken aciliyor. Yetenek duruyor, yalnizca disariya
- * verilmiyor.
  */
 
 // --- Enum ve tipler ---------------------------------------------------
@@ -75,9 +63,8 @@ export {
 // --- Yardımcılar ------------------------------------------------------
 export { matchesSearch, normalizeSearchTerm } from './helpers/text.helper';
 /*
- * ⚠ `preventAutoKeyboard` / `isKeyboardOpeningElement` PUBLIC DEGIL: uc kip
- * yuzeyinin (`Modal`, `Drawer`, `BottomSheet`) ic ayrintisi. Disaridan
- * cagrildiginda kutuphanenin acilis sirasiyla yarisir.
+ * ⚠ `preventAutoKeyboard` / `isKeyboardOpeningElement` PUBLIC DEGIL: uc kip yuzeyinin (`Modal`,
+ * `Drawer`, `BottomSheet`) ic ayrintisi.
  */
 
 // --- Eylem ------------------------------------------------------------

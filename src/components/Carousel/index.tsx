@@ -12,23 +12,18 @@ import styles from './index.module.scss';
 
 type Props = {
   children: ReactNode;
-  /** Şeridin erişilebilir adı ("Öne çıkan ürünler"). ZORUNLU. */
+  /** Şeridin erişilebilir adı ("Öne çıkan ürünler"). */
   label: string;
-  /** Önceki/sonraki düğmelerinin erişilebilir adları. ZORUNLU. */
+  /** Önceki/sonraki düğmelerinin erişilebilir adları. */
   previousLabel: string;
   nextLabel: string;
   /** Sayfa göstergesinin ad üreticisi (`index` 1 tabanlı). */
   formatDotLabel?: (index: number, total: number) => string;
-  /**
-   * Bir kartın genişliği. Şerit her kartı bu genişlikte çizer.
-   * Duyarlı genişlik ya da "yarım kart görünsün" gibi bir ölçü gerekiyorsa
-   * CSS'ten `--hanui-carousel-item` ezilir; buradaki değer yalnızca varsayılan.
-   */
+  /** Bir kartın genişliği. Şerit her kartı bu genişlikte çizer. */
   itemWidth?: number;
   /**
-   * @deprecated `itemWidth` kullanın. Ad bir ASGARİ genişlik vaat ediyordu ama
-   * şerit artık kartları germiyor: verilen değer kartın genişliğinin kendisi.
-   * Eski yol bir sürüm daha çalışır; `CLAUDE.md` → Göç.
+   * @deprecated `itemWidth` kullanın. Ad bir ASGARİ genişlik vaat ediyordu ama şerit artık
+   * kartları…
    */
   itemMinWidth?: number;
   className?: string;
@@ -52,8 +47,10 @@ const Carousel: FC<Props> = ({
   const [canScrollBack, setCanScrollBack] = useState(false);
   const [canScrollForward, setCanScrollForward] = useState(false);
   const [page, setPage] = useState(0);
-  /* Sayfa SAYISI da olculur: cocuk sayisindan hesaplamak, kac kartin yan yana
-     sigdigini bilmeyi gerektiriyor ve o sey yalnizca yerlesimden okunur. */
+  /*
+   * Sayfa SAYISI da olculur: cocuk sayisindan hesaplamak, kac kartin yan yana sigdigini bilmeyi
+   * gerektiriyor ve o sey yalnizca yerlesimden okunur.
+   */
   const [pageCount, setPageCount] = useState(1);
   const [needsTabStop, setNeedsTabStop] = useState(false);
 
@@ -63,8 +60,7 @@ const Carousel: FC<Props> = ({
     if (!track) return;
 
     const { scrollLeft, scrollWidth, clientWidth } = track;
-    /* 1 px tolerans: alt piksel yuvarlama yuzunden uctaki dugme hicbir zaman
-       pasiflesmiyordu. */
+    /* 1 px tolerans: alt piksel yuvarlama yuzunden uctaki dugme hicbir zaman pasiflesmiyordu. */
     setCanScrollBack(scrollLeft > 1);
     setCanScrollForward(scrollLeft + clientWidth < scrollWidth - 1);
     setPage(clientWidth > 0 ? Math.round(scrollLeft / clientWidth) : 0);
@@ -93,13 +89,13 @@ const Carousel: FC<Props> = ({
     };
   }, [measure, children]);
 
-  /* Bir GORUNUM genisligi kaydirir: sabit bir kart sayisi, farkli genislikteki
-     kartlarda serit ortasinda duruyordu. */
   /*
-   * ⚠ HAREKET TERCİHİ JS TARAFINDA OKUNUR. `index.module.scss` içinde
-   * `@include reduced-motion { scroll-behavior: auto }` vardı ama JS'in
-   * verdiği `behavior: 'smooth'` CSS'i EZER — yani hareket duyarlılığı ayarı
-   * bu bileşende tamamen etkisizdi. Tercih burada okunup davranışa çevrilir.
+   * Bir GORUNUM genisligi kaydirir: sabit bir kart sayisi, farkli genislikteki kartlarda serit
+   * ortasinda duruyordu.
+   */
+  /*
+   * ⚠ HAREKET TERCİHİ JS TARAFINDA OKUNUR. `index.module.scss` içinde `@include reduced-motion {
+   * scroll-behavior: auto }` vardı ama JS'in…
    */
   const scrollBehavior = (): ScrollBehavior =>
     typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
@@ -136,18 +132,19 @@ const Carousel: FC<Props> = ({
       <div
         ref={trackRef}
         className={styles.carousel__track}
-        /* ⚠ Sutun genisligi SABIT, `1fr` DEGIL: `minmax(item, 1fr)` yalnizca
-           serit DOLMADIGINDA devreye giriyor ve kartlari gerdiriyordu — iki
-           kartlik bir seritte biri basta biri ortada duruyordu. Deger inline
-           degil `--hanui-carousel-item-default` olarak yaziliyor ki tuketici
-           medya sorgusundan `--hanui-carousel-item` ile ezebilsin. */
+        /*
+         * ⚠ Sutun genisligi SABIT, `1fr` DEGIL: `minmax(item, 1fr)` yalnizca serit DOLMADIGINDA
+         * devreye giriyor ve kartlari gerdiriyordu
+         */
         style={
           {
             '--hanui-carousel-item-default': `${itemWidth ?? itemMinWidth ?? 240}px`,
           } as React.CSSProperties
         }
-        /* Yalnizca odaklanabilir cocugu OLMAYAN bir seride durak: aksi halde
-           klavye kullanicisi hicbir sey yapmayan bir durak geciyordu. */
+        /*
+         * Yalnizca odaklanabilir cocugu OLMAYAN bir seride durak: aksi halde klavye kullanicisi
+         * hicbir sey yapmayan bir durak geciyordu.
+         */
         tabIndex={needsTabStop ? 0 : undefined}
         role={needsTabStop ? 'group' : undefined}
         aria-label={needsTabStop ? label : undefined}
@@ -165,8 +162,10 @@ const Carousel: FC<Props> = ({
                 styles.carousel__dot,
                 index === page && styles['carousel__dot--active'],
               )}
-              /* Nokta ADSIZ birakilamaz: ekran okuyucuda "dugme" diye
-                 okunuyor ve kullanici nereye gittigini bilmiyordu. */
+              /*
+               * Nokta ADSIZ birakilamaz: ekran okuyucuda "dugme" diye okunuyor ve kullanici nereye
+               * gittigini bilmiyordu.
+               */
               aria-label={formatDotLabel(index + 1, pageCount)}
               aria-current={index === page ? 'true' : undefined}
               onClick={() =>

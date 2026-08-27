@@ -9,15 +9,15 @@ import styles from './index.module.scss';
 
 type Props = {
   /**
-   * Filtreler uygulanır. `preventDefault` bileşenin işi; çağıran yalnızca
-   * durumunu günceller (sayfayı 1'e almak + aramayı uygulamak gibi).
+   * Filtreler uygulanır. `preventDefault` bileşenin işi; çağıran yalnızca durumunu günceller
+   * (sayfayı 1'e almak + aramayı uygulamak gibi).
    */
   onSubmit: () => void;
-  /** Alanlar — her biri {@link FilterBarField} içinde. */
+  /** Alanlar — her biri FilterBarField içinde. */
   children: ReactNode;
   /** Şeridin sağ ucundaki eylemler ("Uygula" düğmesi gibi). */
   actions?: ReactNode;
-  /** Şeridin erişilebilir adı. Verilmezse `labels.filters`. */
+  /** Şeridin erişilebilir adı. */
   label?: string;
   className?: string;
   testId?: string;
@@ -53,18 +53,12 @@ const FilterBar: FC<Props> = ({ onSubmit, children, actions, label, className, t
 
 type FieldProps = {
   children: ReactNode;
-  /**
-   * Alan kalan genişliği doldurur (arama kutusu). Diğer alanlar tercih
-   * ettikleri genişlikte kalır ve şerit sağa doğru boşluk bırakır.
-   */
+  /** Alan kalan genişliği doldurur (arama kutusu). */
   isWide?: boolean;
   className?: string;
 };
 
-/**
- * Şerit içindeki tek alanın genişlik sözleşmesi. İçine `Field` + girdi ya da
- * yalın `Input` konur; genişlik kararı alanın kendisine yazılmaz.
- */
+/** Şerit içindeki tek alanın genişlik sözleşmesi. */
 export const FilterBarField: FC<FieldProps> = /*#__PURE__*/ named(
   /*#__PURE__*/ memo(({ children, isWide, className }) => (
     <div className={cx(styles.field, isWide && styles['field--wide'], className)}>{children}</div>

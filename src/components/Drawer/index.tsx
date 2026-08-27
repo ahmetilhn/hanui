@@ -33,10 +33,10 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  /** Kapatma düğmesinin erişilebilir adı. Verilmezse `labels.close`. */
+  /** Kapatma düğmesinin erişilebilir adı. */
   closeLabel?: string;
   children: ReactNode;
-  /** Panelin hangi kenardan geldiği. Mantıksal: `end` RTL'de sola açılır. */
+  /** Panelin hangi kenardan geldiği. */
   side?: 'start' | 'end';
   size?: 'sm' | 'md' | 'lg';
   /** Dipte duran eylem şeridi; gövde kaydırılırken yerinde kalır. */
@@ -63,7 +63,7 @@ const Drawer = ({
 }: Props) => {
   const { labels } = useHanui();
   const dialogRef = useRef<HTMLDialogElement>(null);
-  /* Yigindaki yerimiz: Escape yalnizca EN USTTEKI panelde islenir. */
+  /* Yigindaki yerimiz: */
   const tokenRef = useRef<symbol | null>(null);
   const titleId = useId();
 
@@ -95,22 +95,10 @@ const Drawer = ({
   useScrollLock(isOpen);
 
   /*
-   * ⚠ GÖRSEL GÖRÜNÜM ALANI TAKİBİ — `BottomSheet` ve `Modal` bunu zaten
-   * yapıyordu, `Drawer` YAPMIYORDU. Mobilde çekmece `100dvh` yüksekliğinde ve
-   * altbilgisi `safe-bottom` ile hizalanıyor; klavye açıldığında görsel
-   * görünüm alanı küçülüyor ama `dvh` değişmediği için ALTBİLGİ KLAVYENİN
-   * ALTINDA KALIYORDU — yani formu olan bir çekmecede "Kaydet" düğmesine
-   * ulaşılamıyordu.
-   *
-   * ⚠ BAYRAK ZORUNLU — `BottomSheet`ten farkı burada. `Drawer` `<dialog>`ı
-   * KOŞULSUZ çiziyor (yalnızca `showModal()`/`close()` `isOpen`e bağlı), yani
-   * bayraksız çağrı hook'un JSDoc'unda tarif edilen tam duruma düşüyordu:
-   * uygulama kabuğunda duran çekmece yüzünden her mobil sayfa yüklemesinde
-   * `visualViewport` dinleyicileri OTURUM BOYUNCA açık kalıyor ve `openCount`
-   * hiç 0'a dönmediği için `--hanui-sheet-inset-bottom` kalıcı yazılıyordu —
-   * bunun ikinci etkisi, klavye açıkken açılan bir `Modal`ın ekranın çok
-   * yukarısında yüzmesi (`Modal` o değişkeni `margin-bottom`da okuyor).
-   * İki uygulamada da çekmece kabukta: `Sidebar` ve `Header`.
+   * ⚠ GÖRSEL GÖRÜNÜM ALANI TAKİBİ — `BottomSheet` ve `Modal` bunu zaten yapıyordu, `Drawer`
+   * YAPMIYORDU.
+   * ⚠ BAYRAK ZORUNLU — `BottomSheet`ten farkı burada. `Drawer` `<dialog>`ı KOŞULSUZ çiziyor
+   * (yalnızca `showModal()`/`close()` `isOpen`e bağlı)…
    */
   useSheetViewport(isOpen);
 

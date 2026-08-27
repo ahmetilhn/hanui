@@ -12,9 +12,8 @@ const HanuiLink: FC<HanuiLinkProps> = ({ children, ...rest }) => {
   if (LinkComponent) return <LinkComponent {...(rest as HanuiLinkProps)}>{children}</LinkComponent>;
 
   /*
-   * Yonlendirici yoksa ham `<a>`. `rest` indeks imzasi tasiyor (yonlendiriciye
-   * ozgu props icin); DOM'a giderken anchor sozlesmesine daraltilir —
-   * tanimadigi bir ozniteligi React zaten oldugu gibi geciriyor.
+   * Yonlendirici yoksa ham `<a>`. `rest` indeks imzasi tasiyor (yonlendiriciye ozgu props icin);
+   * DOM'a giderken anchor sozlesmesine daraltilir
    */
   return <a {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}>{children}</a>;
 };

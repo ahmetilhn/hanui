@@ -1,51 +1,13 @@
 #!/bin/sh
-#
 # Hanparca ön-commit kancası — Prettier + ESLint + Stylelint + testler
-#
-# Amaç: biçim, lint ve test hatalarını CI'da (ya da IDE uyarısında) değil,
-# commit anında bitirmek.
-#
-#   1. Prettier --write  → biçimlendirir, dosyayı yeniden stage'ler
-#   2. ESLint  --fix     → düzeltilebilenleri düzeltir; geriye HATA kalırsa
-#                          commit durur (uyarılar durdurmaz — `npm run lint`
-#                          ile aynı eşik)
-#
-#   2b. Stylelint --fix  → SCSS için ESLint'in karşılığı (`npm run lint`
-#                          ikisini birden koşar)
-#   3. Testler           → TAM süit (`npm test --silent -- --ci`)
-#
-# **Testler neden daraltılmadı.** `jest --findRelatedTests` ile stage'lenen
-# dosyanın bağımlılık grafiğine inmek mümkündü; ölçüldü ve gerekmedi: tam süit
-# 4 sn sürüyor. Daraltma saniyenin altında bir kazanç için "hangi
-# testin koştuğu" sorusunu commit'e göre değişken hâle getirirdi — kanca ile CI
-# aynı şeyi ölçmeli.
-#
-# **Testler yalnızca biçim/lint temizse koşar.** Lint hatası kalan kod çoğu
-# zaman derlenmiyordur; o durumda test çıktısı asıl hatanın üstünü örten
-# gürültüdür.
-#
-# Kısmi stage edilmiş dosyalara (hem index'te hem çalışma alanında değişiklik)
-# DOKUNULMAZ: biçimlendirip `git add` etmek, stage'lemediğin değişiklikleri de
-# commit'e sokardı. Böyle bir dosyanın index'teki hâli biçimsizse commit durur
-# ve ne yapman gerektiği yazılır.
-#
-# ⚠ Testler ÇALIŞMA ALANINI görür, index'i değil. Kısmi stage zaten yukarıda
-# reddedildiği için pratikte ikisi aynıdır; farkın kaldığı tek yer stage
-# edilmemiş YENİ dosyalardır.
-#
-# Kancayı atlamak: git commit --no-verify
-#
-# Devreye girişi: `core.hooksPath=.githooks`. package.json'daki `prepare`
-# betiği bunu `npm install` / `npm ci` sırasında otomatik ayarlar.
+# ⚠ Testler ÇALIŞMA ALANINI görür, index'i değil.
 
 set -eu
 
 cd "$(git rev-parse --show-toplevel)"
 
-# Kanca terminalden de, IDE / Git arayüzünden de tetiklenir; oralarda PATH'teki
-# node çoğu zaman .nvmrc sürümü DEĞİLDİR (bu makinede varsayılan v14, projeler
-# >=24 istiyor — ESLint 9 eski node'da `Object.hasOwn is not a function` ile
-# çöküyor). nvm varsa .nvmrc sürümüne geç.
+# Kanca terminalden de, IDE / Git arayüzünden de tetiklenir; oralarda PATH'teki node çoğu
+# zaman.nvmrc sürümü DEĞİLDİR (bu makinede varsayılan v14…
 if [ -s .nvmrc ]; then
   NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
   if [ -s "$NVM_DIR/nvm.sh" ]; then
@@ -113,8 +75,8 @@ if [ -s "$TMP/whole" ]; then
     if ! tr '\n' '\0' <"$TMP/lint" | xargs -0 "$ESLINT" --fix --no-warn-ignored; then
       status=1
     fi
-    # --fix'in yazdıklarını her hâlükârda index'e al; commit dursa bile
-    # düzeltmeler kaybolmasın.
+    # fix'in yazdıklarını her hâlükârda index'e al; commit dursa bile düzeltmeler
+    # kaybolmasın.
     tr '\n' '\0' <"$TMP/lint" | xargs -0 git add --
     if [ "$status" -ne 0 ]; then
       echo "" >&2

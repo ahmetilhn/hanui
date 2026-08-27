@@ -66,40 +66,21 @@ const Tabs: FC<Props> = ({
   const active = items[activeIndex] ?? items[0];
 
   /*
+   * 1. COKME: `items` kisaldiginda indeks kirpilmiyordu.
    * ⚠ `focusIndex` HAM OKUNMAZ — iki ayri ariza uretiyordu.
-   *
-   * 1. COKME: `items` kisaldiginda indeks kirpilmiyordu. Filtrelenen bir sekme
-   *    seridinde 4. indekse gidip liste 3'e dusunce manuel kipteki Enter
-   *    `items[4].id` okuyup `Cannot read properties of undefined` atiyor ve
-   *    cevreleyen sayfayi dusuruyordu.
-   * 2. BAYAT ODAK: indeks yalnizca ilk render'da tohumlaniyordu. Kontrollu
-   *    `activeId` disaridan degistiginde (serit disindaki bir dugme
-   *    `setTab(...)` cagirinca) donen `tabindex` eski sekmede kaliyor ve Tab
-   *    kullaniciyi SECILI OLMAYAN sekmeye goturuyordu.
    */
   const safeFocusIndex =
     focusIndex >= 0 && focusIndex < items.length ? focusIndex : Math.max(activeIndex, 0);
 
   useEffect(() => {
-    /*
-     * Secim degistiginde odak da ona hizalanir. Manuel kipte bu bir kayip
-     * DEGIL: kullanici ok tuslariyla gezerken `activeId` degismiyor, yani
-     * effect kosmuyor; Enter'a basinca zaten iki indeks esitleniyor.
-     */
+    /* Secim degistiginde odak da ona hizalanir. */
     setFocusIndex(activeIndex < 0 ? 0 : activeIndex);
   }, [activeIndex]);
 
   /*
    * SECILI SEKME GORUNURE KAYDIRILIR — ama MOUNT'ta DEGIL.
-   *
-   * ⚠ Ilk kosu da kaydiriyordu ve `scrollIntoView` yalnizca serit kabini degil
-   * SAYFAYI da kaydirir: serit ilk boyamada ekranin altindaysa (uzun bir
-   * sayfanin dibindeki sekmeler) sayfa acilir acilmaz kendiliginden oraya
-   * atliyordu. Olculdu: hanparca urun detayinda sayfa her acilista alt
-   * sekmelere kayiyordu ve kullanici sayfanin basini hic gormuyordu.
-   *
-   * Kaydirma yalnizca SECIM DEGISTIGINDE anlamli — o an sekme zaten
-   * gorunurdedir ve hareket yatay serit icinde kalir.
+   * ⚠ Ilk kosu da kaydiriyordu ve `scrollIntoView` yalnizca serit kabini degil SAYFAYI da kaydirir:
+   * serit ilk boyamada ekranin altindaysa (uzun…
    */
   const hasMountedRef = useRef(false);
 
@@ -139,16 +120,18 @@ const Tabs: FC<Props> = ({
     setFocusIndex(next);
     if (!isManualActivation) select(items[next].id);
 
-    /* Odak HER IKI kipte de tasinir: manuel kipte seciliyle odaklanan sekme
-       ayrisiyor ve `tabindex` odaklanani izlemek zorunda. */
+    /*
+     * Odak HER IKI kipte de tasinir: manuel kipte seciliyle odaklanan sekme ayrisiyor ve `tabindex`
+     * odaklanani izlemek zorunda.
+     */
     document.getElementById(`${baseId}-tab-${items[next].id}`)?.focus();
   };
 
   if (items.length === 0) return null;
 
   /*
-   * Panelsiz kullanimda `aria-controls` VERILMEZ: var olmayan bir kimligi
-   * isaret etmek ekran okuyucuda kirik bir bag uretir.
+   * Panelsiz kullanimda `aria-controls` VERILMEZ: var olmayan bir kimligi isaret etmek ekran
+   * okuyucuda kirik bir bag uretir.
    */
   const hasPanel = isDefined(active?.content);
 
@@ -171,17 +154,13 @@ const Tabs: FC<Props> = ({
               type="button"
               role="tab"
               aria-selected={isActive}
-              /*
-               * ⚠ YALNIZCA SECILI SEKMEDE. Panel tek tanedir ve kimligi
-               * `active.id` tasir; pasif sekmelere de yazmak var OLMAYAN bir
-               * kimligi isaret ederdi (axe `aria-valid-attr-value`) — iki
-               * satir yukaridaki kuralin tam ihlali.
-               */
+              /* ⚠ YALNIZCA SECILI SEKMEDE. */
               aria-controls={isActive && hasPanel ? `${baseId}-panel-${item.id}` : undefined}
               // Yalnızca seçili sekme sekme sırasında; gezinme ok tuşlarıyla.
-              /* Donen `tabindex` ODAKLANANI izler: manuel kipte secili sekme
-                 ile odaklanan sekme ayri ve Tab'in geri donecegi yer
-                 odaklanan olmali. */
+              /*
+               * Donen `tabindex` ODAKLANANI izler: manuel kipte secili sekme ile odaklanan sekme
+               * ayri ve Tab'in geri donecegi yer odaklanan olmali.
+               */
               tabIndex={
                 (isManualActivation ? items[safeFocusIndex]?.id === item.id : isActive) ? 0 : -1
               }

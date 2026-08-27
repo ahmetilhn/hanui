@@ -31,8 +31,8 @@ const measure = () => {
 };
 
 /**
- * Kare başına bir ölçüm: klavye açılırken `resize` ve `scroll` ard arda
- * düşüyor ve her ölçüm bir yerleşim okuması.
+ * Kare başına bir ölçüm: klavye açılırken `resize` ve `scroll` ard arda düşüyor ve her ölçüm bir
+ * yerleşim okuması.
  */
 const schedule = () => {
   if (frame) return;
@@ -50,12 +50,8 @@ const cancelScheduled = () => {
 };
 
 /**
- * Alt sayfayi <strong>gorunen</strong> alana yaslar.
- *
- * @param isActive Panel acik mi. Yalnizca acikken olculur: kendisi yalnizca
- * acikken cizilen bir panel varsayilani kullanir, ama sayfa boyunca DOM'da
- * duran bir panel bayraksiz cagirdiginda her kullanicida iki gorunum alani
- * dinleyicisi bos yere acik kaliyordu.
+ * Alt sayfayi gorunen alana yaslar.
+ * @param isActive Panel acik mi.
  */
 const useSheetViewport = (isActive = true) => {
   useEffect(() => {
@@ -86,8 +82,10 @@ const useSheetViewport = (isActive = true) => {
 
       cancelScheduled();
 
-      /* Degiskenler SILINIR, sifirlanmaz: yedek deger CSS'te
-         (`var(…, 0px)` / `var(…, 100dvh)`) ve panel kapaliyken dogru olan o. */
+      /*
+       * Degiskenler SILINIR, sifirlanmaz: yedek deger CSS'te (`var(…, 0px)` / `var(…, 100dvh)`) ve
+       * panel kapaliyken dogru olan o.
+       */
       document.documentElement.style.removeProperty(INSET_VAR);
       document.documentElement.style.removeProperty(HEIGHT_VAR);
     };

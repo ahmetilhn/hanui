@@ -30,9 +30,8 @@ export type ComboboxProps<T extends string> = {
   onChange: (value: T | null) => void;
   labels: ComboboxLabels;
   /**
-   * Verilirse arama <strong>sunucuda</strong> yapılır: bileşen listeyi kendisi
-   * filtrelemez, yazılanı 300 ms bekleyip buraya bildirir. Verilmezse
-   * filtreleme yerelde ve aksan duyarsız yapılır.
+   * Verilirse arama sunucuda yapılır: bileşen listeyi kendisi filtrelemez, yazılanı 300 ms bekleyip
+   * buraya bildirir.
    */
   onSearch?: (query: string) => void;
   isLoading?: boolean;
@@ -44,7 +43,7 @@ export type ComboboxProps<T extends string> = {
   /** Tetikleyicinin solundaki ikon. */
   icon?: ReactNode;
   id?: string;
-  /** Zorunluluk — `Field`in `FieldChildProps` sözleşmesi. Bkz. `Select.required`. */
+  /** Zorunluluk — `Field`in `FieldChildProps` sözleşmesi. */
   required?: boolean;
   'aria-describedby'?: string;
   'aria-invalid'?: boolean;

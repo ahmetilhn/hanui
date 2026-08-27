@@ -7,9 +7,9 @@ import { useHanui } from '../../theme/context';
 import styles from './index.module.scss';
 
 type Props = {
-  /** BİÇİMLENMİŞ tutar: "1.299,90". Bileşen hesap yapmaz. */
+  /** BİÇİMLENMİŞ tutar: "1.299,90". */
   value: string;
-  /** Para birimi simgesi ya da kodu. Verilmezse `labels.currency`. */
+  /** Para birimi simgesi ya da kodu. */
   currency?: string;
   /** Değeri `Intl.NumberFormat` ile biçimlendirir. */
   isFormatted?: boolean;
@@ -43,12 +43,7 @@ const Price: FC<Props> = ({
   const format = (raw: string): string => {
     if (!isFormatted || !labels?.locale) return raw;
 
-    /*
-     * RAKAM ICERMEYEN deger biciMLENDIRILMEZ. Soyma adimi "Fiyat sorunuz"u
-     * bos dizeye indiriyor, `Number('')` ise 0: ekranda tutar yerine "0"
-     * yaziyordu — yani fiyat alani dolu gorunup icerigi YANLIS oluyordu.
-     * Bicimlendirilemeyen deger oldugu gibi yazilir.
-     */
+    /* RAKAM ICERMEYEN deger biciMLENDIRILMEZ. */
     if (!/\d/.test(raw)) return raw;
 
     const numeric = Number(

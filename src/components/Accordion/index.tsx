@@ -72,20 +72,9 @@ const Accordion: FC<Props> = ({
   );
 
   /*
-   * ⚠ `open` PROP'U TEK BASINA YETMEZ — kontrollu kipte kalici desenkronizasyon
-   * uretiyordu.
-   *
-   * `<details>` YERLI bir aciliyor/kapaniyor ogesi: kullanici tikladiginda DOM
-   * ozelligini TARAYICI degistirir. Ebeveyn `openIds`i degistirmezse React ayni
-   * `open` degeriyle yeniden render eder, fark gormedigi icin DOM yazimini
-   * ATLAR ve oge kullanicinin biraktigi halde kalir. Sonrasinda `onToggle`in
-   * `next !== isOpen` korumasi BAYAT React degerini okur ve sonraki tiklamalar
-   * `onChange` bile uretmez: bolum kilitlenir, cagiranin durumu onu bir daha
-   * suremez.
-   *
-   * Cozum DOM'u her render'dan sonra niyetle hizalamak. Bagimlilik dizisi YOK
-   * ve bu bilincli: hizalanmasi gereken sey React'in gordugu degisiklik degil,
-   * TARAYICININ arkamizdan yaptigi degisiklik.
+   * `<details>` YERLI bir aciliyor/kapaniyor ogesi: kullanici tikladiginda DOM ozelligini TARAYICI
+   * degistirir.
+   * ⚠ `open` PROP'U TEK BASINA YETMEZ — kontrollu kipte kalici desenkronizasyon uretiyordu.
    */
   const detailsRefs = useRef(new Map<string, HTMLDetailsElement>());
 
@@ -115,10 +104,8 @@ const Accordion: FC<Props> = ({
             /* Ilk boyama ve SSR icin; surekliligi yukaridaki effect tutuyor. */
             open={isOpen}
             /*
-             * `onToggle` YEREL olaydir ve tarayici durumu DEGISTIRDIKTEN sonra
-             * dusuyor. `onClick` ile yakalamak yetmiyordu: klavyeyle acilan
-             * bolum (Enter/Space) tiklama uretmiyor ve durum React tarafinda
-             * guncellenmiyordu.
+             * `onToggle` YEREL olaydir ve tarayici durumu DEGISTIRDIKTEN sonra dusuyor. `onClick`
+             * ile yakalamak yetmiyordu: klavyeyle acilan bolum (Enter/Space)…
              */
             onToggle={event => {
               const next = (event.currentTarget as HTMLDetailsElement).open;
@@ -128,11 +115,7 @@ const Accordion: FC<Props> = ({
             <summary
               id={`${baseId}-${item.id}`}
               className={styles.accordion__summary}
-              /*
-               * Pasif bolum: `<summary>`nin `disabled` hali YOK. Isaretci
-               * olaylari kesilir ve `tabindex="-1"` ile sekme sirasindan
-               * cikarilir; `aria-disabled` durumu duyurur.
-               */
+              /* Pasif bolum: `<summary>`nin `disabled` hali YOK. */
               aria-disabled={item.isDisabled}
               tabIndex={item.isDisabled ? -1 : undefined}
               onClick={event => item.isDisabled && event.preventDefault()}

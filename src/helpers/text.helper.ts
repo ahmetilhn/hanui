@@ -1,6 +1,6 @@
 /** Metin normalizasyonu — aksan ve büyük/küçük harf duyarsız arama. */
 
-/** Serbest metin arama anahtarı: ASCII, küçük harf, tek boşlukla ayrılmış. */
+/** Serbest metin arama anahtarı: */
 export const normalizeSearchTerm = (value: string): string =>
   value
     .replace(/İ/g, 'i')

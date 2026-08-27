@@ -6,11 +6,8 @@ import { scrollIntoViewIfPossible } from '../helpers/scroll.helper';
 import type { ListboxNavigation, ListboxNavigationOptions } from '@/types/hook.type';
 
 /*
- * Govde `types/hook.type.ts`e tasindi (kardesleri `VirtualRange`,
- * `AnnouncePoliteness`, `ListboxNavigationOptions` zaten oradaydi); tip
- * BURADAN da disa aciliyor cunku `src/index.ts` onu bu yoldan veriyor ve
- * yalnizca dosya yeri degisti diye bir surum kirilmasi olmamali. Ayni karar
- * `Combobox` tiplerinde de uygulandi.
+ * Govde `types/hook.type.ts`e tasindi (kardesleri `VirtualRange`, `AnnouncePoliteness`,
+ * `ListboxNavigationOptions` zaten oradaydi)
  */
 export type { ListboxNavigation } from '@/types/hook.type';
 
@@ -22,15 +19,17 @@ const useListboxNavigation = <T extends HTMLElement = HTMLElement>(
   const [activeIndex, setActiveIndex] = useState(initialIndex);
   const listRef = useRef<T | null>(null);
 
-  /* Panel her acildiginda etkin secenek SECILI olandan baslar; kullanici
-     listeyi bastan taramak zorunda kalmaz. */
+  /*
+   * Panel her acildiginda etkin secenek SECILI olandan baslar; kullanici listeyi bastan taramak
+   * zorunda kalmaz.
+   */
   useEffect(() => {
     if (isOpen) setActiveIndex(initialIndex);
   }, [isOpen, initialIndex]);
 
   /*
-   * Liste SUZULDUGUNDE etkin dizin listenin disinda kalabiliyor: uc secenek
-   * gorunurken `activeIndex` 7'de kaldiginda `Enter` hicbir sey secmiyordu.
+   * Liste SUZULDUGUNDE etkin dizin listenin disinda kalabiliyor: uc secenek gorunurken
+   * `activeIndex` 7'de kaldiginda `Enter` hicbir sey secmiyordu.
    */
   useEffect(() => {
     setActiveIndex(current => (current >= count ? Math.max(0, count - 1) : current));
@@ -71,9 +70,10 @@ const useListboxNavigation = <T extends HTMLElement = HTMLElement>(
 
         case ' ':
         case 'Enter': {
-          /* Arama kutusunda BOSLUK bir KARAKTER: onu secime cevirmek "fren
-             balatasi" yazmayi imkansiz kiliyordu. `Enter` her iki kipte de
-             secer. */
+          /*
+           * Arama kutusunda BOSLUK bir KARAKTER: onu secime cevirmek "fren balatasi" yazmayi
+           * imkansiz kiliyordu. `Enter` her iki kipte de secer.
+           */
           if (event.key === ' ' && !hasSpaceSelect) break;
 
           event.preventDefault();
@@ -84,14 +84,9 @@ const useListboxNavigation = <T extends HTMLElement = HTMLElement>(
         case 'Escape':
           event.preventDefault();
           /*
-           * ⚠ `stopPropagation` ZORUNLU. Liste bir `Popover`ın içindeyse tuş
-           * bize kadar geliyor, biz kapaniyoruz ve olay BELGEYE kadar cikip
-           * Popover'in dinleyicisini de atesliyordu: kullanici yalnizca listeyi
-           * kapatmak isterken uzerinde calistigi panel de kapaniyordu.
-           *
-           * React 17+ dinleyiciyi KOK KAPSAYICIYA bagliyor, yani sentetik
-           * olayda propagasyonu durdurmak yerel olayin `document`e ulasmasini
-           * da engeller.
+           * React 17+ dinleyiciyi KOK KAPSAYICIYA bagliyor, yani sentetik olayda propagasyonu
+           * durdurmak yerel olayin `document`e ulasmasini da engeller.
+           * ⚠ `stopPropagation` ZORUNLU.
            */
           event.stopPropagation();
           onClose();

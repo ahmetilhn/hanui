@@ -4,20 +4,6 @@ import userEvent from '@testing-library/user-event';
 import Combobox, { type ComboboxOption } from '@/components/Combobox';
 import Select from '@/components/Select';
 
-/**
- * PORTALLANAN PANELIN DAVRANIS SOZLESMESI.
- *
- * ⚠ Panel `document.body`e tasindiginda ETKILESIM KOLAY KIRILIR ve kirilma
- * SESSIZDIR: disari-tiklama denetimi yalnizca bilesenin kokune bakiyorsa,
- * panelin ICINE yapilan `mousedown` "disari" sayilir, panel secenegin
- * `onClick`i atesleneceden kapanir ve liste acilir ama HICBIR secenek
- * secilemez. Istisna atilmaz, log yazilmaz.
- *
- * Konumlandirmanin kendisi burada olculemez (jsdom yerlesim hesaplamaz);
- * geometri `__tests__/e2e/anchored-panel.spec.ts` icinde gercek motorla
- * olculuyor. Buradaki gorev, portalin ETKILESIMI bozmadigini kanitlamak.
- */
-
 const LABELS = {
   placeholder: 'Şehir seçin',
   searchPlaceholder: 'Ara…',
@@ -32,7 +18,6 @@ const OPTIONS: ComboboxOption[] = [
   { value: 'izmir', label: 'İzmir' },
 ];
 
-/** Panel YALNIZCA geniş ekranda yapışkan; dar ekranda alt sayfaya döner. */
 const useDesktopViewport = () =>
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
@@ -58,11 +43,6 @@ describe('Combobox — portallanan panel', () => {
     const listbox = screen.getByRole('listbox');
 
     expect(listbox).toBeInTheDocument();
-    /*
-     * ⚠ Iddia "body'nin ICINDE" DEGIL "kokun DISINDA". Kok de body'nin
-     * icindedir; olcusu olan sey panelin uygulamanin duzen agacindan KOPMUS
-     * olmasi — kapsayici blok zincirini kesen tek sey bu.
-     */
     expect(container.firstElementChild?.contains(listbox)).toBe(false);
     expect(document.body.contains(listbox)).toBe(true);
   });

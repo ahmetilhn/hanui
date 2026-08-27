@@ -12,18 +12,14 @@ type CopyFeedback = {
   nodeRef: RefObject<HTMLSpanElement | null>;
 };
 
-/**
- * Pano kopyalama + zamanlı geri bildirim — `CopyField` ile `CodeBadge`in
- * ORTAK çekirdeği. İki bileşen bu davranışı ayrı ayrı taşısaydı zaman aşımı,
- * temizlik ve pano-izni geri düşüşü sessizce ayrışabilirdi.
- */
+/** Pano kopyalama + zamanlı geri bildirim — `CopyField` ile `CodeBadge`in ORTAK çekirdeği. */
 export const useCopyFeedback = (value: string): CopyFeedback => {
   const [isCopied, setIsCopied] = useState(false);
   const nodeRef = useRef<HTMLSpanElement>(null);
   const timerRef = useRef<number | undefined>(undefined);
 
-  // Bilesen sokulurse zamanlayici da gitmeli; aksi halde React "unmounted
-  // component" uyarisi veriyor.
+  // Bilesen sokulurse zamanlayici da gitmeli; aksi halde React "unmounted component" uyarisi
+  // veriyor.
   useEffect(() => () => window.clearTimeout(timerRef.current), []);
 
   const selectValue = useCallback(() => {

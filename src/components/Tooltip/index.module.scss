@@ -13,13 +13,6 @@
 .bubble {
   z-index: $z-tooltip;
 
-  /*
-   * Balon isaretci ALMAZ — sozlesme iki yerde yaziliydi, hicbirinde
-   * uygulanmiyordu. Tooltip bir ACIKLAMADIR, eylem degil; dokunmatikteki
-   * kapatma yolu da (ekranin herhangi bir yerine dokunmak) balonun
-   * tiklanamaz olmasina dayaniyor. Olculen ariza: `side="bottom"` bir ipucu
-   * altindaki dugmenin ustune biniyor ve kullanicinin tiklamasini yutuyordu.
-   */
   pointer-events: none;
 
   width: max-content;

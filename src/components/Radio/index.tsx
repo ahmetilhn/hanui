@@ -34,8 +34,8 @@ const Radio = /*#__PURE__*/ forwardRef<HTMLInputElement, Props>(
           id={baseId}
           className={styles.radio__input}
           /*
-           * Sayaç ADIN İÇİNDE KALIR ("Disk Balata, 128"): filtre listesinde
-           * kaç sonuç olduğu seçimin bir parçası. Değişen tek şey `hint`.
+           * Sayaç ADIN İÇİNDE KALIR ("Disk Balata, 128"): filtre listesinde kaç sonuç olduğu
+           * seçimin bir parçası.
            */
           aria-labelledby={[labelId, isDefined(count) ? countId : null].filter(Boolean).join(' ')}
           aria-describedby={hint ? hintId : rest['aria-describedby']}

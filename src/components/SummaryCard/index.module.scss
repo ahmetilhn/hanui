@@ -43,7 +43,6 @@
 
     @include focus-ring;
 
-    // Yuzeyi kaplayan katman: kartin tamami tiklanir, sekme duragi tek.
     &::after {
       content: '';
       position: absolute;

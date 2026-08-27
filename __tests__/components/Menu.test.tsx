@@ -4,15 +4,6 @@ import userEvent from '@testing-library/user-event';
 import Button from '@/components/Button';
 import Menu, { type MenuItem } from '@/components/Menu';
 
-/**
- * `Menu` davranış sözleşmesi.
- *
- * ⚠ Bu dosya AÇILANA KADAR `Menu`nün özel testi yoktu; ölçülen kapsam
- * fonksiyon **%30**, dal **%14,9** idi. Bileşen yalnızca a11y taramasında
- * *çiziliyor*, hiçbir davranışı koşmuyordu — aşağıdaki üç kusurun hepsi o
- * boşlukta yaşadı.
- */
-
 const noop = () => {};
 
 const ITEMS: MenuItem[] = [
@@ -68,10 +59,9 @@ describe('Menu — klavye gezinmesi', () => {
     setup();
     const menu = await openMenu();
 
-    fireEvent.keyDown(menu, { key: 'ArrowDown' }); // Kopyala -> Dışa aktar
+    fireEvent.keyDown(menu, { key: 'ArrowDown' });
     expect(screen.getByRole('menuitem', { name: 'Dışa aktar' })).toHaveFocus();
 
-    /* "Arşivle" pasif: sıradaki odak "Sil" olmalı. */
     fireEvent.keyDown(menu, { key: 'ArrowDown' });
     expect(screen.getByRole('menuitem', { name: 'Sil' })).toHaveFocus();
   });
@@ -102,7 +92,6 @@ describe('Menu — klavye gezinmesi', () => {
     setup();
     const menu = await openMenu();
 
-    /* "Dışa aktar" — `toLocaleLowerCase('tr')` olmadan `D` eşleşmezdi. */
     fireEvent.keyDown(menu, { key: 'd' });
     expect(screen.getByRole('menuitem', { name: 'Dışa aktar' })).toHaveFocus();
   });
@@ -114,20 +103,11 @@ describe('Menu — klavye gezinmesi', () => {
     const event = fireEvent.keyDown(menu, { key: 'Tab' });
 
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
-    /* `preventDefault` YOK: kullanıcı menüden çıkıp sayfaya devam ediyor. */
     expect(event).toBe(true);
   });
 });
 
 describe('Menu — fare ve klavye ayrımı', () => {
-  /**
-   * ⚠ REGRESYON NÖBETÇİSİ. `onMouseEnter` bir dönem `setActiveIndex` çağırıyordu
-   * ve `activeIndex` değişimini izleyen etki `.focus()` çalıştırdığı için sonuç
-   * **farenin klavye odağını çalması** oluyordu: kullanıcı ok tuşlarıyla
-   * gezinirken imlecin durduğu yer odağı geri fırlatıyordu.
-   *
-   * Bu test kaldırılırsa ya da `onMouseEnter` geri gelirse burası kırılır.
-   */
   it('fare bir öğenin üzerine geldiğinde odak TAŞINMAZ', async () => {
     setup();
     await openMenu();
@@ -139,13 +119,6 @@ describe('Menu — fare ve klavye ayrımı', () => {
     fireEvent.mouseEnter(last);
     fireEvent.mouseOver(last);
 
-    /*
-     * ⚠ Burası kırılıyorsa sebep neredeyse kesinlikle `onMouseEnter`in geri
-     * gelmesidir: fare odağı çalıyor demektir.
-     *
-     * ⚠ `expect(deger, 'mesaj')` YAZILMAZ — o Vitest/Playwright biçimi, Jest
-     * "Expect takes at most one argument" ile düşer. Teşhis yoruma yazılır.
-     */
     expect(first).toHaveFocus();
     expect(last).not.toHaveFocus();
   });
@@ -156,7 +129,6 @@ describe('Menu — fare ve klavye ayrımı', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Eylemler' }));
 
-    /* Tek öğe pasif: `open` hiç açmaz, çünkü etkin öğe yok. */
     expect(screen.queryByRole('menu')).not.toBeInTheDocument();
     expect(onSelect).not.toHaveBeenCalled();
   });

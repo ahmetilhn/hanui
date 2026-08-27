@@ -4,12 +4,10 @@ import { useEffect } from 'react';
 
 /**
  * SAYFA KAYDIRMA KİLİDİ — sayaçlı, tek yerde.
- *
  * @param isLocked Kilit bu örnek için etkin mi.
  */
 
-/* Kac tane acik panel var. Modul duzeyinde: kilit BELGENIN durumu, bir React
-   agacinin degil. */
+/* Kac tane acik panel var. */
 let lockCount = 0;
 
 /** Kilit yazılmadan önceki hâl — SON kapanışta buradan geri yüklenir. */
@@ -23,18 +21,10 @@ let previous: {
 } | null = null;
 
 /**
- * iOS Safari mi? Gövdeyi sabitleme bedeli yalnızca orada ödenir.
- *
- * ⚠ `navigator.platform` KULLANILMAZ — spesifikasyondan KALDIRILDI ve
- * tarayıcılar onu dondurulmuş/uydurma değerlerle döndürüyor. Eski kural
- * ayrıca `MacIntel` + `maxTouchPoints > 1` sezgisine dayanıyordu ve bu,
- * dokunmatik ekranlı ya da Sihirli Yüzey bağlı bir **masaüstü Mac**'te
- * YANLIŞ POZİTİF veriyordu: gövde gereksizce `position: fixed` yapılıp
- * sayfa kaydırma konumu sıfırlanıyordu.
- *
- * `userAgent` üzerinden Apple dokunmatik cihazı testi hem kaldırılmamış hem
- * daha dar: iPadOS 13+ masaüstü UA'sı gönderdiği için `Macintosh` + dokunma
- * noktası koşulu orada da tutar, ama dokunmatik olmayan Mac'te tutmaz.
+ * iOS Safari mi? `userAgent` üzerinden Apple dokunmatik cihazı testi hem kaldırılmamış hem daha
+ * dar: iPadOS 13+ masaüstü UA'sı gönderdiği için…
+ * ⚠ `navigator.platform` KULLANILMAZ — spesifikasyondan KALDIRILDI ve tarayıcılar onu
+ * dondurulmuş/uydurma değerlerle döndürüyor.
  */
 const isIOS = (): boolean => {
   if (typeof navigator === 'undefined') return false;
@@ -62,10 +52,7 @@ const lock = (): void => {
     scrollY,
   };
 
-  /*
-   * Cubugun genisligi: `scrollbar-gutter` desteklenmiyorsa dolgu olarak
-   * yazilir. Destekleniyorsa olcum 0 cikar ve dolgu yazilmaz.
-   */
+  /* Cubugun genisligi: `scrollbar-gutter` desteklenmiyorsa dolgu olarak yazilir. */
   const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
   if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`;
 
@@ -95,8 +82,10 @@ const unlock = (): void => {
 
   previous = null;
 
-  /* Govde sabitlenmisken kaydirma konumu sifirlaniyor; geri yazilmazsa
-     kullanici pencereyi kapattiginda sayfanin en basina duser. */
+  /*
+   * Govde sabitlenmisken kaydirma konumu sifirlaniyor; geri yazilmazsa kullanici pencereyi
+   * kapattiginda sayfanin en basina duser.
+   */
   window.scrollTo(0, scrollY);
 };
 

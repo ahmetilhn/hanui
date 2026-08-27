@@ -5,11 +5,8 @@ import { VirtualRange } from '@/types/hook.type';
 
 /**
  * Ölçüm gelmediğinde varsayılan satır yüksekliği.
- *
- * ⚠ `constants/combobox.constants.ts` içindeki `OPTION_HEIGHT` ile aynı sayı ama
- * AYNI ŞEY DEĞİL: bu jenerik bir varsayılan, o bir bileşenin ölçüsü ve
- * `Combobox` zaten kendi değerini geçiyor. Katlamak, seçim kutusunun satır
- * yüksekliğini değiştiren birinin her sanal listeyi değiştirmesi olurdu.
+ * ⚠ `constants/combobox.constants.ts` içindeki `OPTION_HEIGHT` ile aynı sayı ama AYNI ŞEY DEĞİL: bu
+ * jenerik bir varsayılan, o bir bileşenin…
  */
 const DEFAULT_ROW_HEIGHT = 40;
 

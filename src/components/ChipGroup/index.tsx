@@ -63,8 +63,8 @@ const ChipGroup = <T extends string>({
       return;
     }
 
-    // Seçili çipe tekrar basmak seçimi kaldırır: "hepsi" seçeneği olmayan
-    // filtrelerde kullanıcının geri dönebileceği tek yol bu.
+    // Seçili çipe tekrar basmak seçimi kaldırır: "hepsi" seçeneği olmayan filtrelerde kullanıcının
+    // geri dönebileceği tek yol bu.
     selection.onChange(selection.value === value ? null : value);
   };
 

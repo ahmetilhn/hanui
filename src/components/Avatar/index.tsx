@@ -8,10 +8,7 @@ import styles from './index.module.scss';
 type Props = {
   /** Tam ad; baş harfler buradan üretilir ve görsel yoksa `alt` metnidir. */
   name: string;
-  /**
-   * Profil görseli. Verilmezse baş harf madalyonuna düşer — çağıran tarafın
-   * koşul yazması gerekmez.
-   */
+  /** Profil görseli. */
   imageUrl?: string;
   /** Baş harfleri büyütürken kullanılacak dil etiketi ("tr", "az"). */
   locale?: string;
@@ -51,21 +48,15 @@ const Avatar: FC<Props> = ({ name, imageUrl, locale, size = 'md', className, tes
       className={cx(
         styles.avatar,
         styles[`avatar--${size}`],
-        /* Ton yalnizca BAS HARF madalyonunda: gorselin uzerine renk basmak
-           fotografi bozuyordu. */
+        /* Ton yalnizca BAS HARF madalyonunda: gorselin uzerine renk basmak fotografi bozuyordu. */
         !imageUrl && styles[`avatar--tone-${resolveTone(name, TONE_COUNT)}`],
         className,
       )}
       /*
-       * ⚠ `aria-hidden` KALDIRILDI. Kök üzerindeki `aria-hidden` yalnızca
-       * madalyonu değil KİŞİNİN ADINI da erişilebilirlik ağacından çıkarıyordu;
-       * `name` prop'unun kendi dokümantasyonu (`:9`) onu "görsel yoksa `alt`
-       * metnidir" diye tanımladığı hâlde o metin hiçbir zaman duyurulmuyordu.
-       * Ölçülen sonuç: yalnızca avatar çizilen bir kullanıcı listesi ekran
-       * okuyucuda TAMAMEN BOŞ görünüyordu.
-       *
-       * Ad `role="img"` + `aria-label` ile taşınır: baş harfler ("AY") görsel
-       * bir kısaltma, okunması gereken şey tam ad.
+       * Ad `role="img"` + `aria-label` ile taşınır: baş harfler ("AY") görsel bir kısaltma,
+       * okunması gereken şey tam ad.
+       * ⚠ `aria-hidden` KALDIRILDI. Kök üzerindeki `aria-hidden` yalnızca madalyonu değil KİŞİNİN
+       * ADINI da erişilebilirlik ağacından çıkarıyordu
        */
       role="img"
       aria-label={name}

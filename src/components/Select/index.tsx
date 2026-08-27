@@ -39,14 +39,11 @@ type Props<T extends string> = {
   options: SelectOption<T>[];
   value: T;
   onChange: (value: T) => void;
-  /**
-   * Alanın adı. İki işi birden yapar: alt sayfanın başlığı olur ve
-   * tetikleyicinin <strong>erişilebilir adı</strong>dır.
-   */
+  /** Alanın adı. */
   label: string;
-  /** Seçim yokken tetikleyicide görünen metin. Verilmezse `labels.selectPlaceholder`. */
+  /** Seçim yokken tetikleyicide görünen metin. */
   placeholder?: string;
-  /** Alt sayfanın kapatma düğmesinin erişilebilir adı. Verilmezse `labels.close`. */
+  /** Alt sayfanın kapatma düğmesinin erişilebilir adı. */
   closeLabel?: string;
   /** Tetikleyicinin solundaki ikon. */
   icon?: ReactNode;
@@ -58,14 +55,8 @@ type Props<T extends string> = {
   id?: string;
   /**
    * Zorunluluk — `Field`in `FieldChildProps` sözleşmesinden gelir.
-   *
-   * ⚠ Bileşen `...rest` YAYMIYOR, yani `Props`ta bildirilmeyen her alan
-   * sessizce buharlaşır. `required` bir dönem tam olarak öyleydi: `<Field
-   * isRequired>{props => <Select {...props} …/>}</Field>` yazan çağıran
-   * görsel `*` ve sr-only "(zorunlu)" alıyor ama KONTROLDE hiçbir işaret
-   * olmuyordu — doğrudan kutuya atlayan ekran okuyucu kullanıcısı alanın
-   * zorunlu olduğunu hiç duymuyordu. `props` taze bir nesne literali olmadığı
-   * için TypeScript'in fazla-özellik denetimi de uyarmıyordu.
+   * ⚠ Bileşen `...rest` YAYMIYOR, yani `Props`ta bildirilmeyen her alan sessizce buharlaşır.
+   * `required` bir dönem tam olarak öyleydi: `<Field…
    */
   required?: boolean;
   'aria-describedby'?: string;
@@ -112,8 +103,10 @@ const Select = <T extends string>({
     isOpen: openMode === 'popover',
   });
 
-  /* Panel BODY'e (ya da icinde bulundugu acik `<dialog>`a) portallanir; gerekce
-     `hooks/usePortalSurface.ts`. */
+  /*
+   * Panel BODY'e (ya da icinde bulundugu acik `<dialog>`a) portallanir; gerekce
+   * `hooks/usePortalSurface.ts`.
+   */
   const portal = usePortalSurface(openMode === 'popover', triggerRef, panelRef);
 
   const isOpen = openMode !== null;
@@ -125,8 +118,10 @@ const Select = <T extends string>({
   const open = useCallback(() => {
     if (isDisabled || options.length === 0) return;
 
-    /* Etkin secenek SECILI olandan baslar (kancanin `initialIndex`i);
-       kullanici listeyi bastan taramaz. */
+    /*
+     * Etkin secenek SECILI olandan baslar (kancanin `initialIndex`i); kullanici listeyi bastan
+     * taramaz.
+     */
     setOpenMode(window.matchMedia(ABOVE_MOBILE_MEDIA_QUERY).matches ? 'popover' : 'sheet');
   }, [isDisabled, options.length]);
 
@@ -144,12 +139,9 @@ const Select = <T extends string>({
   }, [isOpen]);
 
   /*
-   * Disari tiklamada panel kapanir. Alt sayfada bu is perdenin.
-   *
-   * ⚠ PANEL ARTIK KOKUN ICINDE DEGIL — portallandi. `rootRef` tek basina
-   * bakilsaydi panelin ICINE yapilan `mousedown` "disari" sayilir ve panel
-   * secenegin `onClick`i atesleneceden kapanirdi: liste acilir ama HICBIR
-   * secenek secilemez.
+   * Disari tiklamada panel kapanir.
+   * ⚠ PANEL ARTIK KOKUN ICINDE DEGIL — portallandi. `rootRef` tek basina bakilsaydi panelin ICINE
+   * yapilan `mousedown` "disari" sayilir ve panel…
    */
   useEffect(() => {
     if (openMode !== 'popover') return;
@@ -185,11 +177,7 @@ const Select = <T extends string>({
        degerin referans oldugunu kanitlayamiyor. */
   }, [openMode, listRef]);
 
-  /*
-   * KAPALIYKEN ok/Enter/Space paneli ACAR. Bu adim kancada DEGIL: acilma
-   * karari bilesenin (panel mi alt sayfa mi) ve kanca yalnizca gezinmeyi
-   * tasiyor.
-   */
+  /* KAPALIYKEN ok/Enter/Space paneli ACAR. */
   const onKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (!isOpen) {
       if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) {
@@ -207,11 +195,15 @@ const Select = <T extends string>({
       ref={listRef}
       id={listboxId}
       role="listbox"
-      /* Alt sayfada baslik `BottomSheet`in icinde ve kimligi bize kapali;
-         listenin adi dogrudan yazilir. */
+      /*
+       * Alt sayfada baslik `BottomSheet`in icinde ve kimligi bize kapali; listenin adi dogrudan
+       * yazilir.
+       */
       aria-label={label}
-      /* Odak alt sayfada listede, panelde tetikleyicide: etkin seçeneği
-         bildiren öznitelik odağın olduğu öğede durmak zorunda. */
+      /*
+       * Odak alt sayfada listede, panelde tetikleyicide: etkin seçeneği bildiren öznitelik odağın
+       * olduğu öğede durmak zorunda.
+       */
       aria-activedescendant={isSheet && options[activeIndex] ? optionId(activeIndex) : undefined}
       tabIndex={isSheet ? 0 : -1}
       className={cx(styles.list, isSheet && styles['list--sheet'])}
@@ -234,8 +226,8 @@ const Select = <T extends string>({
               isChosen && styles['option--selected'],
               option.isDisabled && styles['option--disabled'],
             )}
-            // Fare imleci seçeneğin üstündeyken etkin seçenek de oraya taşınır;
-            // iki ayrı vurgu kullanıcıyı şaşırtıyordu.
+            // Fare imleci seçeneğin üstündeyken etkin seçenek de oraya taşınır; iki ayrı vurgu
+            // kullanıcıyı şaşırtıyordu.
             onMouseEnter={() => setActiveIndex(index)}
             onClick={() => selectOption(option)}
           >
@@ -268,11 +260,7 @@ const Select = <T extends string>({
         aria-activedescendant={
           openMode === 'popover' && options[activeIndex] ? optionId(activeIndex) : undefined
         }
-        /*
-         * ⚠ `aria-label` KULLANILMAZ — SECILI DEGERI MASKELIYORDU. Gerekce ve
-         * olculen sonuc `Combobox`takiyle birebir ayni: `aria-label` elemanin
-         * icerigini ezer, icerik ise tam da secili secenegin etiketi.
-         */
+        /* ⚠ `aria-label` KULLANILMAZ — SECILI DEGERI MASKELIYORDU. */
         aria-labelledby={selectedOption ? `${baseId}-name ${baseId}-value` : `${baseId}-name`}
         aria-describedby={describedBy}
         aria-invalid={isInvalid}

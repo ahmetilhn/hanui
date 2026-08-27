@@ -12,9 +12,6 @@ export type HanuiLinkComponent = ComponentType<HanuiLinkProps>;
 
 /**
  * Bileşenden yönlendiriciye geçirilecek ek props.
- *
- * @example
- * // Next.js App Router: sayfa numarasına basınca liste yukarı sıçramasın.
- * <Pagination linkProps={{ scroll: false }} … />
+ * @example // Next.js App Router: sayfa numarasına basınca liste yukarı sıçramasın.…
  */
 export type HanuiLinkExtraProps = Record<string, unknown>;

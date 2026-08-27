@@ -14,7 +14,7 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   testId?: string;
 };
 
-/** Tarih alanı — <strong>yerel</strong> `<input type="date">`. */
+/** Tarih alanı — yerel `<input type="date">`. */
 const DateField = forwardRef<HTMLInputElement, Props>(
   ({ type = 'date', className, testId, ...rest }, ref) => (
     <input
@@ -38,11 +38,11 @@ export type DateRangeValue = {
 type RangeProps = {
   value: DateRangeValue;
   onChange: (value: DateRangeValue) => void;
-  /** Başlangıç alanının erişilebilir adı ("Başlangıç"). ZORUNLU. */
+  /** Başlangıç alanının erişilebilir adı ("Başlangıç"). */
   startLabel: string;
-  /** Bitiş alanının erişilebilir adı ("Bitiş"). ZORUNLU. */
+  /** Bitiş alanının erişilebilir adı ("Bitiş"). */
   endLabel: string;
-  /** İki alanın arasındaki ayraç. Varsayılan yarım tire. */
+  /** İki alanın arasındaki ayraç. */
   separator?: string;
   /** Ölçeğin uçları; ikisi de yerel öğeye geçer. */
   min?: string;
@@ -54,7 +54,7 @@ type RangeProps = {
   testId?: string;
 };
 
-/** Tarih aralığı — <strong>iki yerel alan</strong>, taklit takvim değil. */
+/** Tarih aralığı — iki yerel alan, taklit takvim değil. */
 const DateRangeBase = ({
   value,
   onChange,
@@ -78,8 +78,7 @@ const DateRangeBase = ({
       const format = new Intl.DateTimeFormat(labels.locale, { dateStyle: 'medium' });
       return `${format.format(new Date(value.start))} ${separator} ${format.format(new Date(value.end))}`;
     } catch {
-      /* Gecersiz yerel ayar ya da tarih: ozet cizilmez, alanlar calismaya
-         devam eder. Bir bicimlendirme hatasi girisi engellememeli. */
+      /* Gecersiz yerel ayar ya da tarih: ozet cizilmez, alanlar calismaya devam eder. */
       return null;
     }
   })();
@@ -92,8 +91,7 @@ const DateRangeBase = ({
           aria-label={startLabel}
           value={value.start}
           min={min}
-          /* Baslangic bitisi GECEMEZ: tarayici gecersiz araligi en bastan
-             sectirmiyor. */
+          /* Baslangic bitisi GECEMEZ: tarayici gecersiz araligi en bastan sectirmiyor. */
           max={value.end || max}
           disabled={isDisabled}
           onChange={event => onChange({ ...value, start: event.target.value })}

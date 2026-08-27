@@ -62,8 +62,6 @@
     }
   }
 
-  /* Kenarlık `Button--primary` ile aynı sebeple: koyu temada çam dolgu koyu
-     yüzeyden ayrılmıyor (bkz. palette `ACTION_LINE`). */
   &--solid {
     background-color: $action;
     border-color: $action-line;

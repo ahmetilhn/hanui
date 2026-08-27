@@ -17,9 +17,7 @@ const NAV_SURFACES = ['nav-bg', 'nav-bg-2', 'footer-bg'];
 
 /**
  * Ölçülecek çiftler.
- *
- * @returns `{ fg, bg, tier, base? }` — `base`, saydam bir ZEMİNİN arkasında
- * duran opak yüzey (örtü `page` üzerine düşer).
+ * @returns `{ fg, bg, tier, base? }` — `base`, saydam bir ZEMİNİN arkasında duran…
  */
 const buildPairs = () => {
   const pairs = [];
@@ -29,13 +27,7 @@ const buildPairs = () => {
   for (const surface of SURFACES) add('text', surface, 'text');
   for (const surface of ['page', 'surface', 'surface-2', 'surface-inset'])
     add('text-2', surface, 'text');
-  /*
-   * `text-3` de `surface-2` üzerinde ölçülür. Bir zamanlar yalnızca beyaz
-   * üzerinde ölçülmüştü ve orada geçiyordu; oysa cip sayacı, pasif girdi ve
-   * açılır listenin pasif seçeneği o zeminde duruyor. Yüzeylerin en KOYUSU
-   * eşiği belirler, en açığı değil. (`surface-3` dışarıda: basılı durumun
-   * zemini, üzerine soluk metin konmuyor.)
-   */
+  /* `text-3` de `surface-2` üzerinde ölçülür. */
   for (const surface of ['page', 'surface', 'surface-inset', 'surface-2'])
     add('text-3', surface, 'text');
 
@@ -44,29 +36,19 @@ const buildPairs = () => {
   for (const fill of ['cart', 'cart-hover', 'cart-active']) add('on-cart', fill, 'text');
 
   /*
-   * PASİF DOLGU ÜZERİNDEKİ METİN — WCAG'in muaf tuttuğu ama kütüphanenin
-   * kendine ŞART KOŞTUĞU tek çift.
+   * PASİF DOLGU ÜZERİNDEKİ METİN — WCAG'in muaf tuttuğu ama kütüphanenin kendine ŞART KOŞTUĞU tek
+   * çift.
    */
   add('on-action-soft', 'action-soft', 'text');
   for (const fill of ['danger-solid', 'danger-solid-hover']) add('on-danger', fill, 'text');
 
   /*
-   * Mavi dolgu üzerindeki metin — etkin sayfa numarası (`Pagination`), etkin
-   * karo madalyonu (`Tile`), geçerli adım (`Steps`), dolu bağlantı rozeti
-   * (`Badge`). Kendi token'ı var: mavi koyu temada AÇILIYOR, birincil eylem
-   * ise iki temada da koyu yeşil — biri koyu metin isterken diğeri beyaz
-   * istiyor ve tek token ikisini taşıyamıyor (bkz. `tokens.ts` → `on-role`).
+   * Mavi dolgu üzerindeki metin — etkin sayfa numarası (`Pagination`), etkin karo madalyonu
+   * (`Tile`), geçerli adım (`Steps`), dolu bağlantı rozeti…
    */
   for (const fill of ['role', 'role-hover']) add('on-role', fill, 'text');
 
-  /*
-   * `on-green` YALNIZCA `green-accent` ile ölçülür, hover'ıyla değil.
-   * Gerekçe `palette.ts` ACCENT bloğunda: açık temada yeşil, ikon eşiği (3:1,
-   * koyu olmalı) ile metin eşiği (4,5:1, açık kalmalı) arasında dar bir banda
-   * sıkışıyor ve bir kademe koyulaşan her ton metin eşiğini kırıyor. Metin
-   * taşıyan bir yeşil yüzeyin hover'ı bu yüzden dolguyu değil kenarlığı
-   * değiştirir.
-   */
+  /* `on-green` YALNIZCA `green-accent` ile ölçülür, hover'ıyla değil. */
   add('on-green', 'green-accent', 'text');
 
   // --- Bağlantı ---
@@ -95,18 +77,15 @@ const buildPairs = () => {
   add('text', 'glass-solid', 'text');
 
   /*
-   * `scrim-soft` metin taşımaz — görselin üzerine binen HAFİF bir örtü,
-   * altındaki fotoğrafın görünür kalması için var. Üzerine metin konursa
-   * ölçülecek şey örtü değil FOTOĞRAF olur ve o ölçülemez; oraya yazılan metin
-   * `scrim`i kullanır.
+   * `scrim-soft` metin taşımaz — görselin üzerine binen HAFİF bir örtü, altındaki fotoğrafın
+   * görünür kalması için var.
    */
 
   // --- Grafik ve ikon (1.4.11) ---
   for (const surface of ['page', 'surface', 'surface-2']) {
     /*
-     * Birincil düğmenin SINIRI eşiği taşıyan taraf: dolgunun kendisi (çam)
-     * koyu temada koyu yüzeyde 1,04:1 ve advisory listede kalıyor. Düğmenin
-     * görülebilirliği bu satıra bağlı — o yüzden burada, `graphic` olarak.
+     * Birincil düğmenin SINIRI eşiği taşıyan taraf: dolgunun kendisi (çam) koyu temada koyu yüzeyde
+     * 1,04:1 ve advisory listede kalıyor.
      */
     add('action-line', surface, 'graphic');
     add('ring-color', surface, 'graphic');

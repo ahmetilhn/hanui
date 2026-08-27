@@ -1,14 +1,3 @@
-/**
- * PALET SÖZLEŞMESİ — tarifin çıktısında değişmemesi gereken yapısal iddialar.
- *
- * <p>⚠ "Diskteki dosya tarifle birebir mi" sorusu BURADA cevaplanmaz:
- * `scripts/build-palette.mjs --check` onu `verify` içinde yapıyor. Tarif bir
- * ESM betiği ve ts-jest onu CJS'ten `require` edemiyor; iki kapı bilinçli
- * olarak ayrı yerlerde.
- *
- * <p>Buradaki iddialar tarifin SONUCU hakkında: ankorlar korunuyor mu, takma
- * adlar merdivenden ayrılmış mı, palette saf beyaz/siyah kalmış mı.
- */
 import {
   ACCENT,
   ACTION_LINE,
@@ -47,10 +36,6 @@ const everyValue = () =>
 
 describe('markanın iki ankoru', () => {
   it('pine ve mint birebir korunur', () => {
-    /*
-     * ⚠ Kurumsal kimlik kılavuzu 2.0'ın iki sabiti. Bunlar türetilmez ve
-     * değişmez; paletin geri kalanı onlardan çıkar.
-     */
     expect(BRAND.pine).toBe('#00322a');
     expect(BRAND.mint).toBe('#43ff9c');
     expect(ACTION_LINE.light).toBe(BRAND.pine);
@@ -59,12 +44,6 @@ describe('markanın iki ankoru', () => {
   });
 
   it('saf beyaz ve saf siyah palette YOKTUR', () => {
-    /*
-     * "İstisnasız her renk değişir" kararının yapısal karşılığı. Ayrıca ikisi
-     * de marka ekseninin dışında duruyor: kâğıdın yeşile kaydığı bir markada
-     * saf beyaz bir yüzey SOĞUK okunuyor, saf siyah bir gölge de koyu yeşilin
-     * üzerinde MOR bir kenar bırakıyor.
-     */
     expect(everyValue()).not.toContain('#ffffff');
     expect(everyValue()).not.toContain('#000000');
   });
@@ -72,11 +51,6 @@ describe('markanın iki ankoru', () => {
 
 describe('takma adlar merdivenden ayrılmaz', () => {
   it('kurumsal üçlü merdivenin kendisidir', () => {
-    /*
-     * `paper`/`slate`/`mist` bir dönem bağımsız hex'lerdi ve nötr merdivenden
-     * ayrı hareket edebiliyorlardı; ayrıştıklarında aynı gri iki farklı renk
-     * gibi okunuyordu.
-     */
     expect(CORPORATE.paper).toBe(NEUTRAL.n100);
     expect(CORPORATE.slate).toBe(NEUTRAL.n600);
     expect(CORPORATE.mist).toBe(SURFACE_DARK.textTwo);
@@ -97,12 +71,6 @@ describe('takma adlar merdivenden ayrılmaz', () => {
 
 describe('yüzey merdiveni', () => {
   it('açık temada kart sayfadan AÇIK — düzlük geri gelmez', () => {
-    /*
-     * ⚠ Ölçülmüş arıza: `page` ve `surface` bir dönem İKİSİ DE saf beyazdı ve
-     * kart sayfadan dolguyla hiç ayrışmıyordu; ayrımın tamamını kenarlık ile
-     * gölge taşıyordu. Kenarlığı kaldıran her yeni bileşen sayfanın içinde
-     * kayboluyordu.
-     */
     expect(NEUTRAL.n0).not.toBe(NEUTRAL.n25);
   });
 

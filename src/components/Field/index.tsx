@@ -35,15 +35,8 @@ type Props = BaseProps & {
 
 /**
  * Form alanı sarmalayıcısı.
- *
- * @example
- * <Field label="E-posta" isRequired requiredLabel="(zorunlu)" error={emailError}>
- * {props => <Input {...props} type="email" value={email} onChange={onChange} />}
- * </Field>
- *
- * @example
- * // `{...props}` yaymayan bileşenlerde (Combobox, Select) yalnızca `id`:
- * <Field label="Şehir">{props => <Combobox id={props.id} … />}</Field>
+ * @example <Field label="E-posta" isRequired requiredLabel="(zorunlu)"…
+ * @example // `{...props}` yaymayan bileşenlerde (Combobox, Select) yalnızca `id`…
  */
 const Field: FC<Props> = ({
   label,

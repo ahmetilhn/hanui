@@ -14,13 +14,9 @@ type Props = {
 const Divider: FC<Props> = ({ label, className }) =>
   label ? (
     /*
-     * ⚠ `role="separator"` ZORUNLU. Etiketsiz dal `<hr>` kullanıyor ve onun
-     * örtük rolü zaten `separator`; etiketli dal ise düz bir `<div>`di, yani
-     * ayırıcı ANLAMI tam da anlam taşıdığı yerde kayboluyordu. `aria-label`
-     * etiketi role bağlar ("Ödeme bilgileri" ayırıcısı).
-     *
-     * ⚠ `aria-orientation` YAZILMAZ: `separator`ın varsayılanı zaten
-     * `horizontal` ve bileşen dikey bir varyant sunmuyor.
+     * ⚠ `role="separator"` ZORUNLU.
+     * ⚠ `aria-orientation` YAZILMAZ: `separator`ın varsayılanı zaten `horizontal` ve bileşen dikey
+     * bir varyant sunmuyor.
      */
     <div
       role="separator"

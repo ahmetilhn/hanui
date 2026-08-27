@@ -1,14 +1,6 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
-/*
- * ⚠ DOKUNMA ALANI GÖRÜNEN KUTUDAN BÜYÜK. `--small` gözle 36px ve öyle
- * KALMALI — akışkan ölçek zaten "mobilde her şey çok büyük" şikâyetini
- * çözmek için küçültüyor, düğmeyi geri şişirmek o kazancı geri verirdi.
- * Erişilebilirliği görünen boyut değil `::after` çapası taşıyor: parmak 44px,
- * göz 36px. Tüketici uygulamalar kendi kompakt düğmelerini (arama gönder,
- * sekme) aynı kalıpla çözüyor.
- */
 .button {
   @include tap-target;
 
@@ -105,8 +97,6 @@
     }
   }
 
-  /* Kenarlık DEKORASYON DEĞİL: koyu temada dolgu (çam) koyu kartta 1,04:1
-     veriyor, düğmeyi sınırı görünür kılıyor. Bkz. palette `ACTION_LINE`. */
   &--primary {
     background-color: $action;
     border-color: $action-line;

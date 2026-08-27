@@ -1,7 +1,4 @@
-/**
- * Kırılma noktaları — `styles/_variables.scss` içindeki `$breakpoint-*` ile
- * <strong>aynı</strong> değerler.
- */
+/** Kırılma noktaları — `styles/_variables.scss` içindeki `$breakpoint-*` ile aynı değerler. */
 export const MOBILE_BREAKPOINT = 640;
 
 export const TABLET_PORTRAIT_BREAKPOINT = 768;

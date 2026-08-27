@@ -32,12 +32,6 @@
       color: $text;
     }
 
-    /*
-     * ⚠ ETKİN SEKME ÇİZGİSİ `::before` — `::after` DEĞİL. `tap-target`
-     * mixin'i dokunma alanını `::after` ile açıyor; çizgi orada yazılınca
-     * ÇAPAYI EZİYOR ve sekme 36px'lik görünen kutusuna düşüyordu. Hata
-     * sessizdi: mixin çağrılmış görünüyor, hit alanı yok.
-     */
     @include focus-ring($ring-color, -2px);
 
     &::before {

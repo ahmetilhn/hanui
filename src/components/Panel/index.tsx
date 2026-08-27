@@ -7,7 +7,7 @@ import styles from './index.module.scss';
 
 type Props = {
   children: ReactNode;
-  /** Panel başlığı. Verilmezse başlık şeridi hiç çizilmez. */
+  /** Panel başlığı. */
   title?: string;
   /** Başlık altındaki tek satırlık açıklama. */
   description?: ReactNode;
@@ -29,11 +29,7 @@ type Props = {
 
 /**
  * Panel — başlığı olan içerik kutusu.
- *
- * @example
- * <Panel title="Profil bilgileri" description="Fatura bu bilgilerle kesilir">
- * <PanelForm>…alanlar…</PanelForm>
- * </Panel>
+ * @example <Panel title="Profil bilgileri" description="Fatura bu bilgilerle kesilir">…
  */
 const Panel: FC<Props> = ({
   children,
@@ -114,7 +110,7 @@ type PanelRowProps = {
   className?: string;
 };
 
-/** İki alanı yan yana koyan satır. Dar ekranda alt alta düşer. */
+/** İki alanı yan yana koyan satır. */
 export const PanelRow: FC<PanelRowProps> = /*#__PURE__*/ named(
   /*#__PURE__*/ memo(({ children, className }) => (
     <div className={cx(styles.row, className)}>{children}</div>

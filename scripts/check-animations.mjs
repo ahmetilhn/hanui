@@ -61,8 +61,10 @@ const topLevelTokens = value => {
 
 const css = readFileSync(CSS_PATH, 'utf8');
 
-/* Tanimli keyframe'ler. `@keyframes` yerellestirilmisse adi hashli gelir; o da
-   gecerli bir tanimdir — onemli olan referansin BIR tanimi bulmasi. */
+/*
+ * Tanimli keyframe'ler. `@keyframes` yerellestirilmisse adi hashli gelir; o da gecerli bir tanimdir
+ * — onemli olan referansin BIR tanimi bulmasi.
+ */
 const defined = new Set([...css.matchAll(/@keyframes\s+([\w-]+)/g)].map(match => match[1]));
 
 /* Yayinlanan animasyon adi ozel ozellikleri: `--hanui-anim-spin: hanui-spin`. */

@@ -1,50 +1,16 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
 
-/**
- * AÇILIR PANEL ANKRAJI — `Combobox` ve `Select` tetikleyicisine bağlı kalmak
- * zorunda.
- *
- * ⚠ BU TEST JSDOM'DA YAZILAMAZ. Ölçülen arıza bir **kapsayıcı blok** kaymasıdır:
- * `none` olmayan bir `transform`/`filter`/`contain` değeri taşıyan HER ata,
- * `position: fixed` torunları için kapsayıcı bloğu viewport'tan kendisine
- * çeker. `usePositioning` viewport koordinatı üretir; o koordinatlar artık
- * atanın sol üstüne göre yorumlanır ve panel atanın sayfa içindeki konumu
- * kadar kayar. jsdom yerleşim hesaplamaz — 500+ birim testinin hiçbiri bunu
- * görmez.
- *
- * Aynı arıza `Menu` için `top-layer.spec.ts`te kayıtlı ve orada portal +
- * üst katmanla çözüldü; `Combobox`/`Select` o düzeltmeyi ALMAMIŞTI.
- */
-
-/** Panel ile tetikleyici arasındaki payı `usePositioning`in `offset`i belirler. */
 const MAX_ANCHOR_GAP = 24;
 
-/** Yuvarlama ve alt piksel farkı payı. */
 const ROUNDING = 2;
 
-/**
- * Kapsayıcı bloğu kıran ata. `translateZ(0)` gerçek dünyada en yaygın biçim
- * (GPU katmanı zorlama) ama `filter`, `will-change`, `contain: paint` ve
- * `backdrop-filter` de aynı sonucu verir.
- */
 const CONTAINING_BLOCK_BREAKER = `
   .gallery__stage { transform: translateZ(0); }
 `;
 
-/**
- * KONUMLANDIRILAN YÜZEY, iç listbox DEĞİL.
- *
- * ⚠ `getByRole('listbox')` YANLIŞ ÖLÇER. `usePositioning` panelin KENDİSİNİ
- * konumlandırıyor ve `Combobox` panelinin tepesinde bir arama kutusu var, yani
- * listbox tetikleyiciden ~48px aşağıda başlar — ilk yazımda bu ölçüm "panel
- * kaymış" diye rapor edildi ve iddia yanlıştı, kod değil. Yüzey CSS modülü
- * sınıfına göre de aranmaz (karma isim): ölçütü kancanın kendi imzası verir,
- * yani satır içi yazılan `position: fixed`.
- */
 const positionedSurface = (listbox: Locator): Locator =>
   listbox.locator('xpath=ancestor-or-self::*[contains(@style,"position: fixed")][1]');
 
-/** Panelin tetikleyiciye bitişikliği — yön İDDİA EDİLMEZ, taraf çevrilebilir. */
 const anchorGap = (
   trigger: { y: number; height: number },
   panel: { y: number; height: number },
@@ -70,11 +36,6 @@ const assertAnchored = async (trigger: Locator, listbox: Locator, hint: string) 
   ).toBeLessThanOrEqual(MAX_ANCHOR_GAP);
 };
 
-/**
- * Panel GERÇEKTEN o piksellerde mi. `toBeVisible` DOM/CSS'e bakar; kırpan ya
- * da örten bir ata onu hâlâ "visible" bırakır. Gerçek soru "o piksele
- * tıklarsam panele mi basarım".
- */
 const assertHittable = async (page: Page, selector: string, hint: string) => {
   const result = await page.evaluate(sel => {
     const surface = document.querySelector(sel);
@@ -150,11 +111,6 @@ test.describe('açılır panel ankrajı — dönüştürülmüş ata', () => {
 });
 
 test.describe('açılır panel ankrajı — kırpan ata', () => {
-  /*
-   * `overflow: hidden` TEK BAŞINA `position: fixed`i kırpmaz — ama kapsayıcı
-   * blok bir ataya kaydıysa kırpar. İki bozulma birlikte geldiğinde panel
-   * hem yanlış yerde hem yarısı kesik oluyor; senaryo o birleşimi ölçer.
-   */
   test('Combobox paneli dönüştürülmüş + kırpan atada tam görünür', async ({ page }) => {
     await page.goto('/?theme=light&solo=Combobox');
     await page.addStyleTag({
@@ -173,27 +129,6 @@ test.describe('açılır panel ankrajı — kırpan ata', () => {
 });
 
 test.describe('tetikleyici içi süsler — caret ve temizleme düğmesi', () => {
-  /*
-   * ⚠ TEK BİR SIRALAMA HATASI ÜÇ ARIZA ÜRETİYORDU.
-   *
-   * `.combobox__clear` `position: absolute` yazıyor ama `@include tap-target`
-   * ondan SONRA gelip `position: relative` yazıyordu (aynı özgüllük, son
-   * bildirim kazanır). Ölçüldü (2026-08-19, chromium, `isClearable` + seçili
-   * değer):
-   *
-   * | ne | beklenen | düzeltmeden önce |
-   * |---|---|---|
-   * | `✕` `position` | `absolute` | `relative` |
-   * | `.combobox` kök yüksekliği | 48px | **73px** |
-   * | `✕` yatay konumu | tetikleyicinin içinde | kökün **36px SOLUNDA** |
-   * | caret dikey kayması | 0px | **12px** |
-   *
-   * Zincir: düğme akışta kaldı → tetikleyicinin ALTINA dizildi → kök şişti →
-   * caret'in (köke çapalı) `top: 50%`i artık tetikleyicinin merkezi değil.
-   * Caret o yüzden düz bir esnek çocuğa çevrildi: kapsayıcı bloktan BAĞIMSIZ.
-   */
-
-  /** Tetikleyici içi geometri — üç varyantın hepsi için. */
   const readTriggers = (page: Page) =>
     page.evaluate(() => {
       const roots = [...document.querySelectorAll('div')].filter(
@@ -204,7 +139,6 @@ test.describe('tetikleyici içi süsler — caret ve temizleme düğmesi', () =>
         const trigger = root.querySelector(':scope > button[aria-haspopup="listbox"]')!;
         const clear =
           [...root.querySelectorAll(':scope > button')].find(b => b !== trigger) ?? null;
-        /* Caret tetikleyicinin SON svg'si: `icon` verildiğinde ilk svg öncü ikon. */
         const carets = trigger.querySelectorAll('svg');
         const caret = carets[carets.length - 1] ?? null;
 
@@ -233,7 +167,6 @@ test.describe('tetikleyici içi süsler — caret ve temizleme düğmesi', () =>
       });
     });
 
-  /** Caret ile tetikleyicinin sağ kenarı arasındaki pay `$space-3` + ikon payı. */
   const CARET_MAX_INSET = 20;
 
   test('caret ve `✕` her varyantta tetikleyicinin İÇİNDE ve dikeyde ortalı', async ({ page }) => {
@@ -244,10 +177,6 @@ test.describe('tetikleyici içi süsler — caret ve temizleme düğmesi', () =>
     expect(triggers.length, 'galeride Combobox bulunamadı').toBeGreaterThan(0);
 
     for (const [index, box] of triggers.entries()) {
-      /*
-       * ⚠ KÖK YÜKSEKLİĞİ = TETİKLEYİCİ YÜKSEKLİĞİ. Kök şiştiği anda köke
-       * çapalı her süs kayar; ölçüm bu yüzden süslerden ÖNCE burayı tutuyor.
-       */
       expect(
         box.rootHeight,
         `#${index}: kök tetikleyiciden yüksek — akışta kalan bir çocuk var`,
@@ -277,11 +206,6 @@ test.describe('tetikleyici içi süsler — caret ve temizleme düğmesi', () =>
 
   test('kök ile tetikleyici AYRIŞTIĞINDA da süsler tetikleyiciye bağlı kalır', async ({ page }) => {
     await page.goto('/?theme=light&solo=Combobox');
-    /*
-     * Kökün kutusunu tetikleyiciden AYIRAN gerçekçi bir sapma: çağıran
-     * `className` ile köke dolgu veriyor. Köke çapalı bir süs burada kayar,
-     * esnek çocuk olan kaymaz.
-     */
     await page.addStyleTag({ content: '.gallery__stage > div { padding-top: 28px; }' });
     await page.evaluate(() => document.fonts.ready);
 

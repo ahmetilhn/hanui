@@ -18,9 +18,10 @@ const NON_TEXT_INPUT_TYPES = new Set([
 export const isKeyboardOpeningElement = (element: Element | null): boolean => {
   if (!(element instanceof HTMLElement)) return false;
 
-  /* `isContentEditable` mirasi da kapsar (duzenlenebilir bolgenin ICINDEKI
-     oge), ama jsdom onu uygulamiyor ve her zaman false donuyor; oznitelik
-     kontrolu testte de gecerli olan yedek. */
+  /*
+   * `isContentEditable` mirasi da kapsar (duzenlenebilir bolgenin ICINDEKI oge), ama jsdom onu
+   * uygulamiyor ve her zaman false donuyor
+   */
   if (element.isContentEditable) return true;
   const editable = element.getAttribute('contenteditable');
   if (editable === '' || editable === 'true' || editable === 'plaintext-only') return true;
@@ -32,24 +33,20 @@ export const isKeyboardOpeningElement = (element: Element | null): boolean => {
   return !NON_TEXT_INPUT_TYPES.has((element as HTMLInputElement).type);
 };
 
-/**
- * `showModal()` ÇAĞRILDIKTAN SONRA çağrılır. Odak bir metin alanına düştüyse
- * panelin kendisine geri alınır; düşmediyse hiçbir şey yapılmaz.
- */
+/** `showModal()` ÇAĞRILDIKTAN SONRA çağrılır. */
 export const preventAutoKeyboard = (dialog: HTMLDialogElement): void => {
   const active = dialog.ownerDocument.activeElement;
   if (!dialog.contains(active) || !isKeyboardOpeningElement(active)) return;
 
   (active as HTMLElement).blur();
-  // `<dialog>` varsayılan olarak odaklanabilir değil; odağı alabilmesi için
-  // sıra dışı bırakılır (Tab ile gezinmede görünmez, `focus()` ile alınır).
+  // `<dialog>` varsayılan olarak odaklanabilir değil; odağı alabilmesi için sıra dışı bırakılır
+  // (Tab ile gezinmede görünmez, `focus()` ile alınır).
   dialog.tabIndex = -1;
   dialog.focus({ preventScroll: true });
 };
 
 /**
  * ODAK GERİ DÖNÜŞÜ.
- *
  * @returns Odağı geri veren fonksiyon.
  */
 export const captureFocus = (): (() => void) => {
@@ -59,17 +56,15 @@ export const captureFocus = (): (() => void) => {
     if (!(previous instanceof HTMLElement)) return;
 
     /*
-     * Oge hala BELGEDE mi: acan dugme, panel kapanirken DOM'dan kalkmis
-     * olabilir (bir satiri silen onay penceresi, satirla birlikte dugmeyi de
-     * goturuyor). Kalkmis bir ogeye `focus()` sessizce hicbir sey yapmiyor ve
-     * odak yine `<body>`ye dusuyordu; cagiran taraf bunu bilip alternatif bir
-     * hedef verebilmeli.
+     * Oge hala BELGEDE mi: acan dugme, panel kapanirken DOM'dan kalkmis olabilir (bir satiri silen
+     * onay penceresi, satirla birlikte dugmeyi de goturuyor).
      */
     if (!previous.isConnected) return;
 
-    /* `preventScroll` — odaklanan oge gorunum alaninin disindaysa tarayici
-       sayfayi oraya kaydiriyor ve kullanici kapattigi pencerenin yerine bambaska
-       bir yere bakiyordu. */
+    /*
+     * `preventScroll` — odaklanan oge gorunum alaninin disindaysa tarayici sayfayi oraya kaydiriyor
+     * ve kullanici kapattigi pencerenin yerine bambaska bir…
+     */
     previous.focus({ preventScroll: true });
   };
 };
@@ -88,7 +83,6 @@ const FOCUSABLE_SELECTOR = [
 
 /**
  * Panelin İLK ANLAMLI öğesine odaklanır.
- *
  * @param container Odak aranacak kök.
  * @param skipSelector Atlanacak öğe (varsayılan: kapatma düğmesi).
  */
@@ -115,17 +109,9 @@ export const focusFirstMeaningful = (
 };
 
 /**
- * KİPSEL YIĞIN — üst üste binen paneller.
- *
- * ⚠ Yığın yalnızca `<dialog>` tabanlı kipsel yüzeyleri DEĞİL, `Escape` ile
- * kapanan HER yüzeyi taşır (`Popover`, `Toast`, `Tooltip` —
- * `useDismissOnEscape` üzerinden). Sebep ölçüldü: o üç yüzey belge düzeyinde
- * dinliyor ve hiçbiri "ben en üstte miyim" diye sormuyordu, yani tek bir
- * `Escape` birden fazla yüzeyi birden kapatıyordu — bir `ConfirmDialog`ı
- * kapatan tuş aynı anda "Geri al" eylemli toast'ı da siliyor, bir filtre
- * `Popover`ı içindeki `Select` kapatılırken panelin tamamı da kapanıyordu.
- *
- * Sahiplik LIFO: en son açılan yüzey tuşu tüketir.
+ * KİPSEL YIĞIN — üst üste binen paneller. Sahiplik LIFO: en son açılan yüzey tuşu tüketir.
+ * ⚠ Yığın yalnızca `<dialog>` tabanlı kipsel yüzeyleri DEĞİL, `Escape` ile kapanan HER yüzeyi taşır
+ * (`Popover`, `Toast`, `Tooltip`
  */
 const modalStack: symbol[] = [];
 

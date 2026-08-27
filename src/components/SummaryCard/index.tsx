@@ -27,13 +27,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Özet kartı — başlık + kısa açıklama + meta satırı taşıyan BAĞLANTILI kart.
- *
- * Kartın tamamı tıklanır ama sekme durağı TEKTİR: bağlantı başlıktadır,
- * yüzeyi `::after` katmanı kaplar. `meta` satırı katmanın ÜSTÜNDE durur —
- * içine konan çip/rozet tıklamaları kart bağlantısına düşmez.
- */
+/** Özet kartı — başlık + kısa açıklama + meta satırı taşıyan BAĞLANTILI kart. */
 const SummaryCard: FC<Props> = ({
   title,
   href,

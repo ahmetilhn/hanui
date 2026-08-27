@@ -7,11 +7,7 @@ import { AnnouncePoliteness } from '@/types/hook.type';
 
 /**
  * EKRAN OKUYUCU DUYURU MERKEZİ.
- *
- * @example
- * const announce = useAnnounce();
- * announce(`${count} ürün bulundu`);
- * announce('Kart reddedildi', 'assertive');
+ * @example const announce = useAnnounce(); announce(`${count} ürün bulundu`)
  */
 
 const REGION_ID = 'hanui-live-region';
@@ -27,13 +23,12 @@ const getRegion = (politeness: AnnouncePoliteness): HTMLElement | null => {
   const region = document.createElement('div');
   region.id = id;
   region.setAttribute('aria-live', politeness);
-  /* `aria-atomic` — bolge her degistiginde TAMAMI okunur. Kapali
-     birakildiginda ekran okuyucular yalnizca DEGISEN kelimeleri okuyor ve
-     "48 urun bulundu" ile "12 urun bulundu" arasinda yalnizca sayi
-     duyuruluyordu. */
+  /* `aria-atomic` — bolge her degistiginde TAMAMI okunur. */
   region.setAttribute('aria-atomic', 'true');
-  /* Gorsel olarak gizli ama DOM'da: `display: none` ya da `hidden` bolgeyi
-     erisilebilirlik agacindan da cikarir ve hicbir sey duyurulmaz. */
+  /*
+   * Gorsel olarak gizli ama DOM'da: `display: none` ya da `hidden` bolgeyi erisilebilirlik
+   * agacindan da cikarir ve hicbir sey duyurulmaz.
+   */
   region.className = 'hanui-visually-hidden';
 
   document.body.appendChild(region);
@@ -49,10 +44,7 @@ const write = (region: HTMLElement, message: string): void => {
   });
 };
 
-/**
- * Duyuru fonksiyonu döndürür. Referans SABİT: bağımlılık dizisine güvenle
- * konur, her render'da yeni bir kapanış üretip etkileri tetiklemez.
- */
+/** Duyuru fonksiyonu döndürür. */
 const useAnnounce = (): ((message: string, politeness?: AnnouncePoliteness) => void) =>
   useCallback((message: string, politeness: AnnouncePoliteness = 'polite') => {
     const trimmed = message.trim();

@@ -19,26 +19,18 @@ type Props = {
   code: string;
   /** Kopyalama düğmesi ekler. */
   isCopyable?: boolean;
-  /** Kopyalama düğmesinin erişilebilir adı. Verilmezse `labels.copyField.copy(code)`. */
+  /** Kopyalama düğmesinin erişilebilir adı. */
   copyLabel?: string;
-  /** Kopyalandıktan sonraki ad. Verilmezse `labels.copyField.copied(code)`. */
+  /** Kopyalandıktan sonraki ad. */
   copiedLabel?: string;
-  /** `aria-live` ile duyurulan onay cümlesi. Verilmezse `labels.copyField.announcement`. */
+  /** `aria-live` ile duyurulan onay cümlesi. */
   copiedAnnouncement?: string;
   size?: CodeBadgeSize;
   className?: string;
   testId?: string;
 };
 
-/**
- * Teknik kod rozeti — monospace kod, marka zeminli çerçeve.
- *
- * `CopyField`ten farkı ÇERÇEVEDİR: CopyField satır içi çıplak değer, bu
- * bileşen sayfanın kahramanı olan kod (arıza kodu başlığı gibi). Pano
- * mantığı ikisinde de `useCopyFeedback` — ayrışamazlar. Etiketler de
- * `labels.copyField` sözlüğünü paylaşır: aynı eylem için ikinci bir sözlük
- * anahtarı, iki ayrı çeviri kaynağı olurdu.
- */
+/** Teknik kod rozeti — monospace kod, marka zeminli çerçeve. */
 const CodeBadge: FC<Props> = ({
   code,
   isCopyable,

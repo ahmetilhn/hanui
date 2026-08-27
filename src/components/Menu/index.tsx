@@ -36,10 +36,10 @@ export type MenuItem = {
 };
 
 type Props = {
-  /** Tetikleyici. TEK öğe; bileşen ona `ref` ve ARIA ekliyor. */
+  /** Tetikleyici. */
   trigger: ReactElement;
   items: MenuItem[];
-  /** Menünün erişilebilir adı ("Satır eylemleri"). ZORUNLU. */
+  /** Menünün erişilebilir adı ("Satır eylemleri"). */
   label: string;
   side?: PositionSide;
   align?: PositionAlign;
@@ -75,9 +75,8 @@ const Menu = ({
   const enabled = enabledIndexes(items);
 
   /*
-   * Portal hedefi HER RENDER'DA degil, yalnizca acikken cozulur. `closest`
-   * ucuzdur ama tetikleyicinin DOM konumu acilistan sonra degismedigi icin
-   * tekrar hesaplamanin da bir anlami yok — `isOpen` false iken `null`.
+   * Portal hedefi HER RENDER'DA degil, yalnizca acikken cozulur. `closest` ucuzdur ama
+   * tetikleyicinin DOM konumu acilistan sonra degismedigi icin tekrar…
    */
   const portal = usePortalSurface(isOpen, anchorRef, surfaceRef);
 
@@ -93,25 +92,17 @@ const Menu = ({
 
   const close = useCallback(() => {
     setIsOpen(false);
-    /* Odak TETIKLEYICIYE doner: donmezse `<body>`ye duser ve klavye
-       kullanicisi sayfanin en basina giderdi. */
+    /*
+     * Odak TETIKLEYICIYE doner: donmezse `<body>`ye duser ve klavye kullanicisi sayfanin en basina
+     * giderdi.
+     */
     restoreRef.current?.();
     restoreRef.current = null;
   }, []);
 
   /*
+   * Geri yukleme YALNIZCA `close()` icindeydi, yani menu ACIKKEN sokuldugunde hic calismiyordu.
    * ⚠ SOKULME de bir kapanistir.
-   *
-   * Geri yukleme YALNIZCA `close()` icindeydi, yani menu ACIKKEN sokuldugunde
-   * hic calismiyordu. Somut yol: satir eylemleri menusundeki "Sil" ogesi.
-   * `onSelect()` kaydi siliyor, satir (ve icindeki menu) bir sonraki render'da
-   * sokuluyor ve `close()` ya hic kosmuyor ya da artik DOM'da olmayan bir
-   * dugume odaklanmaya calisiyor. Odak `<body>`ye dusuyor ve klavye kullanicisi
-   * tam da yukaridaki yorumun engellemeyi vaat ettigi yere — sayfanin basina —
-   * atiliyordu.
-   *
-   * `Modal`, `Drawer`, `Popover` ve `BottomSheet` bunu temizlikte zaten
-   * yapiyor; ayrisan tek yuzey `Menu`ydu.
    */
   useEffect(
     () => () => {
@@ -189,8 +180,10 @@ const Menu = ({
         break;
 
       case 'Tab':
-        /* Menu KAPANIR ama gezinme SURER: kullanici menuden cikip sayfaya
-           devam ediyor. `preventDefault` yok. */
+        /*
+         * Menu KAPANIR ama gezinme SURER: kullanici menuden cikip sayfaya devam ediyor.
+         * `preventDefault` yok.
+         */
         close();
         break;
 
@@ -244,10 +237,7 @@ const Menu = ({
             id={id}
             role="menu"
             aria-label={label}
-            /*
-             * ⚠ Modalin ICINDEN acildiginda yuzey UST KATMANA cikmak ZORUNDA.
-             * Gerekce ve olculen dort senaryo: `helpers/portal.helper.ts`.
-             */
+            /* ⚠ Modalin ICINDEN acildiginda yuzey UST KATMANA cikmak ZORUNDA. */
             {...portal.attributes}
             className={cx(styles.menu, styles[`menu--${positioning.side}`], className)}
             style={{
@@ -264,11 +254,7 @@ const Menu = ({
                 type="button"
                 role="menuitem"
                 data-index={index}
-                /*
-                 * DONEN `tabindex`: menu Tab sirasinda TEK durak. Her oge
-                 * odaklanabilir olsaydi sekiz ogeli bir menude klavye
-                 * kullanicisi sayfaya donmek icin sekiz kez Tab'liyordu.
-                 */
+                /* DONEN `tabindex`: menu Tab sirasinda TEK durak. */
                 tabIndex={index === activeIndex ? 0 : -1}
                 disabled={item.isDisabled}
                 className={cx(styles.menu__item, item.isDanger && styles['menu__item--danger'])}

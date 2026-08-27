@@ -15,13 +15,12 @@ const toPercent = (value: number, max: number): number => {
 
 type Props = {
   /**
-   * Tamamlanan miktar. `undefined` → BELİRSİZ ilerleme (sonu bilinmiyor);
-   * çubuk kendi kendine akar.
+   * Tamamlanan miktar. `undefined` → BELİRSİZ ilerleme (sonu bilinmiyor); çubuk kendi kendine akar.
    */
   value?: number;
   /** Ölçeğin üst ucu. */
   max?: number;
-  /** Çubuğun erişilebilir adı ("Yükleme", "Ödeme adımı"). ZORUNLU. */
+  /** Çubuğun erişilebilir adı ("Yükleme", "Ödeme adımı"). */
   label: string;
   /** Ekran okuyucuya okunan METİN karşılığı ("3 / 5 dosya"). */
   valueText?: string;
@@ -33,7 +32,7 @@ type Props = {
   testId?: string;
 };
 
-/** İlerleme çubuğu — <strong>ölçülebilir</strong> bekleme. */
+/** İlerleme çubuğu — ölçülebilir bekleme. */
 const Progress = ({
   value,
   max = 100,
@@ -53,11 +52,7 @@ const Progress = ({
       <div
         role="progressbar"
         aria-label={label}
-        /*
-         * BELIRSIZ kipte `aria-valuenow` YAZILMAZ. Ozniteligin yoklugu, ARIA'da
-         * "deger bilinmiyor" demek; `0` yazmak ekran okuyucuya isin hic
-         * ilerlemedigini soyluyordu.
-         */
+        /* BELIRSIZ kipte `aria-valuenow` YAZILMAZ. */
         aria-valuenow={isIndeterminate ? undefined : Math.round(percent)}
         aria-valuemin={isIndeterminate ? undefined : 0}
         aria-valuemax={isIndeterminate ? undefined : 100}
@@ -75,8 +70,10 @@ const Progress = ({
       </div>
 
       {isValueVisible && !isIndeterminate && (
-        /* Gorsel yuzde `aria-hidden`: ayni bilgi zaten `progressbar`in
-           degerinde ve iki kez duyurulmasi gurultu. */
+        /*
+         * Gorsel yuzde `aria-hidden`: ayni bilgi zaten `progressbar`in degerinde ve iki kez
+         * duyurulmasi gurultu.
+         */
         <span className={styles.progress__value} aria-hidden>
           {valueText ?? `%${Math.round(percent)}`}
         </span>
@@ -91,7 +88,7 @@ type CircleProps = {
   /** Tamamlanan miktar. `undefined` → BELİRSİZ; çember döner. */
   value?: number;
   max?: number;
-  /** Erişilebilir ad. ZORUNLU. */
+  /** Erişilebilir ad. */
   label: string;
   valueText?: string;
   /** Yüzdeyi çemberin ortasına yazar. */
@@ -118,8 +115,10 @@ const ProgressCircleBase = ({
   const isIndeterminate = value === undefined;
   const percent = isIndeterminate ? 25 : toPercent(value, max);
 
-  /* Cizgi kalinligi capin ~%10'u: sabit bir kalinlik kucuk cemberde kutuyu
-     dolduruyor, buyugunde sac teline donuyordu. */
+  /*
+   * Cizgi kalinligi capin ~%10'u: sabit bir kalinlik kucuk cemberde kutuyu dolduruyor, buyugunde
+   * sac teline donuyordu.
+   */
   const stroke = Math.max(3, Math.round(size * 0.1));
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;

@@ -6,19 +6,12 @@ export type PositioningState = {
   /** ÇÖZÜLMÜŞ kenar: çarpışma yüzünden tercih edilenin karşıtı olabilir. */
   side: PositionSide;
   /**
-   * Tetikleyicinin ölçülen genişliği (px) — açılır listeler panelin genişliğini
-   * buna bağlıyor.
-   *
-   * ⚠ ÖLÇÜM BURADA, ÇAĞIRANDA DEĞİL. `Combobox` ve `Select` bu değeri render
-   * sırasında `triggerRef.current?.offsetWidth` ile okuyordu; render sırasında
-   * DOM okumak iki şeyi birden kırıyor: ilk render'da ref henüz boş olabilir
-   * (`undefined` genişlik) ve değer bir daha GÜNCELLENMEZ — pencere yeniden
-   * boyutlandığında ya da yazı tipi geldiğinde panel bayat genişlikte kalır.
-   * Kanca tetikleyiciyi `ResizeObserver` ile zaten izliyor, yani ölçüm burada
-   * bedavaya reaktif.
+   * Tetikleyicinin ölçülen genişliği (px) — açılır listeler panelin genişliğini buna bağlıyor.
+   * ⚠ ÖLÇÜM BURADA, ÇAĞIRANDA DEĞİL. `Combobox` ve `Select` bu değeri render sırasında
+   * `triggerRef.current?.offsetWidth` ile okuyordu
    */
   anchorWidth: number;
-  /** İlk ölçüm yapıldı mı. Yapılmadan çizilen yüzey sol üst köşede parlıyor. */
+  /** İlk ölçüm yapıldı mı. */
   isPositioned: boolean;
 };
 
@@ -36,5 +29,5 @@ export type PositioningOptions = {
 /** Tercih edilen kenar boyunca hizalama. */
 export type PositionAlign = 'start' | 'center' | 'end';
 
-/** Yüzeyin tercih ettiği kenar. Yer yoksa karşıtına düşer. */
+/** Yüzeyin tercih ettiği kenar. */
 export type PositionSide = 'top' | 'bottom' | 'left' | 'right';

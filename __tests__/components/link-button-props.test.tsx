@@ -3,18 +3,6 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import Button from '@/components/Button';
 import IconButton from '@/components/IconButton';
 
-/**
- * `href` verilen düğmelerin prop'ları DOM'a ULAŞTIĞINI tutar.
- *
- * ⚠ Ölçülen arıza: iki bileşenin de tipi `ButtonHTMLAttributes` olduğu için
- * `onClick`, `aria-*`, `data-*`, `id`, `title` hepsi TİP DENETİMİNDEN
- * geçiyordu, ama `...rest` yalnızca `<button>` dalında yayılıyordu. Bağlantı
- * dalı bir avuç alanı elle kopyalıyor, gerisini sessizce düşürüyordu:
- * `<Button href={ROUTES.CART} onClick={izle}>` derleniyor, geziniyor ve
- * analitik çağrısı HİÇ çalışmıyordu. Vitrinde 14 `<Button href>` çağrı yeri
- * var, yani her yeni prop sessiz bir no-op riskiydi.
- */
-
 describe('href taşıyan düğmeler prop düşürmez', () => {
   it('Button: onClick, aria-label ve data-* bağlantıya ulaşır', () => {
     const onClick = jest.fn();

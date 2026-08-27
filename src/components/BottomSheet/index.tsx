@@ -34,18 +34,18 @@ import styles from './index.module.scss';
 
 type Props = {
   title: string;
-  /** Kapatma düğmesinin erişilebilir adı. Verilmezse `labels.close`. */
+  /** Kapatma düğmesinin erişilebilir adı. */
   closeLabel?: string;
   onClose: () => void;
   children: ReactNode;
   /**
-   * Başlığın altında duran, gövde kaydırılırken yerinde kalan şerit —
-   * `Combobox`ın arama kutusu gibi.
+   * Başlığın altında duran, gövde kaydırılırken yerinde kalan şerit — `Combobox`ın arama kutusu
+   * gibi.
    */
   toolbar?: ReactNode;
   /** Dipte duran eylem şeridi. */
   footer?: ReactNode;
-  /** Panelin <strong>kendiliğinden kapandığı</strong> medya sorgusu. */
+  /** Panelin kendiliğinden kapandığı medya sorgusu. */
   closeAbove?: string;
   className?: string;
   testId?: string;
@@ -65,18 +65,15 @@ const BottomSheet = ({
 }: Props) => {
   const { labels } = useHanui();
   const titleId = useId();
-  /* Yigindaki yerimiz: Escape yalnizca EN USTTEKI panelde islenir. */
+  /* Yigindaki yerimiz: */
   const tokenRef = useRef<symbol | null>(null);
 
   /* Panel GORUNEN alana yaslanir: klavye ve adres cubugu altinda kalmaz. */
   useSheetViewport();
 
   /*
-   * Arka plan kaydirmasi kilitlenir: `showModal()` arka plani etkilesime
-   * kapatir ama kaydirmayi her tarayicida engellemiyor — kullanici alt sayfayi
-   * kaydirdigini sanirken arkadaki listeyi kaydiriyordu. Kilit SAYACLI: bu
-   * panel neredeyse her zaman baska bir kipsel yuzeyin (secim kutusu, filtre
-   * paneli) ICINDE aciliyor ve ilki kapaninca kilit erken acilmamali.
+   * Arka plan kaydirmasi kilitlenir: `showModal()` arka plani etkilesime kapatir ama kaydirmayi her
+   * tarayicida engellemiyor
    */
   useScrollLock();
 
@@ -96,14 +93,7 @@ const BottomSheet = ({
   useEffect(() => {
     const query = window.matchMedia(closeAbove);
 
-    /*
-     * ⚠ YALNIZCA EŞİĞİN ÜSTÜNE ÇIKARKEN kapanır. Eskiden `onClose` doğrudan
-     * dinleyici olarak veriliyordu, yani `change` olayı HER İKİ YÖNDE de
-     * kapatıyordu: eşiğin altına inmek (masaüstü → mobil) de alt sayfayı
-     * kapatıyordu. Cihazını döndüren bir kullanıcı yatay→dikey geçişte
-     * paneli kaybediyordu — üstelik `closeAbove` sözleşmesi "BU GENİŞLİĞİN
-     * ÜSTÜNDE kapan" diyor, "her sınır geçişinde kapan" demiyor.
-     */
+    /* ⚠ YALNIZCA EŞİĞİN ÜSTÜNE ÇIKARKEN kapanır. */
     const handleChange = (event: MediaQueryListEvent) => {
       if (event.matches) onClose();
     };
@@ -117,14 +107,16 @@ const BottomSheet = ({
 
     node.showModal();
 
-    /* Odak KAPATMA DUGMESINE degil ilk anlamli ogeye: ekran okuyucu paneli
-       "Kapat, dugme" diye aciyordu — kullanicinin duydugu ilk sey, panelin ne
-       oldugu degil ondan nasil kacilacagi. */
+    /*
+     * Odak KAPATMA DUGMESINE degil ilk anlamli ogeye: ekran okuyucu paneli "Kapat, dugme" diye
+     * aciyordu
+     */
     focusFirstMeaningful(node, `.${styles.sheet__header} button`);
 
-    /* `showModal()` odagi panelin ILK odaklanabilir ogesine tasiyor; o oge bir
-       metin alani oldugunda telefonda klavye kendiliginden aciliyordu
-       (bkz. `helpers/focus.helper`). */
+    /*
+     * `showModal()` odagi panelin ILK odaklanabilir ogesine tasiyor; o oge bir metin alani
+     * oldugunda telefonda klavye kendiliginden aciliyordu (bkz.…
+     */
     preventAutoKeyboard(node);
   }, []);
 
@@ -145,13 +137,16 @@ const BottomSheet = ({
       className={cx(styles.sheet, className)}
       aria-labelledby={titleId}
       data-testid={testId}
-      /* Escape'i tarayici isler ama React durumu haberdar olmuyor:
-         yakalanmazsa panel kapanip durum acik kaliyor ve kutu bir daha
-         acilmiyordu. */
+      /*
+       * Escape'i tarayici isler ama React durumu haberdar olmuyor: yakalanmazsa panel kapanip durum
+       * acik kaliyor ve kutu bir daha acilmiyordu.
+       */
       onCancel={event => {
         event.preventDefault();
-        /* Yalnizca EN USTTEKI panel kapanir: ust uste iki kipsel yuzeyde tek
-           bir Escape ikisini birden kapatiyordu. */
+        /*
+         * Yalnizca EN USTTEKI panel kapanir: ust uste iki kipsel yuzeyde tek bir Escape ikisini
+         * birden kapatiyordu.
+         */
         if (tokenRef.current && !isTopModal(tokenRef.current)) return;
         onClose();
       }}

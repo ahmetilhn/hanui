@@ -321,12 +321,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     filled: <PasswordInput aria-label="Şifre" defaultValue="cok-gizli-parola" />,
     disabled: <PasswordInput aria-label="Şifre" defaultValue="degistirilemez" disabled />,
   },
-  /*
-   * `ToastPortal` montajdan SONRA çizer; galeride tek başına GÖRÜNMEZ bir
-   * öğedir. Senaryo yine de var: defter "dışa verilen her bileşenin bir
-   * senaryosu olmalı" diyor ve görünmezlik bir istisna gerekçesi değil —
-   * bileşenin hiç çökmeden monte olduğunu burada da görüyoruz.
-   */
+  /* `ToastPortal` montajdan SONRA çizer; galeride tek başına GÖRÜNMEZ bir öğedir. */
   ToastPortal: { default: <ToastPortal /> },
   Textarea: { default: <Textarea aria-label="Not" placeholder="Notunuz" /> },
   Field: {
@@ -496,11 +491,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       </Panel>
     ),
     /* NOBETCI: dip seridi `PanelForm`un sutununda bitmeli. */
-    /*
-     * Ad `Wide` ile BITIYOR: hucre satirin tamamini alir (bkz.
-     * `playground.css`). Dar bir hucrede `PanelForm`un 565 px'lik siniri hic
-     * baglamaz ve nobetci hicbir sey olcmez.
-     */
+    /* Ad `Wide` ile BITIYOR: hucre satirin tamamini alir (bkz. `playground.css`). */
     formWithFooterWide: (
       <Panel title="Fatura adresi" footer={<Button>Kaydet</Button>}>
         <PanelForm>
@@ -634,11 +625,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     ),
   },
   ToastHub: {
-    /*
-     * Yigin GORUNUR bir sey kaplamaz; bildirimler `toast.*` ile aciliyor.
-     * Galeride bir dugme ile ornek uretiliyor — anlik goruntude yalnizca
-     * dugmeler gorunur, ki dogrusu bu: bildirim kalici bir yuzey degil.
-     */
+    /* Yigin GORUNUR bir sey kaplamaz; bildirimler `toast.*` ile aciliyor. */
     example: (
       <>
         <ToastHub />
@@ -763,12 +750,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         <p>Satır beş</p>
       </ScrollArea>
     ),
-    /*
-     * Solma AÇIK. Galeride bunun bir karşılığı yoktu ve `hasFade` hiçbir
-     * yüzeyde çizilmiyordu — tam da bu yüzden, solmanın iki ucu da koşulsuz
-     * boyadığı hata gözden kaçtı: kısa bir listede içerik neredeyse tamamen
-     * siliniyordu. Nöbetçi `e2e/mobile.spec.ts` bu iki kutuyu ölçüyor.
-     */
+    /* Solma AÇIK. Galeride bunun bir karşılığı yoktu ve `hasFade` hiçbir yüzeyde çizilmiyordu */
     faded: (
       <ScrollArea label="Solmalı uzun metin" maxHeight={120} hasFade>
         <p>Satır bir</p>
@@ -927,11 +909,8 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       </Modal>
     ),
     /*
-     * ⚠ ÜST KATMAN SENARYOSU — süs değil, nöbetçi. `<dialog>.showModal()`
-     * elemanı üst katmana taşır ve orası `z-index`ten bağımsız olarak her
-     * şeyin üstünde boyanır; `document.body`ye portallanan bir menü modalin
-     * ALTINDA kalır, yani görünmez olur. jsdom'da üst katman yok, dolayısıyla
-     * bu ancak gerçek tarayıcıda ölçülebilir: `__tests__/e2e/top-layer.spec.ts`.
+     * ⚠ ÜST KATMAN SENARYOSU — süs değil, nöbetçi. `<dialog>.showModal()` elemanı üst katmana taşır
+     * ve orası `z-index`ten bağımsız olarak her…
      */
     withMenu: (
       <Modal isOpen onClose={noop} title="Satırı düzenle">

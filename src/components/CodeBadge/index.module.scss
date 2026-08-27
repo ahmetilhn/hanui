@@ -10,9 +10,6 @@
   background-color: $action;
   color: $on-action;
 
-  // Acik temada dolgunun kendisi (gorunmez), koyu temada mint sac cizgisi —
-  // mail sablonlarindaki `action-line` kararinin birebir kendisi: kenarlik iki
-  // temada da yazilir ki rozetin olcusu temaya gore oynamasin.
   border: 1px solid $action-line;
   border-radius: $radius-sm;
 

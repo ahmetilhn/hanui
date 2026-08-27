@@ -33,8 +33,9 @@ const EmptyState: FC<Props> = ({
 }) => (
   <div
     className={cx(styles.empty, styles[`empty--${size}`], styles[`empty--${tone}`], className)}
-    /* Hata DUYURULUR: gormeyen kullanici icin sessizce degisen bir liste, hic
-       degismemis demekti. Bos durum duyurulmaz — o beklenen bir sonuc. */
+    /*
+     * Hata DUYURULUR: gormeyen kullanici icin sessizce degisen bir liste, hic degismemis demekti.
+     */
     role={tone === 'error' ? 'alert' : undefined}
     data-testid={testId}
   >

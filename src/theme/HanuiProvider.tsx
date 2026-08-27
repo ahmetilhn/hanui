@@ -9,17 +9,11 @@ import type { HanuiLabels, HanuiThemeConfig } from '@/types/theme.type';
 
 type Props = {
   children: ReactNode;
-  /**
-   * Tema ezmeleri. Yalnızca DEĞİŞTİRİLEN token'lar verilir; verilmeyen her
-   * token varsayılanında kalır.
-   */
+  /** Tema ezmeleri. */
   theme?: HanuiThemeConfig;
   /**
-   * Tüketicinin bağlantı bileşeni. Verilmezse ham `<a>` çizilir.
-   *
-   * @example
-   * import NextLink from 'next/link';
-   * <HanuiProvider linkComponent={NextLink}>…</HanuiProvider>
+   * Tüketicinin bağlantı bileşeni.
+   * @example import NextLink from 'next/link'; <HanuiProvider linkComponent={NextLink}>…</Ha…
    */
   linkComponent?: HanuiLinkComponent;
   /** Arayüz metinleri — bir kez, burada. */
@@ -28,18 +22,12 @@ type Props = {
 
 /**
  * Kütüphane sağlayıcısı.
- *
- * @example
- * <HanuiProvider linkComponent={NextLink} theme={{ light: { blue: '#0d6efd' } }}>
- * <App />
- * </HanuiProvider>
+ * @example <HanuiProvider linkComponent={NextLink} theme={{ light: { blue: '#0d6efd' } }}> <App…
  */
 const HanuiProvider: FC<Props> = ({ children, theme, linkComponent, labels }) => {
   /*
-   * `JSON.stringify` bagimlilik anahtari olarak kullaniliyor: cagiran taraf
-   * neredeyse her zaman satir ici bir nesne literali veriyor ve referans her
-   * render'da degisiyor. Referansa baglansaydi `<style>` etiketi saniyede
-   * onlarca kez yeniden yazilirdi.
+   * `JSON.stringify` bagimlilik anahtari olarak kullaniliyor: cagiran taraf neredeyse her zaman
+   * satir ici bir nesne literali veriyor ve referans her…
    */
   const themeKey = useMemo(() => (theme ? JSON.stringify(theme) : ''), [theme]);
 
@@ -54,10 +42,10 @@ const HanuiProvider: FC<Props> = ({ children, theme, linkComponent, labels }) =>
 
   const value = useMemo(
     () => ({ theme: themeRef.current, linkComponent, labels }),
-    /* `themeKey` denetciye GEREKSIZ gorunuyor cunku memo'nun govdesinde
-       gecmiyor — ama tam da isi bu: temanin ICERIGI degistiginde yeni bir
-       nesne uretilmesini saglayan tetik o. Cikarilirsa tema ezmesi degisse
-       de tuketiciler eski degeri gorurdu. */
+    /*
+     * `themeKey` denetciye GEREKSIZ gorunuyor cunku memo'nun govdesinde gecmiyor — ama tam da isi
+     * bu: temanin ICERIGI degistiginde yeni bir nesne…
+     */
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [themeKey, linkComponent, labels],
   );

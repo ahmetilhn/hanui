@@ -12,10 +12,7 @@ export const THEME_STYLE_ID = 'hanui-theme-overrides';
 /** Temanın taşındığı öznitelik. `<html data-hanui-theme="dark">`. */
 export const THEME_ATTRIBUTE = 'data-hanui-theme';
 
-/**
- * Bilgi yoğunluğunun taşındığı öznitelik.
- * `<html data-hanui-density="compact">`.
- */
+/** Bilgi yoğunluğunun taşındığı öznitelik. `<html data-hanui-density="compact">`. */
 export const DENSITY_ATTRIBUTE = 'data-hanui-density';
 
 /** Geçiş animasyonlarını tek kare boyunca kapatan sınıf (bkz. `base.scss`). */
@@ -65,11 +62,7 @@ export const buildThemeCss = (config: HanuiThemeConfig): string => {
 
   /*
    * Acik tema iki secicide birden yazilir: `:root` (varsayilan) ve
-   * `:root[data-hanui-theme='light']` (kullanicinin acik secimi). Yalnizca
-   * `:root` yazilsaydi, sistem tercihi koyu olan bir cihazda acik temayi ELLE
-   * secen kullanicida ezmeler dusuyordu — cunku uretilmis koyu blok
-   * `:root:not([data-hanui-theme])` degil `[data-hanui-theme='light']` ile
-   * yarisiyor ve ozgullukte kazaniyor.
+   * `:root[data-hanui-theme='light']` (kullanicinin acik secimi).
    */
   if (config.light && Object.keys(config.light).length > 0) {
     const body = declarations(config.light);
@@ -91,10 +84,7 @@ export const buildThemeCss = (config: HanuiThemeConfig): string => {
   return blocks.join('\n\n');
 };
 
-/**
- * Ezmeleri belgeye yazar. Aynı `<style>` etiketi tekrar kullanılır: her
- * çağrıda yeni bir etiket eklemek, birbirini ezen onlarca blok bırakıyordu.
- */
+/** Ezmeleri belgeye yazar. */
 export const applyThemeConfig = (config: HanuiThemeConfig | undefined): void => {
   if (!isClient()) return;
 

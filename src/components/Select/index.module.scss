@@ -25,13 +25,6 @@
     box-shadow: $ring;
   }
 
-  /*
-   * ⚠ HATA DURUMU GORSEL OLARAK DA CIZILIR. Bilesen `aria-invalid`i zaten
-   * yaziyordu (`role="combobox"` uzerinde gecerli) ama KARSILIGI OLAN SINIF
-   * YOKTU: ekran okuyucu "gecersiz" diyor, goz goren kullanici hicbir sey
-   * gormuyordu. Kardes `Combobox` gorseli tasiyip duyuruyu `aria-describedby`e
-   * birakiyor — iki bilesen ayni durumu ters yarim olarak uyguluyordu.
-   */
   &--invalid {
     border-color: $danger-solid;
   }
@@ -51,11 +44,6 @@
     font-size: $icon-md;
   }
 
-  /*
-   * Kontrolün adı — yalnızca erişilebilirlik ağacında.
-   * ⚠ `display: none` OLAMAZ: erişilebilirlik ağacından da çıkarır ve
-   * `aria-labelledby` elemanı bulamaz.
-   */
   &__srName {
     @include visually-hidden;
   }
@@ -82,23 +70,6 @@
   }
 }
 
-/*
- * ⚠ PANEL SABIT KONUMLU, MUTLAK DEGIL — `Combobox`, `Menu`, `Popover` ve
- * `Tooltip` ile ayni model.
- *
- * `position: absolute` panelin kaydirilabilen/kirpan HER ustu tarafindan
- * kesilmesine yol aciyordu ve kutuphanedeki tek portallanmayan acilir yuzey
- * buydu. Olculdu: `Modal`in govdesi `overflow-y: auto`, yani panelin bir
- * `Modal` icinde acilan hali (panelde tarayici isi penceresi) govdenin
- * kenarinda KIRPILIYOR ve operator listenin yalnizca ilk bir iki seceneğini
- * gorebiliyordu. Ayni sey `Card` (`overflow: hidden`), `DataTable` sarmalayici
- * ve `ScrollArea` icin de gecerliydi. Ikinci kazanc carpisma: `usePositioning`
- * yer kalmadiginda paneli YUKARI cevirir; mutlak konumda liste sayfanin
- * altindan tasiyordu.
- *
- * Konum `usePositioning` tarafindan satir ici stille yaziliyor; hizalama
- * degiskenleri (`--start`/`--end`) bu yuzden dustu.
- */
 .panel {
   position: fixed;
   z-index: $z-dropdown;

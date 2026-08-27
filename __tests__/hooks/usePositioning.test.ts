@@ -3,14 +3,6 @@ import { createRef } from 'react';
 
 import usePositioning from '@/hooks/usePositioning';
 
-/**
- * `usePositioning` — kenar seçimi ve KIRPMA.
- *
- * ⚠ Bu kanca bir dönem hiç doğrudan test edilmiyordu (ölçülen: fonksiyon %80,
- * dal %55,6). Aşağıdaki kusur tam da o boşlukta yaşadı ve görünür sonucu
- * "yüzey hiç görünmüyor" idi — ama hiçbir katman hata vermiyordu.
- */
-
 const VIEWPORT = { width: 1024, height: 768 };
 
 const mockViewport = (width: number, height: number): void => {
@@ -18,7 +10,6 @@ const mockViewport = (width: number, height: number): void => {
   Object.defineProperty(window, 'innerHeight', { writable: true, value: height });
 };
 
-/** Verilen kutuyu döndüren sahte bir eleman. */
 const elementWith = (rect: Partial<DOMRect>): HTMLElement => {
   const node = document.createElement('div');
   node.getBoundingClientRect = () =>
@@ -54,18 +45,6 @@ describe('usePositioning — kırpma', () => {
   });
 
   it('YÜZEY VİEWPORT`TAN UZUNSA ekran dışına konumlanmaz', () => {
-    /*
-     * ⚠ REGRESYON NÖBETÇİSİ — ölçülmüş kusur.
-     *
-     * `clamp` düz `Math.min(Math.max(v, min), max)` idi. Yüzey görünüm
-     * alanından uzun olduğunda `max` (`viewport - surface - padding`) `min`in
-     * ALTINA — çoğu zaman negatife — düşüyor ve `Math.min` onu seçiyordu.
-     * Sonuç: yüzey ekranın üstüne/soluna, negatif koordinata konumlanıyor ve
-     * KULLANICI HİÇBİR ŞEY GÖRMÜYORDU.
-     *
-     * `Popover`ın `max-height`i yok, yani uzun içerikli bir popover bunu
-     * gerçekten üretebiliyordu.
-     */
     const style = positionOf(
       { top: 400, left: 100, width: 24, height: 24, bottom: 424, right: 124 },
       { width: 200, height: 2000 }, // 768 piksellik görünüm alanından UZUN

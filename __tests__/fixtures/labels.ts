@@ -1,17 +1,5 @@
 import type * as hanui from '../../src';
 
-/**
- * Ortak metin sozlesmesi FIXTURE'i.
- *
- * ⚠ `resolveLabel` HICBIR VARSAYILAN TASIMAZ: metin verilmediginde bos donup
- * gelistirme uyarisi basiyor. Yani bir test sozlugu eksik verdiginde bilesen
- * "adsiz" cizilir ve axe taramasi `aria-label=""` ile duser — bu tam olarak
- * i18n turunda olculdu.
- *
- * ⚠ Sozluk `a11y.test.tsx` icinde SATIR ICIYDI; ikinci bir test paketi
- * gerektiginde kopyalanmasi gerekirdi ve iki kopya ayrisirsa hangi testin
- * hangi sozlukle kostugu gorunmez olurdu.
- */
 export const LABELS: hanui.HanuiLabels = {
   close: 'Kapat',
   cancel: 'Vazgeç',

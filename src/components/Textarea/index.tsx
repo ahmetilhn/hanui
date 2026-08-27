@@ -48,8 +48,10 @@ const Textarea = /*#__PURE__*/ forwardRef<HTMLTextAreaElement, Props>(
     const [innerLength, setLength] = useState(String(defaultValue ?? '').length);
     const length = value === undefined ? innerLength : String(value).length;
 
-    /* Cagiranin `ref`i ile ic olcum referansini birlikte tut: `useImperativeHandle`
-       yalnizca bir nesne dondurur ve DOM dugumunun kendisini gizlerdi. */
+    /*
+     * Cagiranin `ref`i ile ic olcum referansini birlikte tut: `useImperativeHandle` yalnizca bir
+     * nesne dondurur ve DOM dugumunun kendisini gizlerdi.
+     */
     const setRefs = useCallback(
       (node: HTMLTextAreaElement | null) => {
         innerRef.current = node;
@@ -60,8 +62,8 @@ const Textarea = /*#__PURE__*/ forwardRef<HTMLTextAreaElement, Props>(
     );
 
     /*
-     * OLCUM BOYAMADAN ONCE: `useEffect` ile alan bir kare boyunca eski
-     * yuksekligiyle cizilip sonra ziplyordu.
+     * OLCUM BOYAMADAN ONCE: `useEffect` ile alan bir kare boyunca eski yuksekligiyle cizilip sonra
+     * ziplyordu.
      */
     useLayoutEffect(() => {
       const node = innerRef.current;
@@ -95,8 +97,7 @@ const Textarea = /*#__PURE__*/ forwardRef<HTMLTextAreaElement, Props>(
         />
 
         {hasCounter && maxLength !== undefined && (
-          /* `aria-hidden`: ayni bilgi her tusta duyurulsaydi yazma kesintiye
-             ugrardi. Sinir zaten `maxLength` ile taniniyor. */
+          /* `aria-hidden`: ayni bilgi her tusta duyurulsaydi yazma kesintiye ugrardi. */
           <span className={cx(styles.counter, isNearLimit && styles['counter--near'])} aria-hidden>
             {length} / {maxLength}
           </span>

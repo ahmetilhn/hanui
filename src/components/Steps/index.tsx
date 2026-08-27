@@ -21,20 +21,11 @@ export type StepItem = {
 
 type Props = {
   steps: StepItem[];
-  /**
-   * Bulunulan adımın DİZİNİ (0 tabanlı). Öncesi tamamlanmış sayılır.
-   * VERİLMEZSE liste ilerleme değil SIRALI TALİMAT olarak çizilir: durum
-   * metni yok, tik yok, `aria-current` yok — yalnızca numaralı adımlar
-   * ("olası nedenler — kontrol sırasıyla" gibi teşhis listeleri).
-   */
+  /** Bulunulan adımın DİZİNİ (0 tabanlı). */
   currentIndex?: number;
-  /**
-   * Bir adıma dönülebiliyorsa verilir. Verilmediğinde adımlar düğme DEĞİL
-   * düz metin olur — tıklanabilir görünüp hiçbir şey yapmayan bir adım,
-   * kullanıcıya var olmayan bir yol vaat ediyordu.
-   */
+  /** Bir adıma dönülebiliyorsa verilir. */
   onStepClick?: (index: number) => void;
-  /** Akışın erişilebilir adı ("Ödeme adımları"). ZORUNLU. */
+  /** Akışın erişilebilir adı ("Ödeme adımları"). */
   label: string;
   orientation?: 'horizontal' | 'vertical';
   className?: string;
@@ -49,8 +40,8 @@ const statusOf = (index: number, currentIndex: number): 'done' | 'current' | 'up
 };
 
 /*
- * ⚠ DURUM METNI SR-ONLY ve SAGLAYICIDAN gelir; gorsel isaret (tik, dolu
- * daire) ekran okuyucuya hicbir sey soylemiyor.
+ * ⚠ DURUM METNI SR-ONLY ve SAGLAYICIDAN gelir; gorsel isaret (tik, dolu daire) ekran okuyucuya
+ * hicbir sey soylemiyor.
  */
 const STATUS_KEY: Record<'done' | 'current' | 'upcoming', 'completed' | 'current' | 'upcoming'> = {
   done: 'completed',

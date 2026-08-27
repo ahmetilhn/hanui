@@ -16,18 +16,18 @@ import styles from './index.module.scss';
 type Props = {
   values: string[];
   onChange: (values: string[]) => void;
-  /** Alanın erişilebilir adı. ZORUNLU. */
+  /** Alanın erişilebilir adı. */
   label: string;
   placeholder?: string;
-  /** Her etiketin kaldırma düğmesinin ad öneki ("Kaldır"). ZORUNLU. */
+  /** Her etiketin kaldırma düğmesinin ad öneki ("Kaldır"). */
   removeLabel: string;
-  /** Etiketi bitiren tuşlar. Varsayılan `Enter` ve virgül. */
+  /** Etiketi bitiren tuşlar. */
   separators?: string[];
-  /** En fazla kaç etiket. Dolduğunda girdi PASİF olur, gizlenmez. */
+  /** En fazla kaç etiket. */
   maxTags?: number;
   isDisabled?: boolean;
   id?: string;
-  /** Zorunluluk — `Field`in `FieldChildProps` sözleşmesi. Bkz. `Select.required`. */
+  /** Zorunluluk — `Field`in `FieldChildProps` sözleşmesi. */
   required?: boolean;
   'aria-describedby'?: string;
   'aria-invalid'?: boolean;
@@ -56,12 +56,7 @@ const TagInput = ({
   const inputId = id ?? generatedId;
   const inputRef = useRef<HTMLInputElement>(null);
 
-  /*
-   * ⚠ Yinelenen etiket uyarısının zamanlayıcısı REF'te tutulur ve unmount'ta
-   * temizlenir. Eskiden `window.setTimeout(...)` çıplak çağrılıyordu: bileşen
-   * 1 sn dolmadan sökülürse zamanlayıcı ateşleniyor ve sökülmüş bir ağaçta
-   * `setDuplicate` çağırıyordu.
-   */
+  /* ⚠ Yinelenen etiket uyarısının zamanlayıcısı REF'te tutulur ve unmount'ta temizlenir. */
   const duplicateTimerRef = useRef(0);
 
   useEffect(
@@ -112,11 +107,7 @@ const TagInput = ({
       return;
     }
 
-    /*
-     * BOS girdide Backspace SON etiketi kaldirir — metin varken kaldirmaz.
-     * Kosulsuz yazildiginda kullanici bir harf silmek isterken etiketi
-     * siliyordu.
-     */
+    /* BOS girdide Backspace SON etiketi kaldirir — metin varken kaldirmaz. */
     if (event.key === 'Backspace' && draft === '') {
       const lastValue = values.at(-1);
       if (lastValue !== undefined) remove(lastValue);
@@ -132,8 +123,10 @@ const TagInput = ({
         className,
       )}
       data-testid={testId}
-      /* Kutunun herhangi bir yerine tiklamak girdiyi odaklar: cipler arasindaki
-         bosluga tiklayan kullanici hicbir sey olmadigini saniyordu. */
+      /*
+       * Kutunun herhangi bir yerine tiklamak girdiyi odaklar: cipler arasindaki bosluga tiklayan
+       * kullanici hicbir sey olmadigini saniyordu.
+       */
       onClick={() => inputRef.current?.focus()}
     >
       {values.map(value => (
@@ -149,8 +142,10 @@ const TagInput = ({
           <button
             type="button"
             className={styles.tagInput__remove}
-            /* Ad degeri ICERIR: on bes cipin hepsi "Kaldir" diye okundugunda
-               hangisi oldugu belli olmuyordu. */
+            /*
+             * Ad degeri ICERIR: on bes cipin hepsi "Kaldir" diye okundugunda hangisi oldugu belli
+             * olmuyordu.
+             */
             aria-label={`${value} — ${removeLabel}`}
             disabled={isDisabled}
             onClick={event => {
@@ -174,18 +169,17 @@ const TagInput = ({
         aria-describedby={describedBy}
         aria-invalid={isInvalid}
         /*
-         * ⚠ Yerel `required` YAZILMAZ: alanin degeri etiket listesidir, girdi
-         * kutusu ise commit'ten sonra BOSALIR. Yerel kisit bos kutuyu gecersiz
-         * sayip dolu bir listede formu bloke ederdi. `aria-required` niyeti
-         * bildirir, dogrulama cagirana kalir.
+         * ⚠ Yerel `required` YAZILMAZ: alanin degeri etiket listesidir, girdi kutusu ise commit'ten
+         * sonra BOSALIR.
          */
         aria-required={required || undefined}
         disabled={isDisabled || isFull}
         onChange={event => setDraft(event.target.value)}
         onKeyDown={handleKeyDown}
-        /* Alan terk edildiginde yazilan metin ETIKETE DONER: yarim kalmis bir
-           metin kayboluyor ve kullanici bunu ancak gonderdikten sonra fark
-           ediyordu. */
+        /*
+         * Alan terk edildiginde yazilan metin ETIKETE DONER: yarim kalmis bir metin kayboluyor ve
+         * kullanici bunu ancak gonderdikten sonra fark ediyordu.
+         */
         onBlur={() => commit(draft)}
       />
     </div>

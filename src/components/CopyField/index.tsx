@@ -16,9 +16,9 @@ type Props = {
   value: string;
   /** Kopyalama düğmesinin erişilebilir adı. */
   copyLabel?: string;
-  /** Kopyalandıktan sonraki ad. Verilmezse `labels.copyField.copied(value)`. */
+  /** Kopyalandıktan sonraki ad. */
   copiedLabel?: string;
-  /** `aria-live` ile duyurulan onay cümlesi. Verilmezse `labels.copyField.announcement`. */
+  /** `aria-live` ile duyurulan onay cümlesi. */
   copiedAnnouncement?: string;
   size?: 'sm' | 'md';
   /** Kopyalama düğmesini gizler. */
@@ -27,10 +27,7 @@ type Props = {
   testId?: string;
 };
 
-/**
- * Kopyalanabilir teknik değer — <strong>tek dokunuşla panoya</strong>.
- * Pano mantığı `useCopyFeedback`te, `CodeBadge` ile ortak.
- */
+/** Kopyalanabilir teknik değer — tek dokunuşla panoya. */
 const CopyField: FC<Props> = ({
   value,
   copyLabel,

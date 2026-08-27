@@ -19,18 +19,15 @@ type Props = {
   value: RangeValue;
   /** Sürükleme sürerken her adımda çağrılır — ekrandaki değeri günceller. */
   onChange: (value: RangeValue) => void;
-  /**
-   * Sürükleme <em>bittiğinde</em> çağrılır. Adres çubuğuna yazmak veya
-   * sunucuya istek atmak gibi pahalı işler buraya bağlanır.
-   */
+  /** Sürükleme bittiğinde çağrılır. */
   onCommit?: (value: RangeValue) => void;
   /** Ham sayıyı okunur metne çevirir ("125000" → "1.250 TL"). */
   formatValue?: (value: number) => string;
   /** Grubun erişilebilir adı ("Fiyat aralığı"). */
   label: string;
-  /** Alt kulbun erişilebilir ad eki. Verilmezse `labels.range.min`. */
+  /** Alt kulbun erişilebilir ad eki. */
   minLabel?: string;
-  /** Üst kulbun erişilebilir ad eki. Verilmezse `labels.range.max`. */
+  /** Üst kulbun erişilebilir ad eki. */
   maxLabel?: string;
   isDisabled?: boolean;
   className?: string;
@@ -70,17 +67,15 @@ const RangeSlider = ({
 
   const commit = useCallback(() => onCommit?.([low, high]), [low, high, onCommit]);
 
-  /* `normalize` yuzdeyi verir ve 100'de kirpar; olcek sifir genislikte
-     oldugunda (min === max) 0 doner. */
+  /*
+   * `normalize` yuzdeyi verir ve 100'de kirpar; olcek sifir genislikte oldugunda (min === max) 0
+   * doner.
+   */
   const span = max - min;
   const lowPercent = span === 0 ? 0 : normalize(low - min, span);
   const highPercent = span === 0 ? 0 : normalize(high - min, span);
 
-  /*
-   * Iki kulp ust uste geldiginde hangisinin tutulacagi belirsizlesir. Alt kulp
-   * olcegin ikinci yarisindaysa one alinir; aksi halde ust kulp onu kapatip
-   * alt kulbu yakalanamaz kiliyordu.
-   */
+  /* Iki kulp ust uste geldiginde hangisinin tutulacagi belirsizlesir. */
   const isLowOnTop = lowPercent > 50;
 
   return (

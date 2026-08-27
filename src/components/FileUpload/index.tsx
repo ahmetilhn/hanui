@@ -18,11 +18,11 @@ import styles from './index.module.scss';
 export type UploadFile = {
   id: string;
   name: string;
-  /** Bayt. Ekranda okunur biçime çevrilir. */
+  /** Bayt. */
   size: number;
   /** 0-100. `undefined` → yükleme başlamadı ya da bitti. */
   progress?: number;
-  /** Bu dosyaya ait hata. Satır kırmızı çizilir ve metin okunur. */
+  /** Bu dosyaya ait hata. */
   error?: string;
 };
 
@@ -31,14 +31,14 @@ type Props = {
   /** Kullanıcı dosya seçtiğinde/bıraktığında çağrılır — DOĞRULANMIŞ liste. */
   onSelect: (files: File[]) => void;
   onRemove: (id: string) => void;
-  /** Alanın görünür etiketi ve erişilebilir adı. ZORUNLU. */
+  /** Alanın görünür etiketi ve erişilebilir adı. */
   label: string;
   /** Etiketin altındaki kural cümlesi ("PDF veya JPG, en fazla 5 MB"). */
   hint?: string;
   /** `<input accept>` — tarayıcının dosya seçicisini süzer. */
   accept?: string;
   isMultiple?: boolean;
-  /** Bayt. Aşan dosya `onSelect`e HİÇ ulaşmaz; hata metni burada üretilir. */
+  /** Bayt. */
   maxSize?: number;
   /** Kaldırma düğmelerinin erişilebilir ad öneki ("Kaldır"). */
   removeLabel: string;
@@ -65,7 +65,7 @@ const formatSize = (bytes: number): string => {
   return `${(bytes / BYTES_PER_MB).toFixed(1)} MB`;
 };
 
-/** Dosya yükleme — sürükle-bırak <strong>ve</strong> düğme. */
+/** Dosya yükleme — sürükle-bırak ve düğme. */
 const FileUpload = ({
   files,
   onSelect,
@@ -101,10 +101,8 @@ const FileUpload = ({
     const accepted = incoming.filter(file => !tooLarge.includes(file));
 
     /*
-     * ⚠ METIN SABIT DEGIL. Bir donem varsayilan bir Turkce sablon
-     * (`'{name} çok büyük (en fazla {max}).'`) prop varsayilaniydi ve
-     * kutuphanenin "sabit varsayilan yok" sozlesmesini ihlal ediyordu.
-     * Prop hala kabul ediliyor — cagiran kendi metnini gecebilir.
+     * ⚠ METIN SABIT DEGIL. Bir donem varsayilan bir Turkce sablon (`'{name} çok büyük (en fazla
+     * {max}).'`) prop varsayilaniydi ve kutuphanenin…
      */
     const messages = tooLarge.map(file =>
       sizeErrorText === undefined
@@ -123,8 +121,10 @@ const FileUpload = ({
       announce(resolveFormatter('FileUpload.added', labels?.fileUpload?.added, accepted.length));
     }
 
-    /* Reddedilen dosya ekranda YAZIYOR ama duyurulmali da: gormeyen kullanici
-       icin sessizce dusen bir dosya hic secilmemis demekti. */
+    /*
+     * Reddedilen dosya ekranda YAZIYOR ama duyurulmali da: gormeyen kullanici icin sessizce dusen
+     * bir dosya hic secilmemis demekti.
+     */
     if (messages.length > 0) announce(messages.join(' '), 'assertive');
   };
 
@@ -179,8 +179,10 @@ const FileUpload = ({
           aria-invalid={error ? true : undefined}
           onChange={event => {
             handleFiles(event.target.files);
-            /* Deger SIFIRLANIR: ayni dosya ikinci kez secildiginde `change`
-               olayi hic dusmuyor ve kullanici "hicbir sey olmadi" saniyordu. */
+            /*
+             * Deger SIFIRLANIR: ayni dosya ikinci kez secildiginde `change` olayi hic dusmuyor ve
+             * kullanici "hicbir sey olmadi" saniyordu.
+             */
             event.target.value = '';
           }}
         />
@@ -229,8 +231,10 @@ const FileUpload = ({
 
               <IconButton
                 icon={<XLg aria-hidden />}
-                /* Ad dosya adini ICERIR: bir listede on bes dugme "Kaldir" diye
-                   okunuyor ve hangisi oldugu belli olmuyordu. */
+                /*
+                 * Ad dosya adini ICERIR: bir listede on bes dugme "Kaldir" diye okunuyor ve hangisi
+                 * oldugu belli olmuyordu.
+                 */
                 label={`${file.name} — ${removeLabel}`}
                 variant="ghost"
                 size="sm"

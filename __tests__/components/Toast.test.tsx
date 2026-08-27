@@ -4,18 +4,6 @@ import userEvent from '@testing-library/user-event';
 import { HanuiProvider, ToastPortal, toast } from '../../src';
 import { LABELS } from '../fixtures/labels';
 
-/**
- * TOAST KUYRUGU — DURUMLU VE ZAMANLAYICILI.
- *
- * ⚠ Bileşenin özel testi YOKTU ve deponun en durumlu parçalarından biri:
- * modül düzeyinde bir kuyruk, ton başına farklı süreler, görünür sayı
- * tavanı, fare üstündeyken duraklama ve `Escape` ile kapatma. Ölçülen
- * kapsam en düşük ikilideydi (fn 14,8 / br 6,3).
- *
- * ⚠ Kuyruk MODÜL DÜZEYINDE: her testten önce boşaltılmak zorunda, yoksa
- * bir testin bıraktığı bildirim bir sonrakinin sayımına karışır.
- */
-
 const renderPortal = () =>
   render(
     <HanuiProvider labels={LABELS}>
@@ -40,11 +28,6 @@ describe('Toast', () => {
       toast.success('Adres kaydedildi');
     });
 
-    /*
-     * ⚠ Bölge, içerik BELİRMEDEN ÖNCE ağaçta olmalı. Ekran okuyucular
-     * `aria-live`i eleman eklendiğinde değil, İÇİNDEKİ metin değiştiğinde
-     * okuyor; bölge içerikle birlikte yaratılırsa duyuru güvenilmez olur.
-     */
     expect(screen.getByRole('status')).toHaveTextContent('Adres kaydedildi');
   });
 
@@ -58,7 +41,6 @@ describe('Toast', () => {
       toast.info('dört');
     });
 
-    /* ⚠ Tavan 3; dördüncüsü eklendiğinde en eskisi düşmeli. */
     expect(screen.queryByText('bir')).not.toBeInTheDocument();
     expect(screen.getByText('dört')).toBeInTheDocument();
   });
@@ -80,12 +62,6 @@ describe('Toast', () => {
   });
 
   it('HATA bildirimi bilgi bildiriminden UZUN durur', () => {
-    /*
-     * ⚠ Süreler ton başına ayrı ve bu bilinçli: bir hata mesajı
-     * okunmadan kaybolursa kullanıcı ne olduğunu bir daha öğrenemez —
-     * toast geri getirilemez. İddia tek tek sayıları değil SIRALAMAYI
-     * tutuyor; sayılar değişebilir, ilişki değişmemeli.
-     */
     jest.useFakeTimers();
     renderPortal();
 
@@ -160,12 +136,6 @@ describe('Toast', () => {
   });
 
   it('portal YOKKEN `toast.*` PATLAMAZ', () => {
-    /*
-     * ⚠ Yayın merkezi modül düzeyinde ve sağlayıcıdan BAĞIMSIZ: bir servis
-     * katmanı `toast.error` çağırdığında portalın çizilmiş olduğunu
-     * varsayamaz. Patlarsa asıl hata mesajı kaybolur ve yerine bir render
-     * hatası geçer.
-     */
     expect(() => act(() => void toast.error('portalsız'))).not.toThrow();
   });
 });

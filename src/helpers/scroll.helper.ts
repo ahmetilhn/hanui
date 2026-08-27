@@ -4,10 +4,7 @@ import { isClient } from '@ahmetilhn/handy-utils';
 
 /**
  * Pencereyi en üste alır; ortam desteklemiyorsa sessizce geçer.
- *
- * ⚠ Kaydırma ANIDIR. Yumuşak kaydırma sayfalamada içerik değişirken sürüyor
- * olur: kullanıcı yeni listeyi hareket hâlinde görür ve uzun katalog
- * sayfasında tıklama ile üste varış arasında saniyeler geçer.
+ * ⚠ Kaydırma ANIDIR.
  */
 export const scrollWindowToTop = (): void => {
   if (!isClient() || typeof window.scrollTo !== 'function') return;

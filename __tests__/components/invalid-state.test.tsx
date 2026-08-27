@@ -8,7 +8,6 @@ const OPTIONS = [
   { value: '06', label: 'Ankara' },
 ];
 
-/** `Combobox` metinleri ZORUNLU — kütüphane sabit Türkçe dize taşımıyor. */
 const LABELS = {
   placeholder: 'İl seçin',
   searchPlaceholder: 'Ara…',
@@ -18,26 +17,6 @@ const LABELS = {
   closeLabel: 'Kapat',
 } as const;
 
-/**
- * HATA DURUMU İKİ KATMANDA DA TAŞINIR.
- *
- * ⚠ Ölçülen asimetri — iki bileşen aynı durumu **ters yarım** olarak
- * uyguluyordu:
- *
- * | bileşen | görsel | duyuru |
- * |---|---|---|
- * | `Combobox` (düğme tetikleyici) | ✓ `--invalid` | `aria-describedby` |
- * | `Select` | **YOK** | ✓ `aria-invalid` |
- *
- * Yani `Select`te ekran okuyucu "geçersiz" diyor, göz gören kullanıcı hiçbir
- * şey görmüyordu.
- *
- * ⚠ `Combobox`ın düğme tetikleyicisinde `aria-invalid` KULLANILMAMASI bir
- * kusur DEĞİL, gerekçeli bir karar: öznitelik `role="button"` üzerinde
- * tanımsızdır ve ekran okuyucular onu yok sayar. Hata metnini `Field` zaten
- * `role="alert"` ile bağlıyor. `Select` ise `role="combobox"` taşıyor —
- * orada `aria-invalid` GEÇERLİ.
- */
 describe('geçersiz durum — Select', () => {
   it('`aria-invalid` yazılır — role="combobox" üzerinde geçerli', () => {
     render(<Select label="İl" options={OPTIONS} value="" onChange={() => {}} aria-invalid />);
@@ -75,12 +54,6 @@ describe('geçersiz durum — Combobox', () => {
       <Combobox options={OPTIONS} value={null} onChange={() => {}} labels={LABELS} aria-invalid />,
     );
 
-    /*
-     * ⚠ Bu iddia bir kusuru değil bir KARARI koruyor: `aria-invalid`
-     * `role="button"` üzerinde tanımsız ve ekran okuyucular onu yok sayar.
-     * "Simetri olsun" diye eklemek, çalışmayan bir öznitelikle uyumlu
-     * görünmek olurdu.
-     */
     expect(screen.getByRole('button')).not.toHaveAttribute('aria-invalid');
   });
 });

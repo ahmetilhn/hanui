@@ -28,23 +28,14 @@ type Props = {
   content: ReactNode;
   /** Açıklamanın bağlandığı öğe — düğme, ikon, etiket. */
   children: ReactNode;
-  /**
-   * Tercih edilen kenar. Yer yoksa KARŞITINA düşer; üçüncü bir kenara
-   * atlamaz (bkz. `usePositioning`).
-   */
+  /** Tercih edilen kenar. */
   side?: PositionSide;
-  /**
-   * Açılma gecikmesi (ms). Fare bir araç çubuğunun üzerinden geçerken sıfır
-   * gecikme, art arda beş balon açıp kapatıyordu.
-   */
+  /** Açılma gecikmesi (ms). */
   openDelay?: number;
   /**
-   * @deprecated `side` kullanın. Bu prop bir sonraki büyük sürümde kalkacak.
-   *
-   * <p>Ad değişti çünkü davranış değişti: `position` SABİT bir kenar
-   * yazıyordu ve balon oraya sığmadığında görünüm alanının dışına taşıyordu.
-   * `side` yalnızca TERCİH — yer yoksa karşıt kenara düşülüyor. Aynı adı
-   * korumak, artık doğru olmayan bir sözü sürdürmek olurdu.
+   * Ad değişti çünkü davranış değişti: `position` SABİT bir kenar yazıyordu ve balon oraya
+   * sığmadığında görünüm alanının dışına taşıyordu. `side`…
+   * @deprecated `side` kullanın.
    */
   position?: 'top' | 'bottom';
   className?: string;
@@ -53,7 +44,7 @@ type Props = {
 /** Balonun kapanmadan önce beklediği süre — imlecin balona ulaşması için. */
 const CLOSE_DELAY = 120;
 
-/** Dokunmatikte balonu açan basma süresi. Daha kısası kaydırma jestini yakalıyordu. */
+/** Dokunmatikte balonu açan basma süresi. */
 const LONG_PRESS_DELAY = 500;
 
 /** İmleç öğenin üzerinde beklemeden balon açılmaz. */
@@ -80,8 +71,7 @@ const Tooltip = ({
   const longPressRef = useRef(0);
 
   /*
-   * Cocuk kendi basina odak alabiliyor mu — capaya `tabIndex` verilip
-   * verilmeyecegini bu belirler.
+   * Cocuk kendi basina odak alabiliyor mu — capaya `tabIndex` verilip verilmeyecegini bu belirler.
    */
   const staticallyFocusableChild = useMemo(() => {
     if (!isValidElement(children)) return false;
@@ -97,20 +87,9 @@ const Tooltip = ({
   }, [children]);
 
   /*
+   * `typeof type!== 'string'` her BILESENI "odaklanamaz" sayiyor; hanui'nin her bileseni bir `memo`
+   * NESNESI, yani `<Tooltip><Button/></Tooltip>` icin…
    * ⚠ STATIK KONTROL TEK BASINA YANLIS CEVAP VERIYORDU.
-   *
-   * `typeof type !== 'string'` her BILESENI "odaklanamaz" sayiyor; hanui'nin
-   * her bileseni bir `memo` NESNESI, yani `<Tooltip><Button/></Tooltip>` icin
-   * kontrol `false` donuyor ve capaya `tabIndex={0}` yaziliyordu — iki satir
-   * asagidaki kuralin tam ihlali. Olculen bedel: panelde satir basina bir
-   * `<Tooltip><IconButton/></Tooltip>` var ve 25 satirlik bir kaynak
-   * tablosunda klavye kullanicisi 25 OLU SEKME DURAGI geciyordu (span ->
-   * dugme, span -> dugme...).
-   *
-   * Cocugun ne oldugu TAHMIN EDILEMEZ, ancak OLCULUR: mount'tan sonra capanin
-   * icinde gercekten odaklanabilir bir oge var mi diye bakilir. Ayni refleks
-   * `ScrollArea`nin tasmayi olcup `tabindex`i yalnizca gerekiyorsa yazmasinda
-   * da var.
    */
   const [hasFocusableDescendant, setHasFocusableDescendant] = useState(false);
 
@@ -161,11 +140,8 @@ const Tooltip = ({
   useEffect(() => clearTimer, [clearTimer]);
 
   /*
-   * ⚠ UZUN BASMA zamanlayıcısı AYRI temizlenir. `clearTimer` yalnızca açılış/
-   * kapanış gecikmesini iptal ediyor; `longPressRef` ise `onPointerUp`,
-   * `onPointerLeave` ve `onPointerCancel` ile iptal ediliyordu — yani parmak
-   * hâlâ ekrandayken bileşen sökülürse (liste yeniden çizildi, satır silindi)
-   * zamanlayıcı ateşlenip sökülmüş bir ağaçta `setIsOpen(true)` çağırıyordu.
+   * ⚠ UZUN BASMA zamanlayıcısı AYRI temizlenir. `clearTimer` yalnızca açılış/ kapanış gecikmesini
+   * iptal ediyor
    */
   useEffect(
     () => () => {
@@ -174,14 +150,17 @@ const Tooltip = ({
     [],
   );
 
-  /* Escape ANINDA kapatir: gecikme, ipucunu kapatmak icin bastigi tusun
-     islemedigi izlenimi veriyordu. */
+  /*
+   * Escape ANINDA kapatir: gecikme, ipucunu kapatmak icin bastigi tusun islemedigi izlenimi
+   * veriyordu.
+   */
   const closeNow = useCallback(() => close(0), [close]);
   useDismissOnEscape(isOpen, closeNow);
 
-  /* Dokunmatikte ekranin herhangi bir yerine dokunmak kapatir: balonun kendi
-     kapatma yolu yok ve `pointer-events: none` oldugu icin ona da
-     dokunulamiyor. */
+  /*
+   * Dokunmatikte ekranin herhangi bir yerine dokunmak kapatir: balonun kendi kapatma yolu yok ve
+   * `pointer-events: none` oldugu icin ona da dokunulamiyor.
+   */
   useEffect(() => {
     if (!isOpen) return;
 
@@ -211,14 +190,10 @@ const Tooltip = ({
         ref={anchorRef}
         className={cx(styles.tooltip, className)}
         /*
-         * ⚠ CAPA ODAKLANABILIR OLMAK ZORUNDA. `onFocus`/`onBlur` zaten
-         * bagli ama `<span>` varsayilan olarak odak almiyor: cocuk kendisi
-         * odaklanabilir DEGILSE (duz metin, ikon, `<img>`) ipucu YALNIZCA
-         * FAREYLE aciliyordu — klavye ve ekran okuyucu kullanicisi icerigi
-         * hic goremiyordu.
-         *
-         * ⚠ Cocuk zaten odaklanabiliyorsa (dugme, baglanti) `tabIndex`
-         * KONULMAZ: aksi halde ayni ipucu icin sekmede IKI durak olusur.
+         * ⚠ CAPA ODAKLANABILIR OLMAK ZORUNDA. `onFocus`/`onBlur` zaten bagli ama ` ` varsayilan
+         * olarak odak almiyor: cocuk kendisi odaklanabilir…
+         * ⚠ Cocuk zaten odaklanabiliyorsa (dugme, baglanti) `tabIndex` KONULMAZ: aksi halde ayni
+         * ipucu icin sekmede IKI durak olusur.
          */
         tabIndex={hasFocusableChild ? undefined : 0}
         onPointerEnter={event => event.pointerType === 'mouse' && open(openDelay)}
@@ -258,8 +233,7 @@ const Tooltip = ({
             style={{
               ...positioning.style,
               ...portal.style,
-              /* Olculmeden cizilen balon bir kare boyunca sol ust kosede
-                 parliyordu. */
+              /* Olculmeden cizilen balon bir kare boyunca sol ust kosede parliyordu. */
               visibility: positioning.isPositioned ? 'visible' : 'hidden',
             }}
           >

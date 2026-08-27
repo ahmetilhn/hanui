@@ -14,7 +14,7 @@ import styles from './index.module.scss';
 export type ChipSize = 'sm' | 'md';
 
 type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
-  /** Görünen metin. Yalnız ikon taşıyan çipte verilmez; `label` zorunlu olur. */
+  /** Görünen metin. */
   children?: ReactNode;
   /** Metnin solundaki ikon. */
   icon?: ReactNode;
@@ -24,20 +24,13 @@ type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
   count?: number;
   isSelected?: boolean;
   size?: ChipSize;
-  /**
-   * Erişilebilir ad. Görünür metin yoksa <strong>zorunlu</strong>: yalnız ikon
-   * taşıyan bir çip ekran okuyucuda "düğme" diye okunur.
-   */
+  /** Erişilebilir ad. */
   label?: string;
   /** Verilirse çip bir bağlantı olarak çizilir. */
   href?: string;
   /** Yönlendiriciye geçirilecek ek props. */
   linkProps?: HanuiLinkExtraProps;
-  /**
-   * Grup içindeki ARIA rolü. Tek seçimli gruplarda `radio`, çok seçimlide
-   * verilmez — {@link ChipGroup} bunu kendisi ayarlar; elle kullanımda
-   * `aria-pressed` üretilir.
-   */
+  /** Grup içindeki ARIA rolü. */
   role?: 'radio';
   testId?: string;
 };

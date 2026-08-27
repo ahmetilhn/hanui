@@ -17,7 +17,7 @@ import { HanuiFonts } from '@/types/theme.type';
 
 /** TEMA TOKEN'LARI. */
 
-/** Hex rengi `rgba(...)` dizesine çevirir. Renk fonksiyonu üretim ANINDA çalışır. */
+/** Hex rengi `rgba(...)` dizesine çevirir. */
 const alpha = (hex: string, value: number): string => {
   const normalized = hex.replace('#', '');
   const full =
@@ -46,16 +46,6 @@ const trim = (value: number): string => String(Number(value.toFixed(4)));
 
 /**
  * İki uç arasında viewport ile SÜREKLİ değişen bir ölçü üretir.
- *
- * <p>⚠ Eğim `vw`, taban `rem`. Saf `px` yazmak daha kısa olurdu ama kullanıcının
- * tarayıcı punto tercihini TAMAMEN yok sayardı; `rem` tabanı o tercihi ölçeğin
- * içinde tutuyor. Kök punto varsayılan 16px olduğu için masaüstünde görünen
- * değer değişmez.
- *
- * <p>⚠ `clamp()`in uçları bir SINIR, bir hedef değil: 360px altında taban,
- * 1280px üstünde tavan sabitlenir — yani çok geniş ekranlarda tipografi
- * büyümeye devam etmez.
- *
  * @param min 360px viewport'ta geçerli olacak punto/ölçü (px)
  * @param max 1280px ve üstünde geçerli olacak punto/ölçü (px)
  */
@@ -67,16 +57,8 @@ const fluid = (min: number, max: number): string => {
 };
 
 /**
- * Akışkan ölçüyü YOĞUNLUK ÇARPANIYLA sarar.
- *
- * <p>⚠ Yoğun kip (`data-hanui-density="compact"`) eskiden 17 sabit değeri
- * ezerek çalışıyordu ve o değerler bugünkü akışkan tabanlara **neredeyse
- * birebir eşitti** — yani panel bir telefonda küçülmeyi İKİ KEZ yiyordu:
- * bir kez viewport'tan, bir kez yoğunluktan. Çarpan bunu yapısal olarak
- * imkânsız kılıyor: yoğunluk artık ölçekle çarpışmıyor, onunla çarpılıyor.
- *
- * <p>Yan kazanç: tüketici `initHanui({ theme: { metrics: … } })` ile kendi
- * ölçek çarpanını verebiliyor.
+ * Akışkan ölçüyü YOĞUNLUK ÇARPANIYLA sarar. ⚠ Yoğun kip (`data-hanui-density="compact"`) eskiden 17
+ * sabit değeri ezerek çalışıyordu ve o değerler…
  */
 const scaled = (value: string, variable: 'type-scale' | 'space-scale'): string =>
   `calc(${value} * var(--hanui-${variable}))`;
@@ -86,11 +68,8 @@ const fluidType = (min: number, max: number): string => scaled(fluid(min, max), 
 const fluidSpace = (min: number, max: number): string => scaled(fluid(min, max), 'space-scale');
 
 /**
- * Koyu temanın gölge ve örtü mürekkebi.
- *
- * <p>⚠ SAF SİYAH DEĞİL. Palette saf siyah da saf beyaz da yok: ikisi de
- * markanın ekseni dışında duruyor ve gölge saf siyahken koyu yeşil yüzeylerin
- * üzerinde MOR bir kenar bırakıyor. Bu değer eksenin en dibi.
+ * Koyu temanın gölge ve örtü mürekkebi. ⚠ SAF SİYAH DEĞİL. Palette saf siyah da saf beyaz da yok:
+ * ikisi de markanın ekseni dışında duruyor ve gölge saf…
  */
 const INK_DEEP = SURFACE_DARK.inset;
 
@@ -98,17 +77,9 @@ const INK_DEEP = SURFACE_DARK.inset;
 export const LIGHT_THEME = {
   // --- Yüzey ---
   /*
+   * Önceki merdivende `page` ve `surface` İKİSİ DE saf beyazdı ve kart sayfadan dolguyla hiç
+   * ayrışmıyordu
    * ⚠ SAYFA KARTTAN BİR KADEME KOYU — düzeltilen ölçülmüş bir düzlük.
-   *
-   * <p>Önceki merdivende `page` ve `surface` İKİSİ DE saf beyazdı ve kart
-   * sayfadan dolguyla hiç ayrışmıyordu; ayrımın tamamını `card` mixin'inin
-   * kenarlığı ile `shadow-sm` taşıyordu. Bedeli iki katmanlıydı: kenarlığı
-   * kaldıran her yeni bileşen sayfanın içinde kayboluyordu, ve arayüzün
-   * tamamı tek bir düzlemde okunuyordu.
-   *
-   * <p>Bugün kart merdivenin EN AÇIK basamağı, sayfa onun altında. Kartın
-   * yükselmesi artık dolgudan geliyor; kenarlık ve gölge onu güçlendiriyor,
-   * tek başına taşımıyor.
    */
   page: NEUTRAL.n25,
   surface: NEUTRAL.n0,
@@ -126,13 +97,7 @@ export const LIGHT_THEME = {
   'text-2': NEUTRAL.n600,
   'text-3': NEUTRAL.n550,
 
-  /*
-   * UYGULAMA KABUĞU — üst bant, alt bilgi, tablo başlığı, teknik blok.
-   *
-   * <p>⚠ Token adı 4.0.0'da `graphite*`ten `shell*`a TAŞINDI. Değer grafit
-   * değil kurumsal koyu yeşil; yeni ad rengi değil ROLÜ anlatıyor — açık
-   * temada çam merdiveni, koyu temada yüzey merdiveni.
-   */
+  /* UYGULAMA KABUĞU — üst bant, alt bilgi, tablo başlığı, teknik blok. */
   shell: BAND.base,
   'shell-2': BAND.two,
   'shell-3': BAND.three,
@@ -144,30 +109,19 @@ export const LIGHT_THEME = {
   'on-action': NEUTRAL.n0,
   /** Dolgunun SINIRI; açık temada dolgunun kendisi (bkz. `ACTION_LINE`). */
   'action-line': ACTION_LINE.light,
-  /** Pasif dolgu; saydamlık DEĞİL kendi rengi (bkz. Button `:disabled`). */
+  /** Pasif dolgu; saydamlık DEĞİL kendi rengi (bkz. */
   'action-soft': NEUTRAL.n300,
   /** PASİF DOLGU ÜZERİNDEKİ METİN. */
   'on-action-soft': NEUTRAL.n700,
 
-  /*
-   * DÖNÜŞÜM EYLEMİ ("sepete ekle") — ailenin en parlak yeşili.
-   *
-   * <p>⚠ Token adı 4.0.0'da `amber*`ten `cart*`a TAŞINDI. Değer bir sürüm
-   * boyunca yeşildi ama ad turuncu diyordu; adına bakıp rengini tahmin eden
-   * her tur yanlış "düzeltmeyi" yapmaya aday oluyordu.
-   */
+  /* DÖNÜŞÜM EYLEMİ ("sepete ekle") — ailenin en parlak yeşili. */
   cart: CART.base,
   'cart-hover': CART.hover,
   'cart-active': CART.active,
   'cart-soft': CART.soft,
   'on-cart': CART.on,
 
-  /*
-   * GEZİNME VE KEŞİF ROLÜ — bağlantı, etkin filtre, seçili satır, ilerleme.
-   *
-   * <p>⚠ Token adı 4.0.0'da `blue*`tan `role*`a TAŞINDI. Değer H 162'de bir
-   * yeşil; "mavi" adı iki sürüm boyunca yalan söylüyordu.
-   */
+  /* GEZİNME VE KEŞİF ROLÜ — bağlantı, etkin filtre, seçili satır, ilerleme. */
   role: ROLE.base,
   'role-hover': ROLE.hover,
   'role-active': ROLE.active,
@@ -175,13 +129,8 @@ export const LIGHT_THEME = {
   'role-tint': ROLE.tint,
   'role-line': ROLE.line,
   /*
-   * ROL DOLGUSU ÜZERİNDEKİ METİN — etkin sayfa numarası, etkin karo madalyonu,
-   * geçerli adım, dolu bağlantı rozeti. Bir zamanlar `on-action`ı kullanıyordu
-   * ve o kestirme birincil eylemin dolgusu iki temada da koyu yeşile
-   * sabitlendiğinde KIRILDI: `on-action` beyaza döndü, rol rengi ise koyu
-   * temada açılıyor (`#51d6bb`) ve beyaz metin orada 2,1:1'e düşüyor. İki
-   * dolgunun aydınlığı ters yönlere gidiyor, tek metin token'ı ikisini birden
-   * taşıyamaz.
+   * ROL DOLGUSU ÜZERİNDEKİ METİN — etkin sayfa numarası, etkin karo madalyonu, geçerli adım, dolu
+   * bağlantı rozeti.
    */
   'on-role': NEUTRAL.n0,
 
@@ -213,7 +162,7 @@ export const LIGHT_THEME = {
   'sale-bg': SALE.bg,
   'sale-fg': SALE.fg,
 
-  // --- İkon vurguları: METİN DEĞİL (WCAG grafik eşiği 3:1) ---
+  // --- İkon vurguları:
   'red-accent': ACCENT.red,
   'green-accent': ACCENT.green,
   'green-accent-hover': ACCENT.greenHover,
@@ -231,12 +180,8 @@ export const LIGHT_THEME = {
   'nav-fg': NEUTRAL.n900,
   'nav-fg-2': NEUTRAL.n600,
   /*
-   * `n500` DEĞİL. Ölçüldü: `n500` üst bandın beyaz zemininde 3,06:1, alt
-   * bilginin `n100` zemininde 2,68:1 veriyordu — yani bandın en soluk metni
-   * (telif satırı, yardımcı bağlantılar) hiçbir yerde gövde metni eşiğini
-   * geçmiyordu. Sayfa tarafındaki karşılığıyla (`text-3`) aynı tona bağlandı:
-   * ikisi aynı işi yapıyor ve ayrı tutulmalarının tek sebebi bandın kendi
-   * yüzey merdiveniydi, kendi okunurluk kuralı değil.
+   * `n500` DEĞİL. Ölçüldü: `n500` üst bandın beyaz zemininde 3,06:1, alt bilginin `n100` zemininde
+   * 2,68:1 veriyordu
    */
   'nav-fg-3': NEUTRAL.n550,
   'nav-line': NEUTRAL.n200,
@@ -244,26 +189,13 @@ export const LIGHT_THEME = {
   'nav-hover': NEUTRAL.n100,
   'footer-bg': NEUTRAL.n100,
 
-  /*
-   * MARKA ŞERİDİ — `nav-*`ın TEMADAN BAĞIMSIZ kardeşi. Değerleri iki temada da
-   * birebir aynı ve bu tanımın kendisi: şerit kurumsal koyu yeşil zemini
-   * taşıyan bir yüzeydir, temanın açık/koyu merdiveninde bir kademe değil.
-   *
-   * <p>`nav-*` bunu yapamaz çünkü açık temada beyaza dönüyor; `graphite`
-   * ailesi ise yalnızca ZEMİN — üzerine ne yazılacağını söyleyen bir metin
-   * kademesi yok ve açık temada `text`/`nav-fg` siyah, yani çamın üzerinde
-   * okunmuyor. Metin katmanları doğrudan kılavuzdan: gövde kâğıt (12,68:1),
-   * ikincil sis (6,15:1).
-   */
+  /* MARKA ŞERİDİ — `nav-*`ın TEMADAN BAĞIMSIZ kardeşi. */
   'band-bg': BAND.dark,
   'band-fg': CORPORATE.paper,
   'band-fg-2': CORPORATE.mist,
   /**
-   * Bandın ÜÇÜNCÜ metin kademesi ve imza vurgusu.
-   *
-   * <p>Panelin kenar çubuğu rayı bu ikisini bir dönem SABİT HEX olarak
-   * taşıyordu (`#799a8f`, `#43ff9c`) — uygulamada kalan son renk
-   * literalleriydi ve paletten bağımsız hareket ediyorlardı.
+   * Bandın ÜÇÜNCÜ metin kademesi ve imza vurgusu. Panelin kenar çubuğu rayı bu ikisini bir dönem
+   * SABİT HEX olarak taşıyordu (`#799a8f`, `#43ff9c`)
    */
   'band-fg-3': SURFACE_DARK.textThree,
   'band-accent': BRAND.mint,
@@ -287,10 +219,8 @@ export const LIGHT_THEME = {
 
   // --- Örtü ve cam: görsel üzerine binen yüzeyler ---
   /*
-   * %55 DEĞİL. Örtü yalnızca kip pencerenin arkasını karartmıyor; `on-scrim`
-   * onun üzerine yazılan metnin rengi ve o metin AÇIK temada bir sayfanın
-   * üstüne düşüyor. Ölçüldü: %55 örtü `page` üzerine düzlendiğinde beyaz metin
-   * 4,27:1 — gövde metni eşiğinin altında. %60'ta 5,01:1.
+   * %55 DEĞİL. Örtü yalnızca kip pencerenin arkasını karartmıyor; `on-scrim` onun üzerine yazılan
+   * metnin rengi ve o metin AÇIK temada bir sayfanın üstüne…
    */
   scrim: alpha(NEUTRAL.n900, 0.6),
   'scrim-soft': alpha(NEUTRAL.n900, 0.32),
@@ -306,11 +236,7 @@ export const LIGHT_THEME = {
   /** Görsel yer tutucu (medya yoksa). */
   'media-bg': NEUTRAL.n100,
 
-  /*
-   * Vurgu bloğundaki ışık lekeleri. Açık temada ZEMİN DE AÇIK olduğu için
-   * lekeler çok daha hafif: koyu bant için ayarlanmış %22 opaklık açık
-   * zeminde lekeyi kirli bir dasa çeviriyordu.
-   */
+  /* Vurgu bloğundaki ışık lekeleri. */
   'glow-1': alpha(BRAND.mint, 0.1),
   'glow-2': alpha(BRAND.pine, 0.06),
   'glow-cart': alpha(CART.base, 0.09),
@@ -331,25 +257,18 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'text-2': SURFACE_DARK.textTwo,
   'text-3': SURFACE_DARK.textThree,
 
-  /* KOYU TEMADA BANT MARKA ÇAMINA ÇIKMAZ, yüzey merdivenine oturur: sayfa
-     kurumsal siyah ve bandın da zemin olması gerekiyor (bkz. `SURFACE_DARK`).
-     Marka yeşili koyu temada yalnızca şeritte (`band-*`) ve birincil eylemin
-     dolgusunda kalır. */
+  /*
+   * KOYU TEMADA BANT MARKA ÇAMINA ÇIKMAZ, yüzey merdivenine oturur: sayfa kurumsal siyah ve bandın
+   * da zemin olması gerekiyor (bkz. `SURFACE_DARK`).
+   */
   shell: SURFACE_DARK.surface,
   'shell-2': SURFACE_DARK.surfaceTwo,
   'shell-3': SURFACE_DARK.surfaceThree,
 
   /*
-   * ⚠ BİRİNCİL EYLEM İKİ TEMADA DA KURUMSAL KOYU YEŞİL — koyu temada mint
-   * dolguya DÖNMEZ. Önceki sürüm dönüyordu (mint + siyah metin, 14,65:1) ve
-   * ölçüm olarak kusursuzdu; düşen şey markaydı: açık yeşil kılavuzda logonun
-   * ve imza işaretinin rengi, bir düğmenin zemini değil. Aynı ekranda mint
-   * dolgulu düğme ile mint logo yan yana geldiğinde imza rengi bir vurgu
-   * olmaktan çıkıp arayüzün genel dolgusuna dönüşüyordu.
-   *
-   * <p>Bedeli ölçüldü ve `action-line` ile ödendi: çam koyu sayfada 1,36:1,
-   * koyu kartta (`surface-2`) 1,04:1 — dolgunun kendisi görünmüyor, düğmeyi
-   * mint saç çizgisi (14,65:1) ve beyaz metin (14,09:1) görünür kılıyor.
+   * Bedeli ölçüldü ve `action-line` ile ödendi: çam koyu sayfada 1,36:1, koyu kartta (`surface-2`)
+   * 1,04:1
+   * ⚠ BİRİNCİL EYLEM İKİ TEMADA DA KURUMSAL KOYU YEŞİL — koyu temada mint dolguya DÖNMEZ.
    */
   action: BRAND.pine,
   'action-hover': BAND.two,
@@ -357,7 +276,7 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'on-action': NEUTRAL.n0,
   'action-line': ACTION_LINE.dark,
   'action-soft': SURFACE_DARK.actionSoft,
-  /* Koyu temada pasif dolgu ortada bir gri: metin AÇIK olmali (bkz. LIGHT). */
+  /* Koyu temada pasif dolgu ortada bir gri: metin AÇIK olmali (bkz. */
   'on-action-soft': NEUTRAL.n300,
 
   cart: CART.dark,
@@ -412,12 +331,7 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'danger-solid-hover': DANGER_SOLID.darkHover,
   'on-danger': DANGER_SOLID.onDark,
 
-  /*
-   * ÜST BANT SAYFANIN KENDİSİ: koyu temada en koyu renk kılavuzun siyahı ve
-   * bant onu ÖRTMEZ. Açık temadaki kardeşi de aynı şeyi yapıyor (`nav-bg`
-   * beyaz, sayfa `n50`) — bant sayfanın devamıdır, ayrı bir yüzey değil;
-   * sınırı `nav-line` çizer. Alt bilgi bir kademe yukarıda, ışığa doğru.
-   */
+  /* ÜST BANT SAYFANIN KENDİSİ: koyu temada en koyu renk kılavuzun siyahı ve bant onu ÖRTMEZ. */
   'nav-bg': SURFACE_DARK.page,
   'nav-bg-2': SURFACE_DARK.surfaceTwo,
   'nav-fg': SURFACE_DARK.text,
@@ -429,27 +343,20 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'nav-hover': alpha(NEUTRAL.n0, 0.07),
   'footer-bg': SURFACE_DARK.surface,
 
-  /* AÇIK TEMADAKİYLE BİREBİR AYNI — şerit temaya göre dönmez (bkz. LIGHT). */
+  /* AÇIK TEMADAKİYLE BİREBİR AYNI — şerit temaya göre dönmez (bkz. */
   'band-bg': BAND.dark,
   'band-fg': CORPORATE.paper,
   'band-fg-2': CORPORATE.mist,
   /**
-   * Bandın ÜÇÜNCÜ metin kademesi ve imza vurgusu.
-   *
-   * <p>Panelin kenar çubuğu rayı bu ikisini bir dönem SABİT HEX olarak
-   * taşıyordu (`#799a8f`, `#43ff9c`) — uygulamada kalan son renk
-   * literalleriydi ve paletten bağımsız hareket ediyorlardı.
+   * Bandın ÜÇÜNCÜ metin kademesi ve imza vurgusu. Panelin kenar çubuğu rayı bu ikisini bir dönem
+   * SABİT HEX olarak taşıyordu (`#799a8f`, `#43ff9c`)
    */
   'band-fg-3': SURFACE_DARK.textThree,
   'band-accent': BRAND.mint,
   'band-line': BAND.darkLine,
   'band-hover': alpha(NEUTRAL.n0, 0.07),
 
-  /*
-   * Koyu zeminde gölge okunmaz; derinlik daha çok kenarlıkla kurulur.
-   * Gölgeler yine de KORUNUR ama daha derin: modal ve açılır liste yüzeyin
-   * üzerinde durmalı.
-   */
+  /* Koyu zeminde gölge okunmaz; derinlik daha çok kenarlıkla kurulur. */
   'shadow-xs': `0 1px 2px ${alpha(INK_DEEP, 0.4)}`,
   'shadow-sm': `0 1px 2px ${alpha(INK_DEEP, 0.4)}, 0 1px 3px ${alpha(INK_DEEP, 0.3)}`,
   'shadow-md': `0 2px 4px ${alpha(INK_DEEP, 0.35)}, 0 6px 16px ${alpha(INK_DEEP, 0.45)}`,
@@ -481,9 +388,8 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
 
 /** ÖLÇÜ TOKEN'LARI — temadan bağımsız, çalışma zamanında EZİLEBİLİR. */
 export const METRIC_TOKENS = {
-  // --- Yarıçap ---
-  // Küçük öğeler ile büyük yüzeyler aynı yarıçapı PAYLAŞMAZ: küçük bir öğede
-  // 12px onu şişman gösterir, büyük bir kartta 6px keskin ve ucuz görünür.
+  // --- Yarıçap --- Küçük öğeler ile büyük yüzeyler aynı yarıçapı PAYLAŞMAZ: küçük bir öğede 12px
+  // onu şişman gösterir, büyük bir kartta 6px keskin ve…
   'radius-xs': '4px',
   'radius-sm': '6px',
   'radius-md': '8px',
@@ -492,26 +398,11 @@ export const METRIC_TOKENS = {
   'radius-pill': '999px',
 
   // --- Boşluk ---
-  /**
-   * YOĞUNLUK ÇARPANLARI — akışkan ölçeğin üzerine binen tek ayar.
-   *
-   * <p>Varsayılan `1`, yani hiçbir şeyi değiştirmez; `data-hanui-density`
-   * ya da tüketicinin kendi metrik ezmesi bunları düşürür.
-   */
+  /** YOĞUNLUK ÇARPANLARI — akışkan ölçeğin üzerine binen tek ayar. */
   'type-scale': '1',
   'space-scale': '1',
 
-  /*
-   * BOŞLUK ÖLÇEĞİ — üçüncü kademeden itibaren akışkan.
-   *
-   * <p>⚠ `space-1` (4px) ve `space-2` (8px) SABİT KALIR ve bu bir eksiklik
-   * değil: ikisi 4px ızgarasının birimi ve alt birimi. Akışkanlaştırılsalardı
-   * 390px'te 3,4px'e inerlerdi — gözle ayırt edilemeyen bir kazanç karşılığında
-   * her kılcal kenarlık yarım piksele oturur ve kaydırmada titrerdi.
-   *
-   * <p>Üst kademeler mobilde %16-44 iniyor; bir sayfanın dikey dolgusunun
-   * yaklaşık üçte biri. "Kutular çok büyük" şikâyetinin sayısal karşılığı.
-   */
+  /* BOŞLUK ÖLÇEĞİ — üçüncü kademeden itibaren akışkan. */
   'space-0': '0',
   'space-1': '4px',
   'space-2': '8px',
@@ -524,18 +415,8 @@ export const METRIC_TOKENS = {
   'space-9': fluidSpace(52, 96),
 
   /*
-   * TİPOGRAFİ ÖLÇEĞİ — AKIŞKAN.
-   *
-   * <p>⚠ Ölçüldü: vitrinde 446 `font-size` bildirimi vardı ve yalnızca 6'sı
-   * viewport'a tepki veriyordu. Gövde 17px, başlık 47px'e kadar çıkıyor ve
-   * 320px ekranda da aynı kalıyordu — taşmanın ve "her şey çok büyük"
-   * şikâyetinin kaynağı buydu.
-   *
-   * <p>Küçülme kademeli: küçük arayüz metni %6-10 iner, gösterim tipografisi
-   * %29-35. Şikâyetin şekli tam olarak bu — 13px'lik bir etiket dar ekranda
-   * sorun değil, 47px'lik bir başlık sorun.
-   *
-   * <p>⚠ Üst uç bugünkü masaüstü değeri; **masaüstünde hiçbir şey değişmez.**
+   * TİPOGRAFİ ÖLÇEĞİ — AKIŞKAN. ⚠ Ölçüldü: vitrinde 446 `font-size` bildirimi vardı ve yalnızca
+   * 6'sı viewport'a tepki veriyordu.
    */
   'font-size-2xs': fluidType(11, 12),
   'font-size-xs': fluidType(12, 13),
@@ -548,21 +429,11 @@ export const METRIC_TOKENS = {
   'font-size-3xl': fluidType(26, 37),
   'font-size-4xl': fluidType(30, 47),
 
-  /**
-   * FORM DENETİMİ PUNTOSU — ölçekten AYRI ve 16px'in altına inmez.
-   *
-   * <p>⚠ iOS Safari, hesaplanan puntosu 16px'in ALTINDA olan bir `input`a
-   * odaklanıldığında sayfayı zorla yakınlaştırır ve geri çıkmaz. `font-size-base`
-   * akışkan olunca dar ekranda 15px'e iniyor, yani bu düzeltme olmadan
-   * **telefonda her form alanı sayfayı zıplatırdı.**
-   *
-   * <p>`max()` kullanılıyor çünkü ölçek büyüdüğünde denetim de büyümeli;
-   * sabit `16px` yazmak üst uçta alanı ölçeğin gerisinde bırakırdı.
-   */
+  /** FORM DENETİMİ PUNTOSU — ölçekten AYRI ve 16px'in altına inmez. */
   'font-size-control': `max(16px, ${fluid(15, 16)})`,
 
-  // Satır yüksekliği: başlıkta sıkı, metinde rahat. `leading-normal` 1.55'ten
-  // 1.62'ye çıktı — 16 px gövde metninde en belirgin okunurluk kazanımı burada.
+  // Satır yüksekliği: başlıkta sıkı, metinde rahat. `leading-normal` 1.55'ten 1.62'ye çıktı — 16 px
+  // gövde metninde en belirgin okunurluk kazanımı burada.
   'leading-none': '1',
   'leading-tight': '1.16',
   'leading-snug': '1.35',
@@ -576,8 +447,7 @@ export const METRIC_TOKENS = {
   'icon-lg': '20px',
   'icon-xl': '24px',
 
-  // --- Hareket ---
-  // 200 ms üzerindeki geçişler tıklama ile sonuç arasında görünür bir gecikme
+  // --- Hareket --- 200 ms üzerindeki geçişler tıklama ile sonuç arasında görünür bir gecikme
   // yaratır ve arayüz yavaş hissedilir.
   'duration-instant': '80ms',
   'duration-fast': '140ms',
@@ -593,40 +463,13 @@ export const METRIC_TOKENS = {
   'duration-shimmer': '1400ms',
 } as const;
 
-/**
- * YOĞUN (compact) KİP — `<html data-hanui-density="compact">`.
- *
- * <p>⚠ <strong>17 SABİT DEĞER İKİ ÇARPANA İNDİ.</strong> Eski kip ölçeğin her
- * kademesini elle eziyordu ve o değerler (11/12/13/15/16/18/21/25/31/39)
- * akışkan ölçeğin mobil tabanlarıyla **neredeyse birebir aynıydı**. Sonuç:
- * yoğun kipi açan panel bir telefonda küçülmeyi İKİ KEZ yiyor, `2xs` 10px'in
- * altına düşüyordu. Ezme yerine çarpma, ikisini yapısal olarak uzlaştırıyor.
- *
- * <p>İkinci kazanç: kip artık ölçeğin ÜST ucunu da doğru taşıyor. Eski liste
- * elle yazıldığı için bir kademe eklendiğinde güncellenmesi unutulabilirdi.
- */
+/** YOĞUN (compact) KİP — `<html data-hanui-density="compact">`. */
 export const COMPACT_DENSITY = {
   'type-scale': '0.93',
   'space-scale': '0.88',
 } as const satisfies Partial<Record<keyof typeof METRIC_TOKENS, string>>;
 
-/**
- * DAR EKRAN KADEMELERİ — `@media (max-width: 640px)`.
- *
- * <p>Bu üç aile akışkan OLAMAZ ve gerekçeleri ayrı:
- *
- * <ul>
- *   <li><b>İkon</b> — Bootstrap Icons 1px'lik çizgiler taşıyor; kesirli bir
- *       kutuda çizildiğinde çizgi iki piksele yayılıp BULANIYOR. Tam sayı şart.</li>
- *   <li><b>Yarıçap</b> — 5,2px ile 6px arasındaki fark görülmüyor; akışkanlık
- *       bedava değil, kesirli yarıçap kenarlıkla birlikte tırtıklı kenar
- *       üretiyor. Yalnızca iki büyük kademe iniyor.</li>
- *   <li><b>Satır yüksekliği</b> — `line-height` UNITLESS kalmak zorunda, yoksa
- *       çocuklar oranı değil hesaplanmış UZUNLUĞU miras alır ve iç içe her öge
- *       bozulur. `calc()` uzunluğu uzunluğa bölemediği için akışkan bir oran
- *       ifade edilemiyor. Dar ölçüde daha sıkı satır zaten doğru tipografi.</li>
- * </ul>
- */
+/** DAR EKRAN KADEMELERİ — `@media (max-width: 640px)`. */
 export const NARROW_METRICS = {
   'radius-lg': '10px',
   'radius-xl': '13px',

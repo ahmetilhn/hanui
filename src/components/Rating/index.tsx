@@ -11,7 +11,7 @@ import { useHanui } from '../../theme/context';
 import styles from './index.module.scss';
 
 type Props = {
-  /** 0–5 arası puan. Yarım yıldız desteklenir. */
+  /** 0–5 arası puan. */
   value: number;
   /** Değerlendirme sayısı; verilirse yıldızların yanında gösterilir. */
   count?: number;

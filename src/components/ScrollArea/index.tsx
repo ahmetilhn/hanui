@@ -9,7 +9,7 @@ import styles from './index.module.scss';
 
 type Props = {
   children: ReactNode;
-  /** Kaydırılabilir bölgenin erişilebilir adı. ZORUNLU. */
+  /** Kaydırılabilir bölgenin erişilebilir adı. */
   label: string;
   /** Kaydırma yönü. `both` iki eksende de kaydırır. */
   axis?: 'vertical' | 'horizontal' | 'both';
@@ -21,7 +21,7 @@ type Props = {
   testId?: string;
 };
 
-/** Kaydırma kutusu — <strong>klavyeyle erişilebilir</strong> kaydırma bölgesi. */
+/** Kaydırma kutusu — klavyeyle erişilebilir kaydırma bölgesi. */
 const ScrollArea: FC<Props> = ({
   children,
   label,
@@ -89,16 +89,12 @@ const ScrollArea: FC<Props> = ({
         className,
       )}
       style={maxHeight === undefined ? undefined : { maxBlockSize: maxHeight }}
-      /*
-       * Solma UC BASINA ve YALNIZCA gizli icerik varken. Olcu CSS'te kaliyor;
-       * buradan yalnizca "bu ucun otesinde bir sey var mi" bildiriliyor.
-       */
+      /* Solma UC BASINA ve YALNIZCA gizli icerik varken. */
       data-fade-start={hasFade && hiddenEdges.start ? '' : undefined}
       data-fade-end={hasFade && hiddenEdges.end ? '' : undefined}
       /*
-       * Bolge YALNIZCA kaydirilabilirken odaklanabilir ve yalnizca o zaman bir
-       * ROL tasiyor: sigmayan bir kutu bir "bolge" degil, siradan bir
-       * sarmalayici.
+       * Bolge YALNIZCA kaydirilabilirken odaklanabilir ve yalnizca o zaman bir ROL tasiyor:
+       * sigmayan bir kutu bir "bolge" degil, siradan bir sarmalayici.
        */
       tabIndex={isScrollable ? 0 : undefined}
       role={isScrollable ? 'region' : undefined}

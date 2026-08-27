@@ -31,8 +31,6 @@ describe('Pagination', () => {
     expect(onPageChange).toHaveBeenCalledWith(3);
   });
 
-  /* Sinirdaki ok BAGLANTI degil devre disi DUGME: bir `<a>` devre disi
-     birakilamaz. */
   it('oklar sınırlarda devre dışı kalır', () => {
     const { rerender } = render(
       <Pagination page={1} totalPages={5} {...LABELS} buildHref={page => `?sayfa=${page}`} />,

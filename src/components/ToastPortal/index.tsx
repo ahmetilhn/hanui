@@ -6,12 +6,7 @@ import ToastHub from '../Toast';
 
 /**
  * `ToastHub`ı montajdan SONRA çizen sarmalayıcı.
- *
- * ⚠ SUNUCUDA ÇİZİLMEMESİ ŞART. `ToastHub` portal kullanıyor ve `document`
- * olmadan çalışamaz; sunucu tarafında çizilen bir ağaçta doğrudan kullanmak
- * hidrasyon uyuşmazlığı üretir. Next.js kullanan iki uygulamada da aynı
- * sarmalayıcı BİREBİR AYNI dosya olarak yazılmıştı — çözüm uygulamaya değil
- * bileşene ait.
+ * ⚠ SUNUCUDA ÇİZİLMEMESİ ŞART. `ToastHub` portal kullanıyor ve `document` olmadan çalışamaz
  */
 const ToastPortal: FC = () => {
   const [isMounted, setIsMounted] = useState(false);

@@ -10,7 +10,6 @@ export const resetLabelWarnings = (): void => warned.clear();
 
 /**
  * Verilen metni çözer.
- *
  * @param key Uyarıda gösterilecek yol (`Modal.closeLabel`).
  * @param values Öncelik sırasına göre adaylar: prop önce, config sonra.
  */

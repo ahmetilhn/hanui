@@ -27,10 +27,10 @@ export type CommandItem = {
   label: string;
   /** Ayırt edici ikincil satır — bir komutun nereye götürdüğü. */
   description?: string;
-  /** Gruplama başlığı ("Gezinme", "Eylemler"). Aynı grup ardışık çizilir. */
+  /** Gruplama başlığı ("Gezinme", "Eylemler"). */
   group?: string;
   icon?: ReactNode;
-  /** Kısayol ipucu ("⌘K"). Yalnızca GÖSTERİLİR; tuşu çağıran bağlar. */
+  /** Kısayol ipucu ("⌘K"). */
   shortcut?: string;
   onSelect: () => void;
 };
@@ -39,11 +39,11 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   items: CommandItem[];
-  /** Pencerenin erişilebilir adı ("Komut paleti"). ZORUNLU. */
+  /** Pencerenin erişilebilir adı ("Komut paleti"). */
   label: string;
-  /** Arama kutusunun yer tutucusu ve erişilebilir adı. ZORUNLU. */
+  /** Arama kutusunun yer tutucusu ve erişilebilir adı. */
   searchPlaceholder: string;
-  /** Sonuç yokken yazılan metin. ZORUNLU. */
+  /** Sonuç yokken yazılan metin. */
   emptyMessage: string;
   className?: string;
   testId?: string;
@@ -94,9 +94,10 @@ const CommandPalette = ({
     const restoreFocus = captureFocus();
     if (!dialog.open) dialog.showModal();
 
-    /* Arama kutusu ACILIR ACILMAZ odaklanir: paletin tek amaci yazmak.
-       `preventScroll` — odaklanan kutu ust katmanda ve iOS sayfayi
-       kaydirmaya calisiyordu. */
+    /*
+     * Arama kutusu ACILIR ACILMAZ odaklanir: paletin tek amaci yazmak. `preventScroll` — odaklanan
+     * kutu ust katmanda ve iOS sayfayi kaydirmaya calisiyordu.
+     */
     inputRef.current?.focus({ preventScroll: true });
     setQuery('');
     setActiveIndex(0);
@@ -201,8 +202,7 @@ const CommandPalette = ({
           }
           onChange={event => {
             setQuery(event.target.value);
-            /* Yazmak etkin komutu BASA ceker: eski satir suzulmus listede
-               kalmiyordu. */
+            /* Yazmak etkin komutu BASA ceker: eski satir suzulmus listede kalmiyordu. */
             setActiveIndex(0);
           }}
           onKeyDown={handleKeyDown}
@@ -211,27 +211,20 @@ const CommandPalette = ({
 
       <ul id={listboxId} role="listbox" aria-label={label} className={styles.palette__list}>
         {visible.map((item, index) => {
-          /* Grup basligi yalnizca DEGISTIGINDE cizilir: her satirin ustune
-             baslik koymak listeyi iki katina cikariyordu. */
+          /*
+           * Grup basligi yalnizca DEGISTIGINDE cizilir: her satirin ustune baslik koymak listeyi
+           * iki katina cikariyordu.
+           */
           const isNewGroup = item.group !== undefined && item.group !== visible[index - 1]?.group;
 
           return (
-            /*
-             * ⚠ `role="presentation"` ZORUNLU. Agac `listbox > li > option`
-             * seklinde ve aradaki `<li>` SAHIPSIZ bir dugum: `listbox` yalnizca
-             * `option`/`group` cocugu kabul eder, yani `aria-required-children`
-             * kiriliyor ve ekran okuyucu konum sayimini ("3 / 12") yanlis
-             * kapsayicidan okuyup ya bozuk bildiriyor ya hic bildirmiyordu.
-             * `Combobox` ayni arizayi `role="option"`u `<li>`ye tasiyarak
-             * cozdu; burada o yol grup basligini da secenegin ICINE alir ve
-             * basliga yapilan tiklama komutu calistirirdi. `presentation` ara
-             * dugumu SEFFAF yapar: sahiplik dogrudan listbox'a doner, tiklama
-             * hedefi degismez.
-             */
+            /* ⚠ `role="presentation"` ZORUNLU. */
             <li key={item.id} role="presentation">
               {isNewGroup && (
-                /* `aria-hidden`: baslik bir SECENEK degil; listbox'in cocugu
-                   olarak okunsaydi ekran okuyucu sayimi bozuluyordu. */
+                /*
+                 * `aria-hidden`: baslik bir SECENEK degil; listbox'in cocugu olarak okunsaydi ekran
+                 * okuyucu sayimi bozuluyordu.
+                 */
                 <span className={styles.palette__group} aria-hidden>
                   {item.group}
                 </span>

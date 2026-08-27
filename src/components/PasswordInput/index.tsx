@@ -17,11 +17,8 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
 };
 
 /**
- * Şifre girdisi — yanında göz düğmesi.
- *
- * `hanparca-admin` ve `hanparca-frontend`te BİREBİR AYNI dosya olarak
- * duruyordu; iki kopya da hanui'nin `Input` + `IconButton` bileşenlerini
- * sarmalıyordu, yani zaten bu kütüphaneye aitti.
+ * Şifre girdisi — yanında göz düğmesi. `hanparca-admin` ve `hanparca-frontend`te BİREBİR AYNI dosya
+ * olarak duruyordu
  */
 const PasswordInput: FC<Props> = ({ className, showLabel, hideLabel, ...rest }) => {
   const { labels } = useHanui();
@@ -45,10 +42,7 @@ const PasswordInput: FC<Props> = ({ className, showLabel, hideLabel, ...rest }) 
         label={toggleLabel}
         variant="ghost"
         size="sm"
-        /*
-         * `tabIndex` DUSURULMEZ: klavye kullanicisi de sifresini gorebilmeli.
-         * Odak sirasi dogal — alandan sonra dugme gelir.
-         */
+        /* `tabIndex` DUSURULMEZ: klavye kullanicisi de sifresini gorebilmeli. */
         onClick={() => setIsVisible(current => !current)}
       />
     </span>

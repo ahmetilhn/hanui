@@ -18,7 +18,7 @@ export type TimelineStatus = 'done' | 'current' | 'pending' | 'failed';
 export type TimelineEvent = {
   id: string;
   title: string;
-  /** Zaman damgası — BİÇİMLENDİRİLMİŞ dize. Bileşen tarih biçimlendirmez. */
+  /** Zaman damgası — BİÇİMLENDİRİLMİŞ dize. */
   time?: string;
   description?: ReactNode;
   status?: TimelineStatus;
@@ -28,7 +28,7 @@ export type TimelineEvent = {
 
 type Props = {
   events: TimelineEvent[];
-  /** Akışın erişilebilir adı ("Sipariş geçmişi"). ZORUNLU. */
+  /** Akışın erişilebilir adı ("Sipariş geçmişi"). */
   label: string;
   className?: string;
   testId?: string;
@@ -44,11 +44,8 @@ const STATUS_ICON: Record<TimelineStatus, ReactNode> = {
 
 /*
  * ⚠ DURUM METNI SR-ONLY ve SAGLAYICIDAN gelir.
- *
- * ⚠ `pending` LISTEDE YOK ve bu bilincli: "henuz olmadi" durumunun ekran
- * okuyucuda ayri bir karsiligi yok — olay zaten cizelgede ileride duruyor.
- * Ucunu anahtara baglayip dorduncusune sabit metin birakmak, sozlesmeyi
- * yarim uygulamak olurdu.
+ * ⚠ `pending` LISTEDE YOK ve bu bilincli: "henuz olmadi" durumunun ekran okuyucuda ayri bir
+ * karsiligi yok
  */
 const STATUS_KEY: Record<TimelineStatus, 'completed' | 'current' | 'failed' | null> = {
   done: 'completed',
@@ -92,9 +89,10 @@ const Timeline: FC<Props> = ({ events, label, className, testId }) => {
               </span>
 
               {event.time && (
-                /* `<time>` DEGIL `<span>`: `datetime` icin makine okunur bir
-                 deger gerekiyor ve elimizde yalnizca bicimlendirilmis dize
-                 var. Yanlis bir `datetime`, hicbir `datetime`den kotu. */
+                /*
+                 * `<time>` DEGIL ` `: `datetime` icin makine okunur bir deger gerekiyor ve elimizde
+                 * yalnizca bicimlendirilmis dize var.
+                 */
                 <span className={styles.timeline__time}>{event.time}</span>
               )}
 

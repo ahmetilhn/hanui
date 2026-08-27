@@ -3,11 +3,7 @@ export default {
   extends: ['stylelint-config-standard-scss'],
 
   rules: {
-    /*
-     * BICIM KURALLARI KAPALI — Prettier'in isi.
-     * Acik birakildiklarinda `npm run format` ve `npm run lint:css` birbirinin
-     * ciktisini bozuyordu.
-     */
+    /* BICIM KURALLARI KAPALI — Prettier'in isi. */
     'scss/dollar-variable-pattern': null,
     'scss/at-mixin-pattern': null,
     'selector-class-pattern': null,
@@ -58,9 +54,8 @@ export default {
   overrides: [
     {
       /*
-       * Halkanin KENDISI burada tanimli; ayrica `base.scss` zorlanmis renk
-       * kipinde (`forced-colors: active`) sistem renkleriyle bir yedek
-       * ciziyor — orada `box-shadow` cizilmedigi icin `outline` TEK secenek.
+       * Halkanin KENDISI burada tanimli; ayrica `base.scss` zorlanmis renk kipinde (`forced-colors:
+       * active`) sistem renkleriyle bir yedek ciziyor
        */
       files: ['src/styles/_mixins.scss', 'src/styles/base.scss'],
       rules: {

@@ -5,26 +5,10 @@ import Divider from '@/components/Divider';
 import QuantityStepper from '@/components/QuantityStepper';
 import Tooltip from '@/components/Tooltip';
 
-/**
- * ANLAM SÖZLEŞMESİ — bir öğe erişilebilirlik ağacında NE olduğunu söylemeli.
- *
- * Buradaki iki kusurun ortak yanı: ikisi de görsel olarak KUSURSUZDU ve
- * `jest-axe` taramasından da geçiyordu. Axe "bu ağaçta ihlal var mı" sorar;
- * "bu bilgi ağaçta var mı" sorusunu sormaz. Bir öğeyi tamamen gizlemek ya da
- * anlamını hiç bildirmemek axe için ihlal değildir — bilgi sessizce yok olur.
- */
-
 describe('Avatar — kişinin adı ağaçta olmalı', () => {
   it('erişilebilir adı `name` prop`undan alır', () => {
     render(<Avatar name="Ahmet Yılmaz" />);
 
-    /*
-     * ⚠ REGRESYON NÖBETÇİSİ. Kök öğe `aria-hidden` taşıyordu ve bu yalnızca
-     * madalyonu değil KİŞİNİN ADINI da ağaçtan çıkarıyordu. Ölçülen sonuç:
-     * yalnızca avatar çizilen bir kullanıcı listesi ekran okuyucuda TAMAMEN
-     * BOŞ görünüyordu. `name` prop`unun kendi dokümantasyonu onu "görsel yoksa
-     * `alt` metnidir" diye tanımladığı hâlde hiçbir zaman duyurulmuyordu.
-     */
     expect(screen.getByRole('img')).toHaveAccessibleName('Ahmet Yılmaz');
   });
 
@@ -33,7 +17,6 @@ describe('Avatar — kişinin adı ağaçta olmalı', () => {
 
     const node = screen.getByRole('img', { name: 'Ahmet Yılmaz' });
 
-    /* İçteki `<img>` `alt=""` taşır: ad zaten kökte duyuruluyor. */
     expect(node.querySelector('img')).toHaveAttribute('alt', '');
   });
 });
@@ -42,11 +25,6 @@ describe('Divider — ayırıcı anlamı etiketliyken de durmalı', () => {
   it('etiketli ayırıcı `separator` rolü taşır', () => {
     render(<Divider label="Ödeme bilgileri" />);
 
-    /*
-     * ⚠ Etiketsiz dal `<hr>` kullanıyor ve onun örtük rolü zaten `separator`.
-     * Etiketli dal ise düz bir `<div>`di — yani ayırıcı anlamı tam da ANLAM
-     * TAŞIDIĞI yerde kayboluyordu.
-     */
     expect(screen.getByRole('separator')).toHaveAccessibleName('Ödeme bilgileri');
   });
 
@@ -58,14 +36,6 @@ describe('Divider — ayırıcı anlamı etiketliyken de durmalı', () => {
   });
 });
 
-/**
- * ADET KUTUSU BIR SPINBUTTON'DUR.
- *
- * ⚠ Onceki hâl araligi ETIKETE gomuyordu (`"Adet (1-99)"`): ekran okuyucu
- * bunu duz bir ad olarak okuyor, GUNCEL degeri ve sinirlari ayri birer bilgi
- * olarak bildirmiyordu. Deger degistiginde de hicbir sey duyurulmuyordu —
- * kullanici adedi artirdigini yalnizca EKRANA BAKARAK anlayabiliyordu.
- */
 describe('QuantityStepper — spinbutton sözleşmesi', () => {
   it('rol ve DEĞER ARALIĞI erişilebilirlik ağacında', () => {
     render(<QuantityStepper value={3} min={1} max={99} onChange={() => undefined} />);
@@ -83,14 +53,6 @@ describe('QuantityStepper — spinbutton sözleşmesi', () => {
   });
 });
 
-/**
- * IPUCU KLAVYEYLE DE ACILIR.
- *
- * ⚠ `onFocus`/`onBlur` zaten bagliydi ama capa bir `<span>` ve `<span>`
- * varsayilan olarak ODAK ALMIYOR. Cocuk kendisi odaklanabilir DEGILSE
- * (duz metin, ikon, `<img>`) ipucu YALNIZCA FAREYLE aciliyordu: klavye ve
- * ekran okuyucu kullanicisi icerigi hic goremiyordu.
- */
 describe('Tooltip — klavye erişimi', () => {
   it('odaklanamayan çocukta ÇAPA odak alır', () => {
     const { container } = render(

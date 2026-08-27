@@ -12,19 +12,15 @@ import styles from './index.module.scss';
 export type DataTableColumn = {
   /** Sütun kimliği (React key). */
   key: string;
-  /** Başlık hücresinin içeriği. Toplu seçim kutusu gibi öğeler de girebilir. */
+  /** Başlık hücresinin içeriği. */
   label?: ReactNode;
-  /**
-   * Görsel başlığı olmayan sütunun erişilebilir adı (eylem sütunu gibi).
-   * Boş bir `<th>` ekran okuyucuda adsız bir sütun bırakıyordu.
-   */
+  /** Görsel başlığı olmayan sütunun erişilebilir adı (eylem sütunu gibi). */
   srLabel?: string;
   /** Sıralanabilir sütunun yönü (`aria-sort`). */
   ariaSort?: 'ascending' | 'descending';
   /**
-   * Sütun sıralanabilir. `DataTable.onSort` ile birlikte anlamlı; ikisinden
-   * biri eksikse başlık düz metin kalır — tıklanabilir görünüp hiçbir şey
-   * yapmayan bir başlık, kullanıcıya var olmayan bir yetenek vaat ediyordu.
+   * Sütun sıralanabilir. `DataTable.onSort` ile birlikte anlamlı; ikisinden biri eksikse başlık düz
+   * metin kalır
    */
   isSortable?: boolean;
   /** Sütun yatay kaydırmada YERİNDE kalır. */
@@ -36,38 +32,25 @@ type Props = {
   columns: DataTableColumn[];
   /**
    * Tablonun erişilebilir adı ("Bekleyen siparişler").
-   *
-   * ⚠ ADSIZ TABLO EKRAN OKUYUCUDA YALNIZCA "tablo" DİYE OKUNUR. Panelde
-   * aynı anda birden fazla tablo bulunabiliyor ve kullanıcı hangisinde
-   * olduğunu ayırt edemiyordu. `<caption>` yerine `aria-label` seçildi:
-   * başlık zaten `PageHeader`/`Panel` içinde görünür durumda, ikinci kez
-   * çizmek görsel tekrar olurdu.
+   * ⚠ ADSIZ TABLO EKRAN OKUYUCUDA YALNIZCA "tablo" DİYE OKUNUR.
    */
   label?: string;
   /**
-   * Gövde satırları (`<tr>`). Ekranların özel hücreleri, bağlantıları ve satır
-   * tintleri burada yaşar; tablo yalnızca kabuğu ve durum satırlarını
-   * üstlenir. Uyarı tinti için {@link DataTableRow}.
+   * Gövde satırları (` `). Ekranların özel hücreleri, bağlantıları ve satır tintleri burada yaşar;
+   * tablo yalnızca kabuğu ve durum satırlarını üstlenir.
    */
   children?: ReactNode;
-  /** Satır yokken gösterilen metin. Verilmezse `labels.dataTable.empty`. */
+  /** Satır yokken gösterilen metin. */
   emptyMessage?: string;
-  /** Yükleme sürerken gösterilen metin. Verilmezse `labels.dataTable.loading`. */
+  /** Yükleme sürerken gösterilen metin. */
   loadingMessage?: string;
   isLoading?: boolean;
   /**
-   * Liste ÇEKİLEMEDİ. <strong>"Yüklenemedi" ile "boş" ayrı durumlardır</strong>:
-   * hata verilmişken boş mesajı asla çizilmez — ağ hatasını "kayıt kalmamış"
-   * diye okutmak kullanıcıya yanlış karar verdirir. Hatayı tablonun dışında
-   * (`Alert`) gösteren ekran bu prop'u geçmez.
+   * Liste ÇEKİLEMEDİ. "Yüklenemedi" ile "boş" ayrı durumlardır: hata verilmişken boş mesajı asla
+   * çizilmez
    */
   error?: string | null;
-  /**
-   * Gövde `100dvh - <bant>` ile sınırlanır ve başlık satırı kendi kaydırma
-   * alanına yapışır. Sınırsız yükseklikte `position: sticky` HİÇ çalışmıyordu:
-   * `overflow` alanı ekrandan uzun olunca başlık sayfayla birlikte yukarı çıkıp
-   * gidiyordu.
-   */
+  /** Gövde `100dvh - <bant>` ile sınırlanır ve başlık satırı kendi kaydırma alanına yapışır. */
   hasViewportCap?: boolean;
   /** Sıralanabilir bir başlığa basıldığında çağrılır. */
   onSort?: (key: string, direction: 'ascending' | 'descending') => void;
@@ -92,11 +75,7 @@ const DataTable: FC<Props> = ({
   className,
   testId,
 }) => {
-  /*
-   * Bosluk karari satir SAYISINDAN verilir; cagiranin ayrica `isEmpty` gecmesi
-   * gerekmez. Satirlar tek bir Fragment icinde verilirse sayi 1 gorunur —
-   * satirlari dogrudan (ya da dizi olarak) verin.
-   */
+  /* Bosluk karari satir SAYISINDAN verilir; cagiranin ayrica `isEmpty` gecmesi gerekmez. */
   const { labels } = useHanui();
   const rowCount = Children.count(children);
 
@@ -123,8 +102,7 @@ const DataTable: FC<Props> = ({
           <tr>
             {columns.map(column => {
               const isSortable = Boolean(column.isSortable && onSort);
-              /* Ilk tikta ARTAN; ikinci tik yonu cevirir. Sifirdan azalan
-                 baslamak, "en pahali" listeyi varsayilan yapiyordu. */
+              /* Ilk tikta ARTAN; ikinci tik yonu cevirir. */
               const nextDirection = column.ariaSort === 'ascending' ? 'descending' : 'ascending';
 
               return (
@@ -135,12 +113,7 @@ const DataTable: FC<Props> = ({
                   className={cx(column.className, column.isSticky && styles.sticky)}
                 >
                   {isSortable ? (
-                    /*
-                     * Siralama bir DUGME, `<th>`ye yazilan `onClick` degil.
-                     * Baslik hucresi odaklanabilir degil ve klavye kullanicisi
-                     * siralamaya HIC ulasamiyordu; ustelik ekran okuyucu
-                     * tiklanabilir oldugunu da soylemiyordu.
-                     */
+                    /* Siralama bir DUGME, ` `ye yazilan `onClick` degil. */
                     <button
                       type="button"
                       className={styles.sort}

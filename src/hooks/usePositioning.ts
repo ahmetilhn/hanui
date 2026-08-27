@@ -20,17 +20,9 @@ const OPPOSITE: Record<PositionSide, PositionSide> = {
 
 /** Bir sayıyı [min, max] aralığına kırpar. */
 /**
- * Değeri aralığa sıkıştırır.
- *
- * ⚠ TERS ARALIK GÜVENLİ. Önceki hâli düz `Math.min(Math.max(v, min), max)` idi
- * ve yüzey görünüm alanından UZUNSA `max` (`viewport - surface - padding`)
- * `min`in altına, çoğu zaman NEGATİFE düşüyordu; `Math.min` onu seçiyor ve
- * yüzey ekranın dışına, üst/sol tarafa konumlanıyordu — yani içeriği uzun bir
- * `Popover` (bileşenin `max-height`i yok) hiç görünmüyordu.
- *
- * Aralık geçersizse `min` kazanır: yüzey kenara yaslanır ve aşağı doğru taşar.
- * Taşan kısım sayfa kaydırmasıyla erişilebilir kalır; ekran dışı bir konum
- * erişilemez.
+ * Değeri aralığa sıkıştırır. Aralık geçersizse `min` kazanır: yüzey kenara yaslanır ve aşağı doğru
+ * taşar.
+ * ⚠ TERS ARALIK GÜVENLİ.
  */
 const clamp = (value: number, min: number, max: number): number =>
   max < min ? min : Math.min(Math.max(value, min), max);
@@ -83,8 +75,8 @@ const fits = (
   })[side];
 
 /**
- * ÇARPIŞMAYA DUYARLI KONUMLANDIRMA — `Tooltip`, `Popover`, `Menu` ve açılır
- * listelerin ortak temeli.
+ * ÇARPIŞMAYA DUYARLI KONUMLANDIRMA — `Tooltip`, `Popover`, `Menu` ve açılır listelerin ortak
+ * temeli.
  */
 const usePositioning = (
   anchorRef: { current: HTMLElement | null },
@@ -98,8 +90,10 @@ const usePositioning = (
     isPositioned: false,
   });
 
-  /* Olcum her karede yeniden planlanmasin: kaydirma sirasinda saniyede
-     onlarca olay dusuyor ve her biri bir yerlesim okumasi. */
+  /*
+   * Olcum her karede yeniden planlanmasin: kaydirma sirasinda saniyede onlarca olay dusuyor ve her
+   * biri bir yerlesim okumasi.
+   */
   const frameRef = useRef(0);
 
   const measure = useCallback(() => {
@@ -112,10 +106,8 @@ const usePositioning = (
     const viewport = { width: window.innerWidth, height: window.innerHeight };
 
     /*
-     * KENAR SECIMI: tercih edilen kenar sigmiyorsa KARSITI denenir; o da
-     * sigmiyorsa tercih edilene donulur ve kirpma devreye girer. Ucuncu bir
-     * kenara (dikeyden yataya) atlamak YOK — bir ipucu bir anda saga zipladiginda
-     * kullanici onu tetikleyiciyle iliskilendiremiyor.
+     * KENAR SECIMI: tercih edilen kenar sigmiyorsa KARSITI denenir; o da sigmiyorsa tercih edilene
+     * donulur ve kirpma devreye girer.
      */
     const preferred = place(anchorRect, surfaceRect, side, align, offset);
     const resolvedSide = fits(preferred, surfaceRect, side, padding, viewport)
@@ -132,8 +124,10 @@ const usePositioning = (
 
     const placed = place(anchorRect, surfaceRect, resolvedSide, align, offset);
 
-    /* Capraz eksende KIRPMA: ekranin sag ucundaki bir tetikleyicinin balonu
-       disari tasmak yerine kenara yaslanir. */
+    /*
+     * Capraz eksende KIRPMA: ekranin sag ucundaki bir tetikleyicinin balonu disari tasmak yerine
+     * kenara yaslanir.
+     */
     setState({
       style: {
         position: 'fixed',
@@ -155,9 +149,8 @@ const usePositioning = (
   }, [measure]);
 
   /*
-   * `useLayoutEffect`: olcum BOYAMADAN once yapilmali. `useEffect` ile
-   * yuzey bir kare boyunca (0, 0) noktasinda — ekranin sol ust kosesinde —
-   * cizilip sonra yerine ziplyordu.
+   * `useLayoutEffect`: olcum BOYAMADAN once yapilmali. `useEffect` ile yuzey bir kare boyunca (0,
+   * 0) noktasinda — ekranin sol ust kosesinde
    */
   const useIsomorphicLayoutEffect = isClient() ? useLayoutEffect : useEffect;
 
@@ -171,23 +164,19 @@ const usePositioning = (
 
     window.addEventListener('resize', schedule);
 
-    /*
-     * ⚠ `visualViewport` AYRICA dinlenir. Mobil klavye açıldığında `window`
-     * `resize` olayı çoğu tarayıcıda ATEŞLENMEZ — değişen şey görsel görünüm
-     * alanı (`visualViewport`), düzen görünüm alanı değil. Bu yüzden klavye
-     * açılınca menü/ipucu eski yerinde kalıyor, çoğu zaman klavyenin altında.
-     * `useSheetViewport` bunu alt sayfalar için zaten yapıyordu; konumlandırma
-     * yapmıyordu.
-     */
+    /* ⚠ `visualViewport` AYRICA dinlenir. */
     window.visualViewport?.addEventListener('resize', schedule);
     window.visualViewport?.addEventListener('scroll', schedule);
-    /* `capture: true` — kaydirma olayi BALONCUKLANMAZ; yakalama evresinde
-       dinlemek, tetikleyicinin kaydirilan HER atasini tek dinleyiciyle
-       kapsar. */
+    /*
+     * `capture: true` — kaydirma olayi BALONCUKLANMAZ; yakalama evresinde dinlemek, tetikleyicinin
+     * kaydirilan HER atasini tek dinleyiciyle kapsar.
+     */
     document.addEventListener('scroll', schedule, true);
 
-    /* Yuzeyin kendi olcusu degisebiliyor (icerik geldi, liste suzuldu) ve
-       degistiginde konum yanlis kalir. */
+    /*
+     * Yuzeyin kendi olcusu degisebiliyor (icerik geldi, liste suzuldu) ve degistiginde konum yanlis
+     * kalir.
+     */
     const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(schedule);
     if (observer && surfaceRef.current) observer.observe(surfaceRef.current);
     if (observer && anchorRef.current) observer.observe(anchorRef.current);

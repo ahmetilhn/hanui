@@ -19,14 +19,10 @@ type Props = {
   /** Grubun erişilebilir adı ("Ürün puanı"). */
   label: string;
   /**
-   * Puan açıklamaları. Hem ekran okuyucuya okunur hem de seçildiğinde
-   * yıldızların altında yazar. Verilmezse `labels.rating.scale`.
+   * Puan açıklamaları. Hem ekran okuyucuya okunur hem de seçildiğinde yıldızların altında yazar.
    */
   ratingLabels?: RatingLabels;
-  /**
-   * Ekran okuyucuda yıldız sayısını okuyan biçimlendirici ("4 yıldız").
-   * Verilmezse `labels.rating.starCount`.
-   */
+  /** Ekran okuyucuda yıldız sayısını okuyan biçimlendirici ("4 yıldız"). */
   formatStarCount?: (star: number) => string;
   isDisabled?: boolean;
   className?: string;
@@ -51,8 +47,7 @@ const RatingInput = ({
   const name = useId();
   const [hovered, setHovered] = useState<number | null>(null);
 
-  // Fare yildizlarin uzerindeyken onizleme gosterilir; ayrilinca gercek
-  // secime doner.
+  // Fare yildizlarin uzerindeyken onizleme gosterilir; ayrilinca gercek secime doner.
   const shown = hovered ?? value;
 
   return (

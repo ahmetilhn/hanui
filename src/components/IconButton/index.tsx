@@ -22,10 +22,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon: ReactNode;
   /** Görsel etiketi olmayan düğmenin erişilebilir adı — ZORUNLU. */
   label: string;
-  /**
-   * `cart` <strong>yalnızca dönüşüm eyleminde</strong> kullanılır — ekranda
-   * görünen tek doygun turuncu odur. Nötr dolgu için `solid`.
-   */
+  /** `cart` yalnızca dönüşüm eyleminde kullanılır — ekranda görünen tek doygun turuncu odur. */
   variant?: IconButtonVariant;
   size?: 'sm' | 'md';
   /** Verilirse öğe bir bağlantı olarak çizilir. */
@@ -60,12 +57,8 @@ const IconButton = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
     );
 
     /*
+     * Onceki bicim yalnizca `href`/`className`/`aria-label`/`title`/`testId` iletiyordu
      * ⚠ BAGLANTI DALI DA `...rest` YAYAR — `Button` ile ayni ariza.
-     *
-     * Onceki bicim yalnizca `href`/`className`/`aria-label`/`title`/`testId`
-     * iletiyordu; `onClick`, `disabled`, `id`, `aria-current`, `data-*` ve
-     * iletilen `ref` sessizce dusuyordu. `<IconButton href="/ayarlar"
-     * onClick={cekmeceyiKapat} />` geziniyor ama cekmeceyi kapatmiyordu.
      */
     const isInert = Boolean(rest.disabled);
 

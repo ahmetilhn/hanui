@@ -2,21 +2,8 @@
 /**
  * GENEL API NOBETCISI — `build/index.d.ts` icindeki disa aktarim kumesini
  * `scripts/api-baseline.txt` ile karsilastirir.
- *
- * NEDEN VAR: `src/index.ts` bir cephedir; tip govdeleri `types/` altina
- * tasinabilir ve tuketici ayni adi ayni yerden almaya devam eder. Ama bir
- * tasima sirasinda bir ad DUSERSE hata BURADA gorunmez — `hanparca-frontend`
- * ve `hanparca-admin` bagimliligi TAM SURUME pinli (caret yok), yani kirilma
- * bir sonraki hanui yukseltmesinde, sebebi coktan unutulmusken ortaya cikar.
- *
- * ⚠ Grep deseni `export { … }` DEGIL. vite-plugin-dts her bildirimi tek tek
- * `export declare …` olarak yaziyor ve dosyanin sonunda yalnizca bos bir
- * `export { }` birakiyor; `export { … }` arayan bir olcum HER ZAMAN "1 ad"
- * bulur ve yesil kalir.
- *
- * Kullanim:
- *   node scripts/check-api.mjs            # dogrula
- *   node scripts/check-api.mjs --update   # taban cizgisini tazele (BILINCLI)
+ * ⚠ Grep deseni `export { … }` DEGIL. vite-plugin-dts her bildirimi tek tek `export declare …`
+ * olarak yaziyor ve dosyanin sonunda yalnizca…
  */
 
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';

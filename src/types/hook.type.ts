@@ -23,7 +23,7 @@ export type ListboxNavigation<T extends HTMLElement = HTMLElement> = {
 };
 
 export type ListboxNavigationOptions = {
-  /** Seçenek sayısı. Liste süzüldüğünde değişir. */
+  /** Seçenek sayısı. */
   count: number;
   isOpen: boolean;
   /** Açılışta etkin olacak dizin — genellikle seçili olan. */

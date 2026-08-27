@@ -21,20 +21,17 @@ import styles from './index.module.scss';
 type BaseProps = {
   page: number;
   totalPages: number;
-  /** Gezinme bölgesinin erişilebilir adı. Verilmezse `labels.pagination.label`. */
+  /** Gezinme bölgesinin erişilebilir adı. */
   label?: string;
   /** Verilmezse `labels.pagination.previous`. */
   previousLabel?: string;
   /** Verilmezse `labels.pagination.next`. */
   nextLabel?: string;
-  /**
-   * Sayfa değiştiğinde ekran okuyucuya duyurulacak metin
-   * ("3. sayfa · 1.248 sonuç").
-   */
+  /** Sayfa değiştiğinde ekran okuyucuya duyurulacak metin ("3. sayfa · 1.248 sonuç"). */
   formatAnnouncement?: (page: number, totalPages: number) => string;
   /**
-   * Sayfa değiştiren bir tıklamadan sonra kaydırma. `'top'` verilirse pencere
-   * en üste alınır — çağıran tarafta kaydırma kodu yazılmaz.
+   * Sayfa değiştiren bir tıklamadan sonra kaydırma. `'top'` verilirse pencere en üste alınır —
+   * çağıran tarafta kaydırma kodu yazılmaz.
    */
   scrollTo?: 'top';
   className?: string;
@@ -96,9 +93,8 @@ const Pagination: FC<Props> = ({
   const announce = useAnnounce();
 
   /*
-   * Sayfa DEGISTIGINDE duyurulur, ilk cizimde degil: acilista "1. sayfa"
-   * demek, kullanicinin sormadigi bir soruyu cevaplamak ve ekran okuyucunun
-   * sayfa basligini okumasini kesmek olurdu.
+   * Sayfa DEGISTIGINDE duyurulur, ilk cizimde degil: acilista "1. sayfa" demek, kullanicinin
+   * sormadigi bir soruyu cevaplamak ve ekran okuyucunun sayfa…
    */
   const previousPage = useRef(page);
 
@@ -112,8 +108,10 @@ const Pagination: FC<Props> = ({
 
   if (totalPages <= 1) return null;
 
-  /* Sayfa GERCEKTEN degistiyse kaydirilir: etkin sayfaya basmak icerigi
-     degistirmiyor, oyleyse gorunumu de degistirmemeli. */
+  /*
+   * Sayfa GERCEKTEN degistiyse kaydirilir: etkin sayfaya basmak icerigi degistirmiyor, oyleyse
+   * gorunumu de degistirmemeli.
+   */
   const scrollAfterChange = (target: number) => {
     if (scrollTo === 'top' && target !== page) scrollWindowToTop();
   };
@@ -129,8 +127,8 @@ const Pagination: FC<Props> = ({
     ((event: MouseEvent<HTMLAnchorElement>) => void) | undefined;
 
   /*
-   * Yeni sekmede acan tiklamada (orta tus, Ctrl/Cmd) MEVCUT sayfa yerinde
-   * kalir; onu basa almak kullanicinin okudugu yeri elinden almak olurdu.
+   * Yeni sekmede acan tiklamada (orta tus, Ctrl/Cmd) MEVCUT sayfa yerinde kalir; onu basa almak
+   * kullanicinin okudugu yeri elinden almak olurdu.
    */
   const handleLinkClick = (event: MouseEvent<HTMLAnchorElement>, target: number) => {
     extraOnClick?.(event);
@@ -141,13 +139,7 @@ const Pagination: FC<Props> = ({
     scrollAfterChange(target);
   };
 
-  /*
-   * Baglanti kipinde oklar da BAGLANTIDIR. Eskiden ikisi de `goTo` cagiran
-   * birer dugmeydi ve `goTo` o kipte `onPageChange` olmadigi icin hicbir sey
-   * yapmiyordu: onceki/sonraki tuslari OLU tuslardi, hicbir katman uyarmiyordu.
-   * Sinirda baglanti degil devre disi dugme cizilir — bir `<a>` devre disi
-   * birakilamaz.
-   */
+  /* Baglanti kipinde oklar da BAGLANTIDIR. */
   const renderArrow = (target: number, arrowLabel: string, icon: ReactNode) => {
     const isDisabled = target < 1 || target > totalPages;
 
