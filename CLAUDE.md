@@ -371,6 +371,28 @@ bildirilir, metnin silinmesiyle değil.
   çarpı, `Stat` ok yönü + okunan metin.
 - **Dokunma hedefi ≥ 44×44** (2.5.8) — görsel kutu büyütülmeden
   `@include tap-target`. Yoğun kipte de küçülmez.
+  ⚠ **KURAL İKİ BİLEŞENDE ÇİĞNENİYORDU ve nöbetçi bunu göremedi** (2026-09-22):
+  `Chip` 40px, `Pagination` dar ekranda **36×40**. `__tests__/styles/tap-targets.test.ts`
+  ELLE bakılan bir liste ve ikisi listede değildi — yani kural yazılıydı,
+  kısmen zorlanıyordu ve aradan geçen iki bileşen sessizce kaldı. İkisi de
+  TÜKETİCİDE ölçüldü (`hanparca-frontend`, 390px ve 320px gerçek tarayıcı),
+  hanui'nin kendi ızgarasında değil.
+  ⚠ Türetilmiş bir kural denendi ve **elendi**: "44px altında sabit yükseklik
+  yazan her dosya `tap-target` içermeli" 32 satır işaretliyor ve ezici
+  çoğunluğu süs (`Progress` 4px çubuk, `Spinner`, `Steps` 1px bağlayıcı çizgi).
+  Liste kalıyor — yeni etkileşimli bileşen oraya da eklenir.
+- ⚠ **`--technical` GİRDİ VARYANTI 16px KORUMASINI DÜŞÜRÜYOR.**
+  `input-base` ölçüyü bilerek `$font-size-control` (`max(16px, …)`) ile kurar;
+  iOS Safari 16px altındaki bir metin girdisine odaklanıldığında sayfayı
+  **büyütür ve geri küçültmez**. Varyant bunu `$font-size-base`
+  (`clamp(15px, …, 16px)`) ile yeniden yazıyor → dar ekranda **15,03px**
+  (ölçüldü: `hanparca` şase sorgulama formu, 17 hane girilen en mobil akış).
+  ⚠ **DÜZELTME BU TURDA YAPILMADI ve gerekçesi ölçüldü:** ölçüyü
+  `$font-size-control`e çekmek alanı 1px uzatıyor, ızgarada satır yüksekliğini
+  büyütüyor ve dar ekran anlık görüntülerinin **40'tan fazlasını** kaydırıyor;
+  yineleyen güncelleme yakınsamadı. Bir sürümün bedeli olarak makul, ama
+  anlık görüntülerin toplu yenilenmesiyle **birlikte** yapılmalı. Tüketici
+  tarafı şimdilik ölçüyü kendisi veriyor (`MaskedInput`).
 - **Odak halkası `:focus-visible`**, rol rengi (kurumsal yeşil), asla kaldırılmaz. `outline: none`
   yalnızca yerine başka bir gösterge çizildiği dört yerde. `:focus` kullanmak
   fareyle tıklandığında da halka gösteriyor ve kullanıcılar bunu hata sanıyordu.

@@ -1,7 +1,17 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
+/*
+ * ⚠ `md` CIP 40px — yani bu dosyanin kendi sozlesmesinin (≥ 44×44, 2.5.8)
+ * DORT PIKSEL ALTINDA. Olculdu (hanparca vitrini, 390px ve 320px, gercek
+ * tarayici): icerik sayfalarindaki ilgili-baglanti cipleri 40px donuyordu.
+ *
+ * Kutu BUYUTULMEZ: cip yogunluk ogesi ve `sm` kademesi 28px'te kalmali.
+ * `tap-target` yalnizca `::after` ile gorunmez alan acar.
+ */
 .chip {
+  @include tap-target;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;

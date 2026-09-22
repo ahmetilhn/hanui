@@ -24,8 +24,19 @@
     @include mirror-in-rtl;
   }
 
+  /*
+   * ⚠ 40px — ve dar ekranda `min-width` 36px'e DUSUYOR (asagida), yani
+   * sayfalama bu dosyanin kendi kuralinin (≥ 44×44) hem dikeyde hem yatayda
+   * altinda kaliyordu. Olculdu (hanparca katalogu, 390px ve 320px): 36×40.
+   *
+   * Sayfa numaralari yan yana ve aralarinda yalnizca `$space-1` var; dar
+   * ekranda yanlis sayfaya basmak bu yuzden kolaydi. Kutu BUYUTULMEZ —
+   * seridin sarmasi ve yogunlugu korunur.
+   */
   &__arrow,
   &__page {
+    @include tap-target;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
