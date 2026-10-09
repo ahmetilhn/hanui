@@ -26,8 +26,7 @@
     }
 
     &:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
+      @include passive-surface;
     }
 
     @include focus-ring($ring-color, -2px);

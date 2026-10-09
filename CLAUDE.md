@@ -80,14 +80,24 @@ yolundan** veriliyordu (`background-color` 30, `color` 18, `border-color` 16,
 ⚠ `opacity` ile soluklaştırma **yasak**: metni de soluklaştırıp kontrast eşiğini
 sessizce düşürüyor.
 
-⚠ **Kural yazılıydı ama dokuz bileşende ÇİĞNENİYORDU** (2026-10-10): `Chip`,
-`Pagination`, `RadioCard`, `Switch`, `RangeSlider`, `FileUpload`, `RatingInput`
-pasif hâli; `DateField` takvim ikonu ve `Spinner`ın azaltılmış hareket hâli.
-Hepsi token'a çevrildi. stylelint `opacity`yi yasaklayamaz (geçişlerde meşru);
-nöbetçi `__tests__/styles/passive-opacity.test.ts` — `0`/`1` dışındaki her
-`opacity` soluklaştırmadır ve kırar. `QuantityStepper` pasif düğmesi ve
-`DataTable` sıralama ikonu hâlâ taşıyor: testte `KNOWN_DEBT`, düzeltilince
-listeden çıkar (çıkmazsa test kırar).
+⚠ **Kural yazılıydı ama on bir bileşende ÇİĞNENİYORDU** (2026-10-10): `Chip`,
+`Pagination`, `RadioCard`, `Switch`, `RangeSlider`, `FileUpload`, `RatingInput`,
+`QuantityStepper` pasif hâli; `DateField` takvim ikonu, `DataTable` sıralama oku
+ve `Spinner`ın azaltılmış hareket hâli. Hepsi token'a çevrildi. stylelint
+`opacity`yi yasaklayamaz (geçişlerde meşru); nöbetçi
+`__tests__/styles/passive-opacity.test.ts` — `0`/`1` dışındaki her `opacity`
+soluklaştırmadır ve kırar. İstisna listesi yok.
+
+⚠ **`DataTable`ın dinlenen sıralama oku pasif DEĞİL** — sütun sıralanabiliyor,
+yalnızca henüz sıralanmamış. `passive-*` mixin'leri bu yüzden kullanılmadı:
+dinlenme `text-3`, hover ve sıralanmış ok `text` (5.0'da seçim mürekkep).
+Ölçüldü: başlık zemininde (`surface-2`) dinlenen ok 4,83:1 (koyu 4,89), sıralı
+okla arası 3,16:1 (koyu 3,23). ⚠ 4.x'te sıralı ok rol YEŞİLİYDİ ve `text-3`le
+arası 1,08:1 kaldığı için dinlenme `border-strong` seçilmişti; 5.0 kreminde o
+değer başlık zemininde **1,37:1** — ok görünmüyordu. İki temanın değerleri
+değişince karar yeniden ölçüldü ve tersine döndü. Zorlanmış renk kipinde
+dinlenen ok `GrayText` yazar; yazmasaydı her renk `CanvasText`e ezilir ve
+dinlenen `▴` artan sıralamanın okuyla birebir aynı çizilirdi.
 
 ⚠ **`opacity` zorlanmış renk kipinde de soluklaştırıyordu; token'lar
 soluklaştırmaz.** O kipte `text-3` `CanvasText`e eziliyor ve pasif hâl etkin

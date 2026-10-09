@@ -70,23 +70,33 @@
   color: inherit;
   text-align: inherit;
 
-  &:hover .sort__arrow {
-    opacity: 1;
+  /* Dinlenen ok hover'da mürekkebe koyulaşır; sıralanmış ok zaten mürekkep. */
+  &:hover .sort__arrow:not(.sort__arrow--ascending, .sort__arrow--descending) {
+    color: $text;
   }
 
   @include focus-ring($ring-color, -2px);
 }
 
+/*
+ * Dinlenen ok pasif DEGIL: sutun siralanabiliyor, yalnizca henuz siralanmamis — `text-3`, siralanmis
+ * ok `text` (5.0'da secim murekkep). Olculdu: baslik zemininde (`surface-2`) dinlenen ok 4,83:1
+ * (koyu 4,89), sirali okla arasi 3,16:1 (koyu 3,23). 4.x'te sirali ok rol yesiliydi ve `text-3`le
+ * arasi 1,08:1 kaliyordu; `border-strong` ise 5.0 kreminde 1,37:1 — ok gorunmuyordu.
+ */
 .sort__arrow {
   flex-shrink: 0;
   font-size: $font-size-2xs;
   color: $text-3;
-  opacity: 0.35;
-  transition: opacity $duration-fast $ease-out;
+  transition: color $duration-fast $ease-out;
+
+  /* Bu kipte her renk CanvasText olur ve dinlenen `▴` artan siralamanin okuyla ayni cizilir. */
+  @media (forced-colors: active) {
+    color: GrayText;
+  }
 
   &--ascending,
   &--descending {
-    opacity: 1;
     color: $text;
   }
 
