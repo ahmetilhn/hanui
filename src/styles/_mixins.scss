@@ -471,6 +471,34 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
   }
 }
 
+// PASIF YUZEY: pasiflik dolgunun geri cekilmesiyle bildirilir, metnin silinmesiyle degil.
+// `opacity` YASAK: metni de soluklastirip kontrast esigini sessizce dusuruyor; `text-3` /
+// `surface-2` cifti ise `check-contrast`te olculuyor.
+//
+// Zorlanmis renk kipinde token'lar sistem rengine eziliyor ve `text-3` CanvasText olur, yani
+// opacity'nin o kipte de verdigi pasif ipucu kaybolur. Sistem rengi EBEVEYNDEN MIRAS KALMAZ:
+// kendi rengini yazan her cocuk ayri ayri GrayText ister (olculdu: pasif `fieldset` GrayText,
+// icindeki `legend` CanvasText).
+@mixin passive-text {
+  color: $text-3;
+
+  @media (forced-colors: active) {
+    color: GrayText;
+
+    @content;
+  }
+}
+
+@mixin passive-surface {
+  background-color: $surface-2;
+  border-color: $border;
+  cursor: not-allowed;
+
+  @include passive-text {
+    border-color: GrayText;
+  }
+}
+
 @mixin input-base {
   width: 100%;
   font-family: $font-ui;
@@ -501,10 +529,7 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
   }
 
   &:disabled {
-    background-color: $surface-2;
-    border-color: $border;
-    color: $text-3;
-    cursor: not-allowed;
+    @include passive-surface;
   }
 
   &[aria-invalid='true'] {

@@ -39,8 +39,12 @@
   }
 
   &:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
+    @include passive-surface;
+
+    .chip__icon,
+    .chip__count {
+      @include passive-text;
+    }
   }
 
   @include reduced-motion {
@@ -122,6 +126,11 @@
       border-color: $selected-hover;
       color: $text;
       background-color: $selected-tint;
+    }
+
+    /* Pasif secili cip rol rengini birakir; secimi KENARLIK tasir. */
+    &:disabled {
+      border-color: $text-3;
     }
   }
 }

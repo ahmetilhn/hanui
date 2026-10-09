@@ -41,11 +41,26 @@
   }
 
   &--disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    @include passive-surface;
+
+    box-shadow: none;
 
     &:hover {
       border-color: $border;
+    }
+
+    .radioCard__indicator {
+      background-color: $surface-2;
+      border-color: $border;
+    }
+
+    /* Pasif secimi rol rengi degil ISARET tasir. */
+    &.radioCard--selected .radioCard__indicator {
+      border-color: $text-3;
+
+      &::after {
+        background-color: $text-3;
+      }
     }
   }
 

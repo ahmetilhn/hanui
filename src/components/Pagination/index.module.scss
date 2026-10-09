@@ -63,11 +63,6 @@
       color: $text;
     }
 
-    &:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
     @include focus-ring;
 
     @include reduced-motion {
@@ -99,12 +94,9 @@
       color: $text;
     }
 
+    /* Pasif hal YALNIZCA burada: ustteki blogun ozgullugu `IconButton`a yetmiyor. */
     &:disabled {
-      opacity: 0.4;
-      background-color: $surface;
-      border-color: $border;
-      color: $text-2;
-      cursor: not-allowed;
+      @include passive-surface;
     }
   }
 

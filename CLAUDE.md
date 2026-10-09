@@ -65,6 +65,10 @@ Tek kural kümesi (`interactive-surface()`):
 - **active** — 1 px basılır (dokunsal geri bildirim, renk değil)
 - **selected** — kenarlık + zemin BİRLİKTE: `selected-tint` + `selected-line`
   (mürekkep). Seçim yalnız zeminle verilmez.
+- **disabled** — dolgu geri çekilir, metin silinmez (`passive-surface()`:
+  `surface-2` zemin · `border` kenarlık · `text-3` metin). Pasif **seçim** seçim
+  mürekkebini bırakır ve `text-3` bir işaretle taşınır: `Chip` kenarlığı,
+  `RadioCard` noktası, `Switch` izinin kenarlığı, `RatingInput` dolu yıldızı
 
 Ölçüldü: hover geri bildirimi 28 bileşen dosyasında **altı farklı özellik
 yolundan** veriliyordu (`background-color` 30, `color` 18, `border-color` 16,
@@ -73,6 +77,27 @@ yolundan** veriliyordu (`background-color` 30, `color` 18, `border-color` 16,
 
 ⚠ `opacity` ile soluklaştırma **yasak**: metni de soluklaştırıp kontrast eşiğini
 sessizce düşürüyor.
+
+⚠ **Kural yazılıydı ama dokuz bileşende ÇİĞNENİYORDU** (2026-10-10): `Chip`,
+`Pagination`, `RadioCard`, `Switch`, `RangeSlider`, `FileUpload`, `RatingInput`
+pasif hâli; `DateField` takvim ikonu ve `Spinner`ın azaltılmış hareket hâli.
+Hepsi token'a çevrildi. stylelint `opacity`yi yasaklayamaz (geçişlerde meşru);
+nöbetçi `__tests__/styles/passive-opacity.test.ts` — `0`/`1` dışındaki her
+`opacity` soluklaştırmadır ve kırar. `QuantityStepper` pasif düğmesi ve
+`DataTable` sıralama ikonu hâlâ taşıyor: testte `KNOWN_DEBT`, düzeltilince
+listeden çıkar (çıkmazsa test kırar).
+
+⚠ **`opacity` zorlanmış renk kipinde de soluklaştırıyordu; token'lar
+soluklaştırmaz.** O kipte `text-3` `CanvasText`e eziliyor ve pasif hâl etkin
+hâlden ayırt edilemiyordu (ölçüldü: `Switch`, `FileUpload`, `RatingInput`,
+`RadioCard`). `passive-text()` / `passive-surface()` o kipte `GrayText` yazar.
+⚠ Sistem rengi **ebeveynden miras KALMAZ**: kendi rengini yazan her çocuk ayrı
+ister — pasif `fieldset` `GrayText` alırken içindeki `legend` `CanvasText`
+çiziliyordu. Yerel `:disabled` öğeleri `base.scss` zaten karşılıyor.
+
+⚠ **`Switch` pasif izi `track`tır, `surface-2` DEĞİL.** Kapalı etkin anahtarın
+izi zaten `action-soft` (pasif dolgu token'ı), ve koyu temada `surface-2` kulpla
+(`surface`) aynı aydınlıkta: 1,12:1, kulp kayboluyordu.
 
 Tek istisna **yükselen yüzeyler** (`Card`, `Tile`): tıklanabilir kart hover'da bir
 kademe yükselir, zemin değiştirmez — açık kartta bir kademe zemin değişimi

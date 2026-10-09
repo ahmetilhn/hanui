@@ -213,6 +213,11 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     selected: <Chip isSelected>Seçili</Chip>,
     count: <Chip count={12}>Sayaçlı</Chip>,
     disabled: <Chip disabled>Pasif</Chip>,
+    selectedDisabled: (
+      <Chip isSelected disabled>
+        Pasif seçili
+      </Chip>
+    ),
   },
   ChipGroup: {
     single: <ChipGroup label="Sıralama" options={OPTIONS} value="a" onChange={noop} />,
@@ -275,6 +280,12 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         <div>Ödeme onayı bir iş günü sürebilir</div>
       </RadioCard>
     ),
+    selectedDisabled: (
+      <RadioCard name="ödeme-pasif" value="kapida" isSelected isDisabled onChange={noop}>
+        <strong>Kapıda ödeme</strong>
+        <div>Bu adres için kullanılamıyor</div>
+      </RadioCard>
+    ),
   },
   RangeSlider: {
     default: (
@@ -288,10 +299,23 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         formatValue={value => `${value.toLocaleString('tr-TR')} TL`}
       />
     ),
+    disabled: (
+      <RangeSlider
+        min={0}
+        max={100000}
+        step={500}
+        value={[20000, 70000]}
+        onChange={noop}
+        label="Fiyat aralığı"
+        formatValue={value => `${value.toLocaleString('tr-TR')} TL`}
+        isDisabled
+      />
+    ),
   },
   RatingInput: {
     selected: <RatingInput value={4} onChange={noop} label="Ürün puanı" />,
     empty: <RatingInput value={null} onChange={noop} label="Ürün puanı" />,
+    disabled: <RatingInput value={3} onChange={noop} label="Ürün puanı" isDisabled />,
   },
   QuantityStepper: {
     default: <QuantityStepper value={2} onChange={noop} />,
@@ -605,6 +629,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     hint: <Switch label="Stok uyarısı" hint="Ürün stoğa girince e-posta gönderilir" />,
     labelFirst: <Switch label="Koyu tema" isLabelFirst />,
     disabled: <Switch label="Pasif ayar" disabled />,
+    checkedDisabled: <Switch label="Pasif açık ayar" defaultChecked disabled />,
   },
   Progress: {
     determinate: <Progress value={60} label="Yükleme" isValueVisible />,
@@ -754,6 +779,18 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         label="Ruhsat yükleyin"
         dropLabel="Dosyaları buraya bırakın"
         removeLabel="Kaldır"
+      />
+    ),
+    disabled: (
+      <FileUpload
+        files={[]}
+        onSelect={noop}
+        onRemove={noop}
+        label="Ruhsat yükleyin"
+        dropLabel="Dosyaları buraya bırakın"
+        removeLabel="Kaldır"
+        hint="Başvuru onaylandıktan sonra yüklenemez"
+        isDisabled
       />
     ),
   },
