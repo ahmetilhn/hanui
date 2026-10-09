@@ -1,15 +1,28 @@
-import { type FC, memo } from 'react';
+import { type FC, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
+import { named } from '../../helpers/component.helper';
 import { useHanui } from '../../theme/context';
 
 import styles from './index.module.scss';
 
+export type AvatarShape = 'circle' | 'rounded';
+
+/**
+ * `auto`: baş harf madalyonu addan SABİT bir kovaya boyanır. `brand`: marka madalyonu — çam zemin,
+ * mint işaret, iki temada aynı (logo kuralı; asistanın avatarı, boş sohbetin karosu).
+ */
+export type AvatarTone = 'auto' | 'brand';
+
 type Props = {
-  /** Tam ad; baş harfler buradan üretilir ve görsel yoksa `alt` metnidir. */
+  /** Tam ad; baş harfler buradan üretilir ve her durumda okunan addır (`aria-label`). */
   name: string;
   /** Profil görseli. */
   imageUrl?: string;
+  /** Baş harf yerine ikon (marka işareti, sistem kullanıcısı). Görselden önce gelmez. */
+  icon?: ReactNode;
+  shape?: AvatarShape;
+  tone?: AvatarTone;
   /** Baş harfleri büyütürken kullanılacak dil etiketi ("tr", "az"). */
   locale?: string;
   size?: 'sm' | 'md' | 'lg';
@@ -40,7 +53,17 @@ const resolveTone = (name: string, total: number): number => {
 const TONE_COUNT = 6;
 
 /** Avatar — kullanıcı madalyonu. */
-const Avatar: FC<Props> = ({ name, imageUrl, locale, size = 'md', className, testId }) => {
+const Avatar: FC<Props> = ({
+  name,
+  imageUrl,
+  icon,
+  locale,
+  size = 'md',
+  shape = 'circle',
+  tone = 'auto',
+  className,
+  testId,
+}) => {
   const { labels } = useHanui();
 
   return (
@@ -48,8 +71,16 @@ const Avatar: FC<Props> = ({ name, imageUrl, locale, size = 'md', className, tes
       className={cx(
         styles.avatar,
         styles[`avatar--${size}`],
-        /* Ton yalnizca BAS HARF madalyonunda: gorselin uzerine renk basmak fotografi bozuyordu. */
-        !imageUrl && styles[`avatar--tone-${resolveTone(name, TONE_COUNT)}`],
+        shape === 'rounded' && styles['avatar--rounded'],
+        tone === 'brand' && styles['avatar--brand'],
+        /*
+         * Karma ton yalnizca BAS HARF madalyonunda: gorselin uzerine renk basmak fotografi bozuyordu,
+         * ikon ise bir kisi degil.
+         */
+        tone === 'auto' &&
+          !imageUrl &&
+          !icon &&
+          styles[`avatar--tone-${resolveTone(name, TONE_COUNT)}`],
         className,
       )}
       /*
@@ -65,6 +96,10 @@ const Avatar: FC<Props> = ({ name, imageUrl, locale, size = 'md', className, tes
       {imageUrl ? (
         /* `alt=""`: ad zaten kökte `aria-label` ile duyuruluyor, iki kez okunmasın. */
         <img className={styles.avatar__image} src={imageUrl} alt="" />
+      ) : icon ? (
+        <span className={styles.avatar__icon} aria-hidden>
+          {icon}
+        </span>
       ) : (
         resolveInitials(name, locale ?? labels?.locale)
       )}
@@ -72,4 +107,4 @@ const Avatar: FC<Props> = ({ name, imageUrl, locale, size = 'md', className, tes
   );
 };
 
-export default /*#__PURE__*/ memo(Avatar) as typeof Avatar;
+export default /*#__PURE__*/ memo(/*#__PURE__*/ named(Avatar, 'Avatar')) as typeof Avatar;

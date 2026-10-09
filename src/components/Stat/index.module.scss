@@ -24,6 +24,37 @@
       inset-inline-end: 0;
     }
   }
+
+  &--inline {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: $space-1 $space-2;
+    padding: 0;
+    border: 0;
+    background: none;
+
+    .stat__icon {
+      position: static;
+      align-self: center;
+      font-size: $icon-sm;
+    }
+
+    .stat__label {
+      padding-inline-end: 0;
+    }
+
+    .stat__value {
+      @include technical-text($font-size-xs);
+
+      font-weight: $weight-medium;
+      letter-spacing: normal;
+    }
+
+    .stat__unit {
+      font-size: inherit;
+    }
+  }
 }
 
 .stat__icon {

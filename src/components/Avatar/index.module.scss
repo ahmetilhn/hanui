@@ -22,6 +22,40 @@
     object-fit: cover;
   }
 
+  // İkon ölçüsü metin puntosundan AYRI (ikon ölçeği): madalyonun puntosu baş harf için seçildi.
+  &__icon {
+    display: inline-flex;
+    font-size: $icon-md;
+
+    .avatar--sm & {
+      font-size: $icon-sm;
+    }
+
+    .avatar--lg & {
+      font-size: $icon-xl;
+    }
+  }
+
+  // Köşeli madalyon: yarıçap ölçüyle büyür, tek değer küçük madalyonu yuvarlak, büyüğünü keskin
+  // gösteriyordu.
+  &--rounded {
+    border-radius: $radius-md;
+
+    &.avatar--md {
+      border-radius: $radius-lg;
+    }
+
+    &.avatar--lg {
+      border-radius: $radius-xl;
+    }
+  }
+
+  // Marka madalyonu — iki temada aynı (logo kuralı: çam zemin, mint işaret).
+  &--brand {
+    background-color: $band-bg;
+    color: $band-accent;
+  }
+
   &--sm {
     width: 32px;
     height: 32px;

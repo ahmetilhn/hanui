@@ -16,6 +16,17 @@
   border: 1px solid $shell-line;
   border-radius: $radius-sm;
 
+  &--xs {
+    padding: 1px $space-1;
+    border-radius: $radius-xs;
+
+    .badge__code {
+      @include technical-text($font-size-2xs);
+
+      letter-spacing: 0.02em;
+    }
+  }
+
   &--sm {
     padding: $space-1 $space-2;
 
@@ -38,6 +49,39 @@
     .badge__code {
       @include technical-text($font-size-2xl);
     }
+  }
+
+  // Etkileşimli kod: hover zemini BİR kademe (mürekkep merdiveninde), dolgu satırın tamamı.
+  &--interactive {
+    transition: background-color $duration-fast $ease-out;
+
+    &:has(.badge__action:hover) {
+      background-color: $shell-2;
+    }
+
+    .badge__code {
+      user-select: auto;
+    }
+
+    @include reduced-motion {
+      transition: none;
+    }
+  }
+
+  &__action {
+    @include tap-target;
+
+    display: inline-flex;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+
+    @include focus-ring($on-shell, 2px);
   }
 
   &__code {

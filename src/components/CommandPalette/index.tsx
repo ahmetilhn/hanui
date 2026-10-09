@@ -16,7 +16,7 @@ import { Search } from 'react-bootstrap-icons';
 import { cx } from '../../helpers/class-name.helper';
 import { scrollIntoViewIfPossible } from '../../helpers/scroll.helper';
 import { named } from '../../helpers/component.helper';
-import { captureFocus, isTopModal, pushModal } from '../../helpers/focus.helper';
+import { captureFocus, hasOpenSurface, isTopModal, pushModal } from '../../helpers/focus.helper';
 import { matchesSearch } from '../../helpers/text.helper';
 import useScrollLock from '../../hooks/useScrollLock';
 import Kbd from '../Kbd';
@@ -46,6 +46,13 @@ type Props = {
   searchPlaceholder: string;
   /** Sonuç yokken yazılan metin. */
   emptyMessage: string;
+  /**
+   * Paleti açıp kapatan kısayol: `'mod+k'` (`mod` macOS'ta ⌘, diğerlerinde Ctrl), `'shift+/'`.
+   * Başka bir kipsel yüzey açıkken yok sayılır. `onOpen` ile birlikte verilir.
+   */
+  hotkey?: string;
+  /** Kısayol basıldığında, palet kapalıyken. */
+  onOpen?: () => void;
   className?: string;
   testId?: string;
 };
@@ -58,6 +65,8 @@ const CommandPalette = ({
   label,
   searchPlaceholder,
   emptyMessage,
+  hotkey,
+  onOpen,
   className,
   testId,
 }: Props) => {
@@ -66,6 +75,12 @@ const CommandPalette = ({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const tokenRef = useRef<symbol | null>(null);
+  /*
+   * Secilen komut palet KAPANDIKTAN ve odak geri verildikten SONRA calisir. Once calistiginda komutun
+   * actigi pencere, paletin odak iadesiyle odagini kaybediyordu (tuketici bunu
+   * `requestAnimationFrame(() => setTimeout(…))` ile atlatiyordu).
+   */
+  const pendingRef = useRef<(() => void) | null>(null);
 
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
@@ -107,11 +122,51 @@ const CommandPalette = ({
     tokenRef.current = token;
 
     return () => {
+      /* Siralama ZORUNLU: kipsel pencere acikken disaridaki oge odak alamaz. */
+      if (dialog.open) dialog.close();
       pop();
       tokenRef.current = null;
       restoreFocus();
+
+      const pending = pendingRef.current;
+      pendingRef.current = null;
+      pending?.();
     };
   }, [isOpen]);
+
+  /* Kisayol: palet kapaliyken acar, acikken kapatir; baska bir yuzey acikken dokunmaz. */
+  useEffect(() => {
+    if (!hotkey) return;
+
+    const parts = hotkey.toLowerCase().split('+');
+    const key = parts.at(-1);
+    const wants = (modifier: string) => parts.includes(modifier);
+    const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
+
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+      const isMod = isMac ? event.metaKey : event.ctrlKey;
+      if (event.key.toLowerCase() !== key) return;
+      if (
+        wants('mod') !== isMod ||
+        wants('shift') !== event.shiftKey ||
+        wants('alt') !== event.altKey
+      )
+        return;
+
+      if (isOpen) {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (hasOpenSurface()) return;
+      event.preventDefault();
+      onOpen?.();
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [hotkey, isOpen, onClose, onOpen]);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -135,7 +190,7 @@ const CommandPalette = ({
   }, [activeIndex]);
 
   const run = (item: CommandItem) => {
-    item.onSelect();
+    pendingRef.current = item.onSelect;
     onClose();
   };
 

@@ -202,7 +202,10 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     filled: <PasswordInput aria-label="Şifre" defaultValue="cok-gizli-parola" />,
   },
   ToastPortal: { default: <ToastPortal /> },
-  Textarea: { default: <Textarea aria-label="Not" /> },
+  Textarea: {
+    default: <Textarea aria-label="Not" />,
+    bare: <Textarea aria-label="Mesaj" variant="bare" rows={1} isAutoSize />,
+  },
   Field: {
     default: <Field label="Ad">{props => <Input {...props} />}</Field>,
     error: (
@@ -225,7 +228,11 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       </Alert>
     ),
   },
-  Avatar: { default: <Avatar name="Ahmet İlhan" />, image: <Avatar name="A" imageUrl="/a.png" /> },
+  Avatar: {
+    default: <Avatar name="Ahmet İlhan" />,
+    image: <Avatar name="A" imageUrl="/a.png" />,
+    brand: <Avatar name="Asistan" icon={<HeartFill />} tone="brand" shape="rounded" />,
+  },
   Badge: { default: <Badge>Yeni</Badge>, solid: <Badge variant="solid">Yeni</Badge> },
   Breadcrumb: {
     default: <Breadcrumb items={[{ label: 'Ana sayfa', href: '/' }, { label: 'Ürün' }]} />,
@@ -269,6 +276,8 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   CodeBadge: {
     default: <CodeBadge code="P0101" />,
     copyable: <CodeBadge code="P0101" isCopyable />,
+    interactive: <CodeBadge code="A3" size="xs" onClick={() => {}} label="A3 kaynağını aç" />,
+    link: <CodeBadge code="A3" href="/a3" label="A3 kaynağını aç" />,
   },
   CopyField: { default: <CopyField value="SP-123" /> },
   Divider: { default: <Divider />, labelled: <Divider label="veya" /> },
@@ -532,6 +541,7 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     ),
   },
   Stat: {
+    inline: <Stat label="Gecikme" value="412" unit="ms" variant="inline" />,
     up: <Stat label="Bugünkü sipariş" value="128" delta="%12" trend="up" description="düne göre" />,
     down: (
       <Stat

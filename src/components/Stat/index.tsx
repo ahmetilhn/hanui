@@ -32,8 +32,12 @@ type Props = {
   description?: ReactNode;
   /** Sol üstte duran ikon madalyonu. */
   icon?: ReactNode;
-  /** `plain` KUTUYU kaldırır: zemin, kenarlık ve dolgu gider, yalnızca sayı kalır. */
-  variant?: 'card' | 'plain';
+  /**
+   * `plain` KUTUYU kaldırır: zemin, kenarlık ve dolgu gider, yalnızca sayı kalır.
+   * `inline` etiketi ve değeri TEK SATIRA dizer, değer teknik fontta — metrik satırı ("Gecikme
+   * 412 ms"). Değişim ve açıklama bu kipte de çizilir, satırı uzatır.
+   */
+  variant?: 'card' | 'plain' | 'inline';
   size?: 'sm' | 'md';
   className?: string;
   testId?: string;

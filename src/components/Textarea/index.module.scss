@@ -16,6 +16,27 @@
   width: 100%;
 }
 
+// Çerçevesiz alan: çerçeveyi ve odak göstergesini kapsayıcı çizer (bkz. `TextareaVariant`).
+// Hanration'da bu dört `!important` ile ezilerek yapılıyordu.
+.textarea--bare {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none;
+
+  // `input-base`in seçicileriyle AYNI özgüllük: `:hover:not(…):not(…)` (0,4,0) daha kısa bir
+  // seçiciyi eziyordu ve çerçevesiz alanda hover'da kenarlık beliriyordu.
+  &:hover:not(:disabled):not([aria-invalid='true']),
+  &:focus,
+  &:disabled {
+    border: 0;
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
 .textarea--autoSize {
   resize: none;
   overflow-y: hidden;

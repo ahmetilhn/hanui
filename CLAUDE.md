@@ -655,6 +655,34 @@ olarak bu hataydı.
 Tüketicide değer ezmesi yazan yerler (`--hanui-page: #ffffff` gibi) ayrıca
 gözden geçirilir: 5.0'da açık sayfa krem.
 
+### 5.1 — `CommandPalette` komutu KAPANDIKTAN SONRA çalıştırır
+
+API değişmedi, çağrı SIRASI değişti: `onSelect` artık palet kapanıp odak açan
+öğeye geri verildikten **sonra** çağrılır. Önce çağrıldığında komutun açtığı
+pencere, paletin odak iadesiyle odağını kaybediyordu; tüketici bunu
+`requestAnimationFrame(() => setTimeout(fn, 0))` ile atlatıyordu — o geçici
+çözüm artık gereksiz ve kaldırılabilir. Kapanış sırası zorunlu: önce `<dialog>`
+kapanır (açık kipsel pencerenin dışındaki öğe odak alamaz), sonra odak döner,
+sonra komut çalışır. Nöbetçi `__tests__/components/CommandPalette.test.tsx`.
+
+Yeni `hotkey` (`'mod+k'`) + `onOpen`: kısayol kapalıyken açar, açıkken kapatır,
+başka bir kipsel yüzey açıkken dokunmaz (`hasOpenSurface`).
+
+### 5.1 — Faz 1 eklemeleri (yalnızca ekleme, kırıcı değil)
+
+| Bileşen | Ekleme |
+|---|---|
+| `Modal` | `size="xl"` (≈1040 px) |
+| `Button` | `size={UISize.XSMALL}` (görsel 30 px; `tap-target` 44 px kalır) + `shape="pill"` |
+| `IconButton` | `shape="round"` |
+| `Textarea` | `variant="bare"` — çerçeve ve odak göstergesi KAPSAYICININ (`:focus-within`) |
+| `Progress` | `size="xs"` (2 px) |
+| `CodeBadge` | `onClick` / `href` ile etkileşimli kod (+ `label`), `size="xs"` |
+| `Avatar` | `icon` yuvası, `shape="rounded"`, `tone="brand"` (marka madalyonu — yeşil ayak izi listesinde) |
+| `Stat` | `variant="inline"` — etiket ve değer tek satır, değer teknik fontta |
+| `ScrollArea` | `isFollowingEnd` |
+| `Accordion` | iç yapı `Disclosure`; API aynı |
+
 ### `Card.isContained` → `fit`
 
 Görselin çerçeveyi nasıl doldurduğu artık **üç değerli** tek bir prop:
@@ -809,6 +837,12 @@ Taban çizgisi bu yüzden repoda duruyor. (Bu satır bir dönem "iki tüketici d
 | `Disclosure` (+ `DisclosureVariant`) | Tek başına açılır bölüm; aynı kalıp hanration'da üç kez elle yazılmıştı | hanration `Disclosure`, `ProcessBlock`, `ToolCallCard` |
 | `StatusDot` (+ `StatusDotTone`) | Adı olan durum noktası; dört yerde elle çiziliyordu ve hiçbiri durumu okutmuyordu | hanration `Header`, `LiveStatusBar`, `ToolCallCard`, `EventsPanel` |
 | `Kbd` | Klavye kısayolu; `CommandPalette`in kısayolu da artık bunu kullanıyor | hanration `Composer` ipucu satırı |
+| `useStickToBottom` | Kaydırma kutusunu sona yapışık tutar, kullanıcı yukarı kaydırınca bırakır; `ScrollArea isFollowingEnd` de bunu kullanır | hanration `ChatView` (kendi kopyası vardı) |
+
+⚠ **Paket bütçesi SINIRDA (2026-10-10):** 5.1'in eklemeleri tüm girişi 40,17 →
+**42,00 kB** taşıdı (bütçe 42 kB) ve `styles.css`i 23,07 / 24 kB'a. Sohbet
+bileşenleri bu yüzden ana girişe GİRMEZ, ayrı `chat` girişine gider — plan bunu
+"Hanparça'nın bütçesi büyümesin" diye öneriyordu, ölçüm artık zorunlu kılıyor.
 
 ⚠ Sohbet planı `hasOpenSurface` yerine bir **kanca** (`useIsModalOpen`) öneriyordu.
 Çağıranın ihtiyacı reaktif bir durum değil, tuşa basıldığı ANDAKİ tek bir soru;

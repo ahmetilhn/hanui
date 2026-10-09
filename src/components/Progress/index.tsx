@@ -27,7 +27,8 @@ type Props = {
   /** Yüzdeyi çubuğun yanında GÖRÜNÜR olarak yazar. */
   isValueVisible?: boolean;
   tone?: 'brand' | 'success' | 'warning' | 'danger';
-  size?: 'sm' | 'md';
+  /** `xs` 2 px — satır içi gösterge (bağlam doluluğu); etiket yanında okunur. */
+  size?: 'xs' | 'sm' | 'md';
   className?: string;
   testId?: string;
 };

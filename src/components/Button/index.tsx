@@ -20,9 +20,13 @@ import Spinner from '../Spinner';
 
 import styles from './index.module.scss';
 
+/** Köşe biçimi. `pill` üst bant ve araç çubuğundaki hafif eylemler için; ölçü değişmez. */
+export type ButtonShape = 'rounded' | 'pill';
+
 type BaseProps = Partial<{
   variant: UIVariant;
   size: UISize;
+  shape: ButtonShape;
   isLoading: boolean;
   isFullWidth: boolean;
   startIcon: ReactNode;
@@ -49,6 +53,7 @@ const Button = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
     {
       variant = UIVariant.PRIMARY,
       size = UISize.MEDIUM,
+      shape = 'rounded',
       isLoading,
       isFullWidth,
       startIcon,
@@ -68,6 +73,7 @@ const Button = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
       styles.button,
       styles[`button--${variant.toLowerCase()}`],
       styles[`button--${size.toLowerCase()}`],
+      shape === 'pill' && styles['button--pill'],
       isFullWidth && styles['button--full'],
       isLoading && styles['button--loading'],
       className,

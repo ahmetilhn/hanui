@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react';
 
-import { HeartFill, HouseFill } from 'react-bootstrap-icons';
+import { ArrowUp, HeartFill, HouseFill, StarFill } from 'react-bootstrap-icons';
 
 import {
   Accordion,
@@ -92,6 +92,7 @@ import {
   Tooltip,
   type DataTableColumn,
   type HanuiLabels,
+  UISize,
   UIVariant,
 } from '../src/index';
 
@@ -178,6 +179,11 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     loading: <Button isLoading>Kaydet</Button>,
     disabled: <Button disabled>Kaydet</Button>,
     link: <Button href="#">Bağlantı düğmesi</Button>,
+    xsmallPill: (
+      <Button variant={UIVariant.SECONDARY} size={UISize.XSMALL} shape="pill">
+        Sohbeti bitir
+      </Button>
+    ),
   },
   IconButton: {
     ghost: <IconButton icon={<HeartFill aria-hidden />} label="Favorilere ekle" />,
@@ -188,6 +194,9 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     solid: <IconButton icon={<HeartFill aria-hidden />} label="Favorilere ekle" variant="solid" />,
     cart: <IconButton icon={<HeartFill aria-hidden />} label="Sepete ekle" variant="cart" />,
     disabled: <IconButton icon={<HeartFill aria-hidden />} label="Favorilere ekle" disabled />,
+    round: (
+      <IconButton icon={<ArrowUp aria-hidden />} label="Gönder" variant="solid" shape="round" />
+    ),
   },
   TextLink: {
     brand: <TextLink href="#">Tüm ürünleri gör</TextLink>,
@@ -353,7 +362,21 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   },
   /* `ToastPortal` montajdan SONRA çizer; galeride tek başına GÖRÜNMEZ bir öğedir. */
   ToastPortal: { default: <ToastPortal /> },
-  Textarea: { default: <Textarea aria-label="Not" placeholder="Notunuz" /> },
+  Textarea: {
+    default: <Textarea aria-label="Not" placeholder="Notunuz" />,
+    /* Çerçeveyi kapsayıcı çizer — galeride kapsayıcıyla birlikte gösterilir. */
+    bare: (
+      <div style={{ padding: 12, border: '1px solid var(--hanui-border)', borderRadius: 12 }}>
+        <Textarea
+          aria-label="Mesaj"
+          placeholder="Mesajınızı yazın…"
+          variant="bare"
+          rows={1}
+          isAutoSize
+        />
+      </div>
+    ),
+  },
   Field: {
     default: <Field label="Ad">{props => <Input {...props} placeholder="Ad soyad" />}</Field>,
     hint: (
@@ -383,6 +406,10 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     initial: <Avatar name="Ahmet İlhan" />,
     small: <Avatar name="İlkay Yılmaz" size="sm" />,
     large: <Avatar name="Zeynep Kaya" size="lg" />,
+    brand: <Avatar name="Asistan" icon={<StarFill />} tone="brand" shape="rounded" size="sm" />,
+    brandLarge: (
+      <Avatar name="Asistan" icon={<StarFill />} tone="brand" shape="rounded" size="lg" />
+    ),
   },
   Badge: {
     soft: <Badge>Yeni</Badge>,
@@ -478,6 +505,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   CodeBadge: {
     default: <CodeBadge code="P0101" />,
     copyable: <CodeBadge code="P0101" isCopyable size="lg" />,
+    interactive: <CodeBadge code="A3" size="xs" onClick={noop} label="A3 kaynağını aç" />,
   },
   CopyField: { default: <CopyField value="SP-2026-000123" /> },
   Divider: { plain: <Divider />, labelled: <Divider label="veya" /> },
@@ -670,6 +698,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     indeterminate: <Progress label="Yükleme" />,
     success: <Progress value={100} label="Yükleme" tone="success" isValueVisible />,
     danger: <Progress value={35} label="Yükleme" tone="danger" isValueVisible />,
+    xsmall: <Progress value={72} label="Bağlam doluluğu" size="xs" />,
   },
   ProgressCircle: {
     determinate: <ProgressCircle value={70} label="Yükleme" isValueVisible />,
@@ -865,6 +894,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       />
     ),
     flat: <Stat label="Aktif kullanıcı" value="1.204" delta="0" trend="flat" />,
+    inline: <Stat label="Gecikme" value="412" unit="ms" variant="inline" />,
     valueOnly: <Stat label="Toplam ürün" value="12.480" unit="adet" />,
     /* Kutusuz olcum: kendi zemini olan bandin uzerinde kullanilir. */
     plain: <Stat variant="plain" label="Toplam ürün" value="12.480" unit="adet" />,

@@ -18,6 +18,10 @@
     max-width: min(92vw, 880px);
   }
 
+  &--xl {
+    max-width: min(94vw, 1040px);
+  }
+
   @include surface-transition;
   @include backdrop-transition;
 
@@ -29,7 +33,8 @@
   @include for-mobile {
     &,
     &--sm,
-    &--lg {
+    &--lg,
+    &--xl {
       max-width: none;
       width: 100%;
       max-height: calc(92dvh - env(safe-area-inset-top, 0px));

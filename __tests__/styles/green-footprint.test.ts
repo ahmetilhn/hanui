@@ -48,7 +48,9 @@ const ALLOWED: Record<Family, Record<string, string>> = {
     Timeline: 'tamamlanan OLAY (bir olay başarısız olabilir; bir adım olamaz)',
     Toast: '`success` tonu',
   },
-  brand: {},
+  brand: {
+    Avatar: '`tone="brand"` — marka madalyonu (logo kuralı: çam zemin, mint işaret)',
+  },
 };
 
 const COMPONENTS = 'src/components';

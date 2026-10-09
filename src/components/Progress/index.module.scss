@@ -15,6 +15,10 @@
   background-color: $track;
   overflow: hidden;
 
+  &--xs {
+    height: 2px;
+  }
+
   &--sm {
     height: 4px;
   }

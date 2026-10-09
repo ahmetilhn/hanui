@@ -4,6 +4,7 @@ import { type FC, type ReactNode, memo, useEffect, useRef, useState } from 'reac
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
+import useStickToBottom from '../../hooks/useStickToBottom';
 
 import styles from './index.module.scss';
 
@@ -17,6 +18,11 @@ type Props = {
   maxHeight?: number | string;
   /** Kenarlarda içeriğin devam ettiğini gösteren solma. */
   hasFade?: boolean;
+  /**
+   * SONA yapışık kalır — içerik büyüdükçe aşağı iner, kullanıcı yukarı kaydırınca bırakır, sona
+   * dönünce yeniden yapışır (akan akıl yürütme, canlı terminal çıktısı). Yalnızca dikey eksende.
+   */
+  isFollowingEnd?: boolean;
   className?: string;
   testId?: string;
 };
@@ -28,10 +34,12 @@ const ScrollArea: FC<Props> = ({
   axis = 'vertical',
   maxHeight,
   hasFade,
+  isFollowingEnd = false,
   className,
   testId,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
+  useStickToBottom(ref, isFollowingEnd && axis !== 'horizontal');
   const [isScrollable, setIsScrollable] = useState(false);
   /* Solmanin HANGI ucta cizilecegi: yalnizca o yonde gizli icerik varken. */
   const [hiddenEdges, setHiddenEdges] = useState({ start: false, end: false });

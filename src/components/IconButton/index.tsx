@@ -18,13 +18,17 @@ import styles from './index.module.scss';
 
 export type IconButtonVariant = 'ghost' | 'outline' | 'solid' | 'cart' | 'danger';
 
+/** Köşe biçimi. `round` tam daire — sohbet girdisindeki gönder / durdur gibi. Ölçü değişmez. */
+export type IconButtonShape = 'rounded' | 'round';
+
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon: ReactNode;
   /** Görsel etiketi olmayan düğmenin erişilebilir adı — ZORUNLU. */
   label: string;
-  /** `cart` yalnızca dönüşüm eyleminde kullanılır — ekranda görünen tek doygun turuncu odur. */
+  /** `cart` yalnızca dönüşüm eyleminde kullanılır — ekrandaki en parlak yeşil odur. */
   variant?: IconButtonVariant;
   size?: 'sm' | 'md';
+  shape?: IconButtonShape;
   /** Verilirse öğe bir bağlantı olarak çizilir. */
   href?: string;
   /** Yönlendiriciye geçirilecek ek props. */
@@ -40,6 +44,7 @@ const IconButton = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
       label,
       variant = 'ghost',
       size = 'md',
+      shape = 'rounded',
       className,
       type = 'button',
       href,
@@ -53,6 +58,7 @@ const IconButton = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
       styles.iconButton,
       styles[`iconButton--${variant}`],
       styles[`iconButton--${size}`],
+      shape === 'round' && styles['iconButton--round'],
       className,
     );
 

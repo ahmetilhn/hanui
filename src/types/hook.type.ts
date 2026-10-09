@@ -32,3 +32,10 @@ export type ListboxNavigationOptions = {
   onSelect: (index: number) => void;
   onClose: () => void;
 };
+
+export type StickToBottom = {
+  /** Kutu sonda mı (pay dahilinde). `false` iken "en yeniye in" düğmesi gösterilir. */
+  isAtEnd: boolean;
+  /** Sona kaydırır ve yeniden yapışır. */
+  scrollToEnd: () => void;
+};

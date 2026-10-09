@@ -40,6 +40,7 @@ export { hasOpenSurface } from './helpers/focus.helper';
 export { default as useAnnounce } from './hooks/useAnnounce';
 export { default as useHanuiTheme } from './hooks/useHanuiTheme';
 export { default as useHanuiTokens } from './hooks/useHanuiTokens';
+export { default as useStickToBottom } from './hooks/useStickToBottom';
 export {
   default as useListboxNavigation,
   type ListboxNavigation,

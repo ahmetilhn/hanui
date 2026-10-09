@@ -15,7 +15,15 @@ import { named } from '../../helpers/component.helper';
 
 import styles from './index.module.scss';
 
+/**
+ * `bare`: kenarlık, zemin, dolgu ve gölge YOK — çerçeveyi kapsayıcı çizer (sohbet girdisi).
+ * ⚠ Odak göstergesi de kapsayıcının işi (`:focus-within`); `bare` alanı çerçevesiz bir kutuya
+ * konursa odak görünmez olur.
+ */
+export type TextareaVariant = 'default' | 'bare';
+
 type Props = TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  variant?: TextareaVariant;
   /** Alan içeriğiyle birlikte BÜYÜR — kaydırma çubuğu yerine yükseklik. */
   isAutoSize?: boolean;
   /** Otomatik büyümenin tavanı (satır). */
@@ -30,6 +38,7 @@ const Textarea = /*#__PURE__*/ forwardRef<HTMLTextAreaElement, Props>(
   (
     {
       className,
+      variant = 'default',
       rows = 4,
       isAutoSize,
       maxRows = 12,
@@ -85,7 +94,11 @@ const Textarea = /*#__PURE__*/ forwardRef<HTMLTextAreaElement, Props>(
         <textarea
           ref={setRefs}
           rows={rows}
-          className={cx(styles.textarea, isAutoSize && styles['textarea--autoSize'])}
+          className={cx(
+            styles.textarea,
+            variant === 'bare' && styles['textarea--bare'],
+            isAutoSize && styles['textarea--autoSize'],
+          )}
           maxLength={maxLength}
           value={value}
           defaultValue={defaultValue}

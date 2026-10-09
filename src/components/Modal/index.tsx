@@ -44,7 +44,8 @@ type Props = {
   icon?: ReactNode;
   /** İkon madalyonunun tonu. */
   tone?: ModalTone;
-  size?: 'sm' | 'md' | 'lg';
+  /** `xl` (≈1040 px) sekmeli, tablolu panolar için; dar ekranda diğerleri gibi tam genişlik. */
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   /** `false` iken arka plana tıklama, Escape ve kapatma düğmesi kapatmaz. */
   isDismissable?: boolean;
   className?: string;

@@ -172,4 +172,5 @@ useHanuiTheme
 useHanuiTokens
 useListboxNavigation
 usePositioning
+useStickToBottom
 useVirtualList

@@ -71,6 +71,21 @@
     cursor: progress;
   }
 
+  // Görsel 30 px; dokunma alanı `tap-target` örtüsüyle 44 px kalır.
+  &--xsmall {
+    padding: $space-1 $space-3;
+    font-size: $font-size-xs;
+    min-height: 30px;
+
+    .button__icon {
+      font-size: $icon-xs;
+    }
+  }
+
+  &--pill {
+    border-radius: $radius-pill;
+  }
+
   &--small {
     padding: $space-2 $space-3;
     font-size: $font-size-sm;
