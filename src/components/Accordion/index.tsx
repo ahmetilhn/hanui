@@ -1,20 +1,10 @@
 'use client';
 
-import {
-  type FC,
-  memo,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-} from 'react';
-
-import { CaretRightFill } from 'react-bootstrap-icons';
+import { type FC, memo, type ReactNode, useCallback, useState } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
+import Disclosure from '../Disclosure';
 
 import styles from './index.module.scss';
 
@@ -41,7 +31,10 @@ type Props = {
   testId?: string;
 };
 
-/** Akordeon — katlanabilir bölümler. */
+/**
+ * Akordeon — katlanabilir bölümler. Her bölüm bir `Disclosure`: yerel `<details>` mantığı (kontrollü
+ * kipte DOM eşitlemesi, `onToggle`, pasif başlık) TEK yerde yaşar.
+ */
 const Accordion: FC<Props> = ({
   items,
   isSingle,
@@ -51,7 +44,6 @@ const Accordion: FC<Props> = ({
   className,
   testId,
 }) => {
-  const baseId = useId();
   const [uncontrolledIds, setUncontrolledIds] = useState<string[]>(defaultOpenIds ?? []);
 
   const isControlled = controlledIds !== undefined;
@@ -71,72 +63,22 @@ const Accordion: FC<Props> = ({
     [isControlled, isSingle, onChange, openIds],
   );
 
-  /*
-   * `<details>` YERLI bir aciliyor/kapaniyor ogesi: kullanici tikladiginda DOM ozelligini TARAYICI
-   * degistirir.
-   * ⚠ `open` PROP'U TEK BASINA YETMEZ — kontrollu kipte kalici desenkronizasyon uretiyordu.
-   */
-  const detailsRefs = useRef(new Map<string, HTMLDetailsElement>());
-
-  useEffect(() => {
-    items.forEach(item => {
-      const node = detailsRefs.current.get(item.id);
-      if (node) node.open = openIds.includes(item.id);
-    });
-  });
-
   return (
     <div className={cx(styles.accordion, className)} data-testid={testId}>
-      {items.map(item => {
-        const isOpen = openIds.includes(item.id);
-
-        return (
-          <details
-            key={item.id}
-            ref={node => {
-              if (node) detailsRefs.current.set(item.id, node);
-              else detailsRefs.current.delete(item.id);
-            }}
-            className={cx(
-              styles.accordion__item,
-              item.isDisabled && styles['accordion__item--disabled'],
-            )}
-            /* Ilk boyama ve SSR icin; surekliligi yukaridaki effect tutuyor. */
-            open={isOpen}
-            /*
-             * `onToggle` YEREL olaydir ve tarayici durumu DEGISTIRDIKTEN sonra dusuyor. `onClick`
-             * ile yakalamak yetmiyordu: klavyeyle acilan bolum (Enter/Space)…
-             */
-            onToggle={event => {
-              const next = (event.currentTarget as HTMLDetailsElement).open;
-              if (next !== isOpen) toggle(item.id, next);
-            }}
-          >
-            <summary
-              id={`${baseId}-${item.id}`}
-              className={styles.accordion__summary}
-              /* Pasif bolum: `<summary>`nin `disabled` hali YOK. */
-              aria-disabled={item.isDisabled}
-              tabIndex={item.isDisabled ? -1 : undefined}
-              onClick={event => item.isDisabled && event.preventDefault()}
-            >
-              <CaretRightFill aria-hidden className={styles.accordion__marker} />
-
-              <span className={styles.accordion__title}>{item.title}</span>
-              {item.meta && <span className={styles.accordion__meta}>{item.meta}</span>}
-            </summary>
-
-            {/*
-              Ic sarmalayici ZORUNLU: yukseklik gecisi `<details>`in KENDISINE
-              verilemez (isaretcinin yuksekligi de gecise girip basligi
-              titretiyordu). Gecis bu kutuda.
-            */}
-            <div className={styles.accordion__panel}>
-              <div className={styles.accordion__content}>{item.content}</div>
-            </div>
-          </details>
-        );
-      })}
+      {items.map(item => (
+        <Disclosure
+          key={item.id}
+          variant="plain"
+          className={styles.accordion__item}
+          summary={item.title}
+          meta={item.meta}
+          isDisabled={item.isDisabled}
+          isOpen={openIds.includes(item.id)}
+          onOpenChange={willOpen => toggle(item.id, willOpen)}
+        >
+          {item.content}
+        </Disclosure>
+      ))}
     </div>
   );
 };

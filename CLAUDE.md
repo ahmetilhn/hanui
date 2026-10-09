@@ -29,6 +29,8 @@ kararları `v4.1.0` etiketindeki CLAUDE.md'dedir. Geçiş tablosu: "Göç" →
 | Karar bekliyor mu? | `Modal` / `Popover` | Popover kipsel değil; kullanıcıyı hapsetmez |
 | İleri mi geri mi bakıyor? | `Steps` / `Timeline` | Bir ADIM "başarısız" olamaz, bir OLAY olabilir |
 | Sonu biliniyor mu? | `Progress` / `Spinner` | |
+| Tek bölüm mü bölümler listesi mi? | `Disclosure` / `Accordion` | `Accordion` her bölümünü bir `Disclosure` olarak çizer; `<details>` mantığı tek yerde |
+| Durum noktası mı rozet mi? | `StatusDot` / `Badge` | Nokta süren bir durumu (bağlı, çalışıyor) ADIYLA taşır — `label` zorunlu, görsel olarak gizli. Rozet okunan bir etikettir |
 | Boş mu yüklenemedi mi? | `EmptyState` · `tone="error"` | Ağ hatasını "kayıt kalmamış" diye okuyan kullanıcı yanlış karar veriyor |
 
 ## Yüzey ailesi ve yükseklik
@@ -468,7 +470,8 @@ Nöbetçi `stylelint.config.mjs` — bileşen SCSS'inde ham `ms`/`s` yasak.
 yaratır ve arayüz yavaş hissedilir.
 
 **Döngü süreleri ölçekten AYRI**: `duration-spin` 700 ms, `duration-shimmer`
-1400 ms. Sürekli dönen bir gösterge bir *geçiş* değil — 320 ms'lik dönüş baş
+1400 ms, `duration-pulse` 1600 ms (`StatusDot` nabzı — 700 ms telaş, 2 sn ölü gibi
+okunuyordu; nabız noktayı soluklaştırmaz, etrafında sönen bir HALE çizer). Sürekli dönen bir gösterge bir *geçiş* değil — 320 ms'lik dönüş baş
 döndürücü, 140 ms'lik parıltı titreşim gibi okunuyor. Ayrı isim vermenin sebebi
 ölçekten kaçmak değil **ölçeği korumak**.
 
@@ -803,6 +806,9 @@ Taban çizgisi bu yüzden repoda duruyor. (Bu satır bir dönem "iki tüketici d
 | `useHanuiTokens` | Çizim kütüphaneleri (recharts) `stroke`/`fill` için `var(--…)` okuyamıyor; çözülmüş değer gerekiyor ve tema değişince yenilenmeli | hanration `MetricsPanel` (kendi `useCssVars` kopyasıyla yapıyordu) |
 | `themeBootScript` | Tema ilk boyamadan ÖNCE yazılmalı; iki tüketici aynı betiği elle yazıyordu | hanration `THEME_BOOT_SCRIPT` |
 | `hasOpenSurface` | Sayfa düzeyinde `Escape` dinleyen kod önce açık bir yüzey olup olmadığını sormalı; sormayan, modalı kapatan tuşla arkadaki akışı da durduruyordu | hanration `Composer` |
+| `Disclosure` (+ `DisclosureVariant`) | Tek başına açılır bölüm; aynı kalıp hanration'da üç kez elle yazılmıştı | hanration `Disclosure`, `ProcessBlock`, `ToolCallCard` |
+| `StatusDot` (+ `StatusDotTone`) | Adı olan durum noktası; dört yerde elle çiziliyordu ve hiçbiri durumu okutmuyordu | hanration `Header`, `LiveStatusBar`, `ToolCallCard`, `EventsPanel` |
+| `Kbd` | Klavye kısayolu; `CommandPalette`in kısayolu da artık bunu kullanıyor | hanration `Composer` ipucu satırı |
 
 ⚠ Sohbet planı `hasOpenSurface` yerine bir **kanca** (`useIsModalOpen`) öneriyordu.
 Çağıranın ihtiyacı reaktif bir durum değil, tuşa basıldığı ANDAKİ tek bir soru;

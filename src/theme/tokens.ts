@@ -499,6 +499,8 @@ export const METRIC_TOKENS = {
   /* DÖNGÜ SÜRELERİ — geçiş ölçeğinden AYRI. */
   'duration-spin': '700ms',
   'duration-shimmer': '1400ms',
+  /** Durum noktasının nabzı — "çalışıyor / bağlanıyor"; 700 ms telaş, 2 sn ölü gibi okunuyordu. */
+  'duration-pulse': '1600ms',
 } as const;
 
 /** YOĞUN (compact) KİP — `<html data-hanui-density="compact">`. */

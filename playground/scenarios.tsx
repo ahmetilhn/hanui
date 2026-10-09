@@ -32,6 +32,7 @@ import {
   DirectoryGroup,
   DirectoryJump,
   DirectoryRow,
+  Disclosure,
   Divider,
   Drawer,
   EmptyState,
@@ -42,6 +43,7 @@ import {
   HanuiProvider,
   IconButton,
   Input,
+  Kbd,
   Menu,
   Modal,
   PageHeader,
@@ -71,6 +73,7 @@ import {
   SkeletonTable,
   Spinner,
   Stat,
+  StatusDot,
   Steps,
   SummaryCard,
   Switch,
@@ -79,17 +82,17 @@ import {
   TableScroller,
   Tabs,
   TagInput,
-  TextLink,
   Textarea,
+  TextLink,
   Tile,
   Timeline,
+  toast,
   ToastHub,
   ToastPortal,
   Tooltip,
-  UIVariant,
-  toast,
   type DataTableColumn,
   type HanuiLabels,
+  UIVariant,
 } from '../src/index';
 
 import { SOLO_ONLY } from './solo';
@@ -461,6 +464,17 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       </Card>
     ),
   },
+  StatusDot: {
+    neutral: <StatusDot label="Hazır" />,
+    pulsing: <StatusDot label="Çalışıyor" isPulsing />,
+    success: <StatusDot tone="success" label="Bağlı" />,
+    warning: <StatusDot tone="warning" label="Yeniden bağlanıyor" isPulsing />,
+    danger: <StatusDot tone="danger" label="Bağlantı yok" />,
+  },
+  Kbd: {
+    single: <Kbd keys={['⌘K']} />,
+    combo: <Kbd keys={['Shift', 'Enter']} />,
+  },
   CodeBadge: {
     default: <CodeBadge code="P0101" />,
     copyable: <CodeBadge code="P0101" isCopyable size="lg" />,
@@ -602,6 +616,23 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     active: <Tile label="Garajım" href="#" icon={<HouseFill aria-hidden />} isActive />,
   },
 
+  Disclosure: {
+    framed: (
+      <Disclosure summary="Düşündü · 3 araç" meta="2,4 sn" isDefaultOpen>
+        Bağlam haritası okundu, iki kaynak tarandı.
+      </Disclosure>
+    ),
+    plain: (
+      <Disclosure variant="plain" summary="Ayrıntılar">
+        Kapalı başlar.
+      </Disclosure>
+    ),
+    disabled: (
+      <Disclosure summary="Kapalı bölüm" isDisabled>
+        Gövde
+      </Disclosure>
+    ),
+  },
   Accordion: {
     multiple: (
       <Accordion

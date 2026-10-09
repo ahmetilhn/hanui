@@ -1,0 +1,30 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  font: inherit;
+}
+
+.kbd__group {
+  display: inline-flex;
+  align-items: center;
+}
+
+.kbd__joiner {
+  padding-inline: 2px;
+  font-size: $font-size-2xs;
+  color: $text-3;
+}
+
+.kbd__key {
+  @include technical-text($font-size-2xs);
+
+  padding: 2px $space-1;
+  border: 1px solid $border;
+  border-radius: $radius-xs;
+  background-color: $surface-2;
+  color: $text-2;
+}

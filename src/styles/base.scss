@@ -60,6 +60,18 @@
   }
 }
 
+// Nabız bir HALE: nokta soluklaşmaz, etrafında genişleyen halka söner. Kesirli `opacity`
+// kullanılmaz (nöbetçi `passive-opacity.test.ts`); renk `currentColor`dan karışır.
+@keyframes hanui-pulse {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 55%, transparent);
+  }
+
+  to {
+    box-shadow: 0 0 0 6px color-mix(in srgb, currentColor 0%, transparent);
+  }
+}
+
 @keyframes hanui-slide-up {
   from {
     transform: translateY(100%);
@@ -77,6 +89,7 @@
   --hanui-anim-fade-in-down: hanui-fade-in-down;
   --hanui-anim-fade-in: hanui-fade-in;
   --hanui-anim-slide-up: hanui-slide-up;
+  --hanui-anim-pulse: hanui-pulse;
   --hanui-anim-progress-slide: hanui-progress-slide;
 }
 

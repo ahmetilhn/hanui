@@ -50,6 +50,8 @@ Directory
 DirectoryGroup
 DirectoryJump
 DirectoryRow
+Disclosure
+DisclosureVariant
 Divider
 Drawer
 EmptyState
@@ -78,6 +80,7 @@ IconButton
 IconButtonVariant
 InitHanuiOptions
 Input
+Kbd
 LIGHT_THEME
 ListboxNavigation
 ListboxNavigationOptions
@@ -123,6 +126,8 @@ SkeletonTable
 Spinner
 Stat
 StatTrend
+StatusDot
+StatusDotTone
 StepItem
 Steps
 SummaryCard

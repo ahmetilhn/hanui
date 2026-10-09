@@ -19,6 +19,7 @@ import { named } from '../../helpers/component.helper';
 import { captureFocus, isTopModal, pushModal } from '../../helpers/focus.helper';
 import { matchesSearch } from '../../helpers/text.helper';
 import useScrollLock from '../../hooks/useScrollLock';
+import Kbd from '../Kbd';
 
 import styles from './index.module.scss';
 
@@ -256,9 +257,7 @@ const CommandPalette = ({
                 </span>
 
                 {item.shortcut && (
-                  <kbd className={styles.palette__shortcut} aria-hidden>
-                    {item.shortcut}
-                  </kbd>
+                  <Kbd keys={[item.shortcut]} className={styles.palette__shortcut} aria-hidden />
                 )}
               </div>
             </li>

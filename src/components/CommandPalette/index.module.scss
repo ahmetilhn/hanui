@@ -130,14 +130,7 @@
   }
 
   &__shortcut {
-    @include technical-text($font-size-2xs);
-
     flex-shrink: 0;
-    padding: 2px $space-1;
-    border: 1px solid $border;
-    border-radius: $radius-xs;
-    background-color: $surface-2;
-    color: $text-2;
   }
 
   &__empty {

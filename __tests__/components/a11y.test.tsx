@@ -37,6 +37,7 @@ const {
   DirectoryGroup,
   DirectoryJump,
   DirectoryRow,
+  Disclosure,
   Divider,
   Drawer,
   EmptyState,
@@ -47,6 +48,7 @@ const {
   HanuiProvider,
   IconButton,
   Input,
+  Kbd,
   Menu,
   Modal,
   PageHeader,
@@ -76,6 +78,7 @@ const {
   SkeletonTable,
   Spinner,
   Stat,
+  StatusDot,
   Steps,
   SummaryCard,
   Switch,
@@ -84,8 +87,8 @@ const {
   TableScroller,
   Tabs,
   TagInput,
-  TextLink,
   Textarea,
+  TextLink,
   Tile,
   Timeline,
   ToastHub,
@@ -356,6 +359,26 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   },
   Tile: { default: <Tile label="Ana sayfa" href="/" icon={<HouseFill aria-hidden />} /> },
 
+  Disclosure: {
+    open: (
+      <Disclosure summary="Düşündü" meta="2,4 sn" isDefaultOpen>
+        Gövde
+      </Disclosure>
+    ),
+    closed: <Disclosure summary="Ayrıntılar">Gövde</Disclosure>,
+    disabled: (
+      <Disclosure summary="Kapalı bölüm" isDisabled>
+        Gövde
+      </Disclosure>
+    ),
+  },
+  StatusDot: {
+    default: <StatusDot label="Hazır" />,
+    pulsing: <StatusDot tone="success" label="Bağlı" isPulsing />,
+  },
+  Kbd: {
+    combo: <Kbd keys={['Shift', 'Enter']} />,
+  },
   Accordion: {
     default: (
       <Accordion

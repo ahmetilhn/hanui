@@ -125,6 +125,8 @@ export {
 } from './components/Card';
 export { default as Carousel } from './components/Carousel';
 export { default as CodeBadge, type CodeBadgeSize } from './components/CodeBadge';
+export { default as Kbd } from './components/Kbd';
+export { default as StatusDot, type StatusDotTone } from './components/StatusDot';
 export { default as CopyField } from './components/CopyField';
 export { default as Divider } from './components/Divider';
 export {
@@ -153,6 +155,7 @@ export { default as Spinner } from './components/Spinner';
 export { default as ToastHub, toast, type ToastOptions, type ToastTone } from './components/Toast';
 export { default as ToastPortal } from './components/ToastPortal';
 export { default as Accordion, type AccordionItem } from './components/Accordion';
+export { default as Disclosure, type DisclosureVariant } from './components/Disclosure';
 export { default as Steps, type StepItem } from './components/Steps';
 export { default as Tabs, type TabItem } from './components/Tabs';
 export { default as Tile } from './components/Tile';

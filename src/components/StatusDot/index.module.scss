@@ -1,0 +1,50 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.status__dot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: $radius-pill;
+  background-color: currentColor;
+
+  // Grafik eşiği (3:1) her tonda: nokta, metin katmanının rengini taşır.
+  &--neutral {
+    color: $text-2;
+  }
+
+  &--success {
+    color: $ok-fg;
+  }
+
+  &--warning {
+    color: $warn-fg;
+  }
+
+  &--danger {
+    color: $bad-fg;
+  }
+
+  &--pulsing {
+    animation: $anim-pulse $duration-pulse $ease-out infinite;
+
+    @include reduced-motion {
+      animation: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    background-color: CanvasText;
+    forced-color-adjust: none;
+  }
+}
+
+.status__label {
+  @include visually-hidden;
+}
