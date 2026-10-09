@@ -55,6 +55,7 @@ const buildPairs = () => {
   for (const fill of ['shell', 'shell-2', 'shell-3']) {
     add('on-shell', fill, 'text');
     add('on-shell-2', fill, 'text');
+    add('on-shell-danger', fill, 'text');
   }
 
   /* `on-green` YALNIZCA `green-accent` ile ölçülür, hover'ıyla değil. */

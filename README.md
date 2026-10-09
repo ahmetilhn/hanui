@@ -453,7 +453,7 @@ npm run playground # bileşen galerisi → http://localhost:5273
 | `npm run test:coverage`   | kapsam kapısı — `helpers`/`hooks`/`theme` satır ≥ %80            |
 | `npm run test:visual`     | görsel regresyon (Playwright); `verify` İÇİNDE DEĞİL, aşağı bkz. |
 | `npm run test:device`     | iOS (WebKit) + Android (Chromium) davranış nöbetçileri, aşağı bkz. |
-| `npm run check:contrast`  | WCAG kontrast ölçümü, iki temada 204 çift                        |
+| `npm run check:contrast`  | WCAG kontrast ölçümü, iki temada 210 çift                        |
 | `npm run check:palette`   | palet tarifinin çıktısı mı + nötr chroma tavanı + tint ve kategori ayrışması |
 | `npm run check:api`       | genel API nöbetçisi — `build/index.d.ts` ↔ `scripts/api-baseline.txt` (167 ad) |
 | `npm run size`            | paket boyutu bütçesi (`size-limit`)                              |
@@ -551,7 +551,7 @@ token adları ve görünüm.
 | `on-role` | `on-selected` |
 | `role-tint` / `role-line` | `selected-tint` / `selected-line` |
 | `role-text` | `link` (+ `link-hover`) |
-| `shell*` | aynı ad, değer çamdan mürekkebe; yeni `on-shell`, `on-shell-2`, `shell-line` |
+| `shell*` | aynı ad, değer çamdan mürekkebe; yeni `on-shell`, `on-shell-2`, `on-shell-danger`, `shell-line` |
 | — | `cat-1…5`, `series-1/2` (kategorik palet) |
 
 Eski adlara takma ad **yok**. Kendi CSS'inizde `--hanui-role*` okuyan ya da

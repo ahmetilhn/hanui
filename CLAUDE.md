@@ -247,7 +247,9 @@ korur; buradaki yeşil olumlu durum ailesinin ekseninde (H 152).
 
 Terminal, teknik blok, koyu kod penceresi, `CodeBadge`. İki temada da sıcak
 siyah: `shell` / `shell-2` / `shell-3` = `#181715` / `#1f1e1b` / `#2a2925`,
-üzerine `on-shell` (`#faf9f5`, 17,00:1) ve `on-shell-2` (`#b4b1a9`).
+üzerine `on-shell` (`#faf9f5`, 17,00:1), `on-shell-2` (`#b4b1a9`) ve hata metni
+için `on-shell-danger` (`#f2a099`, 7,12-8,76:1 — açık temanın `bad-fg`i mürekkep
+üzerinde 2:1'in altında kalıyor).
 
 - 4.x'te `shell*` **çamdı** ve "uygulama kabuğu" diye tanımlıydı. Yeşil teknik bir
   yüzeyin zemini değil, eylemin rengi.
@@ -619,7 +621,7 @@ olarak bu hataydı.
 | `role-line` | `selected-line` | |
 | `role-text` | `link` (+ yeni `link-hover`) | yeşil kalır |
 | `ring`, `ring-color` | aynı ad | değer bağlantı ailesinden |
-| `shell*` | aynı ad | **değer çamdan mürekkebe** ve temaya göre dönmüyor; yeni `on-shell`, `on-shell-2`, `shell-line` |
+| `shell*` | aynı ad | **değer çamdan mürekkebe** ve temaya göre dönmüyor; yeni `on-shell`, `on-shell-2`, `on-shell-danger`, `shell-line` |
 | — | `cat-1…5`, `series-1/2` | yeni |
 
 Tüketicide değer ezmesi yazan yerler (`--hanui-page: #ffffff` gibi) ayrıca

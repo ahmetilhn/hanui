@@ -108,6 +108,8 @@ export const LIGHT_THEME = {
   'shell-3': SURFACE_DARK.surfaceThree,
   'on-shell': SURFACE_DARK.text,
   'on-shell-2': SURFACE_DARK.textTwo,
+  /** Mürekkep üzerinde hata metni (terminalin stderr'i). Açık temanın `bad-fg`i burada 2:1'in altında. */
+  'on-shell-danger': STATUS.badFgDark,
   /** Koyu temada kabuk sayfadan 1,03:1 ayrışıyor; görünür kılan bu çizgi. */
   'shell-line': SURFACE_DARK.border,
 
@@ -288,6 +290,7 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'shell-3': SURFACE_DARK.surfaceThree,
   'on-shell': SURFACE_DARK.text,
   'on-shell-2': SURFACE_DARK.textTwo,
+  'on-shell-danger': STATUS.badFgDark,
   'shell-line': SURFACE_DARK.border,
 
   /*
