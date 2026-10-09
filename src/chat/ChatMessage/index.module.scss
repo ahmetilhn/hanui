@@ -1,0 +1,65 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.message {
+  display: flex;
+  gap: $space-3;
+  width: 100%;
+
+  &--user {
+    justify-content: flex-end;
+  }
+}
+
+.message__avatar {
+  flex-shrink: 0;
+  // İlk satır hizası: avatar gövde metninin ilk satırının ortasına oturur.
+  margin-top: 2px;
+}
+
+.message__main {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  min-width: 0;
+
+  .message--assistant & {
+    flex: 1;
+  }
+
+  .message--user & {
+    align-items: flex-end;
+    max-width: min(85%, 640px);
+  }
+}
+
+.message__body {
+  min-width: 0;
+
+  .message--user & {
+    padding: $space-3 $space-4;
+    border-radius: $radius-xl;
+    border-end-end-radius: $radius-sm;
+    background-color: $surface-2;
+    color: $text;
+    font-size: $font-size-body;
+    line-height: $leading-normal;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}
+
+// Eylemler SESSİZ başlar ve mesajın üzerine gelince ya da içinde odak varken belirginleşir.
+.message__actions {
+  color: $text-3;
+  transition: color $duration-fast $ease-out;
+
+  .message:hover &,
+  .message:focus-within & {
+    color: $text-2;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+}

@@ -1,0 +1,68 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: $font-size-sm;
+}
+
+.list__item {
+  display: flex;
+  align-items: baseline;
+  gap: $space-2;
+}
+
+.list__index {
+  @include technical-text($font-size-2xs);
+
+  flex-shrink: 0;
+  min-width: 18px;
+  padding: 1px 4px;
+  border: 1px solid $border;
+  border-radius: $radius-xs;
+  text-align: center;
+  color: $text-2;
+}
+
+.list__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+// Kaynak bir BAĞLANTI: yeşil + alt çizgi (yeşilin üç evinden biri).
+.list__title {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: $link;
+  font: inherit;
+  text-align: start;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+
+  &:hover {
+    color: $link-hover;
+  }
+
+  @include focus-ring;
+}
+
+.list__plain {
+  color: $text;
+  overflow-wrap: anywhere;
+}
+
+.list__domain {
+  @include truncate;
+
+  font-size: $font-size-xs;
+  color: $text-3;
+}

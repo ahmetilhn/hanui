@@ -1,0 +1,38 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.bar {
+  position: relative;
+  height: 10px;
+  border-radius: $radius-pill;
+  background-color: $surface-2;
+  overflow: hidden;
+
+  @media (forced-colors: active) {
+    border: 1px solid CanvasText;
+  }
+}
+
+.bar__segment {
+  position: absolute;
+  inset-block: 0;
+
+  // Komşu iki parça arasında 2 px boşluk — yan yana aynı aydınlıkta iki ton tek renk gibi okunuyordu.
+  box-shadow: inset -2px 0 0 $surface;
+
+  @media (forced-colors: active) {
+    background-color: CanvasText !important;
+  }
+}
+
+.bar__marker {
+  position: absolute;
+  inset-block: -2px;
+  width: 2px;
+  margin-inline-start: -1px;
+  background-color: $text;
+
+  &--danger {
+    background-color: $bad-fg;
+  }
+}

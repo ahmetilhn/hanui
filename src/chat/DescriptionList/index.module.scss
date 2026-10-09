@@ -1,0 +1,40 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.list {
+  display: grid;
+  grid-template-columns: minmax(96px, max-content) minmax(0, 1fr);
+  gap: $space-2 $space-4;
+  margin: 0;
+  font-size: $font-size-sm;
+
+  @include for-mobile {
+    grid-template-columns: minmax(0, 1fr);
+    gap: $space-1;
+  }
+}
+
+// `display: contents`: satır sarmalayıcısı ızgaraya karışmaz, `dt`/`dd` doğrudan hücre olur.
+.list__row {
+  display: contents;
+}
+
+.list__term {
+  color: $text-2;
+
+  @include for-mobile {
+    margin-top: $space-2;
+  }
+}
+
+.list__value {
+  margin: 0;
+  color: $text;
+  min-width: 0;
+
+  &--technical {
+    @include technical-text($font-size-xs);
+
+    overflow-wrap: anywhere;
+  }
+}

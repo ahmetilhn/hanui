@@ -1,0 +1,57 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// Ortalanmış okuma sütunu — uzun satır okunmaz (≈ 72 karakter).
+$column: 768px;
+
+.thread {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  height: 100%;
+  min-height: 0;
+}
+
+.thread__scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  @include custom-scrollbar;
+  @include focus-ring($ring-color, -2px);
+}
+
+.thread__column {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+  width: 100%;
+  max-width: $column;
+  margin-inline: auto;
+  padding: $space-6 $space-5;
+
+  @include for-mobile {
+    padding: $space-5 $space-4;
+  }
+
+  .thread__dock & {
+    gap: $space-2;
+    padding-block: 0 calc(#{$space-4} + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+// Dok sayfanın zemininden doğar: üst kenarda içerik dokun altına SOLARAK girer, keskin kesilmez.
+.thread__dock {
+  position: relative;
+  padding-top: $space-3;
+  background: linear-gradient(to bottom, transparent, $page $space-5);
+}
+
+// Yöne bağımsız ortalama (RTL'de `translate: -50%` ters yöne kayıyordu).
+.thread__latest {
+  position: absolute;
+  inset-block-start: calc(-1 * #{$space-8});
+  inset-inline: 0;
+  margin-inline: auto;
+  box-shadow: $shadow-md;
+  background-color: $surface;
+}

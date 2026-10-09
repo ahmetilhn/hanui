@@ -539,6 +539,66 @@ yol, Playwright'ın resmi konteynerinde koşup `linux` referanslarını orada
 yükseltmeyi unutmayın**, aynı sürüm ikinci kez yayımlanamaz ve iş akışı kırmızı
 döner.
 
+## Sohbet bileşenleri — `@ahmetilhn/hanui/chat`
+
+Sohbet ve araç arayüzleri için ayrı bir giriş; ana paketi ve `styles.css`i
+büyütmez.
+
+```tsx
+import '@ahmetilhn/hanui/styles.css';
+import '@ahmetilhn/hanui/chat.css'; // styles.css'TEN SONRA
+
+import { HanuiProvider } from '@ahmetilhn/hanui';
+import { ChatMessage, ChatThread, PromptInput } from '@ahmetilhn/hanui/chat';
+
+<ChatThread
+  isStreaming={isStreaming}
+  dock={
+    <PromptInput
+      value={draft}
+      onChange={setDraft}
+      onSubmit={send}
+      onStop={stop}
+      isBusy={isStreaming}
+      placeholder="Mesajınızı yazın…"
+    />
+  }
+>
+  {messages.map(message => (
+    <ChatMessage key={message.id} author={message.author}>
+      {message.content}
+    </ChatMessage>
+  ))}
+</ChatThread>;
+```
+
+Metinler aynı sağlayıcıdan, `labels.chat` altında:
+
+```tsx
+<HanuiProvider
+  labels={{
+    chat: {
+      thread: 'Sohbet',
+      send: 'Gönder',
+      stop: 'Durdur',
+      scrollToLatest: 'En yeniye in',
+      replyReady: 'Yanıt hazır',
+      messageActions: 'Mesaj eylemleri',
+      sources: 'Kaynaklar',
+      citation: index => `Kaynak ${index}`,
+      stderr: 'hata çıktısı',
+      toolStatus: { running: 'çalışıyor', ok: 'tamamlandı', error: 'hata', aborted: 'durduruldu', interrupted: 'kesildi' },
+      codeCopy: language => `${language} kodunu kopyala`,
+      codeCopied: 'Kod kopyalandı',
+    },
+  }}
+>
+```
+
+Ayrıştırma ve vurgulama tüketicide kalır: `Prose` markdown ayrıştırmaz,
+`CodeBlock` önceden vurgulanmış HTML alır (`html` prop'u — güvenliği sizin).
+Bileşen listesi ve kararlar: `CLAUDE.md` → "`@ahmetilhn/hanui/chat`".
+
 ## 5.0'a geçiş
 
 5.0 bir **renk** sürümü: nötr eksen yeşilden sıcak mürekkebe geçti, yeşil

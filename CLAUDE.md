@@ -627,6 +627,74 @@ bildiriyor; arkasında kalan bayat taban çizgileri (`Accordion`, `CopyField`,
 `Modal`, `rtl`, `compact`, `forced-colors` ve taban çizgisi **hiç olmayan**
 `CodeBadge`) bu turda **kapsam dışı** ve hâlâ kırmızı.
 
+## `@ahmetilhn/hanui/chat` — sohbet bileşenlerinin AYRI girişi (5.2)
+
+**Neden ayrı:** 5.1 tüm girişi bütçenin sınırına taşıdı (42,00 / 42 kB) ve
+sohbet bileşenlerinin Hanparça'da çağıranı yok. Ana girişe girselerdi vitrinin
+indirdiği paket ve `styles.css` büyürdü. Ayrı girişte ana pakete **sıfır bayt**
+eklendi (ölçüldü: ana giriş 42 000 bayt, önce ve sonra).
+
+| Ne | Nerede |
+|---|---|
+| Kaynak | `src/chat/<Bileşen>/` · cephe `src/chat/index.ts` |
+| Derleme | `vite.chat.config.ts` → `build/chat.js`, `chat.cjs`, `chat.css` |
+| Tipler | `tsconfig.chat.json` → `build/types/chat/` (dosya başına) |
+| Dışa aktarım | `exports["./chat"]`, `exports["./chat.css"]` |
+| Bütçe | `chat.js` 8 kB (ölçülen 6,29) · `chat.css` 5 kB (ölçülen 3,90) |
+| API taban çizgisi | `scripts/api-baseline.chat.txt` (30 ad) |
+
+⚠ **ANA GİRİŞ DIŞSAL — sohbet kodu onu PAKET ADIYLA alır.** Bir sohbet
+dosyası `../../components/…` ya da `../../theme/context` gibi göreli bir yolla
+ana girişe uzanırsa o modülün İKİNCİ BİR KOPYASI `chat.js`e paketlenir ve
+derleme yine de yeşil biter:
+- `theme/context` kopyası → sohbet bileşenleri `HanuiProvider`ın metinlerini
+  ve yönlendiricisini GÖRMEZ
+- `helpers/focus.helper` kopyası → kipsel yüzey yığını ikiye bölünür, `Escape`
+  yanlış yüzeyi kapatır
+- bir bileşen kopyası → CSS'i `chat.css`e de girer
+
+Nöbetçi `__tests__/chat/boundary.test.ts`: göreli yolla yalnızca DURUMSUZ
+yardımcılar (`cx`, `named`, metin çözümü, tipler, sabitler) ve SCSS alınabilir;
+`@/` takma adı da yasak (dosya başına tiplerde çözülmeden kalıyor). Aynı test ana
+girişin sohbeti içe aktarmadığını da ölçer. Derlenmiş `chat.js`te
+`createContext` SIFIR.
+
+⚠ **Depo içinde paket adı kaynağa eşlenir** (tsconfig `paths`, jest
+`moduleNameMapper`, playground `alias`). Paketin kendi adı tüketicide `exports`
+üzerinden derlenmiş ana girişe çözülür.
+
+⚠ **Tipler neden `vite-plugin-dts` ile DEĞİL:** toplama adımı girişi
+`<outDir>/index.d.ts` diye hesaplıyor ve ortak `build/`da duran ANA girişin
+tiplerini toplayıp üzerine yazıyordu (ölçüldü: `chat.d.ts` 176 ana adı
+taşıyordu). Dosya başına `tsc` çıktısı bu sorunu taşımaz ve `check:api` sohbet
+girişinin cephe dosyasındaki `export { … } from` satırlarını okur.
+
+**Bileşenler** (20; hepsi eksen taramasında, davranışları `__tests__/chat/`):
+
+| Grup | Bileşen | Not |
+|---|---|---|
+| İskelet | `ChatThread` | Sona yapışık kaydırma, "en yeniye in", alt dok. ⚠ Akan belirteçler OKUNMAZ (`aria-live` yok, `role="log"` değil); yanıt bitince TEK cümle duyurulur (`labels.chat.replyReady`) |
+| | `ChatMessage` (`author`) | Kullanıcı balonu `surface-2`; eylemler hover'da VE `:focus-within`de belirginleşir (renkle, `opacity` değil) |
+| | `PromptInput` | `Enter` gönderir, `Shift+Enter` satır, IME yazımında `Enter` GÖNDERMEZ; `Escape` akışı durdurur ama açık bir yüzey varken DOKUNMAZ (`hasOpenSurface`). Gönder = çam (ekranın tek PRIMARY'si) |
+| | `PromptSuggestions` | EYLEM ızgarası, seçim değil (`ChipGroup` değil) |
+| Yanıt | `Prose` | Tipografi kabı; ayrıştırıcı İÇERMEZ (markdown/KaTeX tüketicide) |
+| | `CodeBlock` | Vurgulayıcı İÇERMEZ; Shiki çift tema değişkenleri `for-dark` ile; `html` güvenliği ÇAĞIRANIN |
+| | `ReasoningBlock` + `ReasoningText` | Tur sürerken açık, bitince kapanır — kullanıcı dokunduysa tercihine DOKUNULMAZ |
+| | `ToolCall` + `ToolCallSection` | Durum nokta + OKUNAN metin (`labels.chat.toolStatus`); çalışan nokta NÖTR nabız |
+| | `TerminalOutput` | Mürekkep yüzey (`shell*`), sona yapışık; stderr gizli önek taşır (renk tek başına anlam taşımaz) |
+| | `SourceList` + `Citation` | Atıfın okunan adı `labels.chat.citation(n)` |
+| | `MessageActions` | `role="toolbar"`, ok/`Home`/`End` |
+| Uygulama | `AppBar` | Kendi yüksekliğini `--hanui-header-height`e yazar |
+| | `ActionList` + `ActionListItem` | `isSelected` verilirse SEÇİM (`aria-pressed`), verilmezse EYLEM; `rowHeight` ile sanal (`aria-posinset`/`aria-setsize`) |
+| Veri | `SegmentBar` | Yığılmış (`value`) ya da zaman çizelgesi (`from`/`to`); TEK görsel (`role="img"`), adı tüm parçaları okur |
+| | `Legend` · `DescriptionList` | Kategorik palet; `tone` (`color` değil — tek ad kuralı) |
+
+**Plandan sapmalar:** `ChatMessage.role` → `author` (`role` HTML özniteliğiyle
+çakışıyordu); `StatusDot`ta `brand` tonu yok (yeşil seyrek); `SegmentBar`
+parça başına `Tooltip` yerine tek bir okunan özet (çubuğun içinde sekme durağı
+dizmek daha az bilgi verip daha çok tuş istiyordu); `code-bg` / `terminal-*`
+token'ları eklenmedi (`surface-inset` ve `shell*` karşılıyor).
+
 ## Göç ve `@deprecated` yollar
 
 **Kural:** bir prop adı ya da davranışı değişecekse eski yol **bir sürüm boyunca

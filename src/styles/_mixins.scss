@@ -79,6 +79,20 @@
   }
 }
 
+// Koyu temaya özgü kural — açık seçim ve sistem tercihi, `_tokens.generated.scss` ile AYNI seçiciler.
+// ⚠ Tema alt ağaca kapsamlandırılamaz (bkz. CLAUDE.md "Marka şeridi"); bu yalnızca KÖKE bakar.
+@mixin for-dark {
+  :root[data-hanui-theme='dark'] & {
+    @content;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-hanui-theme]) & {
+      @content;
+    }
+  }
+}
+
 @mixin interactive-surface($rest: transparent, $hover: $surface-2, $pressed: $surface-3) {
   background-color: $rest;
   transition:

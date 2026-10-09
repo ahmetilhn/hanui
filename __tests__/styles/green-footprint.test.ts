@@ -41,6 +41,9 @@ const ALLOWED: Record<Family, Record<string, string>> = {
     Breadcrumb: 'kırıntı bağlantısının hover hâli',
     Directory: 'dizin bağlantıları',
     TextLink: '`brand` tonu',
+    Citation: 'metin içi atıf — bir kaynağa giden bağlantı',
+    Prose: 'markdown çıktısındaki bağlantılar (alt çizgili)',
+    SourceList: 'kaynak başlığı — dış ya da uygulama içi bağlantı',
   },
   success: {
     CopyField: '"kopyalandı" tiki',

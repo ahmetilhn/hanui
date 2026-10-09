@@ -1,6 +1,15 @@
 import { type ReactElement } from 'react';
 
-import { ArrowUp, HeartFill, HouseFill, StarFill } from 'react-bootstrap-icons';
+import {
+  ArrowRepeat,
+  ArrowUp,
+  Clipboard,
+  HeartFill,
+  HouseFill,
+  MoonStarsFill,
+  StarFill,
+  TerminalFill,
+} from 'react-bootstrap-icons';
 
 import {
   Accordion,
@@ -95,7 +104,28 @@ import {
   UISize,
   UIVariant,
 } from '../src/index';
-import { Legend } from '../src/chat';
+import {
+  ActionList,
+  ActionListItem,
+  AppBar,
+  ChatMessage,
+  ChatThread,
+  Citation,
+  CodeBlock,
+  DescriptionList,
+  Legend,
+  MessageActions,
+  PromptInput,
+  PromptSuggestions,
+  Prose,
+  ReasoningBlock,
+  ReasoningText,
+  SegmentBar,
+  SourceList,
+  TerminalOutput,
+  ToolCall,
+  ToolCallSection,
+} from '../src/chat';
 
 import { SOLO_ONLY } from './solo';
 
@@ -1230,6 +1260,338 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     ),
   },
   // --- Sohbet (@ahmetilhn/hanui/chat) ---
+  AppBar: {
+    default: (
+      <AppBar
+        brand={
+          <>
+            <StarFill aria-hidden /> Hanration
+          </>
+        }
+        start={<StatusDot tone="success" label="Bağlı" />}
+        end={
+          <>
+            <IconButton icon={<MoonStarsFill aria-hidden />} label="Tema" size="sm" />
+            <Button variant={UIVariant.SECONDARY} size={UISize.XSMALL} shape="pill">
+              Sohbeti bitir
+            </Button>
+          </>
+        }
+      />
+    ),
+  },
+  ChatThread: {
+    default: (
+      <div style={{ height: 360, border: '1px solid var(--hanui-border)', borderRadius: 12 }}>
+        <ChatThread
+          dock={
+            <PromptInput
+              value=""
+              onChange={noop}
+              onSubmit={noop}
+              placeholder="Mesajınızı yazın…"
+              hint={
+                <>
+                  <Kbd keys={['Enter']} /> gönder · <Kbd keys={['Shift', 'Enter']} /> yeni satır
+                </>
+              }
+            />
+          }
+        >
+          <ChatMessage author="user">Bağlam penceresini özetler misin?</ChatMessage>
+          <ChatMessage
+            author="assistant"
+            avatar={
+              <Avatar name="Asistan" icon={<StarFill />} tone="brand" shape="rounded" size="sm" />
+            }
+          >
+            <Prose>
+              <p>
+                Pencerede üç bölüm var: önek, harita ve tur içi geçmiş{' '}
+                <Citation index={1} href="#k1" />.
+              </p>
+            </Prose>
+          </ChatMessage>
+        </ChatThread>
+      </div>
+    ),
+  },
+  ChatMessage: {
+    user: <ChatMessage author="user">Bir soru, iki satır{'\n'}ikinci satır</ChatMessage>,
+    assistant: (
+      <ChatMessage
+        author="assistant"
+        avatar={
+          <Avatar name="Asistan" icon={<StarFill />} tone="brand" shape="rounded" size="sm" />
+        }
+        actions={
+          <MessageActions meta="2,4 sn · 412 belirteç">
+            <IconButton icon={<Clipboard aria-hidden />} label="Kopyala" size="sm" />
+            <IconButton icon={<ArrowRepeat aria-hidden />} label="Yeniden dene" size="sm" />
+          </MessageActions>
+        }
+      >
+        <Prose>
+          <p>Yanıtın gövdesi.</p>
+        </Prose>
+      </ChatMessage>
+    ),
+  },
+  PromptInput: {
+    empty: <PromptInput value="" onChange={noop} onSubmit={noop} placeholder="Mesajınızı yazın…" />,
+    filled: (
+      <PromptInput
+        value="Bu kodu açıkla"
+        onChange={noop}
+        onSubmit={noop}
+        placeholder="Mesajınızı yazın…"
+      />
+    ),
+    busy: (
+      <PromptInput
+        value=""
+        onChange={noop}
+        onSubmit={noop}
+        onStop={noop}
+        isBusy
+        placeholder="Mesajınızı yazın…"
+      />
+    ),
+    disabled: (
+      <PromptInput
+        value=""
+        onChange={noop}
+        onSubmit={noop}
+        isDisabled
+        placeholder="Bağlantı bekleniyor"
+      />
+    ),
+  },
+  PromptSuggestions: {
+    default: (
+      <PromptSuggestions
+        label="Örnek istemler"
+        items={[
+          { id: 'a', label: 'Bir dosyayı özetle', description: 'Uzun bir metni kısalt' },
+          { id: 'b', label: 'Hatayı bul', description: 'Yığın izini yorumla' },
+          { id: 'c', label: 'Test yaz', description: 'Bir fonksiyon için' },
+        ]}
+        onPick={noop}
+      />
+    ),
+  },
+  Prose: {
+    default: (
+      <Prose>
+        <h2>Başlık</h2>
+        <p>
+          Paragraf, <a href="#">bir bağlantı</a> ve <code>satırİçiKod()</code>.
+        </p>
+        <ul>
+          <li>Birinci madde</li>
+          <li>İkinci madde</li>
+        </ul>
+        <blockquote>Bir alıntı.</blockquote>
+        <table>
+          <thead>
+            <tr>
+              <th>Kademe</th>
+              <th>Değer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>page</td>
+              <td>#faf9f5</td>
+            </tr>
+          </tbody>
+        </table>
+      </Prose>
+    ),
+  },
+  CodeBlock: {
+    plain: (
+      <CodeBlock
+        language="ts"
+        code={"const greet = (name: string) => `Merhaba ${name}`;\ngreet('hanui');"}
+      />
+    ),
+  },
+  ReasoningBlock: {
+    running: (
+      <ReasoningBlock summary="Düşünüyor · 1 araç" isRunning>
+        <ReasoningText
+          label="Akıl yürütme"
+          text="Önce bağlam haritasını okuyorum, sonra iki kaynağı tarayacağım."
+        />
+        <ToolCall
+          icon={<TerminalFill />}
+          name="bash"
+          summary="ls -la src"
+          status="running"
+          meta="1,2 sn"
+        />
+      </ReasoningBlock>
+    ),
+    done: (
+      <ReasoningBlock summary="Düşündü · 2 araç · 2,4 sn">
+        <ReasoningText label="Akıl yürütme" text="Bitti." />
+      </ReasoningBlock>
+    ),
+  },
+  ReasoningText: {
+    default: (
+      <ReasoningText
+        label="Akıl yürütme"
+        maxHeight={80}
+        text={'Satır bir.\nSatır iki.\nSatır üç.\nSatır dört.\nSatır beş.\nSatır altı.'}
+      />
+    ),
+  },
+  ToolCall: {
+    running: (
+      <ToolCall
+        icon={<TerminalFill />}
+        name="bash"
+        summary="npm test"
+        status="running"
+        meta="3 sn"
+      />
+    ),
+    ok: (
+      <ToolCall
+        icon={<TerminalFill />}
+        name="bash"
+        summary="ls -la"
+        status="ok"
+        meta="120 ms"
+        isDefaultOpen
+      >
+        <ToolCallSection label="Çıktı">
+          <TerminalOutput
+            label="Komut çıktısı"
+            command="ls -la"
+            chunks={[{ stream: 'stdout', text: 'build\nsrc\n' }]}
+          />
+        </ToolCallSection>
+      </ToolCall>
+    ),
+    error: (
+      <ToolCall icon={<TerminalFill />} name="bash" summary="rm -rf /" status="error" meta="5 ms" />
+    ),
+    aborted: <ToolCall name="araştır" summary="hanui palet" status="aborted" />,
+  },
+  ToolCallSection: {
+    default: (
+      <ToolCall name="araştır" summary="hanui" status="ok" isDefaultOpen>
+        <ToolCallSection label="Girdi">hanui palet</ToolCallSection>
+        <ToolCallSection label="Sonuç">3 kaynak bulundu.</ToolCallSection>
+      </ToolCall>
+    ),
+  },
+  TerminalOutput: {
+    default: (
+      <TerminalOutput
+        label="Komut çıktısı"
+        command="npm run build"
+        chunks={[
+          { stream: 'stdout', text: 'vite v5.4.21 building for production...\n' },
+          { stream: 'stderr', text: 'Uyarı: kaynak haritası eksik\n' },
+          { stream: 'stdout', text: '✓ built in 1.90s\n' },
+        ]}
+      />
+    ),
+  },
+  SourceList: {
+    default: (
+      <SourceList
+        items={[
+          { id: '1', title: 'hanui CLAUDE.md', url: 'https://example.com', domain: 'example.com' },
+          { id: '2', title: 'Yerel bağlam kaydı A3', onSelect: noop },
+        ]}
+      />
+    ),
+  },
+  Citation: {
+    inline: (
+      <p>
+        Metin içi atıf <Citation index={1} href="#k1" /> ve düğme atıf{' '}
+        <Citation index={2} onClick={noop} />.
+      </p>
+    ),
+  },
+  MessageActions: {
+    default: (
+      <MessageActions meta="412 belirteç">
+        <IconButton icon={<Clipboard aria-hidden />} label="Kopyala" size="sm" />
+        <Button variant={UIVariant.GHOST} size={UISize.XSMALL}>
+          Harness
+        </Button>
+      </MessageActions>
+    ),
+  },
+  ActionList: {
+    default: (
+      <ActionList label="Bağlam haritası">
+        <ActionListItem start="A1" end="t3" onClick={noop}>
+          Önek: sistem yönergesi
+        </ActionListItem>
+        <ActionListItem start="A2" end="t4" isSelected onClick={noop}>
+          Seçili satır
+        </ActionListItem>
+        <ActionListItem start="A3" end="t5" isMuted onClick={noop}>
+          Gizlenmiş girdi
+        </ActionListItem>
+      </ActionList>
+    ),
+  },
+  ActionListItem: {
+    link: (
+      <ActionList label="Bağlantılar">
+        <ActionListItem href="#" start="↗">
+          Belgeye git
+        </ActionListItem>
+      </ActionList>
+    ),
+  },
+  SegmentBar: {
+    stacked: (
+      <SegmentBar
+        label="Bağlam bileşimi"
+        max={100}
+        segments={[
+          { id: 'p', label: 'Önek 32', tone: 'cat-1', value: 32 },
+          { id: 'm', label: 'Harita 18', tone: 'cat-2', value: 18 },
+          { id: 's', label: 'Durum 12', tone: 'cat-3', value: 12 },
+          { id: 'u', label: 'Kullanıcı 8', tone: 'cat-4', value: 8 },
+          { id: 't', label: 'Tur içi 10', tone: 'cat-5', value: 10 },
+        ]}
+        markers={[{ id: 'b', at: 85, label: 'Bütçe 85', tone: 'danger' }]}
+      />
+    ),
+    waterfall: (
+      <SegmentBar
+        label="Tur zaman çizelgesi"
+        max={10}
+        segments={[
+          { id: 'w', label: 'Bekleme 0-1,2 sn', tone: 'muted', from: 0, to: 1.2 },
+          { id: 's', label: 'Akış 1,2-5 sn', tone: 'series-1', from: 1.2, to: 5 },
+          { id: 't', label: 'Araçlar 5-8 sn', tone: 'series-2', from: 5, to: 8 },
+        ]}
+      />
+    ),
+  },
+  DescriptionList: {
+    default: (
+      <DescriptionList
+        items={[
+          { term: 'Kimlik', description: 'A3', isTechnical: true },
+          { term: 'Tür', description: 'Bağlam haritası' },
+          { term: 'Yol', description: '/src/chat/ChatThread/index.tsx', isTechnical: true },
+        ]}
+      />
+    ),
+  },
   Legend: {
     default: (
       <Legend

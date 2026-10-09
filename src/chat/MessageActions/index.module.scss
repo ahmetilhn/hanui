@@ -1,0 +1,16 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-1;
+  color: $text-3;
+  font-size: $font-size-xs;
+}
+
+.actions__meta {
+  margin-inline-start: $space-2;
+  font-variant-numeric: tabular-nums;
+}

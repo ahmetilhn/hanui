@@ -1,0 +1,92 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  background-color: $surface;
+  overflow: hidden;
+
+  &--virtual {
+    overflow-y: auto;
+
+    @include custom-scrollbar;
+  }
+}
+
+.list__window {
+  margin: 0;
+  padding-inline: 0;
+  padding-block-end: 0;
+  list-style: none;
+}
+
+.list__slot {
+  border-bottom: 1px solid $border;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  .list--virtual & {
+    block-size: var(--hanui-row-height);
+    overflow: hidden;
+  }
+}
+
+.item {
+  display: flex;
+  align-items: baseline;
+  gap: $space-3;
+  width: 100%;
+  height: 100%;
+  min-height: $tap-target-size;
+  padding: $space-2 $space-4;
+  border: 0;
+  color: $text;
+  font: inherit;
+  font-size: $font-size-sm;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+
+  @include interactive-surface;
+  @include focus-ring($ring-color, -2px);
+
+  // Seçili: kenarlık + zemin BİRLİKTE (mürekkep).
+  &--selected {
+    background-color: $selected-tint;
+    box-shadow: inset 3px 0 0 $selected-line;
+  }
+
+  &--muted {
+    color: $text-3;
+  }
+}
+
+.item__start {
+  @include technical-text($font-size-xs);
+
+  flex-shrink: 0;
+  color: $text-2;
+
+  .item--muted & {
+    color: $text-3;
+  }
+}
+
+.item__body {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.item__end {
+  flex-shrink: 0;
+  font-size: $font-size-xs;
+  color: $text-3;
+  font-variant-numeric: tabular-nums;
+}

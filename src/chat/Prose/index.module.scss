@@ -1,0 +1,122 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.prose {
+  font-size: $font-size-body;
+  line-height: $leading-normal;
+  color: $text;
+  overflow-wrap: break-word;
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 1.4em 0 0.5em;
+    font-family: $font-heading;
+    font-weight: $weight-semibold;
+    line-height: $leading-snug;
+    color: $text;
+  }
+
+  h1 {
+    font-size: $font-size-xl;
+    letter-spacing: $tracking-snug;
+  }
+
+  h2 {
+    font-size: $font-size-lg;
+  }
+
+  h3,
+  h4 {
+    font-size: $font-size-base;
+  }
+
+  p {
+    margin: 0.65em 0;
+  }
+
+  ul,
+  ol {
+    margin: 0.65em 0;
+    padding-inline-start: 1.4em;
+  }
+
+  li + li {
+    margin-top: 0.25em;
+  }
+
+  // Bağlantı yeşil kalır (yeşilin üç evinden biri) ve ALT ÇİZGİLİ: gövde metnine yalnızca 3,04:1.
+  a {
+    color: $link;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: $link-hover;
+    }
+
+    @include focus-ring;
+  }
+
+  blockquote {
+    margin: 0.9em 0;
+    padding-inline-start: $space-4;
+    border-inline-start: 3px solid $border-strong;
+    color: $text-2;
+  }
+
+  hr {
+    margin: 1.4em 0;
+    border: 0;
+    border-top: 1px solid $border;
+  }
+
+  // Satır içi kod — blok kod `CodeBlock`ın işi.
+  :not(pre) > code {
+    @include technical-text(0.88em);
+
+    padding: 1px 5px;
+    border: 1px solid $border;
+    border-radius: $radius-xs;
+    background-color: $surface-2;
+  }
+
+  // Tablo satır içinde yatay kayar: ayrıştırıcı sarmalayıcı eklemediği için kayma tablonun kendisinde.
+  table {
+    display: block;
+    max-width: 100%;
+    margin: 0.9em 0;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: $font-size-sm;
+  }
+
+  th,
+  td {
+    padding: $space-2 $space-3;
+    border: 1px solid $border;
+    text-align: start;
+    vertical-align: top;
+  }
+
+  th {
+    background-color: $surface-2;
+    font-weight: $weight-semibold;
+  }
+
+  // KaTeX: blok formül taşarsa yatay kayar, sayfayı genişletmez.
+  :global(.katex-display) {
+    margin: 0.9em 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+}

@@ -1,0 +1,38 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// Mürekkep yüzey: iki temada aynı (`shell*`); koyu temada sayfadan 1,03:1, çizgiyi `shell-line` çizer.
+.terminal {
+  margin: 0;
+  padding: $space-3 $space-4;
+  border: 1px solid $shell-line;
+  border-radius: $radius-md;
+  background-color: $shell;
+  color: $on-shell;
+  font-family: $font-mono;
+  font-size: $font-size-xs;
+  line-height: $leading-relaxed;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  overflow-y: auto;
+
+  @include custom-scrollbar;
+  @include focus-ring($on-shell, -2px);
+}
+
+.terminal__command {
+  color: $on-shell;
+  font-weight: $weight-semibold;
+}
+
+.terminal__prompt {
+  color: $on-shell-2;
+}
+
+.terminal__stderr {
+  color: $on-shell-danger;
+}
+
+.terminal__srOnly {
+  @include visually-hidden;
+}

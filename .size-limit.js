@@ -33,13 +33,15 @@ export default [
     name: 'chat girişi (tümü)',
     path: 'build/chat.js',
     ignore: ['@ahmetilhn/hanui'],
-    limit: '14 kB',
+    /* İlk ölçüm (2026-10-10, 20 bileşen): 6,29 kB. */
+    limit: '8 kB',
     gzip: true,
   },
   {
     name: 'chat.css',
     path: 'build/chat.css',
-    limit: '6 kB',
+    /* İlk ölçüm (2026-10-10): 3,90 kB. */
+    limit: '5 kB',
     gzip: true,
   },
   {

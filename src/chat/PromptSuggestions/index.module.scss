@@ -1,0 +1,36 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+  gap: $space-2;
+  width: 100%;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: $tap-target-size;
+  padding: $space-3 $space-4;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  color: $text;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+
+  @include interactive-surface($rest: $surface, $hover: $surface-2, $pressed: $surface-3);
+  @include focus-ring;
+}
+
+.card__label {
+  font-size: $font-size-sm;
+  font-weight: $weight-medium;
+}
+
+.card__description {
+  font-size: $font-size-xs;
+  color: $text-2;
+}

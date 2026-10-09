@@ -1,0 +1,61 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.prompt {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+  width: 100%;
+}
+
+// Çerçeve ve odak göstergesi KUTUNUN: alan çerçevesiz (`Textarea variant="bare"`).
+.prompt__box {
+  display: flex;
+  align-items: flex-end;
+  gap: $space-2;
+  padding: $space-2 $space-2 $space-2 $space-4;
+  border: 1px solid $border-strong;
+  border-radius: $radius-xl;
+  background-color: $surface;
+  box-shadow: $shadow-sm;
+  transition:
+    border-color $duration-fast $ease-out,
+    box-shadow $duration-fast $ease-out;
+
+  &:focus-within {
+    border-color: $ring-color;
+    box-shadow: $ring;
+  }
+
+  &--disabled {
+    @include passive-surface;
+
+    box-shadow: none;
+  }
+
+  @include reduced-motion {
+    transition: none;
+  }
+}
+
+.prompt__field {
+  flex: 1;
+  min-width: 0;
+  // Düğmenin (40 px) ortasına hizalı tek satır.
+  padding-block: 9px;
+}
+
+.prompt__start,
+.prompt__end {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  flex-shrink: 0;
+  min-height: 40px;
+}
+
+.prompt__hint {
+  text-align: center;
+  font-size: $font-size-2xs;
+  color: $text-3;
+}

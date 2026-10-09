@@ -1,0 +1,86 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.call {
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+
+  :global(summary) {
+    padding: $space-2 $space-3;
+    font-weight: $weight-regular;
+  }
+
+  &--static {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    padding: $space-2 $space-3;
+    border: 1px solid $border;
+    background-color: $surface;
+  }
+}
+
+.call__header {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  min-width: 0;
+}
+
+.call__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: $icon-sm;
+  color: $text-3;
+
+  &--running {
+    color: $text;
+  }
+}
+
+.call__name {
+  flex-shrink: 0;
+  font-weight: $weight-semibold;
+  color: $text;
+}
+
+.call__summary {
+  @include truncate;
+  @include technical-text($font-size-xs);
+
+  flex: 1;
+  min-width: 0;
+  color: $text-2;
+}
+
+.call__meta {
+  flex-shrink: 0;
+  margin-inline-start: auto;
+  font-size: $font-size-xs;
+  color: $text-3;
+  font-variant-numeric: tabular-nums;
+}
+
+.call__body {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-1;
+  min-width: 0;
+}
+
+.section__label {
+  @include overline;
+
+  margin: 0;
+}
+
+.section__body {
+  min-width: 0;
+  color: $text;
+}

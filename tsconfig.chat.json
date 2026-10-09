@@ -9,7 +9,7 @@
     "outDir": "build/types",
     /* `@ahmetilhn/hanui` EŞLENMEZ: paketin kendi `exports`u üzerinden derlenmiş ana tiplere çözülür. */
     "paths": { "@/*": ["./src/*"] },
-    "types": []
+    "types": ["node"]
   },
   "include": ["src/chat", "src/types/scss.d.ts"],
   "exclude": ["src/**/*.test.*"]

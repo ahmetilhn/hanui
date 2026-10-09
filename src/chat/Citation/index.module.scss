@@ -1,0 +1,42 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// Satır içi küçük işaret; dokunma alanı görsel kutudan büyük (`tap-target`).
+.citation {
+  @include tap-target;
+  @include technical-text($font-size-2xs);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  margin-inline: 2px;
+  padding: 0 4px;
+  border: 1px solid $border;
+  border-radius: $radius-xs;
+  background-color: $surface-2;
+  color: $link;
+  line-height: 1.5;
+  vertical-align: super;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $surface-3;
+  }
+
+  @include focus-ring;
+
+  &__srOnly {
+    @include visually-hidden;
+  }
+
+  &--static {
+    color: $text-2;
+    cursor: default;
+
+    &:hover {
+      background-color: $surface-2;
+    }
+  }
+}

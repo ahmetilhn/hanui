@@ -1,0 +1,35 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// Başlık satırı sohbet akışının içinde HAFİF durur: kart değil, satır.
+.block {
+  :global(summary) {
+    padding: $space-1 $space-2;
+    margin-inline-start: calc(-1 * #{$space-2});
+    border-radius: $radius-md;
+    font-weight: $weight-medium;
+    color: $text-2;
+  }
+}
+
+.block__summary {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+}
+
+.block__indicator {
+  display: inline-flex;
+  color: $text-2;
+}
+
+// Gövde sol çizgiyle girintili: yanıtın kendisinden ayrışır.
+.block__body {
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  margin-top: $space-2;
+  padding-inline-start: $space-4;
+  border-inline-start: 2px solid $border;
+  color: $text-2;
+}
