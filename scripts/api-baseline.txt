@@ -74,6 +74,7 @@ HanuiMetrics
 HanuiProvider
 HanuiResolvedTokens
 HanuiThemeConfig
+HanuiThemeScript
 HanuiThemeTokens
 HanuiToken
 IconButton
@@ -164,7 +165,6 @@ initHanui
 matchesSearch
 normalizeSearchTerm
 resolveTokens
-themeBootScript
 toast
 useAnnounce
 useHanui

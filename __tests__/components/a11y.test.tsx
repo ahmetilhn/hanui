@@ -46,6 +46,7 @@ const {
   FilterBar,
   FilterBarField,
   HanuiProvider,
+  HanuiThemeScript,
   IconButton,
   Input,
   Kbd,
@@ -108,6 +109,8 @@ const COLUMNS: hanui.DataTableColumn[] = [
 
 const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   HanuiProvider: { default: <HanuiProvider>içerik</HanuiProvider> },
+  /* Görünür bir şey çizmez; sunucu çıktısındaki betik ilk boyamadan önce çalışır. */
+  HanuiThemeScript: { default: <HanuiThemeScript storageKey="theme" /> },
 
   Button: {
     default: <Button>Kaydet</Button>,

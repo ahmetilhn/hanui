@@ -50,6 +50,7 @@ import {
   FilterBar,
   FilterBarField,
   HanuiProvider,
+  HanuiThemeScript,
   IconButton,
   Input,
   Kbd,
@@ -198,6 +199,8 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       </p>
     ),
   },
+  /* Görünür bir şey çizmez — `<head>`deki tema betiği. */
+  HanuiThemeScript: { default: <HanuiThemeScript storageKey="theme" /> },
 
   // --- Eylem ---
   Button: {

@@ -8,6 +8,7 @@ import './styles/base.scss';
 // --- Tema -------------------------------------------------------------
 export { default as HanuiProvider } from './theme/HanuiProvider';
 export { default as initHanui } from './theme/initHanui';
+export { default as HanuiThemeScript } from './theme/HanuiThemeScript';
 export { useHanui } from './theme/context';
 export {
   COMPACT_DENSITY,
@@ -28,7 +29,6 @@ export {
   DENSITY_ATTRIBUTE,
   resolveTokens,
   THEME_ATTRIBUTE,
-  themeBootScript,
 } from './helpers/theme.helper';
 /*
  * Sayfa düzeyinde `Escape` dinleyen kod (sohbetin "akışı durdur" kısayolu) önce bunu sorar; yığının

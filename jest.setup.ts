@@ -25,10 +25,13 @@ if (typeof HTMLDialogElement !== 'undefined') {
  * jsdom yerleşim (layout) yapmıyor, dolayısıyla `scrollIntoView` de yok. `Select` ve `Combobox`
  * etkin seçeneği görünür alanda tutmak için onu her ok…
  */
-if (!Element.prototype.scrollIntoView) Element.prototype.scrollIntoView = () => {};
+/* Node ortamında koşan testler (sunucu çizimi) DOM'suz: yamalar yalnızca jsdom'da. */
+const hasDom = typeof window !== 'undefined';
+
+if (hasDom && !Element.prototype.scrollIntoView) Element.prototype.scrollIntoView = () => {};
 
 /* `visualViewport` jsdom'da yok; `useSheetViewport` onsuz sessizce çıkar. */
-if (!window.matchMedia)
+if (hasDom && !window.matchMedia)
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
     value: (query: string) => ({
