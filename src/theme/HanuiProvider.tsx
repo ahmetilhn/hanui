@@ -22,7 +22,7 @@ type Props = {
 
 /**
  * Kütüphane sağlayıcısı.
- * @example <HanuiProvider linkComponent={NextLink} theme={{ light: { blue: '#0d6efd' } }}> <App…
+ * @example <HanuiProvider linkComponent={NextLink} theme={{ light: { link: '#0a58ca' } }}> <App…
  */
 const HanuiProvider: FC<Props> = ({ children, theme, linkComponent, labels }) => {
   /*

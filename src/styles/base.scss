@@ -138,16 +138,18 @@
   }
 }
 
+// ⚠ Örtüler paletin mürekkebinden türer, SABİT renk yazılmaz: bu blok bir dönem 4.x öncesinin
+// mavi-grisini (`rgb(17 21 27)`) ve saf siyahı taşıyordu — ikisi de palette yoktu.
 @media (prefers-reduced-transparency: reduce) {
   :root {
     --hanui-glass: var(--hanui-glass-solid);
-    --hanui-scrim: rgb(17 21 27 / 92%);
-    --hanui-scrim-soft: rgb(17 21 27 / 78%);
+    --hanui-scrim: color-mix(in srgb, var(--hanui-shell) 92%, transparent);
+    --hanui-scrim-soft: color-mix(in srgb, var(--hanui-shell) 78%, transparent);
   }
 
   :root[data-hanui-theme='dark'] {
-    --hanui-scrim: rgb(0 0 0 / 94%);
-    --hanui-scrim-soft: rgb(0 0 0 / 82%);
+    --hanui-scrim: color-mix(in srgb, var(--hanui-surface-inset) 94%, transparent);
+    --hanui-scrim-soft: color-mix(in srgb, var(--hanui-surface-inset) 82%, transparent);
   }
 }
 

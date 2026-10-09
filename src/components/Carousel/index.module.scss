@@ -64,7 +64,7 @@
 
   &--active {
     width: 20px;
-    background-color: $role;
+    background-color: $selected;
   }
 
   @include focus-ring($ring-color, 2px);

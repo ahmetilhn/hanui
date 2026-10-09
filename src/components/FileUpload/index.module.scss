@@ -20,8 +20,8 @@
     background-color $duration-fast $ease-out;
 
   &:hover {
-    border-color: $ring-color;
-    background-color: $role-tint;
+    border-color: $border-strong;
+    background-color: $surface-2;
   }
 
   &:has(.upload__input:focus-visible) {
@@ -30,8 +30,8 @@
 
   &--dragging {
     border-style: solid;
-    border-color: $ring-color;
-    background-color: $role-tint;
+    border-color: $selected-line;
+    background-color: $selected-tint;
   }
 
   &--invalid {

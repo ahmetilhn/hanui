@@ -4,10 +4,11 @@ import {
   BAND,
   BRAND,
   CART,
+  CATEGORY,
   CORPORATE,
   DANGER_SOLID,
+  LINK,
   NEUTRAL,
-  ROLE,
   SALE,
   STAR,
   STATUS,
@@ -21,7 +22,8 @@ const EVERY_BLOCK = {
   SURFACE_DARK,
   STATUS,
   CART,
-  ROLE,
+  LINK,
+  CATEGORY,
   ACCENT,
   DANGER_SOLID,
   STAR,
@@ -34,7 +36,15 @@ const EVERY_BLOCK = {
 const everyValue = () =>
   Object.values(EVERY_BLOCK).flatMap(record => Object.values(record as Record<string, string>));
 
-describe('markanın iki ankoru', () => {
+describe('dört ankor', () => {
+  it('nötr eksen claude.com mürekkebine ve kâğıdına oturur', () => {
+    expect(BRAND.ink).toBe('#141413');
+    expect(NEUTRAL.n900).toBe('#141413');
+    expect(NEUTRAL.n25).toBe('#faf9f5');
+    expect(SURFACE_DARK.page).toBe(BRAND.ink);
+    expect(SURFACE_DARK.text).toBe(NEUTRAL.n25);
+  });
+
   it('pine ve mint birebir korunur', () => {
     expect(BRAND.pine).toBe('#00322a');
     expect(BRAND.mint).toBe('#43ff9c');
@@ -50,11 +60,14 @@ describe('markanın iki ankoru', () => {
 });
 
 describe('takma adlar merdivenden ayrılmaz', () => {
-  it('kurumsal üçlü merdivenin kendisidir', () => {
-    expect(CORPORATE.paper).toBe(NEUTRAL.n100);
-    expect(CORPORATE.slate).toBe(NEUTRAL.n600);
-    expect(CORPORATE.mist).toBe(SURFACE_DARK.textTwo);
-    expect(BRAND.ink).toBe(NEUTRAL.n900);
+  /*
+   * ⚠ 5.0'da kurumsal üçlü nötr merdivenden AYRILDI: arayüz nötrleri sıcak mürekkep, üçlü yalnızca
+   * marka şeridinde (çam zemin) yaşıyor. Nötr merdivenle çakışırsa nötr eksen yeniden yeşillenmiş
+   * demektir.
+   */
+  it('kurumsal üçlü nötr merdivende YOKTUR', () => {
+    const neutrals = new Set<string>([...Object.values(NEUTRAL), ...Object.values(SURFACE_DARK)]);
+    for (const value of Object.values(CORPORATE)) expect(neutrals.has(value)).toBe(false);
   });
 
   it('indirim etiketi olumlu durum ailesinin kendisidir', () => {

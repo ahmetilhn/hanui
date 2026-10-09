@@ -5,6 +5,16 @@ import { maxChroma, toHex } from './oklch.mjs';
 export const PINE = '#00322a';
 export const MINT = '#43ff9c';
 
+/**
+ * NÖTR ANKORLAR (5.0) — arayüzün siyahı ve kâğıdı; marka ekseninden BİLİNÇLE ayrı.
+ * ⚠ 4.x nötrleri marka ekseninde duruyordu (H 152-177, chroma 0,05'e kadar) ve arayüzün HER yüzeyi
+ * açık bir yeşil çiziyordu: yeşil vurgu olmaktan çıkıp zeminin kendisine dönüşmüştü. Ankorlar
+ * claude.com'un sıcak mürekkebinden (H 80-107, chroma 0,002-0,02) alındı; yeşil artık yalnızca
+ * eylem, bağlantı ve odakta.
+ */
+export const INK = '#141413';
+export const CANVAS = '#faf9f5';
+
 /** MARKA EKSENİ — ton aydınlıkla birlikte kayar. Ölçüldü: `pine` H 178,5 · `mint` H 154,8. */
 export const axisHue = lightness => {
   const t = Math.min(1, Math.max(0, (lightness - 0.15) / (0.97 - 0.15)));
@@ -19,7 +29,8 @@ export const HUE = {
   brand: null,
   cart: 152,
   ok: 152,
-  role: 162,
+  /* Bağlantı ve odak halkası — 4.x'in `role` ailesinin 5.0'da yeşil kalan yarısı. */
+  link: 162,
   /*
    * Eski palette bu aile zaten YEŞİLDİ (H ~165) ve `ok` ile arasında yalnızca 2° vardı; ayrımı ton
    * değil BAĞLAM taşıyor.
@@ -30,17 +41,37 @@ export const HUE = {
   warn: 72,
   bad: 25,
   star: 85,
-  off: 170,
+  /* `off` NÖTR ailedir: 4.x'te yeşil eksendeydi (H 170), 5.0'da nötr ekseni izler. */
+  off: 88,
 };
 
 /**
- * `{ l, s, h }` → hex. `s` mutlak chroma DEĞİL, o ton/aydınlıkta erişilebilir en yüksek chroma'nın
- * oranı.
+ * `{ l, s, h }` ya da `{ l, c, h }` → hex. `s` o ton/aydınlıkta erişilebilir en yüksek chroma'nın
+ * ORANI; `c` mutlak chroma.
+ * ⚠ Nötrler `c` ile yazılır: 0,005 gibi bir chroma oranla ifade edildiğinde erişilebilir tavan tona
+ * göre üç katına kadar değiştiği için kademeler arasında sessizce kayıyordu.
  */
-export const mix = ({ l, s, h }) => {
+export const mix = ({ l, s, c, h }) => {
   const hue = h ?? axisHue(l);
-  return toHex({ l, c: maxChroma(l, hue) * s, h: hue });
+  return toHex({ l, c: c ?? maxChroma(l, hue) * s, h: hue });
 };
+
+/** Bir kademe ya HAZIR hex (ankor) ya da tariftir. */
+export const resolve = step => (typeof step === 'string' ? step : mix(step));
+
+/**
+ * NÖTR KAPILARI.
+ * ⚠ Tavan: nötr merdivende hiçbir kademe bu chroma'yı aşamaz. 4.x'te eksen "doygun nötr" adıyla
+ * 0,05'e çıkmıştı ve kimse fark etmeden her yüzey yeşil olmuştu; tavan bunu kırılabilir kılar.
+ */
+export const NEUTRAL_CHROMA_CEILING = 0.025;
+
+/**
+ * TINT AYRIŞMASI — durum zemini ile kart (`surface-2`) arasındaki en küçük OKLab ΔE×100.
+ * ⚠ Ölçüldü: krem kartta 4.x'in uyarı tinti 2,0, tehlike tinti 2,1 veriyordu; sayfa→kart kademesi
+ * 4,7. Yani rozetin zemini, kartın sayfadan ayrıştığının yarısı kadar ayrışıyordu.
+ */
+export const MIN_TINT_DELTA_E = 4;
 
 /** Ailenin canlılık tabanı — üreteç bunun altına inen bir değer üretirse patlar. */
 export const MIN_SATURATION = {
@@ -50,38 +81,48 @@ export const MIN_SATURATION = {
   line: 0.4,
 };
 
-/** NÖTR MERDİVEN — 15 kademe. ⚠ Açık uç bilinçle bugünkünden DOYGUN. */
+/**
+ * NÖTR MERDİVEN — 15 kademe, SICAK MÜREKKEP ekseni (H 75-107). Açık uç kâğıt, koyu uç siyah.
+ * ⚠ Kademeler MUTLAK chroma ile yazılır (`c`) ve hiçbiri `NEUTRAL_CHROMA_CEILING`i aşamaz.
+ * ⚠ Krem kademeler (n50-n150) kenarlık kademelerinden (n200-n300) DOYGUN: yüzey kâğıttır, çizgi
+ * mürekkeptir. Aydınlık yine de tekdüze iner.
+ */
 export const NEUTRAL_STEPS = [
-  ['n0', { l: 0.995, s: 0.2 }],
-  ['n25', { l: 0.986, s: 0.32 }],
-  ['n50', { l: 0.976, s: 0.32 }],
-  ['n100', { l: 0.963, s: 0.34 }],
-  ['n150', { l: 0.946, s: 0.34 }],
-  ['n200', { l: 0.931, s: 0.34 }],
-  ['n250', { l: 0.9, s: 0.34 }],
-  ['n300', { l: 0.854, s: 0.34 }],
-  ['n400', { l: 0.748, s: 0.38 }],
-  ['n500', { l: 0.628, s: 0.45 }],
-  ['n550', { l: 0.509, s: 0.52 }],
-  ['n600', { l: 0.435, s: 0.6 }],
-  ['n700', { l: 0.348, s: 0.7 }],
-  ['n800', { l: 0.259, s: 0.85 }],
-  ['n900', { l: 0.15, s: 0.95 }],
+  /* Kartın ve girdinin zemini — sayfadan bir kademe AÇIK. Saf beyaz değil. */
+  ['n0', { l: 0.997, c: 0.003, h: 85 }],
+  ['n25', CANVAS],
+  ['n50', { l: 0.957, c: 0.012, h: 80 }],
+  ['n100', { l: 0.936, c: 0.016, h: 83 }],
+  ['n150', { l: 0.91, c: 0.02, h: 82 }],
+  ['n200', { l: 0.905, c: 0.011, h: 75 }],
+  ['n250', { l: 0.885, c: 0.013, h: 75 }],
+  ['n300', { l: 0.836, c: 0.018, h: 78 }],
+  ['n400', { l: 0.761, c: 0.012, h: 90 }],
+  ['n500', { l: 0.637, c: 0.0136, h: 92 }],
+  ['n550', { l: 0.506, c: 0.011, h: 94 }],
+  ['n600', { l: 0.413, c: 0.009, h: 90 }],
+  ['n700', { l: 0.359, c: 0.005, h: 100 }],
+  ['n800', { l: 0.264, c: 0.004, h: 100 }],
+  ['n900', INK],
 ];
 
-/** KOYU TEMA YÜZEY MERDİVENİ. ⚠ Koyu tema SİYAHTIR, koyu yeşil değil. */
+/**
+ * KOYU TEMA YÜZEY MERDİVENİ — sıcak siyah. ⚠ Kademeler arası fark BİLİNÇLE küçük (1,03-1,14:1):
+ * derinliği kenarlık kurar. `surfaceThree` claude.com'un `#252320`sinden bir tık açık, çünkü
+ * `interactive-surface`in hover'ı TEK kademe ve o değerde görünmüyordu.
+ */
 export const SURFACE_DARK_STEPS = {
-  page: { l: 0.15, s: 0.95 },
-  surface: { l: 0.195, s: 0.72 },
-  surfaceTwo: { l: 0.245, s: 0.6 },
-  surfaceThree: { l: 0.3, s: 0.5 },
-  inset: { l: 0.115, s: 1.0 },
-  border: { l: 0.335, s: 0.45 },
-  borderStrong: { l: 0.43, s: 0.4 },
-  text: { l: 0.963, s: 0.34 },
-  textTwo: { l: 0.748, s: 0.38 },
-  textThree: { l: 0.688, s: 0.4 },
-  actionSoft: { l: 0.43, s: 0.35 },
+  page: INK,
+  surface: { l: 0.205, c: 0.0042, h: 85 },
+  surfaceTwo: { l: 0.235, c: 0.0058, h: 92 },
+  surfaceThree: { l: 0.281, c: 0.0073, h: 92 },
+  inset: { l: 0.163, c: 0.002, h: 100 },
+  border: { l: 0.314, c: 0.0075, h: 85 },
+  borderStrong: { l: 0.402, c: 0.0086, h: 89 },
+  text: CANVAS,
+  textTwo: { l: 0.761, c: 0.012, h: 90 },
+  textThree: { l: 0.637, c: 0.0136, h: 92 },
+  actionSoft: { l: 0.402, c: 0.0086, h: 89 },
 };
 
 /** BANT — birincil eylem merdiveni. */
@@ -89,6 +130,20 @@ export const BAND_STEPS = {
   two: { l: 0.375, s: 0.85 },
   three: { l: 0.44, s: 0.8 },
   darkLine: { l: 0.335, s: 0.8 },
+  /* Şeridin üçüncü metin kademesi; şerit MARKA yüzeyi olduğu için marka ekseninde kalır. */
+  fgThree: { l: 0.688, s: 0.4 },
+};
+
+/**
+ * KURUMSAL YARDIMCI RENKLER — kılavuz 2.0'ın kâğıt / slate / sis üçlüsü, MARKA EKSENİNDE.
+ * ⚠ 4.x'te bunlar nötr merdivenin takma adıydı. 5.0'da arayüz nötrleri sıcak mürekkebe geçti ve
+ * üçlü YALNIZCA marka şeridinde (`band-*`) yaşıyor: çam zeminin üzerinde yeşil tonlu metin markanın
+ * sesi, arayüzün zemini değil.
+ */
+export const CORPORATE_STEPS = {
+  paper: { l: 0.963, s: 0.34 },
+  slate: { l: 0.435, s: 0.6 },
+  mist: { l: 0.748, s: 0.38 },
 };
 
 /**
@@ -109,47 +164,67 @@ export const CART_STEPS = {
 };
 
 /**
- * ROL / GEZİNME — bağlantı, keşif, etkin durum. ⚠ Ton markanın SERİN ucunda (H 178, pine'ın kendi
- * açısı), camgöbeğinde değil.
+ * BAĞLANTI VE ODAK — 4.x'in `role` ailesinin yeşil kalan yarısı. ⚠ Seçim, ilerleme, onay kutusu,
+ * anahtar artık bu aileyi KULLANMAZ: mürekkep merdivenine (`selected*`) geçtiler. Yeşil arayüzde
+ * yalnızca eylem, bağlantı ve odakta.
+ * ⚠ Ton açısı gözle ölçüldü (H 162): yukarısı camgöbeği okunuyordu, aşağısı olumlu durumla çakışıyor.
  */
-export const ROLE_STEPS = {
-  base: { l: 0.52, s: 0.9, h: HUE.role },
-  hover: { l: 0.45, s: 0.9, h: HUE.role },
-  active: { l: 0.385, s: 0.9, h: HUE.role },
-  text: { l: 0.485, s: 0.92, h: HUE.role },
-  tint: { l: 0.945, s: 0.5, h: HUE.role },
-  line: { l: 0.845, s: 0.5, h: HUE.role },
-  dark: { l: 0.79, s: 0.75, h: HUE.role },
-  darkHover: { l: 0.855, s: 0.7, h: HUE.role },
-  darkTint: { l: 0.245, s: 0.62, h: HUE.role },
-  darkLine: { l: 0.395, s: 0.6, h: HUE.role },
+export const LINK_STEPS = {
+  /* Açık temanın odak halkası — grafik eşiği (3:1) dört yüzeyde. */
+  base: { l: 0.52, s: 0.9, h: HUE.link },
+  hover: { l: 0.45, s: 0.9, h: HUE.link },
+  text: { l: 0.485, s: 0.92, h: HUE.link },
+  dark: { l: 0.79, s: 0.75, h: HUE.link },
+  darkHover: { l: 0.855, s: 0.7, h: HUE.link },
 };
 
 /**
  * DURUM AİLELERİ — altı aile, tek disiplin. Her ailenin altı üyesi aynı `l`/`s` şablonundan çıkar;
  * değişen tek şey ton açısı.
  */
+/*
+ * ⚠ ZEMİN 5.0'da BİR KADEME AŞAĞI VE DOYGUN (l .928 → .91, s .62 → .8). Krem yüzeyler (H 80-95)
+ * uyarı (H 72) ve tehlike (H 25) ailelerine ton açısıyla çok yakın; yalnızca doygunluğu artırmak
+ * uyarıyı ΔE 3,5'e taşıyordu, kapıyı (`MIN_TINT_DELTA_E`) aydınlık geçiriyor.
+ */
 export const STATUS_SHAPE = {
-  bg: { l: 0.928, s: 0.62 },
+  bg: { l: 0.91, s: 0.8 },
   fg: { l: 0.475, s: 0.92 },
   line: { l: 0.815, s: 0.6 },
-  bgDark: { l: 0.245, s: 0.6 },
+  bgDark: { l: 0.27, s: 0.65 },
   fgDark: { l: 0.785, s: 0.8 },
   lineDark: { l: 0.4, s: 0.6 },
 };
 
-/** `off` nötr ailedir: aynı şablon, chroma'nın üçte biri. */
-export const OFF_SATURATION_FACTOR = 0.33;
-
 /** AİLEYE ÖZEL SAPMALAR — ortak şablonun üzerine biner. */
 export const STATUS_OVERRIDES = {
+  /*
+   * Olumlu zemin ortak şablona İNMEZ: yeşil ton açısında s .8 mint'e (`#43ff9c`) yaklaşan bir
+   * dolgu üretiyordu ve "Stokta" rozeti markanın imza rengini taşımaya başlıyordu. Krem yüzeylerden
+   * zaten uzak (ΔE 7,1), kapının itmesine gerek yok.
+   */
+  ok: {
+    bg: { l: 0.928, s: 0.62 },
+  },
   oem: {
     bg: { l: 0.912, s: 0.7 },
     fg: { l: 0.425, s: 0.95 },
     line: { l: 0.775, s: 0.68 },
-    bgDark: { l: 0.225, s: 0.68 },
+    bgDark: { l: 0.255, s: 0.7 },
     fgDark: { l: 0.735, s: 0.85 },
     lineDark: { l: 0.375, s: 0.68 },
+  },
+  /*
+   * `off` NÖTR aile ve MUTLAK chroma ile yazılır: oranla yazıldığında nötr eksenin kremi gibi
+   * okunuyor ve "Tükendi" rozeti karttan ayrışmıyordu. Zemin kremden GRİYE çekildi.
+   */
+  off: {
+    bg: { l: 0.89, c: 0.006 },
+    fg: { l: 0.46, c: 0.012 },
+    line: { l: 0.815, c: 0.01 },
+    bgDark: { l: 0.3, c: 0.006 },
+    fgDark: { l: 0.785, c: 0.012 },
+    lineDark: { l: 0.4, c: 0.008 },
   },
 };
 
@@ -179,8 +254,36 @@ export const ACCENT_STEPS = {
   onGreen: { l: 0.17, s: 0.9, h: HUE.cart },
 };
 
-/** YILDIZ ALTINI — açık temada metin eşiğini de geçmeli (puan sayısı yanında). */
+/**
+ * KATEGORİK PALET — grafik serileri, kategori noktaları, lejant kareleri.
+ * ⚠ Marka yeşilleri seri rengi OLMAZ; yeşil yalnızca orta aydınlıkta bir kategori tonu (`cat3`).
+ * ⚠ `cat2` kil TURUNCUSU, kırmızı değil: H 30'da tehlike ailesiyle (H 25) karışıyordu.
+ * Kapılar: her ton iki temanın üç yüzeyinde ≥3:1 (`check:contrast`, grafik katmanı) ve iki ton
+ * arasında ΔE ≥ `MIN_CATEGORY_DELTA_E` (üreteç).
+ */
+export const CATEGORY_HUES = {
+  cat1: 255,
+  cat2: 42,
+  cat3: 162,
+  cat4: 90,
+  cat5: 345,
+  /* İkinci seri — birinci seri mürekkebin kendisi (bkz. `tokens.ts` `series-1`). */
+  series2: 300,
+};
+
+export const CATEGORY_SHAPE = {
+  light: { l: 0.56, s: 0.85 },
+  dark: { l: 0.74, s: 0.75 },
+};
+
+/** Kategori tonlarının birbirinden en az uzaklığı (OKLab ΔE×100). */
+export const MIN_CATEGORY_DELTA_E = 8;
+
+/**
+ * YILDIZ ALTINI — açık temada metin eşiğini de geçmeli (puan sayısı yanında).
+ * ⚠ 5.0'da l .545 → .52: krem kartta (`surface-2`) 4,15:1'e düşüyordu.
+ */
 export const STAR_STEPS = {
-  light: { l: 0.545, s: 0.95, h: HUE.star },
+  light: { l: 0.52, s: 0.95, h: HUE.star },
   dark: { l: 0.805, s: 0.9, h: HUE.star },
 };

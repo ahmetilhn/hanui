@@ -4,24 +4,32 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { deltaE, fromHex } from './lib/oklch.mjs';
 import {
   ACCENT_STEPS,
   BAND_STEPS,
   CART_STEPS,
+  CATEGORY_HUES,
+  CATEGORY_SHAPE,
+  CORPORATE_STEPS,
   DANGER_SOLID_STEPS,
   HUE,
+  INK,
+  LINK_STEPS,
   MINT,
+  MIN_CATEGORY_DELTA_E,
   MIN_SATURATION,
+  MIN_TINT_DELTA_E,
+  NEUTRAL_CHROMA_CEILING,
   NEUTRAL_STEPS,
-  OFF_SATURATION_FACTOR,
   PINE,
-  ROLE_STEPS,
   STAR_STEPS,
   STATUS_FAMILIES,
   STATUS_OVERRIDES,
   STATUS_SHAPE,
   SURFACE_DARK_STEPS,
   mix,
+  resolve as resolveStep,
 } from './lib/palette-recipe.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -30,10 +38,12 @@ const LEGACY = resolve(ROOT, 'scripts/legacy-hex.txt');
 
 /* --- Türetme ------------------------------------------------------------- */
 
-const neutral = Object.fromEntries(NEUTRAL_STEPS.map(([name, step]) => [name, mix(step)]));
+const neutral = Object.fromEntries(
+  NEUTRAL_STEPS.map(([name, step]) => [name, resolveStep(step)]),
+);
 
 const surfaceDark = Object.fromEntries(
-  Object.entries(SURFACE_DARK_STEPS).map(([name, step]) => [name, mix(step)]),
+  Object.entries(SURFACE_DARK_STEPS).map(([name, step]) => [name, resolveStep(step)]),
 );
 
 const band = {
@@ -42,20 +52,20 @@ const band = {
   three: mix(BAND_STEPS.three),
   dark: PINE,
   darkLine: mix(BAND_STEPS.darkLine),
+  fgThree: mix(BAND_STEPS.fgThree),
 };
 
 const cart = Object.fromEntries(Object.entries(CART_STEPS).map(([name, step]) => [name, mix(step)]));
-const role = Object.fromEntries(Object.entries(ROLE_STEPS).map(([name, step]) => [name, mix(step)]));
+const link = Object.fromEntries(Object.entries(LINK_STEPS).map(([name, step]) => [name, mix(step)]));
 
-/** Durum ailesi: ortak şablon + ailenin ton açısı. `off` nötr olduğu için kısılır. */
+/**
+ * Durum ailesi: ortak şablon + ailenin ton açısı. Sapma `c` taşıyorsa (nötr `off`) mutlak chroma
+ * kazanır.
+ */
 const statusFamily = family => {
   const hue = HUE[family];
-  const factor = family === 'off' ? OFF_SATURATION_FACTOR : 1;
   const override = STATUS_OVERRIDES[family] ?? {};
-  const value = key => {
-    const step = { ...STATUS_SHAPE[key], ...(override[key] ?? {}) };
-    return mix({ ...step, s: step.s * factor, h: hue });
-  };
+  const value = key => mix({ ...STATUS_SHAPE[key], ...(override[key] ?? {}), h: hue });
 
   return {
     [`${family}Bg`]: value('bg'),
@@ -77,8 +87,18 @@ const accent = Object.fromEntries(
 );
 const star = Object.fromEntries(Object.entries(STAR_STEPS).map(([name, step]) => [name, mix(step)]));
 
-const corporate = { paper: neutral.n100, slate: neutral.n600, mist: surfaceDark.textTwo };
-const brand = { pine: PINE, mint: MINT, ink: neutral.n900 };
+/** Kategori: her ton iki temada aynı şablon (`light` / `dark`), değişen yalnızca ton açısı. */
+const category = Object.fromEntries(
+  Object.entries(CATEGORY_HUES).flatMap(([name, hue]) => [
+    [name, mix({ ...CATEGORY_SHAPE.light, h: hue })],
+    [`${name}Dark`, mix({ ...CATEGORY_SHAPE.dark, h: hue })],
+  ]),
+);
+
+const corporate = Object.fromEntries(
+  Object.entries(CORPORATE_STEPS).map(([name, step]) => [name, mix(step)]),
+);
+const brand = { pine: PINE, mint: MINT, ink: INK };
 const anchor = { red: accent.red, green: accent.green };
 const sale = {
   bg: status.okBg,
@@ -94,12 +114,14 @@ const every = [
   ...Object.values(neutral),
   ...Object.values(surfaceDark),
   ...Object.values(band),
+  ...Object.values(corporate),
   ...Object.values(cart),
-  ...Object.values(role),
+  ...Object.values(link),
   ...Object.values(status),
   ...Object.values(dangerSolid),
   ...Object.values(accent),
   ...Object.values(star),
+  ...Object.values(category),
 ];
 
 /** ⚠ Eski paletten tek bir değer bile hayatta kalmamalı. */
@@ -138,11 +160,52 @@ const assertVividEnough = () => {
   for (const [name, step] of Object.entries(CART_STEPS))
     if (!name.includes('Soft') && name !== 'soft' && name !== 'on')
       check(`cart.${name}`, step, MIN_SATURATION.fill);
-  for (const [name, step] of Object.entries(ROLE_STEPS))
-    if (['base', 'hover', 'active', 'text', 'dark', 'darkHover'].includes(name))
-      check(`role.${name}`, step, MIN_SATURATION.fill);
+  for (const [name, step] of Object.entries(LINK_STEPS))
+    check(`link.${name}`, step, MIN_SATURATION.fill);
 
   if (violations.length > 0) throw new Error(`Canlilik tabani asildi:\n  ${violations.join('\n  ')}`);
+};
+
+/**
+ * ⚠ NÖTR GERÇEKTEN NÖTR: 4.x'te eksen "doygun nötr" adıyla chroma 0,05'e çıkmıştı ve arayüzün her
+ * yüzeyi yeşil çiziliyordu — hiçbir kapı bunu görmedi. Tavan ÇIKTIYA uygulanır, tarife değil.
+ */
+const assertNeutralStaysNeutral = () => {
+  const violations = [
+    ...Object.entries(neutral).map(([name, hex]) => [`NEUTRAL.${name}`, hex]),
+    ...Object.entries(surfaceDark).map(([name, hex]) => [`SURFACE_DARK.${name}`, hex]),
+  ].filter(([, hex]) => fromHex(hex).c > NEUTRAL_CHROMA_CEILING);
+
+  if (violations.length > 0)
+    throw new Error(
+      `Notr eksen renklendi (chroma > ${NEUTRAL_CHROMA_CEILING}): ` +
+        violations.map(([name, hex]) => `${name} ${hex}`).join(', '),
+    );
+};
+
+/**
+ * ⚠ DURUM ZEMİNİ YÜZEYDEN AYRIŞMALI: krem kartta 4.x'in uyarı tinti ΔE 2,0 veriyordu. Her ailenin
+ * zemini, temasının sayfa / yüzey / kart üçlüsüne karşı ölçülür.
+ */
+const assertTintsSeparate = () => {
+  const light = [neutral.n25, neutral.n0, neutral.n100];
+  const dark = [surfaceDark.page, surfaceDark.surface, surfaceDark.surfaceTwo];
+  const violations = [];
+
+  for (const family of STATUS_FAMILIES) {
+    for (const [key, surfaces] of [
+      ['Bg', light],
+      ['BgDark', dark],
+    ]) {
+      const tint = status[`${family}${key}`];
+      const nearest = Math.min(...surfaces.map(surface => deltaE(tint, surface)));
+      if (nearest < MIN_TINT_DELTA_E)
+        violations.push(`${family}${key} ${tint} ΔE ${nearest.toFixed(1)} < ${MIN_TINT_DELTA_E}`);
+    }
+  }
+
+  if (violations.length > 0)
+    throw new Error(`Durum zemini yuzeyle karisiyor:\n  ${violations.join('\n  ')}`);
 };
 
 /* --- Yazım --------------------------------------------------------------- */
@@ -159,27 +222,31 @@ const file = () =>
     `/**
  * HAM PALET — kütüphanenin TEK hex kaynağı; değerler OKLCH'te türetilir.
  * ⚠ ÜRETİLMİŞ DOSYA: \`scripts/lib/palette-recipe.mjs\` tarifini değiştir, \`npm run tokens\`.
- * ⚠ Yalnızca \`pine\` ve \`mint\` sabit; geri kalan her şey onlardan türer.
+ * ⚠ Dört ankor sabit: marka için \`pine\` / \`mint\`, nötr eksen için \`ink\` / \`canvas\`.
+ *   Geri kalan her şey onlardan türer.
  */`,
     block(
       'BRAND',
       `/**
- * MARKA — kılavuzun iki ankoru ve onlardan türeyen mürekkep.
- * ⚠ \`mint\` AÇIK ZEMİNDE METİN OLAMAZ (kâğıt üzerinde 1,3:1).
+ * MARKA — kılavuzun iki ankoru ve arayüzün mürekkebi.
+ * ⚠ \`mint\` AÇIK ZEMİNDE METİN OLAMAZ (krem üzerinde 1,24:1).
  */`,
       entries(brand),
     ),
     block(
       'CORPORATE',
-      `/** KURUMSAL YARDIMCI RENKLER — nötr merdivene takma ad, ayrı hex değil. */`,
+      `/**
+ * KURUMSAL YARDIMCI RENKLER — kâğıt / slate / sis, MARKA EKSENİNDE.
+ * ⚠ Yalnızca marka şeridinde (\`band-*\`) yaşar; arayüz nötrleri sıcak mürekkep merdivenidir.
+ */`,
       entries(corporate),
     ),
     block(
       'NEUTRAL',
       `/**
- * NÖTR EKSEN — marka ekseninde, ton aydınlıkla birlikte kayar.
- * ⚠ Açık uç bilinçle DOYGUN: eski %8-13 doygunluk fiilen griydi.
- * ⚠ \`n0\` SAF BEYAZ KALIR — merdivenin tepesi renk değil referans nokta.
+ * NÖTR EKSEN — SICAK MÜREKKEP: açık uç krem kâğıt (\`n25\` = canvas), koyu uç siyah (\`n900\` = ink).
+ * ⚠ Marka ekseninde DEĞİL: 4.x'te öyleydi ve arayüzün her yüzeyi yeşil çiziliyordu.
+ * ⚠ \`n0\` kartın zemini — sayfadan bir kademe açık, saf beyaz değil.
  */`,
       entries(neutral),
     ),
@@ -191,8 +258,8 @@ const file = () =>
     block(
       'SURFACE_DARK',
       `/**
- * KOYU TEMA YÜZEYLERİ.
- * ⚠ Koyu temada zemin SİYAHTIR, yeşil vurgudur; doygunluk yukarı çıktıkça DÜŞER.
+ * KOYU TEMA YÜZEYLERİ — sıcak siyah.
+ * ⚠ Kademeler arası fark bilinçle küçük (1,03-1,14:1); derinliği kenarlık kurar.
  */`,
       entries(surfaceDark),
     ),
@@ -214,13 +281,13 @@ const file = () =>
       entries(cart),
     ),
     block(
-      'ROLE',
+      'LINK',
       `/**
- * GEZİNME VE KEŞİF ROLÜ — bağlantı, etkin filtre, seçili satır, ilerleme.
+ * BAĞLANTI VE ODAK — 4.x \`role\` ailesinin yeşil kalan yarısı.
+ * ⚠ Seçim, ilerleme, onay kutusu ve anahtar bu aileyi KULLANMAZ; mürekkep merdivenindedir.
  * ⚠ TON AÇISI GÖZLE ÖLÇÜLDÜ: H 162 ilk kesin yeşil, yukarı çekilmez.
- * ⚠ Olumlu durumla karışma ton açısıyla değil BİÇİMLE çözülür.
  */`,
-      entries(role),
+      entries(link),
     ),
     block(
       'ANCHOR',
@@ -251,9 +318,39 @@ const file = () =>
       entries(sale),
     ),
     block('STAR', `/** YILDIZ ALTINI — puan sayısının yanında durduğu için metin eşiğini de geçer. */`, entries(star)),
+    block(
+      'CATEGORY',
+      `/**
+ * KATEGORİK PALET — grafik serileri ve kategori işaretleri.
+ * ⚠ Marka yeşilleri seri rengi OLMAZ; \`cat3\` orta aydınlıkta bir kategori yeşili.
+ */`,
+      entries(category),
+    ),
   ].join('\n');
 
+/** ⚠ İki kategori tonu grafikte YAN YANA duruyor; birbirine yakınsa lejant anlamını yitirir. */
+const assertCategoriesDistinct = () => {
+  const violations = [];
+
+  for (const suffix of ['', 'Dark']) {
+    const names = Object.keys(CATEGORY_HUES);
+    names.forEach((first, index) =>
+      names.slice(index + 1).forEach(second => {
+        const distance = deltaE(category[`${first}${suffix}`], category[`${second}${suffix}`]);
+        if (distance < MIN_CATEGORY_DELTA_E)
+          violations.push(`${first}${suffix} / ${second}${suffix} ΔE ${distance.toFixed(1)}`);
+      }),
+    );
+  }
+
+  if (violations.length > 0)
+    throw new Error(`Kategori tonlari birbirine cok yakin:\n  ${violations.join('\n  ')}`);
+};
+
 assertVividEnough();
+assertNeutralStaysNeutral();
+assertCategoriesDistinct();
+assertTintsSeparate();
 assertNoLegacyHex();
 
 const contents = file();

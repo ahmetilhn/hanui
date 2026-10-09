@@ -34,7 +34,7 @@ body {
 }
 
 .gallery__bar a {
-  color: var(--hanui-blue-text);
+  color: var(--hanui-link);
 }
 
 .gallery {

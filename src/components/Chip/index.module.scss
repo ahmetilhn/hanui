@@ -103,24 +103,25 @@
     }
   }
 
+  // Seçili: kenarlık + zemin BİRLİKTE, MÜREKKEP. 4.x'te rol yeşiliydi; seçim bir eylem değil.
   &--selected {
-    border-color: $role;
-    color: $role-hover;
-    background-color: $role-tint;
+    border-color: $selected-line;
+    color: $text;
+    background-color: $selected-tint;
     font-weight: $weight-semibold;
 
     .chip__icon {
-      color: $role;
+      color: $text;
     }
 
     .chip__count {
-      color: $role-text;
+      color: $text-2;
     }
 
     &:hover:not(:disabled) {
-      border-color: $role-hover;
-      color: $role-hover;
-      background-color: $role-tint;
+      border-color: $selected-hover;
+      color: $text;
+      background-color: $selected-tint;
     }
   }
 }

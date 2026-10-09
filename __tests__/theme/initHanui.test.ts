@@ -16,23 +16,23 @@ describe('initHanui', () => {
   });
 
   it('ezmeleri tek bir `<style>` etiketine yazar', () => {
-    initHanui({ theme: { light: { role: '#0d6efd' } } });
+    initHanui({ theme: { light: { link: '#0d6efd' } } });
 
     const style = document.getElementById(THEME_STYLE_ID);
 
-    expect(style?.textContent).toContain('--hanui-role: #0d6efd;');
+    expect(style?.textContent).toContain('--hanui-link: #0d6efd;');
   });
 
   it('ikinci çağrı AYNI etiketi yeniden kullanır', () => {
-    initHanui({ theme: { light: { role: '#0d6efd' } } });
-    initHanui({ theme: { light: { role: '#123456' } } });
+    initHanui({ theme: { light: { link: '#0d6efd' } } });
+    initHanui({ theme: { light: { link: '#123456' } } });
 
     expect(document.querySelectorAll(`#${THEME_STYLE_ID}`)).toHaveLength(1);
     expect(document.getElementById(THEME_STYLE_ID)?.textContent).toContain('#123456');
   });
 
   it('boş yapılandırma etiketi KALDIRIR — bayat ezme kalmaz', () => {
-    initHanui({ theme: { light: { role: '#0d6efd' } } });
+    initHanui({ theme: { light: { link: '#0d6efd' } } });
     initHanui({ theme: {} });
 
     expect(document.getElementById(THEME_STYLE_ID)).toBeNull();
@@ -69,7 +69,7 @@ describe('initHanui', () => {
   it('`colorScheme` verilmezse mevcut seçim KORUNUR', () => {
     document.documentElement.setAttribute(THEME_ATTRIBUTE, 'dark');
 
-    initHanui({ theme: { light: { role: '#0d6efd' } } });
+    initHanui({ theme: { light: { link: '#0d6efd' } } });
 
     expect(document.documentElement.getAttribute(THEME_ATTRIBUTE)).toBe('dark');
   });

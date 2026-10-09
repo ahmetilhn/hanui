@@ -1,12 +1,12 @@
 /** Düğme ve eylem varyantları. */
 enum UIVariant {
-  /** Ekranın tek beklenen eylemi: nötr grafit dolgu. */
+  /** Ekranın tek beklenen eylemi: çam dolgu (koyu temada mint sınırla). Bir ekranda TEK. */
   PRIMARY = 'PRIMARY',
   /** Dönüşüm eylemi — ve yalnızca o. */
   CART = 'CART',
   /** Nötr ikincil eylem: gri kenarlık, koyu metin ("Vazgeç"). */
   SECONDARY = 'SECONDARY',
-  /** Mavi çerçeveli eylem — teşvik edilen ama birincil olmayan gezinme ("Tümünü gör"). */
+  /** Mürekkep çerçeveli eylem — teşvik edilen ama birincil olmayan gezinme ("Tümünü gör"). */
   OUTLINE = 'OUTLINE',
   /** Vurgu bandı içindeki eylem: bandın kendi yüzey merdivenini kullanır. */
   DARK = 'DARK',

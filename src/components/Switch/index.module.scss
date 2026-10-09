@@ -82,7 +82,7 @@
 }
 
 .switch__input:checked + .switch__track {
-  background-color: $role;
+  background-color: $selected;
 
   .switch__thumb {
     translate: 16px 0;

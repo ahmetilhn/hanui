@@ -77,8 +77,8 @@
   }
 
   &.badge--outline {
-    border-color: $role-line;
-    color: $role-text;
+    border-color: $border-strong;
+    color: $text;
   }
 }
 
@@ -138,19 +138,23 @@
   }
 }
 
+// Gezinme etiketi: YEŞİL yalnızca metinde (bağlantı rengi). Dolu varyant mürekkep — yeşil dolgu
+// birincil eylemin işareti, bir etiketin değil.
 .badge--link {
   &.badge--soft {
-    @include tint(info);
+    background-color: $surface-2;
+    border-color: $border;
+    color: $link;
   }
 
   &.badge--solid {
-    background-color: $role;
-    border-color: $role;
-    color: $on-role;
+    background-color: $selected;
+    border-color: $selected;
+    color: $on-selected;
   }
 
   &.badge--outline {
-    border-color: $role;
-    color: $role-text;
+    border-color: $link;
+    color: $link;
   }
 }

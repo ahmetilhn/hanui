@@ -9,7 +9,7 @@ export type Formatter<TArgs extends unknown[]> = (...args: TArgs) => string;
 
 /**
  * Dışarıdan verilebilecek tema yapılandırması.
- * @example initHanui({ theme: { light: { blue: '#0d6efd', 'blue-text': '#0a58ca' }, dark: {…
+ * @example initHanui({ theme: { light: { link: '#0a58ca', 'ring-color': '#0d6efd' }, dark: {…
  */
 export type HanuiThemeConfig = Partial<{
   light: HanuiThemeTokens;

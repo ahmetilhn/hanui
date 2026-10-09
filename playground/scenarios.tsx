@@ -181,6 +181,9 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     outline: (
       <IconButton icon={<HeartFill aria-hidden />} label="Favorilere ekle" variant="outline" />
     ),
+    /* Dolu varyantlar galeride OLMALI: yeşil yalnızca eylemde kalıyorsa görsel fark onu görmeli. */
+    solid: <IconButton icon={<HeartFill aria-hidden />} label="Favorilere ekle" variant="solid" />,
+    cart: <IconButton icon={<HeartFill aria-hidden />} label="Sepete ekle" variant="cart" />,
     disabled: <IconButton icon={<HeartFill aria-hidden />} label="Favorilere ekle" disabled />,
   },
   TextLink: {
@@ -361,6 +364,21 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     success: <Badge tone="success">Stokta</Badge>,
     warning: <Badge tone="warning">Son 2 adet</Badge>,
     danger: <Badge tone="danger">Tükendi</Badge>,
+    /* Bugüne kadar galeride olmayan tonlar — renk kararı değiştiğinde görsel fark bunları görmüyordu. */
+    info: <Badge tone="info">Bilgi</Badge>,
+    oem: <Badge tone="oem">Orijinal</Badge>,
+    alt: <Badge tone="alt">Muadil</Badge>,
+    sale: <Badge tone="sale">%20</Badge>,
+    action: (
+      <Badge tone="action" variant="solid">
+        3
+      </Badge>
+    ),
+    link: (
+      <Badge tone="link" variant="outline">
+        Kategori
+      </Badge>
+    ),
   },
   Breadcrumb: {
     default: (

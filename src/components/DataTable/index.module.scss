@@ -87,7 +87,7 @@
   &--ascending,
   &--descending {
     opacity: 1;
-    color: $role-text;
+    color: $text;
   }
 
   @include reduced-motion {
@@ -128,8 +128,8 @@ thead .sticky {
   z-index: $z-raised;
 
   padding: $space-2 $space-3;
-  border-bottom: 1px solid $role-line;
-  background-color: $role-tint;
+  border-bottom: 1px solid $border-strong;
+  background-color: $selected-tint;
   font-size: $font-size-sm;
   color: $text;
 }

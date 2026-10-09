@@ -43,17 +43,28 @@ const buildPairs = () => {
   for (const fill of ['danger-solid', 'danger-solid-hover']) add('on-danger', fill, 'text');
 
   /*
-   * Mavi dolgu üzerindeki metin — etkin sayfa numarası (`Pagination`), etkin karo madalyonu
-   * (`Tile`), geçerli adım (`Steps`), dolu bağlantı rozeti…
+   * Seçim dolgusu üzerindeki metin — etkin sayfa numarası (`Pagination`), etkin karo madalyonu
+   * (`Tile`), geçerli adım (`Steps`). Koyu temada dolgu krem, metin siyah.
    */
-  for (const fill of ['role', 'role-hover']) add('on-role', fill, 'text');
+  for (const fill of ['selected', 'selected-hover', 'selected-active'])
+    add('on-selected', fill, 'text');
+  /* Seçili satır / seçenek: zemin `selected-tint`, metin gövde metni. */
+  add('text', 'selected-tint', 'text');
+
+  /* Mürekkep yüzey (terminal, teknik blok) — temadan bağımsız. */
+  for (const fill of ['shell', 'shell-2', 'shell-3']) {
+    add('on-shell', fill, 'text');
+    add('on-shell-2', fill, 'text');
+  }
 
   /* `on-green` YALNIZCA `green-accent` ile ölçülür, hover'ıyla değil. */
   add('on-green', 'green-accent', 'text');
 
   // --- Bağlantı ---
-  for (const surface of ['page', 'surface', 'surface-2', 'role-tint'])
-    add('role-text', surface, 'text');
+  for (const surface of ['page', 'surface', 'surface-2', 'surface-inset']) {
+    add('link', surface, 'text');
+    add('link-hover', surface, 'text');
+  }
 
   // --- Durum üçlüleri ---
   for (const tint of TINTS) add(`${tint}-fg`, `${tint}-bg`, 'text');
@@ -92,6 +103,10 @@ const buildPairs = () => {
     add('red-accent', surface, 'graphic');
     add('green-accent', surface, 'graphic');
     add('star', surface, 'graphic');
+    /* Seçim dolgusu tek başına durum taşır (onay kutusu, anahtar, ilerleme): grafik eşiği. */
+    add('selected', surface, 'graphic');
+    for (const series of ['cat-1', 'cat-2', 'cat-3', 'cat-4', 'cat-5', 'series-1', 'series-2'])
+      add(series, surface, 'graphic');
   }
 
   return pairs;
@@ -109,12 +124,13 @@ const buildAdvisoryPairs = () => {
   }
   add('action-soft', 'surface');
   add('track', 'surface');
-  add('role-line', 'role-tint');
+  add('selected-tint', 'surface');
+  add('shell-line', 'page');
   add('nav-line', 'nav-bg');
   add('nav-line-strong', 'nav-bg');
 
-  /* Dolu düğmenin sayfaya karşı sınırı (`amber` beyaz üzerinde 2,14:1). */
-  for (const fill of ['action', 'cart', 'danger-solid', 'role'])
+  /* Dolu düğmenin sayfaya karşı sınırı. */
+  for (const fill of ['action', 'cart', 'danger-solid', 'selected'])
     for (const surface of ['page', 'surface']) add(fill, surface);
 
   return pairs;

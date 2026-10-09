@@ -55,10 +55,10 @@
   }
 
   &--brand {
-    color: $role-text;
+    color: $link;
 
     &:hover {
-      color: $role-hover;
+      color: $link-hover;
     }
   }
 

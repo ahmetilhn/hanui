@@ -162,19 +162,21 @@
     }
   }
 
+  // Mürekkep çerçeve: SECONDARY'nin gri kenarlığından bir kademe vurgulu, birincil eylemin yeşilini
+  // taşımaz. 4.x'te rol yeşiliydi.
   &--outline {
     background-color: transparent;
-    border-color: $role;
-    color: $role-text;
+    border-color: $selected-line;
+    color: $text;
 
     &:hover:not(:disabled) {
-      background-color: $role-tint;
-      border-color: $role-hover;
+      background-color: $surface-2;
+      border-color: $selected-hover;
     }
 
     &:active:not(:disabled) {
-      background-color: $role-tint;
-      border-color: $role-active;
+      background-color: $surface-3;
+      border-color: $selected-active;
     }
 
     &:disabled {

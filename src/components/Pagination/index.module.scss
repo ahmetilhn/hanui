@@ -109,15 +109,15 @@
   }
 
   & &__page--active {
-    background-color: $role;
-    border-color: $role;
-    color: $on-role;
+    background-color: $selected;
+    border-color: $selected;
+    color: $on-selected;
 
     &:hover:not(:disabled),
     &:active:not(:disabled) {
-      background-color: $role-text;
-      border-color: $role-text;
-      color: $on-role;
+      background-color: $selected-hover;
+      border-color: $selected-hover;
+      color: $on-selected;
     }
   }
 

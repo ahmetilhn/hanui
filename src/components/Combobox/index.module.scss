@@ -189,11 +189,10 @@ $clear-size: 22px;
     min-height: 40px;
 
     &--active {
-      background-color: $role-tint;
+      background-color: $surface-2;
     }
 
     &--selected {
-      color: $role-text;
       font-weight: $weight-semibold;
     }
 
@@ -221,7 +220,7 @@ $clear-size: 22px;
   }
 
   &__check {
-    color: $role;
+    color: $text;
     font-size: $icon-md;
     flex-shrink: 0;
   }

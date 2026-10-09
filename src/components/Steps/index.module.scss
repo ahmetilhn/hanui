@@ -88,16 +88,19 @@ button.steps__button {
   font-weight: $weight-semibold;
   font-variant-numeric: tabular-nums;
 
+  // Üç ayrı İŞARET, tek renk ailesi: tamamlanan = mürekkep dolgu + tik, geçerli = mürekkep halka +
+  // numara, bekleyen = ince kenarlık + numara. Bir ADIM başarısız olamaz; tamamlanmak bir başarı
+  // DURUMU değil, o yüzden olumlu yeşili taşımaz (4.x'te taşıyordu).
   .steps__item--done & {
-    background-color: $green-accent;
-    border-color: $green-accent;
-    color: $on-green;
+    background-color: $selected;
+    border-color: $selected;
+    color: $on-selected;
   }
 
   .steps__item--current & {
-    background-color: $role;
-    border-color: $role;
-    color: $on-role;
+    border-color: $selected;
+    box-shadow: inset 0 0 0 1px $selected;
+    color: $text;
   }
 
   @media (forced-colors: active) {

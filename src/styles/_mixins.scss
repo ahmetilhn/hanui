@@ -216,11 +216,12 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
   }
 }
 
+// ⚠ Kart ve panel DURURKEN gölge taşımaz: derinliği renk bloğu (krem sayfa / açık kart) ve
+// kenarlık kurar. Gölge yalnızca geçici katmanda, kipsel yüzeyde ve tıklanabilir kartın hover'ında.
 @mixin card($interactive: false, $radius: $radius-lg) {
   background-color: $surface;
   border: 1px solid $border;
   border-radius: $radius;
-  box-shadow: $shadow-sm;
 
   @include for-mobile {
     border-radius: $radius-md;
@@ -240,7 +241,7 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
 
     &:active {
       transform: translateY(0);
-      box-shadow: $shadow-sm;
+      box-shadow: $shadow-xs;
     }
 
     @include reduced-motion {
@@ -293,7 +294,6 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
   background-color: $surface;
   border: 1px solid $border;
   border-radius: $radius;
-  box-shadow: $shadow-sm;
   overflow: hidden;
 
   @include for-mobile {
@@ -346,9 +346,11 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
     border: 1px solid $alt-line;
     color: $alt-fg;
   } @else if $tone == info {
-    background-color: $role-tint;
-    border: 1px solid $role-line;
-    color: $role-text;
+    // Bilgi NÖTR: anlamı ikon taşır (1.4.1). 4.x'te yeşil rol tintiydi ve Alert'in varsayılan tonu
+    // olduğu için yeşili her uyarıya taşıyordu.
+    background-color: $selected-tint;
+    border: 1px solid $border-strong;
+    color: $text;
   } @else {
     background-color: $off-bg;
     border: 1px solid $off-line;

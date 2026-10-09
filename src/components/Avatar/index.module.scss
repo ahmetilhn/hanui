@@ -41,9 +41,11 @@
   }
 }
 
+// Karma tonlar: altısından YALNIZCA BİRİ yeşil. 4.x'te üçü yeşildi (rol, olumlu, OEM) ve avatar
+// listesi markanın rengini taşıyordu.
 .avatar--tone-0 {
-  background-color: $role-tint;
-  color: $role-text;
+  background-color: $selected-tint;
+  color: $text;
 }
 
 .avatar--tone-1 {
@@ -62,8 +64,8 @@
 }
 
 .avatar--tone-4 {
-  background-color: $oem-bg;
-  color: $oem-fg;
+  background-color: $off-bg;
+  color: $off-fg;
 }
 
 .avatar--tone-5 {

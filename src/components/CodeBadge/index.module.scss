@@ -7,10 +7,13 @@
   gap: $space-2;
   max-width: 100%;
   min-width: 0;
-  background-color: $action;
-  color: $on-action;
+  // MÜREKKEP yüzey, iki temada aynı: teknik bir kod etiketi bir EYLEM değil. 4.x'te birincil
+  // eylemin çam dolgusunu taşıyordu ve açık temada `action-line` = `action` olduğu için "kopyalandı"
+  // simgesi ile odak halkası dolguyla aynı renkteydi (1:1, görünmüyordu).
+  background-color: $shell;
+  color: $on-shell;
 
-  border: 1px solid $action-line;
+  border: 1px solid $shell-line;
   border-radius: $radius-sm;
 
   &--sm {
@@ -59,26 +62,27 @@
     border: none;
     border-radius: $radius-xs;
     background: none;
-    color: $on-action-soft;
+    color: $on-shell-2;
     font-size: $icon-sm;
     cursor: pointer;
     transition: color $duration-fast $ease-out;
 
     &:hover {
-      color: $on-action;
+      color: $on-shell;
     }
 
-    @include focus-ring($action-line, 1px);
+    @include focus-ring($on-shell, 1px);
 
     @include reduced-motion {
       transition: none;
     }
 
+    // Durumu SİMGE taşır (kopyala → tik); renk tek başına anlam taşımaz.
     &--done {
-      color: $action-line;
+      color: $on-shell;
 
       &:hover {
-        color: $action-line;
+        color: $on-shell;
       }
     }
   }

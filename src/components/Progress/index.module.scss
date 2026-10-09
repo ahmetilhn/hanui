@@ -38,7 +38,7 @@
   display: block;
   height: 100%;
   border-radius: $radius-pill;
-  background-color: $role;
+  background-color: $selected;
   transition: inline-size $duration-normal $ease-out;
 
   &--success {
@@ -85,7 +85,7 @@
   }
 
   &__fill {
-    stroke: $role;
+    stroke: $selected;
     stroke-linecap: round;
     transition: stroke-dashoffset $duration-normal $ease-out;
 

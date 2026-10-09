@@ -46,11 +46,11 @@
     }
 
     &--active {
-      color: $role-hover;
+      color: $text;
       font-weight: $weight-semibold;
 
       &::before {
-        background-color: $role;
+        background-color: $selected;
       }
     }
 

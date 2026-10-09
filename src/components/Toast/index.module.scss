@@ -42,7 +42,7 @@
   }
 
   &--info {
-    border-inline-start: 3px solid $role;
+    border-inline-start: 3px solid $selected;
   }
 
   &--success {
@@ -69,7 +69,7 @@
   margin-top: 1px;
 
   .toast--info & {
-    color: $role;
+    color: $text;
   }
 
   .toast--success & {
@@ -115,10 +115,12 @@
   font-family: $font-ui;
   font-size: $font-size-xs;
   font-weight: $weight-semibold;
-  color: $role-text;
+  color: $text;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 
   &:hover {
-    background-color: $role-tint;
+    background-color: $surface-2;
   }
 
   @include focus-ring($ring-color, 1px);

@@ -1,19 +1,23 @@
 /**
  * HAM PALET — kütüphanenin TEK hex kaynağı; değerler OKLCH'te türetilir.
  * ⚠ ÜRETİLMİŞ DOSYA: `scripts/lib/palette-recipe.mjs` tarifini değiştir, `npm run tokens`.
- * ⚠ Yalnızca `pine` ve `mint` sabit; geri kalan her şey onlardan türer.
+ * ⚠ Dört ankor sabit: marka için `pine` / `mint`, nötr eksen için `ink` / `canvas`.
+ *   Geri kalan her şey onlardan türer.
  */
 /**
- * MARKA — kılavuzun iki ankoru ve onlardan türeyen mürekkep.
- * ⚠ `mint` AÇIK ZEMİNDE METİN OLAMAZ (kâğıt üzerinde 1,3:1).
+ * MARKA — kılavuzun iki ankoru ve arayüzün mürekkebi.
+ * ⚠ `mint` AÇIK ZEMİNDE METİN OLAMAZ (krem üzerinde 1,24:1).
  */
 export const BRAND = {
   pine: '#00322a',
   mint: '#43ff9c',
-  ink: '#010f0b',
+  ink: '#141413',
 } as const;
 
-/** KURUMSAL YARDIMCI RENKLER — nötr merdivene takma ad, ayrı hex değil. */
+/**
+ * KURUMSAL YARDIMCI RENKLER — kâğıt / slate / sis, MARKA EKSENİNDE.
+ * ⚠ Yalnızca marka şeridinde (`band-*`) yaşar; arayüz nötrleri sıcak mürekkep merdivenidir.
+ */
 export const CORPORATE = {
   paper: '#e9f7ed',
   slate: '#325a4d',
@@ -21,26 +25,26 @@ export const CORPORATE = {
 } as const;
 
 /**
- * NÖTR EKSEN — marka ekseninde, ton aydınlıkla birlikte kayar.
- * ⚠ Açık uç bilinçle DOYGUN: eski %8-13 doygunluk fiilen griydi.
- * ⚠ `n0` SAF BEYAZ KALIR — merdivenin tepesi renk değil referans nokta.
+ * NÖTR EKSEN — SICAK MÜREKKEP: açık uç krem kâğıt (`n25` = canvas), koyu uç siyah (`n900` = ink).
+ * ⚠ Marka ekseninde DEĞİL: 4.x'te öyleydi ve arayüzün her yüzeyi yeşil çiziliyordu.
+ * ⚠ `n0` kartın zemini — sayfadan bir kademe açık, saf beyaz değil.
  */
 export const NEUTRAL = {
-  n0: '#fdfefd',
-  n25: '#f7fcf8',
-  n50: '#f1faf4',
-  n100: '#e9f7ed',
-  n150: '#dff3e5',
-  n200: '#d5f0de',
-  n250: '#c0eacf',
-  n300: '#aaddbf',
-  n400: '#8abaa1',
-  n500: '#669480',
-  n550: '#467060',
-  n600: '#325a4d',
-  n700: '#1d4238',
-  n800: '#082a23',
-  n900: '#010f0b',
+  n0: '#fffefc',
+  n25: '#faf9f5',
+  n50: '#f5f0e8',
+  n100: '#efe9de',
+  n150: '#e8e0d3',
+  n200: '#e4dfd8',
+  n250: '#ded8d0',
+  n300: '#d0c8bd',
+  n400: '#b4b1a9',
+  n500: '#8e8b82',
+  n550: '#67655e',
+  n600: '#4d4b46',
+  n700: '#3d3d3a',
+  n800: '#252523',
+  n900: '#141413',
 } as const;
 
 /** BANT — üst bant, alt bilgi, tablo başlıkları ve BİRİNCİL EYLEM; tabanı `pine`. */
@@ -50,24 +54,25 @@ export const BAND = {
   three: '#225f4d',
   dark: '#00322a',
   darkLine: '#143f34',
+  fgThree: '#79a790',
 } as const;
 
 /**
- * KOYU TEMA YÜZEYLERİ.
- * ⚠ Koyu temada zemin SİYAHTIR, yeşil vurgudur; doygunluk yukarı çıktıkça DÜŞER.
+ * KOYU TEMA YÜZEYLERİ — sıcak siyah.
+ * ⚠ Kademeler arası fark bilinçle küçük (1,03-1,14:1); derinliği kenarlık kurar.
  */
 export const SURFACE_DARK = {
-  page: '#010f0b',
-  surface: '#071915',
-  surfaceTwo: '#112520',
-  surfaceThree: '#1e332d',
-  inset: '#000705',
-  border: '#273c35',
-  borderStrong: '#3d564d',
-  text: '#e9f7ed',
-  textTwo: '#8abaa1',
-  textThree: '#79a790',
-  actionSoft: '#40554d',
+  page: '#141413',
+  surface: '#181715',
+  surfaceTwo: '#1f1e1b',
+  surfaceThree: '#2a2925',
+  inset: '#0e0e0d',
+  border: '#33312d',
+  borderStrong: '#4a4843',
+  text: '#faf9f5',
+  textTwo: '#b4b1a9',
+  textThree: '#8e8b82',
+  actionSoft: '#4a4843',
 } as const;
 
 /**
@@ -97,21 +102,16 @@ export const CART = {
 } as const;
 
 /**
- * GEZİNME VE KEŞİF ROLÜ — bağlantı, etkin filtre, seçili satır, ilerleme.
+ * BAĞLANTI VE ODAK — 4.x `role` ailesinin yeşil kalan yarısı.
+ * ⚠ Seçim, ilerleme, onay kutusu ve anahtar bu aileyi KULLANMAZ; mürekkep merdivenindedir.
  * ⚠ TON AÇISI GÖZLE ÖLÇÜLDÜ: H 162 ilk kesin yeşil, yukarı çekilmez.
- * ⚠ Olumlu durumla karışma ton açısıyla değil BİÇİMLE çözülür.
  */
-export const ROLE = {
+export const LINK = {
   base: '#1f7b56',
   hover: '#176446',
-  active: '#115037',
   text: '#17704e',
-  tint: '#d5f6e4',
-  line: '#93dfba',
   dark: '#60d4a1',
   darkHover: '#76eab5',
-  darkTint: '#11251c',
-  darkLine: '#2b4f3e',
 } as const;
 
 /** ANKORLAR — halka ve vurgu renklerinin türediği iki uç. */
@@ -128,37 +128,37 @@ export const STATUS = {
   okBg: '#c2f6cf',
   okFg: '#166e3a',
   okLine: '#7eda99',
-  okBgDark: '#112617',
+  okBgDark: '#132d1b',
   okFgDark: '#56d682',
   okLineDark: '#2c5137',
-  warnBg: '#f6e4cf',
+  warnBg: '#f9dcb9',
   warnFg: '#7c5212',
   warnLine: '#e8b97f',
-  warnBgDark: '#2a1e0f',
+  warnBgDark: '#322311',
   warnFgDark: '#eeaa4c',
   warnLineDark: '#594327',
-  offBg: '#daece5',
-  offFg: '#4d625a',
-  offLine: '#afcabf',
-  offBgDark: '#1c2220',
-  offFgDark: '#a0c2b5',
-  offLineDark: '#404b46',
-  badBg: '#f6e2e0',
+  offBg: '#dcdad6',
+  offFg: '#5b5851',
+  offLine: '#c5c2bb',
+  offBgDark: '#2f2e2a',
+  offFgDark: '#bcb9b0',
+  offLineDark: '#494743',
+  badBg: '#f9d8d5',
   badFg: '#a91922',
   badLine: '#e9b3ae',
-  badBgDark: '#381311',
+  badBgDark: '#431514',
   badFgDark: '#f2a099',
   badLineDark: '#732f2c',
   oemBg: '#a7f7c8',
   oemFg: '#0c5d3a',
   oemLine: '#6ace97',
-  oemBgDark: '#0b2115',
+  oemBgDark: '#0f291b',
   oemFgDark: '#43c485',
   oemLineDark: '#224b35',
-  altBg: '#e9e4f6',
+  altBg: '#e5dcf9',
   altFg: '#751dc8',
   altLine: '#c9bae7',
-  altBgDark: '#271540',
+  altBgDark: '#2e184c',
   altFgDark: '#c3aaf1',
   altLineDark: '#533281',
 } as const;
@@ -187,12 +187,31 @@ export const ACCENT = {
 export const SALE = {
   bg: '#c2f6cf',
   fg: '#166e3a',
-  bgDark: '#112617',
+  bgDark: '#132d1b',
   fgDark: '#56d682',
 } as const;
 
 /** YILDIZ ALTINI — puan sayısının yanında durduğu için metin eşiğini de geçer. */
 export const STAR = {
-  light: '#8c6a11',
+  light: '#846310',
   dark: '#ebb737',
+} as const;
+
+/**
+ * KATEGORİK PALET — grafik serileri ve kategori işaretleri.
+ * ⚠ Marka yeşilleri seri rengi OLMAZ; `cat3` orta aydınlıkta bir kategori yeşili.
+ */
+export const CATEGORY = {
+  cat1: '#2774cd',
+  cat1Dark: '#7eaeeb',
+  cat2: '#b75225',
+  cat2Dark: '#ec8f6b',
+  cat3: '#2c8761',
+  cat3Dark: '#58c393',
+  cat4: '#8b7126',
+  cat4Dark: '#c7a74f',
+  cat5: '#c02f8f',
+  cat5Dark: '#ed81c1',
+  series2: '#8f3beb',
+  series2Dark: '#b699eb',
 } as const;

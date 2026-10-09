@@ -2,11 +2,12 @@ import {
   ACCENT,
   ACTION_LINE,
   BAND,
-  ROLE,
   BRAND,
   CART,
+  CATEGORY,
   CORPORATE,
   DANGER_SOLID,
+  LINK,
   NEUTRAL,
   SALE,
   STAR,
@@ -77,9 +78,9 @@ const INK_DEEP = SURFACE_DARK.inset;
 export const LIGHT_THEME = {
   // --- Yüzey ---
   /*
-   * Önceki merdivende `page` ve `surface` İKİSİ DE saf beyazdı ve kart sayfadan dolguyla hiç
-   * ayrışmıyordu
-   * ⚠ SAYFA KARTTAN BİR KADEME KOYU — düzeltilen ölçülmüş bir düzlük.
+   * SAYFA KREM (`#faf9f5`), KART BEYAZA YAKIN — kart sayfadan bir kademe AÇIK. Ayrımın asıl
+   * taşıyıcısı kenarlık (1,05:1 dolgu farkı tek başına görünmez).
+   * ⚠ 4.x'te sayfa yeşil tonlu kâğıttı (`#f7fcf8`); 5.0'da arayüz nötrleri sıcak mürekkep ekseninde.
    */
   page: NEUTRAL.n25,
   surface: NEUTRAL.n0,
@@ -97,10 +98,18 @@ export const LIGHT_THEME = {
   'text-2': NEUTRAL.n600,
   'text-3': NEUTRAL.n550,
 
-  /* UYGULAMA KABUĞU — üst bant, alt bilgi, tablo başlığı, teknik blok. */
-  shell: BAND.base,
-  'shell-2': BAND.two,
-  'shell-3': BAND.three,
+  /*
+   * MÜREKKEP YÜZEY — terminal, teknik blok, koyu kod penceresi. TEMAYA GÖRE DÖNMEZ: açık temada da
+   * sıcak siyah.
+   * ⚠ 4.x'te bu aile çamdı (`#00322a`); yeşil teknik bir yüzeyin zemini değil, eylemin rengi.
+   */
+  shell: SURFACE_DARK.surface,
+  'shell-2': SURFACE_DARK.surfaceTwo,
+  'shell-3': SURFACE_DARK.surfaceThree,
+  'on-shell': SURFACE_DARK.text,
+  'on-shell-2': SURFACE_DARK.textTwo,
+  /** Koyu temada kabuk sayfadan 1,03:1 ayrışıyor; görünür kılan bu çizgi. */
+  'shell-line': SURFACE_DARK.border,
 
   /* BİRİNCİL EYLEM (dolgulu, kurumsal koyu yeşil). */
   action: BAND.base,
@@ -121,18 +130,22 @@ export const LIGHT_THEME = {
   'cart-soft': CART.soft,
   'on-cart': CART.on,
 
-  /* GEZİNME VE KEŞİF ROLÜ — bağlantı, etkin filtre, seçili satır, ilerleme. */
-  role: ROLE.base,
-  'role-hover': ROLE.hover,
-  'role-active': ROLE.active,
-  'role-text': ROLE.text,
-  'role-tint': ROLE.tint,
-  'role-line': ROLE.line,
   /*
-   * ROL DOLGUSU ÜZERİNDEKİ METİN — etkin sayfa numarası, etkin karo madalyonu, geçerli adım, dolu
-   * bağlantı rozeti.
+   * SEÇİM — etkin sayfa, seçili çip/seçenek, sekme çizgisi, ilerleme, onay kutusu, anahtar, adım.
+   * MÜREKKEP, yeşil değil: 4.x'te bunların hepsi rol yeşilini taşıyordu ve yeşil ekranın her
+   * köşesinde duruyordu (28 bileşende 87 bildirim).
    */
-  'on-role': NEUTRAL.n0,
+  selected: NEUTRAL.n900,
+  'selected-hover': NEUTRAL.n800,
+  'selected-active': NEUTRAL.n700,
+  'on-selected': NEUTRAL.n25,
+  /** Seçili satır / seçenek zemini — kenarlık ya da işaretle BİRLİKTE (seçim yalnız zeminle verilmez). */
+  'selected-tint': NEUTRAL.n150,
+  'selected-line': NEUTRAL.n900,
+
+  /* BAĞLANTI — yeşil kalan üç yerden biri (eylem, bağlantı, odak). Alt çizgi ZORUNLU: gövde metnine 3,04:1. */
+  link: LINK.text,
+  'link-hover': LINK.hover,
 
   // --- Durum: tint zemin + koyu metin + eşleşen hairline ---
   'ok-bg': STATUS.okBg,
@@ -174,8 +187,8 @@ export const LIGHT_THEME = {
   'danger-solid-hover': DANGER_SOLID.hover,
   'on-danger': NEUTRAL.n0,
 
-  /* ÜST BANT / ALT BİLGİ / KAHRAMAN BÖLÜMÜ. */
-  'nav-bg': NEUTRAL.n0,
+  /* ÜST BANT / ALT BİLGİ / KAHRAMAN BÖLÜMÜ. Bant sayfayı ÖRTMEZ, sayfanın devamıdır (iki temada). */
+  'nav-bg': NEUTRAL.n25,
   'nav-bg-2': NEUTRAL.n100,
   'nav-fg': NEUTRAL.n900,
   'nav-fg-2': NEUTRAL.n600,
@@ -197,12 +210,12 @@ export const LIGHT_THEME = {
    * Bandın ÜÇÜNCÜ metin kademesi ve imza vurgusu. Panelin kenar çubuğu rayı bu ikisini bir dönem
    * SABİT HEX olarak taşıyordu (`#799a8f`, `#43ff9c`)
    */
-  'band-fg-3': SURFACE_DARK.textThree,
+  'band-fg-3': BAND.fgThree,
   'band-accent': BRAND.mint,
   'band-line': BAND.darkLine,
   'band-hover': alpha(NEUTRAL.n0, 0.07),
 
-  // --- Gölge: nötr-serin (sıcak gölge serin gri zeminde kirli durur) ---
+  // --- Gölge: sıcak mürekkep alfası. ⚠ Kart ve panel gölge TAŞIMAZ (renk bloğu önce, gölge nadir). ---
   'shadow-xs': `0 1px 2px ${alpha(NEUTRAL.n900, 0.05)}`,
   'shadow-sm': `0 1px 2px ${alpha(NEUTRAL.n900, 0.05)}, 0 1px 3px ${alpha(NEUTRAL.n900, 0.04)}`,
   'shadow-md': `0 2px 4px ${alpha(NEUTRAL.n900, 0.04)}, 0 6px 16px ${alpha(NEUTRAL.n900, 0.07)}`,
@@ -211,9 +224,9 @@ export const LIGHT_THEME = {
   /** Yapışkan alt bar; gölge YUKARI düşer. */
   'shadow-up': `0 -2px 4px ${alpha(NEUTRAL.n900, 0.03)}, 0 -8px 24px ${alpha(NEUTRAL.n900, 0.08)}`,
 
-  /** Odak halkası MAVİ: odak bir gezinme olayıdır, bir dönüşüm değil. */
-  ring: `0 0 0 3px ${alpha(ROLE.base, 0.28)}`,
-  'ring-color': ROLE.base,
+  /** Odak halkası BAĞLANTI YEŞİLİ: odak bir gezinme olayıdır. Çam DEĞİL — birincil dolguyla aynı ton. */
+  ring: `0 0 0 3px ${alpha(LINK.base, 0.28)}`,
+  'ring-color': LINK.base,
   'ring-danger': `0 0 0 3px ${alpha(DANGER_SOLID.base, 0.24)}`,
   'ring-ok': `0 0 0 4px ${alpha(STATUS.okFg, 0.16)}`,
 
@@ -240,6 +253,18 @@ export const LIGHT_THEME = {
   'glow-1': alpha(BRAND.mint, 0.1),
   'glow-2': alpha(BRAND.pine, 0.06),
   'glow-cart': alpha(CART.base, 0.09),
+
+  /*
+   * KATEGORİK PALET — grafik serileri, kategori noktaları, lejant kareleri. İki temanın üç yüzeyinde
+   * ≥3:1 (grafik). `series-1` mürekkebin kendisi: birincil seri rengi değil KONTRAST taşır.
+   */
+  'cat-1': CATEGORY.cat1,
+  'cat-2': CATEGORY.cat2,
+  'cat-3': CATEGORY.cat3,
+  'cat-4': CATEGORY.cat4,
+  'cat-5': CATEGORY.cat5,
+  'series-1': NEUTRAL.n800,
+  'series-2': CATEGORY.series2,
 } as const;
 
 /** KOYU TEMA. */
@@ -257,13 +282,13 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'text-2': SURFACE_DARK.textTwo,
   'text-3': SURFACE_DARK.textThree,
 
-  /*
-   * KOYU TEMADA BANT MARKA ÇAMINA ÇIKMAZ, yüzey merdivenine oturur: sayfa kurumsal siyah ve bandın
-   * da zemin olması gerekiyor (bkz. `SURFACE_DARK`).
-   */
+  /* Mürekkep yüzey temaya göre dönmez (bkz. açık tema). */
   shell: SURFACE_DARK.surface,
   'shell-2': SURFACE_DARK.surfaceTwo,
   'shell-3': SURFACE_DARK.surfaceThree,
+  'on-shell': SURFACE_DARK.text,
+  'on-shell-2': SURFACE_DARK.textTwo,
+  'shell-line': SURFACE_DARK.border,
 
   /*
    * Bedeli ölçüldü ve `action-line` ile ödendi: çam koyu sayfada 1,36:1, koyu kartta (`surface-2`)
@@ -285,14 +310,16 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'cart-soft': CART.darkSoft,
   'on-cart': CART.on,
 
-  role: ROLE.dark,
-  'role-hover': ROLE.darkHover,
-  'role-active': ROLE.base,
-  'role-text': ROLE.dark,
-  'role-tint': ROLE.darkTint,
-  'role-line': ROLE.darkLine,
-  /* Koyu temada mavi dolgu AÇILIYOR; üzerine siyah gider (10,55:1). */
-  'on-role': NEUTRAL.n900,
+  /* Koyu temada seçim TERS döner: krem dolgu, üzerine siyah metin. */
+  selected: SURFACE_DARK.text,
+  'selected-hover': NEUTRAL.n100,
+  'selected-active': NEUTRAL.n150,
+  'on-selected': NEUTRAL.n900,
+  'selected-tint': SURFACE_DARK.surfaceThree,
+  'selected-line': SURFACE_DARK.text,
+
+  link: LINK.dark,
+  'link-hover': LINK.darkHover,
 
   'ok-bg': STATUS.okBgDark,
   'ok-fg': STATUS.okFgDark,
@@ -351,7 +378,7 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
    * Bandın ÜÇÜNCÜ metin kademesi ve imza vurgusu. Panelin kenar çubuğu rayı bu ikisini bir dönem
    * SABİT HEX olarak taşıyordu (`#799a8f`, `#43ff9c`)
    */
-  'band-fg-3': SURFACE_DARK.textThree,
+  'band-fg-3': BAND.fgThree,
   'band-accent': BRAND.mint,
   'band-line': BAND.darkLine,
   'band-hover': alpha(NEUTRAL.n0, 0.07),
@@ -364,8 +391,8 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'shadow-xl': `0 8px 16px ${alpha(INK_DEEP, 0.45)}, 0 28px 56px ${alpha(INK_DEEP, 0.6)}`,
   'shadow-up': `0 -2px 4px ${alpha(INK_DEEP, 0.3)}, 0 -8px 24px ${alpha(INK_DEEP, 0.45)}`,
 
-  ring: `0 0 0 3px ${alpha(ROLE.dark, 0.36)}`,
-  'ring-color': ROLE.dark,
+  ring: `0 0 0 3px ${alpha(LINK.dark, 0.36)}`,
+  'ring-color': LINK.dark,
   'ring-danger': `0 0 0 3px ${alpha(DANGER_SOLID.dark, 0.32)}`,
   'ring-ok': `0 0 0 4px ${alpha(STATUS.okFgDark, 0.2)}`,
 
@@ -384,6 +411,14 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'glow-1': alpha(BRAND.mint, 0.2),
   'glow-2': alpha(BRAND.pine, 0.12),
   'glow-cart': alpha(CART.dark, 0.12),
+
+  'cat-1': CATEGORY.cat1Dark,
+  'cat-2': CATEGORY.cat2Dark,
+  'cat-3': CATEGORY.cat3Dark,
+  'cat-4': CATEGORY.cat4Dark,
+  'cat-5': CATEGORY.cat5Dark,
+  'series-1': NEUTRAL.n150,
+  'series-2': CATEGORY.series2Dark,
 };
 
 /** ÖLÇÜ TOKEN'LARI — temadan bağımsız, çalışma zamanında EZİLEBİLİR. */
