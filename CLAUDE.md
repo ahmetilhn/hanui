@@ -9,6 +9,11 @@ içindedir.
 ⚠ Bu sözleşme `hanparca-frontend` ve `hanparca-admin` için de **normatiftir**.
 Onların CLAUDE.md'leri yalnızca uygulamaya özgü sapmaları yazar.
 
+⚠ **Bu dosya 5.x'i anlatır.** Hanparça uygulamaları hanui'yi `^4.1.0` ile
+alıyor ve 5.x'e kendiliğinden geçmez; geçene kadar onlar için geçerli renk
+kararları `v4.1.0` etiketindeki CLAUDE.md'dedir. Geçiş tablosu: "Göç" →
+"5.0 token sözleşmesi".
+
 ## Öğe seçimi — hangisi, ne zaman
 
 | Soru | Cevap | Ayrımın nedeni |
@@ -30,24 +35,27 @@ Onların CLAUDE.md'leri yalnızca uygulamaya özgü sapmaları yazar.
 
 | Bileşen | Bağlam | Yükseklik |
 |---|---|---|
-| `Tile` | Gezinme | `raised` |
-| `Card` | İçerik | `card` |
-| `Panel` | Form / veri | `card` |
-| `Popover` · `Menu` · `Tooltip` | Geçici katman | `overlay` |
-| `Modal` · `Drawer` · `BottomSheet` | Kipsel | `modal` |
+| `Tile` · `SummaryCard` | Gezinme | durgunken kenarlık; hover'da bir kademe yükselir (`shadow-md`) |
+| `Card` | İçerik | kenarlık — gölge YOK |
+| `Panel` | Form / veri | kenarlık — gölge YOK |
+| `Popover` · `Menu` · `Tooltip` · `Select`/`Combobox` paneli · `Toast` | Geçici katman | `shadow-lg` |
+| `Modal` · `Drawer` · `BottomSheet` · `CommandPalette` | Kipsel | `shadow-xl` |
 
-Merdiven `_mixins.scss` → `elevation()`. Beş gölge token'ı vardı ama "hangi
-yüzey hangisini kullanır" yazılı değildi; aynı kademedeki iki yüzey farklı gölge
-taşıyordu.
+**Önce renk bloğu, gölge nadir (5.0).** Kart ve panel durgun hâlde gölge
+taşımaz; derinliği krem sayfa ile açık kartın farkı ve kenarlık kurar
+(`card` / `panel` mixin'leri). 4.x'te her kart `shadow-sm` taşıyordu ve gölge
+"bir şey bu yüzeyin üstünde" sinyali olmaktan çıkmıştı.
 
 ⚠ **Koyu temada derinliği gölge değil KENARLIK kurar** — koyu zeminde gölge
-okunmuyor.
+okunmuyor ve 5.0'da kademeler bilinçle birbirine yakın (aşağıda).
 
 ## Yarıçap ritmi
 
-**İç yarıçap = dış yarıçap − dolgu** (`nested-radius()`). İç içe iki yüzey aynı
-yarıçapı paylaşmaz: `Panel` (12 px) içindeki bir `Input` da 12 px taşıdığında iki
-eğri eş merkezli olmuyor ve iç kutu optik olarak kaçık duruyor.
+**İç yarıçap = dış yarıçap − dolgu.** İç içe iki yüzey aynı yarıçapı paylaşmaz:
+`Panel` (12 px) içindeki bir `Input` da 12 px taşıdığında iki eğri eş merkezli
+olmuyor ve iç kutu optik olarak kaçık duruyor. Kural bugün elle uygulanır;
+bunu hesaplayan bir mixin YOK (bir dönem burada `nested-radius()` yazıyordu,
+öyle bir mixin hiç olmadı).
 
 ## Durum katmanları
 
@@ -55,7 +63,8 @@ Tek kural kümesi (`interactive-surface()`):
 
 - **hover** — zemin BİR kademe değişir, başka hiçbir şey
 - **active** — 1 px basılır (dokunsal geri bildirim, renk değil)
-- **selected** — kenarlık + zemin BİRLİKTE (`selected-surface()`)
+- **selected** — kenarlık + zemin BİRLİKTE: `selected-tint` + `selected-line`
+  (mürekkep). Seçim yalnız zeminle verilmez.
 
 Ölçüldü: hover geri bildirimi 28 bileşen dosyasında **altı farklı özellik
 yolundan** veriliyordu (`background-color` 30, `color` 18, `border-color` 16,
@@ -66,239 +75,219 @@ yolundan** veriliyordu (`background-color` 30, `color` 18, `border-color` 16,
 sessizce düşürüyor.
 
 Tek istisna **yükselen yüzeyler** (`Card`, `Tile`): tıklanabilir kart hover'da bir
-kademe yükselir, zemin değiştirmez — beyaz kartta bir kademe zemin değişimi
-neredeyse görünmez (1,05:1). Satır, menü öğesi ve düğme için geçerli DEĞİL.
+kademe yükselir, zemin değiştirmez — açık kartta bir kademe zemin değişimi
+neredeyse görünmez. Satır, menü öğesi ve düğme için geçerli DEĞİL.
 
-## Renk kararları
+## Renk kararları (5.0)
 
-Palet **Hanparça kurumsal kimlik kılavuzu 2.0**'dan türer; kılavuzun altı
-token'ı `palette.ts` içinde `BRAND` (üç marka rengi) + `CORPORATE` (üç yardımcı)
-olarak ANKOR, geri kalan her kademe onlardan ölçülerek çıkarıldı.
+**Tek cümle: zemin mürekkep ve kâğıt, yeşil eylemdir.** Arayüzün nötrleri
+claude.com'un sıcak mürekkep ekseninden; markanın iki yeşili (çam, mint) yalnızca
+**birincil eylemde, bağlantıda, odak halkasında ve marka işaretinde** yaşar.
 
-| Kılavuz token'ı | Hex | `palette.ts` | Rolü |
+Palet `palette.ts` içinde ÜRETİLİR (`scripts/lib/palette-recipe.mjs` →
+`npm run tokens`); dört değer ankor, geri kalan her şey onlardan OKLCH'te türer:
+
+| Ankor | Hex | `palette.ts` | Rolü |
 |---|---|---|---|
-| Koyu yeşil | `#00322a` | `BRAND.pine` | Birincil eylem, bant, açık zeminde logo |
-| Açık yeşil | `#43ff9c` | `BRAND.mint` | İmza; koyu zeminde logo, koyu temada birincil eylemin SINIRI |
-| Siyah | `#00120f` | `BRAND.ink` | Gövde metni, koyu temanın sayfası |
-| Kâğıt | `#eff4f1` | `CORPORATE.paper` → `n100` | Açık zemin, koyu temada gövde metni |
-| Slate | `#38594f` | `CORPORATE.slate` → `n600` | Açık zeminde ikincil metin |
-| Sis | `#8fb3a7` | `CORPORATE.mist` → `textTwo` | Koyu zeminde ikincil metin |
+| Çam | `#00322a` | `BRAND.pine` | Birincil eylem dolgusu, marka şeridi, açık zeminde logo |
+| Mint | `#43ff9c` | `BRAND.mint` | İmza; koyu zeminde logo, koyu temada birincil eylemin SINIRI |
+| Mürekkep | `#141413` | `BRAND.ink` = `NEUTRAL.n900` | Gövde metni, koyu temanın sayfası, seçim dolgusu |
+| Kâğıt | `#faf9f5` | `NEUTRAL.n25` | Açık temanın sayfası, koyu temada gövde metni |
 
-- ⚠ **Açık yeşil AÇIK ZEMİNDE METİN OLAMAZ** — kâğıt üzerinde 1,18:1.
-  Kılavuzdaki tek kesin renk kuralı bu. Kütüphanede iki yerde karşılığı var:
-  koyu temanın `action-line` saç çizgisi ve `glow-1`. Olumlu durum ailesi
-  mintten **türetilmez**; ankoru ayrı (`ANCHOR.green` `#1d9a64`, kâğıt
-  üzerinde 3,22:1).
-- ⚠ **AÇIK YEŞİL ZEMİNLİ DÜĞME YOKTUR.** Koyu tema bir süre birincil eylemi
-  mint dolguya çeviriyordu (üzerine siyah metin, 14,65:1) ve ölçüm olarak
-  kusursuzdu; düşen şey markaydı — mint kılavuzda **logonun** rengi, bir
-  düğmenin zemini değil, ve aynı ekranda mint logo ile mint düğme yan yana
-  geldiğinde imza rengi vurgu olmaktan çıkıp arayüzün genel dolgusuna
-  dönüşüyordu. Ayrıntı aşağıda ("Birincil eylem iki temada da koyu yeşil").
-- **Nötr eksen yeşile kayar.** Önceki eksen serin gri-maviydi (H 207-220);
-  kurumsal kâğıt/slate/sis H 144-162'de duruyor ve iki eksen yan yana
-  geldiğinde aynı gri iki farklı renk gibi okunuyordu. Ara kademeler H
-  152-168 bandında.
-- **Dönüşüm eylemi** (`UIVariant.CART`) ailenin **en parlak yeşili**, iki
-  temada da. Ayrıntı aşağıda ("Dönüşüm düğmesi turuncudan yeşile geçti").
+### 4.x'ten 5.0'a: nötr eksen yeşilden çıktı
+
+4.x'in nötr merdiveni marka eksenindeydi (H 152-177) ve açık ucu bilinçle
+"doygun" yazılmıştı (chroma 0,05'e kadar). Sonuç ölçülmedi, **görüldü**:
+sayfa `#f7fcf8`, kart zemini `#e9f7ed`, kenarlık `#c0eacf`, koyu sayfa
+`#010f0b`, koyu kart `#071915` — arayüzün her yüzeyi açık bir yeşil çiziyordu
+ve rol rengi de yeşil olduğu için yeşil bir vurgu olmaktan çıkıp arayüzün genel
+rengine dönüşmüştü.
+
+5.0'ın nötrleri sıcak mürekkep: **H 75-107, chroma 0,002-0,02**. Kademeler
+mutlak chroma ile yazılır (`{ l, c, h }`) — oranla yazılan bir nötr, erişilebilir
+tavan tona göre üç katına kadar değiştiği için kademeler arasında kayıyordu.
+
+⚠ **Nöbetçi:** `build-palette.mjs` nötr merdivende chroma > **0,025** gördüğünde
+patlar (`NEUTRAL_CHROMA_CEILING`). 4.x'te eksen hiçbir kapıya takılmadan
+renklendi; bir daha sessizce olamaz.
+
+⚠ **Kurumsal kılavuz 2.0'dan BİLİNÇLİ SAPMA.** Kılavuzun kâğıt / slate / sis
+üçlüsü (`CORPORATE`) yeşil tonlu ve 4.x'te nötr merdivenin takma adıydı. 5.0'da
+üçlü **yalnızca marka şeridinde** (`band-*`) yaşıyor: çam zeminin üzerindeki yeşil
+tonlu metin markanın sesi, arayüzün zemini değil. Arayüz nötrleri kılavuzdan değil
+mürekkep ankorlarından türer.
+
+### Açık tema: sayfa KREM, kart AÇIK
+
+| Token | Değer | Ölçüm |
+|---|---|---|
+| `page` | `#faf9f5` | `text` 17,50:1 |
+| `surface` (kart, girdi) | `#fffefc` | sayfaya 1,05:1 |
+| `surface-inset` | `#f5f0e8` | |
+| `surface-2` | `#efe9de` | sayfaya 1,15:1 |
+| `surface-3` | `#e8e0d3` | |
+| `border` / `border-strong` | `#ded8d0` / `#d0c8bd` | sayfaya 1,34 / kartta 1,64 (advisory) |
+| `text` / `text-2` / `text-3` | `#141413` / `#4d4b46` / `#67655e` | `surface-2` üzerinde 15,26 / 7,21 / 4,83:1 |
+
+⚠ **Kart sayfadan dolguyla AYRIŞMAZ** (1,05:1) — ayrımı kenarlık taşır.
+Kenarlığı olmayan yeni bir yüzey krem üzerinde **görünmez** olur ve nöbetçisi
+yoktur: `check-contrast` kenarlık çiftlerini advisory listesinde tutar.
+
+⚠ claude.com'un `muted` değeri (`#6c6a64`) `surface-2` üzerinde 4,48:1 —
+eşiğin altında; `text-3` bu yüzden bir tık koyu. `muted-soft` (`#8e8b82`,
+kremde 3,23:1) açık temada hiçbir metin token'ına girmez.
+
+⚠ Saf beyaz ve saf siyah palette YOK (`palette.contract.test.ts`).
+
+⚠ Değişiklik tüketicilerde **elle** izlenen iki yerde yankılanır:
+`hanparca-frontend` `manifest.ts` → `background_color` ve uygulamaların
+`themeColor`'ı. hanration için: `layout.tsx` → `themeColor` açık/koyu çifti.
+
+### Koyu tema: zemin SICAK SİYAH, yeşil vurgudur
+
+| Token | Değer | Ölçüm |
+|---|---|---|
+| `surface-inset` | `#0e0e0d` | |
+| `page` | `#141413` | |
+| `surface` | `#181715` | sayfaya 1,03:1 |
+| `surface-2` | `#1f1e1b` | `surface`e 1,07:1 |
+| `surface-3` | `#2a2925` | `surface-2`ye 1,14:1 |
+| `border` / `border-strong` | `#33312d` / `#4a4843` | sayfaya 1,42:1 |
+| `text` / `text-2` / `text-3` | `#faf9f5` / `#b4b1a9` / `#8e8b82` | `surface-2` üzerinde 15,82 / 7,78 / 4,89:1 |
+
+⚠ Kademeler arası fark **bilinçle küçük** (1,03-1,14:1): derinliği kenarlık
+kurar. `surface-3` claude.com'un `#252320`sinden bir tık açık, çünkü
+`interactive-surface`in hover'ı TEK kademe ve o değerde görünmüyordu.
+
+⚠ **Bant sayfayı ÖRTMEZ, sayfanın devamıdır** — iki temada da `nav-bg` = `page`,
+sınırı `nav-line` çizer. Alt bilgi bir kademe yukarı çıkar.
+
+### Yeşil nerede yaşar — ve nerede YAŞAMAZ
+
+| Ne | Token | Açık | Koyu |
+|---|---|---|---|
+| Birincil düğme dolgusu | `action` | `#00322a` | `#00322a` |
+| Birincil düğmenin sınırı | `action-line` | `#00322a` | `#43ff9c` |
+| Bağlantı | `link` / `link-hover` | `#17704e` | `#60d4a1` |
+| Odak halkası | `ring-color` | `#1f7b56` | `#60d4a1` |
+| Marka şeridi, logo, marka madalyonu | `band-*` | çam + mint | aynı |
+| Dönüşüm eylemi (Hanparça) | `cart*` | `#1ba055` | `#37c971` |
+| Olumlu DURUM | `ok-*`, `green-accent` | anlamsal | anlamsal |
+
+**Seçim mürekkeptir:** etkin sayfa, seçili çip/seçenek/satır, sekme çizgisi,
+ilerleme, döndürücü, kaydırıcı, onay kutusu, radyo, anahtar, adım, `Tile`
+madalyonu, `Button` OUTLINE çerçevesi → `selected*` (açıkta `#141413`, koyuda
+krem `#faf9f5` + siyah metin). 4.x'te bunların hepsi rol yeşilini taşıyordu:
+**28 bileşen dosyasında 87 bildirim.**
+
+⚠ **Nöbetçi `__tests__/styles/green-footprint.test.ts`.** Bileşen SCSS'indeki
+`action*`, `cart*`, `link*`, `green-accent*`, `band-*`/`glow-*` kullanımları bir
+izin listesine bağlı; listede olmayan bir bileşen yeşile uzanırsa test kırılır,
+listede olup artık kullanmayan da (bayat izin). 4.x rol ailesinin
+(`$role*`) geri gelmesi ayrıca kırar. Yeni bir yeşil kullanım listeye
+**gerekçesiyle** girer.
+
 - **Doygun dolgu = tıklanabilir.** Durum etiketleri **her zaman** tint zeminli
   (`@include tint`), eylemler her zaman dolgulu veya çerçeveli. Bu ayrım
   bozulursa kullanıcı durum etiketine tıklamayı dener.
-- **Birincil eylem koyu yeşildir** (`#00322a`) — **iki temada da aynı**; bir
-  ekranda tek `PRIMARY`. `graphite*` token adları sözleşme gereği kaldı,
-  değerleri koyu yeşil.
-- **Rol rengi gezinme ve keşiftir**: bağlantı, etkin filtre, seçili satır,
-  ilerleme, odak halkası. ⚠ Token adları `blue*` **ama değerleri mavi değil** —
-  ayrıntı aşağıdaki "Rol rengi marka ekseninde" bölümünde.
+- **Bir ekranda tek `PRIMARY`.**
 - **Fiyat siyah kalır.** Güncel fiyat `$text`, üstü çizili eski fiyat `$text-3`,
   indirim küçük bir rozet. Kırmızı fiyat bu sektörde ucuz durur ve kırmızıyı
   "aracına uymaz" anlamından koparır.
+- ⚠ **Mint AÇIK ZEMİNDE METİN OLAMAZ** — krem üzerinde 1,24:1. Kılavuzdaki
+  tek kesin renk kuralı bu.
+- ⚠ **AÇIK YEŞİL ZEMİNLİ DÜĞME YOKTUR.** Mint kılavuzda **logonun** rengi; bir
+  dönem koyu temanın birincil eylemini mint dolguya çevirmiştik (ölçüm olarak
+  kusursuzdu: siyah metin 14,65:1) ve aynı ekranda mint logo ile mint düğme yan
+  yana geldiğinde imza rengi vurgu olmaktan çıkıyordu.
 
-### KOYU TEMADA ZEMİN SİYAHTIR, YEŞİL VURGUDUR
+### Birincil eylem İKİ TEMADA DA çam — sınırı `action-line` taşır
 
-Koyu temanın yüzey merdiveni bir dönem marka çamına bağlıydı: üst bant, alt
-bilgi ve `graphite` bloğu doğrudan `#00322a`, kart/panel kademeleri ise aynı
-aydınlıkta **S 61/45/33** ile duruyordu. Ölçüm değil, **okuma** kırılıyordu —
-kılavuzun siyahı (`#00120f`) yalnızca sayfanın kendisinde kalıyor, üstündeki
-her yüzey onu örtüyordu ve koyu tema "siyah tema" değil "koyu yeşil tema"
-görünüyordu.
+Çam koyu yüzeylerde kayboluyor; düğmeyi dolgusu değil **kenarı** görünür kılar:
 
-Merdiven artık **tümüyle mürekkep karakterinde**: aynı ton açısında (H 161-171)
-kalır ama doygunluk aydınlıkla birlikte **düşer** (S 33 → 23 → 17), yani hiçbir
-kademe yeşil bir yüzey olarak okunmaz.
-
-| Token | Önce | Şimdi |
+| Zemin | Çam dolgu (`action`) | Mint sınır (`action-line`) |
 |---|---|---|
-| `surface` | `#08211d` (S 61) | `#0b1614` (S 33) |
-| `surface-2` | `#112d27` (S 45) | `#14201d` (S 23) |
-| `surface-3` | `#1d3a33` (S 33) | `#1f2c28` (S 17) |
-| `surface-inset` | `#031614` — sayfadan **açık** | `#000d0b` — sayfadan koyu |
-| `nav-bg` / `graphite` | `#00322a` (marka çamı) | sayfanın kendisi / `surface` |
-| `footer-bg` | `#00322a` | `#0b1614` |
+| `page` (`#141413`) | **1,31:1** | 14,06:1 |
+| `surface` | 1,27:1 | 13,67:1 |
+| `surface-2` | 1,18:1 | 12,72:1 |
+| `surface-3` | **1,03:1** | 11,11:1 |
 
-Marka yeşili koyu temada **üç yerde** yaşamaya devam eder ve üçü de vurgudur:
-marka şeridi (`band-*`), birincil eylemin dolgusu (`action`) ve mint saç
-çizgisi (`action-line`). Metin katmanları da kurumsal kalır — gövde kâğıt,
-ikincil sis.
+Metin beyaz (13,99:1). Çözüm bilinçli olarak dolguyu açmak değil sınır vermek:
+dolguyu bir kademe açmak çamdan çıkmak, iki kademe açmak mint dolguya varmak olurdu.
 
-⚠ **Bant sayfayı ÖRTMEZ, sayfanın devamıdır.** `nav-bg` artık `page`in kendisi
-ve sınırı `nav-line` çizer; açık temada da öyle (ikisi de beyaz — bkz. "Açık
-temada sayfa BEYAZ"). Alt bilgi bir kademe **yukarı** çıkar (`surface`) — açık
-temadaki kardeşiyle aynı yön.
+- `action-line` **açık temada dolgunun kendisidir** — görünmez, ama 1 px'lik
+  kenarlık iki temada da yazıldığı için düğmenin ölçüsü değişmez.
+- `check-contrast.mjs`: `action-line` üç yüzeye karşı **`graphic`** katmanında
+  (≥3:1); dolgunun kendisi advisory listede (1,03:1 orada bilinçli bir kayıt).
+- Aynı kenarlığı `IconButton--solid` ve `Badge--action.solid` da taşır.
+- ⚠ `action-line` **teknik bir yüzeyin rengi değildir.** `CodeBadge` 4.x'te çam
+  dolgu + `action-line` sınır + `action-line` "kopyalandı" tiki taşıyordu ve açık
+  temada `action-line` = `action` olduğu için tik ile odak halkası dolguyla aynı
+  renkteydi (**1:1, görünmüyordu**). 5.0'da `CodeBadge` mürekkep yüzeyde (`shell`).
 
-### Açık temada sayfa BEYAZ, kâğıt değil
+### Dönüşüm düğmesi — ailenin en parlak yeşili
 
-`page` bir dönem `NEUTRAL.n50` (`#f4f8f7`) idi ve gerekçe kılavuzun "açık zemin
-için beyaz yerine kâğıt" kuralıydı. Kural yüzey merdiveninin geri kalanında
-duruyor (`surface-2`, `footer-bg`, `nav-bg-2`, `media-bg`, `skeleton-a` hâlâ
-kâğıt ailesinde); çıkarılan yalnızca **sayfanın kendisi** — `NEUTRAL.n0`.
+`cart*` ("sepete ekle") birincil eylemden ton açısıyla değil **aydınlıkla**
+ayrışır: birincil **koyu dolgu + açık metin**, dönüşüm **açık dolgu + siyah
+metin**.
 
-⚠ **Bedeli: `surface` de beyaz, yani KART SAYFADAN DOLGUYLA AYRIŞMAZ.** Ayrımı
-`card` / `panel` mixin'lerinin `border`ı (beyaz üzerinde 1,34:1) ve `shadow-sm`
-taşır. Kenarlığı olmayan her yeni yüzey bileşeni beyaz üzerinde **görünmez**
-olur ve nöbetçisi yoktur: `check-contrast` kenarlık çiftlerini advisory
-listesinde tutar, kırmaz.
-
-⚠ Değişiklik tüketicilerde iki yerde daha yankılanır ve ikisi de **elle**
-izlenir: `hanparca-frontend` `manifest.ts` → `background_color` (PWA açılış
-ekranı sayfayla aynı olmak zorunda) ve `hanparca-admin` `layout.tsx` →
-açık tema `themeColor`. Otomatik nöbetçi kurulamaz.
-
-⚠ **Marka şeridinin ayırıcı çizgisi sayfa kenarlığından GELMEZ**
-(`BAND.darkLine`): nötrleşen kenarlık şeridin koyu yeşili üzerinde 1,10:1'e
-düşüyor — çizgi çizilmiş ama görünmüyor. Şerit kendi çizgisini kendi zemininden
-türetir.
-
-### Dönüşüm düğmesi turuncudan yeşile geçti
-
-`UIVariant.CART` ("sepete ekle") ekranın tek doygun turuncusuydu ve gerekçe
-"hue ile ayrış" idi. Kılavuzda turuncu **yok**; ayrım artık ton açısıyla değil
-**aydınlıkla** taşınıyor:
-
-| | Dolgu | Metin | Ayrım (birincil eyleme karşı) |
+| | Dolgu | Metin | Birincil eyleme karşı |
 |---|---|---|---|
-| Açık tema | `#22a76d` | siyah (5,98:1) | 4,58:1 |
-| Koyu tema | `#43d08a` | siyah (9,32:1) | 7,13:1 |
-
-Yani birincil eylem **koyu dolgu + beyaz metin**, dönüşüm **açık dolgu + siyah
-metin**; ikisi yan yana konduğunda hangisinin dönüşüm olduğu tek bakışta
-görünüyor ve düğme iki temada da **aynı nesne** olarak okunuyor.
-
-⚠ **Bu mint dolgu DEĞİL** — "açık yeşil zeminli düğme yok" kuralı kılavuzun
-imza rengini (logonun rengi) koruyor; buradaki zümrüt ondan uzakta (H 154 / S 66
-vs H 150 / S 100) ve olumlu durum ailesinin ankoruyla aynı eksende.
+| Açık tema | `#1ba055` | siyah (5,61:1) | 4,17:1 |
+| Koyu tema | `#37c971` | siyah (8,82:1) | 6,55:1 |
 
 ⚠ **Etkileşim yönü açık temada TERS**: hover **açılır**, active **koyulur**.
 Metin siyah olduğu için koyulaşan her kademe metin eşiğini aşağı çeker;
-`amber-active` ailenin 4,5:1'i geçen en koyu tonu (5,14:1) ve altına inilemez.
+`cart-active` 4,82:1 ile tabanın hemen üstünde.
 
-⚠ **Token adları `amber*` olarak KALDI, değerleri turuncu değil** — `graphite*`
-ve `blue*` ile birebir aynı karar: `--hanui-amber` kütüphanenin açık sözleşmesi
-ve yeniden adlandırma büyük sürüm ister. Ham palet sabiti şimdiden `CART`.
+⚠ **Bu mint dolgu DEĞİL** — "açık yeşil zeminli düğme yok" kuralı logonun rengini
+korur; buradaki yeşil olumlu durum ailesinin ekseninde (H 152).
 
-### Birincil eylem İKİ TEMADA DA koyu yeşil — sınırı `action-line` taşır
+### Mürekkep yüzey — `shell*`, temaya göre DÖNMEZ
 
-Koyu tema `action`ı minte çeviriyordu. Marka kararı bunu geri aldı: **açık
-yeşil zeminli düğme yok.** Ölçülmüş bedel, mint dolgunun çözdüğü şeydi —
-kurumsal çam koyu yüzeylerde **kayboluyor**:
+Terminal, teknik blok, koyu kod penceresi, `CodeBadge`. İki temada da sıcak
+siyah: `shell` / `shell-2` / `shell-3` = `#181715` / `#1f1e1b` / `#2a2925`,
+üzerine `on-shell` (`#faf9f5`, 17,00:1) ve `on-shell-2` (`#b4b1a9`).
 
-| Zemin | Çam dolgu (`action`) | Mint saç çizgisi (`action-line`) |
-|---|---|---|
-| `page` (`#00120f`) | **1,36:1** | 14,65:1 |
-| `surface` | 1,20:1 | 12,86:1 |
-| `surface-2` (kart) | **1,04:1** | 11,21:1 |
-| `surface-3` | 1,42:1 | 9,39:1 |
-
-Yani düğmeyi dolgusu değil **kenarı** görünür kılıyor; metin beyaz (14,09:1).
-Çözüm bilinçli olarak dolguyu açmak değil sınır vermek: dolguyu bir kademe
-açmak çamdan çıkmak, iki kademe açmak yeniden minte varmak olurdu.
-
-- `action-line` **açık temada dolgunun kendisidir** (`BRAND.pine`) — görünmez,
-  ama 1 px'lik kenarlık iki temada da yazıldığı için düğmenin ölçüsü değişmez.
-- Nöbetçi `check-contrast.mjs`: `action-line` üç yüzeye karşı **`graphic`**
-  katmanında (≥3:1) ölçülür — advisory değil. Dolgunun kendisi advisory
-  listede kalır (1,04:1 orada bilinçli bir kayıt).
-- Aynı kenarlığı `IconButton--solid` ve `Badge--action.solid` da taşır: üçü de
-  `action` dolgusunu kullanıyor ve aynı zeminlerde aynı şekilde kayboluyordu.
-
-⚠ **`on-blue` bu değişiklikle DOĞDU.** `on-action` bir zamanlar mavi dolgunun
-metnini de taşıyordu (`Pagination` etkin sayfa, `Tile` madalyon, `Steps`
-geçerli adım, `Badge--link.solid`). İki dolgunun aydınlığı **ters yönlere**
-gidiyor: birincil eylem iki temada da koyu, rol rengi ise koyu temada
-**açılıyor** (`#51d6bb`). `on-action` beyaza sabitlenince rol dolgusundaki
-metin 2,1:1'e düşerdi. Tek token ikisini taşıyamaz.
+- 4.x'te `shell*` **çamdı** ve "uygulama kabuğu" diye tanımlıydı. Yeşil teknik bir
+  yüzeyin zemini değil, eylemin rengi.
+- ⚠ Koyu temada kabuk sayfadan 1,03:1 ayrışıyor — görünür kılan `shell-line`.
 
 ### Marka şeridi — `band-*`, temaya göre DÖNMEZ
 
-`nav-*` bandın temayla dönen gövdesidir (açık temada beyaz). `band-*` ise
-**iki temada da birebir aynı**: kurumsal koyu yeşil zemin + kâğıt gövde metni
-(12,67:1) + sis ikincil metin (6,15:1) + `BAND.darkLine` ayırıcı.
+`band-*` iki temada da birebir aynı: çam zemin + kâğıt gövde metni (12,75:1) +
+sis ikincil metin (6,46:1) + üçüncü kademe (5,20:1) + `BAND.darkLine` ayırıcı.
+Şeridin metinleri **marka ekseninde** kalır (`CORPORATE`, `BAND.fgThree`): çam
+üzerinde sıcak gri yazı kirli duruyor.
 
-Vitrindeki kargo sözü şeridi (`Header.promise`) bunu kullanıyor: o satır
-sayfanın değil **markanın** sesi ve açık temada beyaz bandın üstünde gri bir
-satır olarak bandın kendisine eriyordu.
-
-⚠ Böyle bir yüzeyde `nav-fg-2` **kullanılamaz** — açık temada slate ve çam
-üzerinde **1,82:1**. Şerit üzerine yazan her şey `band-fg` / `band-fg-2`
-kullanır; hover zemini `band-hover`.
+⚠ Böyle bir yüzeyde `nav-fg-2` **kullanılamaz** — açık temada çam üzerinde
+**1,62:1**. Şerit üzerine yazan her şey `band-fg*` kullanır; hover zemini
+`band-hover`.
 
 ⚠ Tema alt ağaca **kapsamlandırılamaz**: `_tokens.generated.scss` `light`/`dark`
 karışımlarını yalnızca `:root`a bağlar. "Bu şeridi koyu temaya sabitle" demek
 için `data-hanui-theme`i bir `<div>`e yazmak **çalışmaz**; doğru yol tam olarak
-budur — temadan bağımsız bir token ailesi.
+budur — temadan bağımsız bir token ailesi (`band-*`, `shell*`).
 
-### Rol rengi MARKA EKSENİNDE — `blue*` adları kaldı, değerleri değişti
+### Bağlantı ve odak — yeşil kalan üç yerden ikisi
 
-Gezinme/keşif rolü (bağlantı, etkin filtre, seçili satır, ilerleme, odak
-halkası) **mavi değil**, marka ekseninin ortası (H 162). Ölçüldü: rol
-rengi 28 bileşende ve vitrinde ~80 çağrı yerinde duruyor — yani arayüzün "mavi
-görünmesinin" tek kaynağı buydu.
+Bağlantı ve odak halkası 4.x `role` ailesinin yeşil kalan yarısı (`LINK`, H 162).
 
-**Ad KORUNDU, değer değişti** — `graphite*` ile birebir aynı karar: `--hanui-blue`
-kütüphanenin açık sözleşmesi ve yeniden adlandırma büyük sürüm ister. Doğru ad
-`teal`/`nav` ve sonraki büyük sürümde yapılır. Bugünkü bedeli: kaynakta `$blue`
-yazan 80+ satır kurumsal yeşil çiziyor; okuyucu için gerekçe `palette.ts` →
-`BLUE` javadoc'unda.
+⚠ **H 162 GÖZLE ÖLÇÜLDÜ.** Rol rengi bir sürüm boyunca H 182'de durdu: ölçüm
+olarak temizdi ve düşen şey markaydı — ekranda **camgöbeği** okunuyordu. H 174
+hâlâ camgöbeği-teal, H 168 (çamın kendi açısı) yüksek aydınlıkta turkuaz, H 156
+olumlu durumla çakışıyor, H 150 mintin kendisi. H 162 dizideki ilk kesin yeşil.
 
-⚠ **H 182 DENENDİ VE GERİ ALINDI.** Rol rengi bir sürüm boyunca orada durdu;
-ölçüm olarak temizdi (130 kontrast çiftinin tamamı geçiyordu) ve düşen şey
-markaydı. H 182 kurumsal eksenin **dışında** ve doygun kademeleri — özellikle
-koyu temanın `dark`ı (`#51d2d6`) — ekranda **camgöbeği** okunuyordu. Bunun
-göründüğü yer de en kötüsüydü: sayfalamanın etkin sayfası, seçili cip, etkin
-sekme ve odak halkası, yani kullanıcının en sık dokunduğu yüzeyler kılavuzun
-tanımadığı bir renkle çiziliyordu.
+⚠ **Bağlantının alt çizgisi ZORUNLU** (satır içinde): bağlantı gövde metnine
+yalnızca **3,04:1** — 1.4.1'in eşiğinin hemen üstü. `TextLink` tek başına
+durduğu (oku ve kalınlığı var) için durgunken alt çizgisiz.
 
-**Ton açısı gözle ölçüldü, hesapla değil.** Altı aday koyu temanın dolgu
-aydınlığında (L 58 / S 62) yan yana çizildi; sonuç ilk tahminden **daha
-aşağıda** çıktı:
+⚠ **Odak halkası bağlantı yeşili ve çam OLAMAZ** — birincil düğmenin dolgusuyla
+aynı ton. Halka `focus-ring` varsayılan `outline-offset` **+2px** ile sayfanın
+üzerinde duruyor: açıkta 4,32-5,18:1, koyuda 9,07-10,03:1.
 
-| Aday | Sonuç |
-|---|---|
-| H 182 | Kullanıldı, **geri alındı** — net camgöbeği |
-| H 174 | Hâlâ camgöbeği-teal |
-| H 168 | Çamın kendi ton açısı ama yüksek aydınlıkta **hâlâ turkuaz** |
-| **H 162** | **Seçildi** — dizideki ilk kesin yeşil, olumlu durumdan hâlâ ayrı |
-| H 156 | Olumlu durum yeşiliyle (H 154) çakışıyor |
-| H 150 | Mintin kendisi — imza rengi, rol rengi olamaz |
-
-⚠ **Çamın hue'suna bağlamak yetmedi.** İlk düzeltme aileyi H 168'e taşımıştı
-(`BRAND.pine` ile aynı ton açısı) ve gerekçe kâğıt üzerinde sağlamdı; ekranda
-tutmadı, çünkü aynı hue yüksek aydınlıkta camgöbeğine kayıyor. Ton açısı bu
-yüzden marka ekseninin ORTASINA çekildi.
-
-⚠ **Olumlu durumla karışma hue ile değil BİÇİMLE çözülür.** Eski gerekçe rolü
-olumlu yeşilden (H 154) uzaklaştırmak için ton açısını marka ekseninin dışına
-kaydırıyordu. Ayrımı taşıyan asıl sinyal zaten ton değil biçim — durum
-**her zaman** tint zemin + kenarlık taşıyan bir rozet, rol ise dolgu ya da
-bağlantı metni. Doygun dolgu tıklanabilir demek; rozet değil.
-
-⚠ **Odak halkası artık rol rengi ve bu bir gerileme DEĞİL.** Eski gerekçe
-("yeşil halka yeşil dolgunun üzerinde görünmez") halkanın dolgunun ÜZERİNE
-çizildiğini varsayıyordu; `focus-ring` varsayılan `outline-offset` **+2px**,
-yani halka sayfanın üzerinde duruyor: 4,63:1. Kaynak tarandı — rol dolgusu
-taşıyan hiçbir bileşen halkayı **negatif** ofsetle çizmiyor (negatif olanlar
-`Tabs`, `Accordion`, `DataTable` ve üçünün de zemini yüzey). Marka çamının
-kendisi hâlâ halka **olamaz**: birincil düğmenin dolgusuyla aynı ton.
+⚠ **Olumlu durumla karışma ton açısıyla değil BİÇİMLE çözülür.** Durum her zaman
+tint zemin + kenarlık taşıyan bir rozet; bağlantı ise metin.
 
 ### Durum tintleri
 
@@ -306,27 +295,48 @@ Hepsi **tint zemin + koyu metin + eşleşen hairline**, asla doygun dolgu.
 
 | `tone` | Anlam | Aile |
 |---|---|---|
-| `success` | Stokta / aracına uyar | olumlu yeşil (H 154) |
-| `warning` | Son N adet | amber |
-| `neutral` | Tükendi | nötr yeşil-gri |
-| `danger` | Aracınıza uymaz | kırmızı |
-| `oem` | Orijinal OEM | rol yeşili, bir kademe koyu metin |
-| `alt` | Muadil | **menekşe** |
-| `info` | Nötr bilgi | rol yeşili |
+| `success` | Stokta / aracına uyar | olumlu yeşil (H 152) |
+| `warning` | Son N adet | amber (H 72) |
+| `neutral` | Tükendi | **nötr eksen** (gri, kremden ayrı) |
+| `danger` | Aracınıza uymaz | kırmızı (H 25) |
+| `oem` | Orijinal OEM | yeşil (H 158) |
+| `alt` | Muadil | **menekşe** (H 300) |
+| `info` | Nötr bilgi | **nötr mürekkep** (`selected-tint` + `border-strong` + `text`) |
 
-⚠ **`alt` menekşe KALDI, yeşile çevrilmedi.** `oem` ile `alt` bir çiftin iki
-yarısı ("Orijinal" ↔ "Muadil") ve ayrımı taşıyan tek görsel sinyal ton açısı;
-ikisi de yeşil ailesine girseydi sınıflandırma çökerdi. Menekşe mavi değil
-(H 250) ve diğer ailelerin hiçbiriyle çakışmıyor.
+⚠ **Durum zemini yüzeyle karışmaz — kapı var.** Krem yüzeyler (H 80-95) uyarı ve
+tehlike ailelerine ton açısıyla çok yakın; 4.x şablonuyla krem kartta (`surface-2`)
+uyarı tinti **ΔE 2,0**, tehlike **2,1** veriyordu — sayfa→kart kademesi 4,7.
+Zemin şablonu bir kademe aşağı ve doygun (l .928 → .91, s .62 → .8); uyarı 4,8,
+tehlike 4,2. Nöbetçi `build-palette.mjs`: her ailenin zemini temasının sayfa /
+yüzey / kart üçlüsüne karşı **ΔE×100 ≥ 4** (`MIN_TINT_DELTA_E`).
 
-⚠ **`oem` rol ailesini İZLER, bu bilinçli.** Eski palette `oemBg` ile `blueTint`
-birebir aynı hex'ti (`#eaf1fe`) — sistem OEM'i baştan "rol tinti + daha koyu
-metin" diye tanımlamıştı. Rol marka eksenine dönerken OEM sabit tutulsaydı
-PDP'de tek başına camgöbeği kalan yüzey olurdu.
+⚠ **Olumlu zemin şablona İNMEZ** (`ok-bg` `#c2f6cf`): yeşil ton açısında s .8
+mint'e yaklaşan bir dolgu üretiyordu ve "Stokta" rozeti imza rengini taşımaya
+başlıyordu.
+
+⚠ **`info` artık yeşil değil.** 4.x'te rol tintiydi ve `Alert`in VARSAYILAN tonu
+olduğu için yeşili her uyarıya taşıyordu. Anlamı ikon taşır (1.4.1).
+
+⚠ **`alt` menekşe KALDI.** `oem` ile `alt` bir çiftin iki yarısı ("Orijinal" ↔
+"Muadil") ve ayrımı taşıyan tek görsel sinyal ton açısı.
 
 ⚠ `$danger-solid` ayrıdır: yıkıcı bir **eylem** dolgusu (silme onayı), durum
-tinti değil. Aynı kırmızıyı taşımaları kullanıcının uyarı etiketine tıklamayı
-denemesine yol açıyordu.
+tinti değil.
+
+⚠ **Yıldız** (`star`, `#846310`) krem kartta metin eşiğini de geçer: 4.x
+değeriyle 4,15:1'e düşüyordu, 5.0'da 4,61:1.
+
+### Kategorik palet — `cat-1…5`, `series-1/2`
+
+Grafik serileri, kategori noktaları, lejant kareleri. Beş ton (mavi, kil
+turuncusu, yeşil, okra, erik) sabit L/C şablonundan, değişen yalnızca ton açısı.
+
+- Her ton iki temanın üç yüzeyinde **≥3:1** (`check:contrast`, grafik katmanı).
+- İki ton arasında **ΔE ≥ 8** (üreteç; en yakın çift 10,5).
+- ⚠ **Marka yeşilleri seri rengi OLMAZ.** `series-1` mürekkebin kendisi (açıkta
+  `#252523`, koyuda krem); `cat-3` orta aydınlıkta bir kategori yeşili, çam ya da
+  mint değil.
+- ⚠ `cat-2` kil **turuncusu** (H 42): H 30'da tehlike ailesiyle (H 25) karışıyordu.
 
 ## Tipografi rolleri
 
@@ -393,7 +403,7 @@ bildirilir, metnin silinmesiyle değil.
   yineleyen güncelleme yakınsamadı. Bir sürümün bedeli olarak makul, ama
   anlık görüntülerin toplu yenilenmesiyle **birlikte** yapılmalı. Tüketici
   tarafı şimdilik ölçüyü kendisi veriyor (`MaskedInput`).
-- **Odak halkası `:focus-visible`**, rol rengi (kurumsal yeşil), asla kaldırılmaz. `outline: none`
+- **Odak halkası `:focus-visible`**, bağlantı yeşili (`ring-color`), asla kaldırılmaz. `outline: none`
   yalnızca yerine başka bir gösterge çizildiği dört yerde. `:focus` kullanmak
   fareyle tıklandığında da halka gösteriyor ve kullanıcılar bunu hata sanıyordu.
 - **Kaydırılabilir bölge klavyeyle ulaşılabilir** (2.1.1). `ScrollArea` taşmayı
@@ -594,6 +604,27 @@ bildiriyor; arkasında kalan bayat taban çizgileri (`Accordion`, `CopyField`,
 kırılma yok. Nöbetçi: `__tests__/api-consistency.test.ts` — burada kayıtlı
 olmayan bir `@deprecated` prop derlemeyi kırar.
 
+### 5.0 token sözleşmesi — KIRICI, takma ad YOK
+
+Renk token'ları prop değil, ama `--hanui-*` adları tüketicinin sözleşmesi. 5.0
+büyük sürüm olduğu için eski adlar **bırakılmadı**: `role*` iki farklı renk
+taşıyacaktı ve 4.0.0'da `blue*`/`amber*` adlarının yanlış rengi anlatması tam
+olarak bu hataydı.
+
+| 4.x | 5.0 | Not |
+|---|---|---|
+| `role`, `role-hover`, `role-active` | `selected`, `selected-hover`, `selected-active` | mürekkep — yeşil DEĞİL |
+| `on-role` | `on-selected` | koyu temada siyah |
+| `role-tint` | `selected-tint` | |
+| `role-line` | `selected-line` | |
+| `role-text` | `link` (+ yeni `link-hover`) | yeşil kalır |
+| `ring`, `ring-color` | aynı ad | değer bağlantı ailesinden |
+| `shell*` | aynı ad | **değer çamdan mürekkebe** ve temaya göre dönmüyor; yeni `on-shell`, `on-shell-2`, `shell-line` |
+| — | `cat-1…5`, `series-1/2` | yeni |
+
+Tüketicide değer ezmesi yazan yerler (`--hanui-page: #ffffff` gibi) ayrıca
+gözden geçirilir: 5.0'da açık sayfa krem.
+
 ### `Card.isContained` → `fit`
 
 Görselin çerçeveyi nasıl doldurduğu artık **üç değerli** tek bir prop:
@@ -710,7 +741,7 @@ aktarım kümesi taşımadan önce ve sonra **birebir aynı**.
 
 Ölçüm artık elle değil: `scripts/check-api.mjs` `build/index.d.ts`ten dışa
 aktarım adlarını çıkarır ve `scripts/api-baseline.txt` ile karşılaştırır
-(**164 ad**). Kapı `verify` içinde, `build`ten hemen sonra.
+(**167 ad**). Kapı `verify` içinde, `build`ten hemen sonra.
 
 ```bash
 npm run check:api               # doğrula
@@ -725,10 +756,11 @@ node scripts/check-api.mjs --update   # taban çizgisini BİLİNÇLİ tazele
 Betiğin deseni `export declare (const|type|function|class|interface|enum) Ad`
 ve **sıfır eşleşmede açıkça düşer** — ölçemediği şeyi yeşil geçmez.
 
-**Tip taşımalarında diff ZORUNLU.** Kırılma bugün görünmez: iki tüketici de
-`"@ahmetilhn/hanui": "2.4.0"` ile **tam pinli** (caret yok), yani düşen bir ad
-ancak bir sonraki yükseltmede, sebebi çoktan unutulmuşken derleme hatası
-üretir. Taban çizgisi bu yüzden repoda duruyor.
+**Tip taşımalarında diff ZORUNLU.** Tüketiciler hanui'yi **caret** ile alıyor
+(`hanparca-frontend` ve hanration `^4.1.0`), yani küçük sürümde düşen bir ad
+bir sonraki `npm install`da, sebebi çoktan unutulmuşken derleme hatası üretir.
+Taban çizgisi bu yüzden repoda duruyor. (Bu satır bir dönem "iki tüketici de
+`2.4.0` ile tam pinli" diyordu; artık doğru değil.)
 
 **Bu turda taşınan iki tip** ve neden kırıcı olmadıkları:
 
@@ -814,8 +846,8 @@ açıklamasında zaten yazılıydı; nöbetçi `.size-limit.js` — **ve yalnız
 ### Ön-commit kancası
 
 `.githooks/pre-commit` (bu turda **eklendi**) — **Prettier** → **ESLint** →
-**Stylelint** → **TAM test süiti**. Ölçüldü: süit 3,4 sn (35 dosya /
-411 test). `package.json`daki `prepare` betiği `core.hooksPath`i
+**Stylelint** → **TAM test süiti**. Ölçüldü (2026-10-10): süit 3,9 sn (53 dosya /
+542 test). `package.json`daki `prepare` betiği `core.hooksPath`i
 `npm install` sırasında ayarlar.
 
 ### `PasswordInput` ve `ToastPortal` — iki uygulamadan buraya taşındı

@@ -80,8 +80,8 @@ Yalnızca değiştirdiğiniz token'ı verin; gerisi varsayılanında kalır.
 import { HanuiProvider } from '@ahmetilhn/hanui';
 
 const THEME = {
-  light: { blue: '#0d6efd', 'blue-text': '#0a58ca' },
-  dark: { blue: '#6ea8fe' },
+  light: { link: '#0a58ca', 'ring-color': '#0d6efd' },
+  dark: { link: '#6ea8fe' },
   fonts: { heading: 'Archivo, sans-serif', body: 'Inter, sans-serif' },
   // Ölçüler tema başına DEĞİL: bir markanın yuvarlaklığı açık temada
   // 12 px, koyu temada 8 px olmaz.
@@ -336,21 +336,21 @@ büyür, bir duyuru şeridi çıkıp kaybolduğunda değişir.
 
 ## Bileşen kataloğu
 
-| Grup       | Bileşenler                                                                                                                                    |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Eylem      | `Button` · `IconButton` · `TextLink` · `Tooltip`                                                                                              |
-| Seçim      | `Chip` · `ChipGroup` · `Select` · `Combobox` · `Checkbox` · `Radio` · `RadioCard` · `RangeSlider` · `RatingInput` · `QuantityStepper` · `TableCheckbox` |
-| Girdi      | `Input` · `Textarea` · `Field`                                                                                                                |
-| Yüzey      | `Card` (+ `CardMedia`, `CardOverlay`, `CardBody`, `CardFooter`) · `SummaryCard` · `Panel` (+ `PanelForm`, `PanelRow`) · `PageHeader` · `SectionHeader` · `Tile` · `Directory` |
-| Geri bild. | `Alert` · `Badge` · `CodeBadge` · `EmptyState` · `Skeleton` · `Spinner` · `Divider` · `Avatar` · `Rating` · `Price` · `CopyField` · `Breadcrumb`             |
-| Kipsel     | `Modal` · `BottomSheet` · `ConfirmDialog` · `PromptDialog`                                                                                     |
-| Veri       | `Table` (+ `TableScroller`) · `DataTable` (+ `DataTableRow`) · `FilterBar` (+ `FilterBarField`) · `Pagination`                                 |
+| Grup | Bileşenler |
+| --- | --- |
+| Eylem | `Button` · `IconButton` · `TextLink` · `Tooltip` · `Menu` · `Popover` |
+| Seçim | `Chip` · `ChipGroup` · `SegmentedControl` · `Select` · `Combobox` · `Checkbox` · `Switch` · `Radio` · `RadioCard` · `RangeSlider` · `RatingInput` · `QuantityStepper` · `TableCheckbox` |
+| Girdi | `Input` · `PasswordInput` · `Textarea` · `TagInput` · `DateField` · `FileUpload` · `Field` |
+| Yüzey | `Card` (+ `CardMedia`, `CardOverlay`, `CardBody`, `CardFooter`) · `SummaryCard` · `Panel` (+ `PanelForm`, `PanelRow`) · `PageHeader` · `SectionHeader` · `Tile` · `Directory` (+ `DirectoryGroup`, `DirectoryRow`, `DirectoryJump`) · `Carousel` · `ScrollArea` · `Accordion` · `Tabs` |
+| Geri bild. | `Alert` · `Badge` · `CodeBadge` · `EmptyState` · `Skeleton` (+ `SkeletonCard`, `SkeletonRows`, `SkeletonTable`) · `Spinner` · `Progress` · `Steps` · `Divider` · `Avatar` · `Rating` · `Price` · `Stat` · `CopyField` · `Breadcrumb` · `ToastHub` (+ `ToastPortal`) |
+| Kipsel | `Modal` · `Drawer` · `BottomSheet` · `ConfirmDialog` · `PromptDialog` · `CommandPalette` |
+| Veri | `Table` (+ `TableScroller`) · `DataTable` (+ `DataTableRow`) · `FilterBar` (+ `FilterBarField`) · `Pagination` · `Timeline` |
 
 ### Seçenek sayısı öğeyi belirler
 
 | Seçenek sayısı | Öğe                                             |
 | -------------- | ----------------------------------------------- |
-| 2–4            | `ChipGroup` — hepsi ekranda, tek dokunuş        |
+| ≤7             | `ChipGroup` — hepsi ekranda, tek dokunuş        |
 | 5–20           | `Select` — aramasız liste; mobilde alt sayfa    |
 | 20+            | `Combobox` — yazarak ara                        |
 | Aralık         | `RangeSlider` (+ kesin değer için sayı girdisi) |
@@ -363,14 +363,20 @@ da 3 seçeneği de aynı biçimde göstermek, ikisini de yanlış gösterir.
 
 ## Sistemin taşıdığı kararlar
 
+**Zemin mürekkep ve kâğıt, yeşil eylemdir.** Nötrler sıcak mürekkep ekseninde
+(açık sayfa `#faf9f5`, koyu sayfa `#141413`); markanın yeşili yalnızca birincil
+eylemde, bağlantıda, odak halkasında ve marka işaretinde. Seçim — etkin sayfa,
+seçili çip, sekme çizgisi, ilerleme, onay kutusu, anahtar — mürekkeptir.
+Yeşilin yayılmasını `green-footprint.test.ts` derleme hatasına çevirir.
+
 **Doygun dolgu = tıklanabilir.** Durum etiketleri **her zaman** tint zeminli
 (`Badge`, `Alert`), eylemler **her zaman** dolgulu veya çerçeveli. Bu ayrım
 bozulduğunda kullanıcı durum etiketine tıklamayı deniyor. `Badge`in `solid`
 varyantı durum tonlarında bilinçli olarak `soft` ile aynı şeyi verir.
 
 **Bir ekranda tek `PRIMARY`.** `UIVariant` bir vurgu hiyerarşisi: iki dolu düğme
-yan yana durduğunda hiçbiri öne çıkmaz. `UIVariant.CART` ekrandaki tek doygun
-turuncu — dönüşüm eylemi.
+yan yana durduğunda hiçbiri öne çıkmaz. `UIVariant.CART` ekrandaki en parlak
+yeşil — dönüşüm eylemi; birincil eylemden (koyu çam) aydınlıkla ayrışır.
 
 **Renk tek başına anlam taşımaz** (WCAG 1.4.1). Her durum bir metin, ikon veya
 işaretle de bildirilir: `Alert`in her tonunun kendi ikonu var, `Field`in zorunlu
@@ -407,7 +413,8 @@ benzemiyor. Bedeli (odak yönetimi, ok tuşları, `aria-activedescendant`) bir k
 **Dokunma hedefi en az 44×44 px** (WCAG 2.5.8). Görsel kutu daha küçük olabilir;
 tıklanabilir alan görünmez bir örtüyle korunur.
 
-**Hareket 200 ms'yi geçmez** ve `prefers-reduced-motion` her animasyonda
+**Geçişler 200 ms'yi geçmez** — tek istisna dipten açılan panel
+(`duration-slow`, 320 ms) — ve `prefers-reduced-motion` her animasyonda
 karşılanır.
 
 **Odak halkası `:focus-visible` ile.** `:focus` fareyle tıklandığında da halka
@@ -446,8 +453,9 @@ npm run playground # bileşen galerisi → http://localhost:5273
 | `npm run test:coverage`   | kapsam kapısı — `helpers`/`hooks`/`theme` satır ≥ %80            |
 | `npm run test:visual`     | görsel regresyon (Playwright); `verify` İÇİNDE DEĞİL, aşağı bkz. |
 | `npm run test:device`     | iOS (WebKit) + Android (Chromium) davranış nöbetçileri, aşağı bkz. |
-| `npm run check:contrast`  | WCAG kontrast ölçümü, iki temada 120 çift                        |
-| `npm run check:api`       | genel API nöbetçisi — `build/index.d.ts` ↔ `scripts/api-baseline.txt` (164 ad) |
+| `npm run check:contrast`  | WCAG kontrast ölçümü, iki temada 204 çift                        |
+| `npm run check:palette`   | palet tarifinin çıktısı mı + nötr chroma tavanı + tint ve kategori ayrışması |
+| `npm run check:api`       | genel API nöbetçisi — `build/index.d.ts` ↔ `scripts/api-baseline.txt` (167 ad) |
 | `npm run size`            | paket boyutu bütçesi (`size-limit`)                              |
 | `npm run playground`      | bileşen galerisi (tema · RTL · yoğunluk anahtarı)                |
 | `npm run lint`            | ESLint (TS) + stylelint (SCSS)                                    |
@@ -465,16 +473,17 @@ npm run playground # bileşen galerisi → http://localhost:5273
 - **Token sözleşmesi** — açık/koyu anahtar kümeleri ve üretilmiş SCSS kaynakla
   eşleşir. Ayrışma bugüne kadar sessizdi.
 - **Paket boyutu** — tek bileşen import eden bir uygulamanın ne indirdiği
-  ölçülür. Ölçülen (2026-08-15): `Badge` **3,53 kB** · `Button` **4,16 kB** ·
-  `styles.css` **21,11 kB** · tüm paket **37,54 kB** gzip.
-  ⚠ **Bütçe 38 kB, yani başlıkta kalan pay %1,2.** Bu satır bir dönem
+  ölçülür. Ölçülen (2026-10-10, `size-limit`): `Badge` **4,32 kB** · `Button`
+  **5,04 kB** · `styles.css` **22,1 kB** · tüm paket **40,16 kB** gzip.
+  ⚠ **Bütçeler `.size-limit.js`te** (paket 42 kB, `styles.css` 24 kB) ve
+  başlıkta kalan pay dar. Bu satır bir dönem
   `Badge 2,7 / Button 3,4 / paket 22,2` diyordu — ölçüm değil, bayat bir
   kopyaydı ve okuyana **%70 boş alan** olduğunu düşündürüyordu. Yeni bir
   bileşen eklerken bütçenin fiilen dolu olduğu bilinerek girilir; `size-limit`
   kırmızıya döndüğünde doğru tepki limiti yükseltmek değil, ne eklendiğini
   ölçmektir (`npm run size`).
 - **Genel API** — `build/index.d.ts`teki dışa aktarım kümesi
-  `scripts/api-baseline.txt` ile karşılaştırılır (`npm run check:api`, 164 ad).
+  `scripts/api-baseline.txt` ile karşılaştırılır (`npm run check:api`, 167 ad).
   Düşen bir ad **kırıcı**dır ama bugün görünmez: iki tüketici de sürümü tam
   pinliyor, yani kırılma bir sonraki yükseltmede ortaya çıkar. Bilinçli
   değişiklikte `node scripts/check-api.mjs --update` + CLAUDE.md'ye gerekçe.
@@ -529,6 +538,27 @@ yol, Playwright'ın resmi konteynerinde koşup `linux` referanslarını orada
 `master`a her push `npm publish` çalıştırır — **`package.json` sürümünü
 yükseltmeyi unutmayın**, aynı sürüm ikinci kez yayımlanamaz ve iş akışı kırmızı
 döner.
+
+## 5.0'a geçiş
+
+5.0 bir **renk** sürümü: nötr eksen yeşilden sıcak mürekkebe geçti, yeşil
+yalnızca eylem, bağlantı ve odakta kaldı. Bileşen API'si değişmedi; kırılan şey
+token adları ve görünüm.
+
+| 4.x token | 5.0 |
+|---|---|
+| `role`, `role-hover`, `role-active` | `selected`, `selected-hover`, `selected-active` (mürekkep) |
+| `on-role` | `on-selected` |
+| `role-tint` / `role-line` | `selected-tint` / `selected-line` |
+| `role-text` | `link` (+ `link-hover`) |
+| `shell*` | aynı ad, değer çamdan mürekkebe; yeni `on-shell`, `on-shell-2`, `shell-line` |
+| — | `cat-1…5`, `series-1/2` (kategorik palet) |
+
+Eski adlara takma ad **yok**. Kendi CSS'inizde `--hanui-role*` okuyan ya da
+`theme={{ light: { role: … } }}` ezmesi yazan yerler yeni adlara geçer.
+Görünüm değişiklikleri: açık sayfa krem (`#faf9f5`), koyu sayfa sıcak siyah
+(`#141413`), kart ve panel durgunken gölgesiz, `info` tonu nötr, `CodeBadge`
+mürekkep. Ayrıntı ve ölçümler: `CLAUDE.md` → "Renk kararları (5.0)".
 
 ## Tasarım sözleşmesi
 
