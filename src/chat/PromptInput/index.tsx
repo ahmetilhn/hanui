@@ -1,6 +1,6 @@
 'use client';
 
-import { type FC, type KeyboardEvent, memo, type ReactNode, useEffect } from 'react';
+import { forwardRef, type KeyboardEvent, memo, type ReactNode, useEffect } from 'react';
 
 import { ArrowUp, StopFill } from 'react-bootstrap-icons';
 
@@ -21,7 +21,13 @@ type Props = {
   onStop?: () => void;
   /** Yanıt akıyor: gönder yerine durdur düğmesi. */
   isBusy?: boolean;
+  /** Alanın tamamı pasif — yazılamaz. */
   isDisabled?: boolean;
+  /**
+   * Yazmaya izin var ama GÖNDERİM kapalı (bağlantı yok, oturum hazırlanıyor). Kullanıcı mesajını
+   * yazabilir; gönder düğmesi ve `Enter` bekler.
+   */
+  isSubmitDisabled?: boolean;
   /** Yer tutucu — çağrı yerine ÖZGÜ metin, `labels`a girmez. */
   placeholder: string;
   /** Alanın erişilebilir adı; verilmezse yer tutucu. */
@@ -48,92 +54,100 @@ type Props = {
  *   yalnızca o yüzeyi kapatmak istiyordu, arkadaki akış da duruyordu.
  * - Gönder düğmesi ekranın TEK birincil eylemi: çam dolgu, koyu temada mint sınır.
  * - Odak göstergesini çerçeve çizer (`:focus-within`); alan çerçevesiz (`variant="bare"`).
+ * - `ref` metin alanına iletilir: gönderimden ya da bir öneri seçildikten sonra odağı geri vermek için.
  */
-const PromptInput: FC<Props> = ({
-  value,
-  onChange,
-  onSubmit,
-  onStop,
-  isBusy,
-  isDisabled,
-  placeholder,
-  label,
-  maxRows = 8,
-  hint,
-  start,
-  end,
-  className,
-  testId,
-}) => {
-  const { labels } = useHanui();
-  const isEmpty = value.trim() === '';
+const PromptInput = /*#__PURE__*/ forwardRef<HTMLTextAreaElement, Props>(
+  (
+    {
+      value,
+      onChange,
+      onSubmit,
+      onStop,
+      isBusy,
+      isDisabled,
+      isSubmitDisabled,
+      placeholder,
+      label,
+      maxRows = 8,
+      hint,
+      start,
+      end,
+      className,
+      testId,
+    },
+    ref,
+  ) => {
+    const { labels } = useHanui();
+    const isEmpty = value.trim() === '';
 
-  /* `Escape` sayfa duzeyinde: odak alanda olmasa da (bir arac kartindayken) akis durdurulabilmeli. */
-  useEffect(() => {
-    if (!isBusy || !onStop) return;
+    /* `Escape` sayfa duzeyinde: odak alanda olmasa da (bir arac kartindayken) akis durdurulabilmeli. */
+    useEffect(() => {
+      if (!isBusy || !onStop) return;
 
-    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.key !== 'Escape' || event.defaultPrevented || hasOpenSurface()) return;
-      onStop();
+      const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+        if (event.key !== 'Escape' || event.defaultPrevented || hasOpenSurface()) return;
+        onStop();
+      };
+
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [isBusy, onStop]);
+
+    const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+      if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) return;
+
+      event.preventDefault();
+      if (!isEmpty && !isBusy && !isDisabled && !isSubmitDisabled) onSubmit();
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isBusy, onStop]);
+    return (
+      <div className={cx(styles.prompt, className)} data-testid={testId}>
+        <div className={cx(styles.prompt__box, isDisabled && styles['prompt__box--disabled'])}>
+          {start !== undefined && <div className={styles.prompt__start}>{start}</div>}
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) return;
-
-    event.preventDefault();
-    if (!isEmpty && !isBusy && !isDisabled) onSubmit();
-  };
-
-  return (
-    <div className={cx(styles.prompt, className)} data-testid={testId}>
-      <div className={cx(styles.prompt__box, isDisabled && styles['prompt__box--disabled'])}>
-        {start !== undefined && <div className={styles.prompt__start}>{start}</div>}
-
-        <Textarea
-          className={styles.prompt__field}
-          variant="bare"
-          rows={1}
-          isAutoSize
-          maxRows={maxRows}
-          value={value}
-          placeholder={placeholder}
-          aria-label={label ?? placeholder}
-          disabled={isDisabled}
-          onChange={event => onChange(event.target.value)}
-          onKeyDown={handleKeyDown}
-        />
-
-        {end !== undefined && <div className={styles.prompt__end}>{end}</div>}
-
-        {isBusy ? (
-          <IconButton
-            icon={<StopFill aria-hidden />}
-            label={resolveLabel('PromptInput.stop', labels?.chat?.stop)}
-            variant="outline"
-            shape="round"
-            onClick={onStop}
-            disabled={!onStop}
+          <Textarea
+            ref={ref}
+            className={styles.prompt__field}
+            variant="bare"
+            rows={1}
+            isAutoSize
+            maxRows={maxRows}
+            value={value}
+            placeholder={placeholder}
+            aria-label={label ?? placeholder}
+            disabled={isDisabled}
+            onChange={event => onChange(event.target.value)}
+            onKeyDown={handleKeyDown}
           />
-        ) : (
-          <IconButton
-            icon={<ArrowUp aria-hidden />}
-            label={resolveLabel('PromptInput.send', labels?.chat?.send)}
-            variant="solid"
-            shape="round"
-            onClick={onSubmit}
-            disabled={isEmpty || isDisabled}
-          />
-        )}
+
+          {end !== undefined && <div className={styles.prompt__end}>{end}</div>}
+
+          {isBusy ? (
+            <IconButton
+              icon={<StopFill aria-hidden />}
+              label={resolveLabel('PromptInput.stop', labels?.chat?.stop)}
+              variant="outline"
+              shape="round"
+              onClick={onStop}
+              disabled={!onStop}
+            />
+          ) : (
+            <IconButton
+              icon={<ArrowUp aria-hidden />}
+              label={resolveLabel('PromptInput.send', labels?.chat?.send)}
+              variant="solid"
+              shape="round"
+              onClick={onSubmit}
+              disabled={isEmpty || isDisabled || isSubmitDisabled}
+            />
+          )}
+        </div>
+
+        {hint !== undefined && <div className={styles.prompt__hint}>{hint}</div>}
       </div>
-
-      {hint !== undefined && <div className={styles.prompt__hint}>{hint}</div>}
-    </div>
-  );
-};
+    );
+  },
+);
 
 export default /*#__PURE__*/ memo(
   /*#__PURE__*/ named(PromptInput, 'PromptInput'),

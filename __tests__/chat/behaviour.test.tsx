@@ -1,6 +1,6 @@
 import { LABELS } from '../fixtures/labels';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { type ReactNode, useState } from 'react';
+import { createRef, type ReactNode, useState } from 'react';
 
 import {
   ActionList,
@@ -69,6 +69,25 @@ describe('PromptInput — klavye', () => {
 
     expect(onSubmit).not.toHaveBeenCalled();
     expect(screen.getByRole('button', { name: 'Gönder' })).toBeDisabled();
+  });
+
+  it('gönderim kapalıyken yazılabilir ama gönderilemez', () => {
+    const { onSubmit, field } = setup({ isSubmitDisabled: true });
+
+    expect(field).not.toBeDisabled();
+    fireEvent.keyDown(field, { key: 'Enter' });
+
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'Gönder' })).toBeDisabled();
+  });
+
+  it('`ref` metin alanına ulaşır — odağı geri vermek için', () => {
+    const ref = createRef<HTMLTextAreaElement>();
+    wrap(
+      <PromptInput ref={ref} value="" onChange={() => {}} onSubmit={() => {}} placeholder="Yaz" />,
+    );
+
+    expect(ref.current).toBe(screen.getByRole('textbox', { name: 'Yaz' }));
   });
 
   it('akış sürerken Escape durdurur', () => {
