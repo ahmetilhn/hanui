@@ -668,6 +668,16 @@ sonra komut çalışır. Nöbetçi `__tests__/components/CommandPalette.test.tsx
 Yeni `hotkey` (`'mod+k'`) + `onOpen`: kısayol kapalıyken açar, açıkken kapatır,
 başka bir kipsel yüzey açıkken dokunmaz (`hasOpenSurface`).
 
+### Sohbet planından BEKLEYEN altyapı maddesi — SCSS API (`exports["./scss"]`)
+
+Plan, tüketicinin `@use '@ahmetilhn/hanui/scss'` ile token değişkenlerini ve
+mixin'leri almasını öneriyordu (hanration bunları kopyalamış ve değerler kaymış:
+`$tablet-breakpoint: 760px`, hanui'de 768 / 1024). **Bu turda yapılmadı:** SCSS
+kaynaklarının pakete girmesi (`files: ["build"]`) ve Next'in Sass çözücüsünün
+paket `exports`'unu hangi koşulla okuduğu (webpack `sass` koşulu, Turbopack)
+tüketicide doğrulanmadan yayınlanırsa kırılma YAYINDAN SONRA görünür. Doğru
+sıra: hanration'da yerel paketle (`npm pack`) bir `@use` denemesi, sonra ihraç.
+
 ### 5.1 — Faz 1 eklemeleri (yalnızca ekleme, kırıcı değil)
 
 | Bileşen | Ekleme |
