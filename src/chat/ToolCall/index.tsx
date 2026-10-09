@@ -23,6 +23,12 @@ type Props = {
   /** Sağdaki ikincil bilgi (süre). */
   meta?: ReactNode;
   isDefaultOpen?: boolean;
+  /**
+   * Kontrollü açılış — `onOpenChange` ile. Örn. çalışırken açık, bitince (kullanıcı dokunmadıysa)
+   * kapalı bir terminal kartı.
+   */
+  isOpen?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
   /** Gövde — `ToolCallSection`lar. */
   children?: ReactNode;
   className?: string;
@@ -50,6 +56,8 @@ const ToolCall: FC<Props> = ({
   status,
   meta,
   isDefaultOpen,
+  isOpen,
+  onOpenChange,
   children,
   className,
   testId,
@@ -87,6 +95,8 @@ const ToolCall: FC<Props> = ({
       summary={header}
       meta={meta}
       isDefaultOpen={isDefaultOpen}
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
       testId={testId}
     >
       <div className={styles.call__body}>{children}</div>
