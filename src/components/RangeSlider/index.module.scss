@@ -5,8 +5,27 @@
   @include stack($space-2);
 
   &--disabled {
-    opacity: 0.5;
     pointer-events: none;
+
+    .range__readout {
+      @include passive-text;
+    }
+
+    .range__fill {
+      background-color: $action-soft;
+    }
+
+    .range__input::-webkit-slider-thumb {
+      background-color: $surface-2;
+      border-color: $action-soft;
+      box-shadow: none;
+    }
+
+    .range__input::-moz-range-thumb {
+      background-color: $surface-2;
+      border-color: $action-soft;
+      box-shadow: none;
+    }
   }
 
   &__readout {

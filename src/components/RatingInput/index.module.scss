@@ -9,8 +9,25 @@
   flex-direction: column;
   gap: $space-2;
 
+  /* Dolu yildiz puanin kendisi: pasifken de bos yildizdan (`border`) ayrismak zorunda. */
   &--disabled {
-    opacity: 0.5;
+    .rating__legend,
+    .rating__caption,
+    .rating__star--filled {
+      @include passive-text;
+    }
+
+    .rating__star {
+      cursor: not-allowed;
+
+      @media (forced-colors: active) {
+        color: GrayText;
+      }
+
+      &:hover {
+        transform: none;
+      }
+    }
   }
 
   &__legend {

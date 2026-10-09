@@ -5,11 +5,11 @@
   @include input-base;
 
   &::-webkit-calendar-picker-indicator {
+    border-radius: $radius-sm;
     cursor: pointer;
-    opacity: 0.6;
 
     &:hover {
-      opacity: 1;
+      background-color: $surface-2;
     }
   }
 

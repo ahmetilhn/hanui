@@ -33,7 +33,7 @@
 
     .switch__label,
     .switch__hint {
-      color: $text-3;
+      @include passive-text;
     }
 
     &:hover {
@@ -93,8 +93,18 @@
   }
 }
 
+/*
+ * Pasif iz `track` (bos iz): `action-soft` kapali ETKIN anahtarin izi, `surface-2` ise koyu
+ * temada kulpla (`surface`) ayni aydinlikta.
+ */
 .switch__input:disabled + .switch__track {
-  opacity: 0.6;
+  background-color: $track;
+  border-color: $border;
+}
+
+/* Pasif acik anahtar rol rengini birakir; acikligi kulbun konumu ve KENARLIK tasir. */
+.switch__input:checked:disabled + .switch__track {
+  border-color: $text-3;
 }
 
 @media (forced-colors: active) {
@@ -111,6 +121,14 @@
 
     .switch__thumb {
       background-color: Highlight;
+    }
+  }
+
+  .switch__input:disabled + .switch__track {
+    border-color: GrayText;
+
+    .switch__thumb {
+      background-color: GrayText;
     }
   }
 }

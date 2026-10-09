@@ -39,12 +39,18 @@
   }
 
   &--disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
+    @include passive-surface;
 
     &:hover {
-      border-color: $border-strong;
-      background-color: $surface-inset;
+      border-color: $border;
+      background-color: $surface-2;
+    }
+
+    .upload__icon,
+    .upload__label,
+    .upload__drag,
+    .upload__hint {
+      @include passive-text;
     }
   }
 
