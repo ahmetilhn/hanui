@@ -24,7 +24,8 @@ export default defineConfig({
     dts({
       entryRoot: 'src',
       include: ['src'],
-      exclude: ['src/**/*.test.*'],
+      /* `chat` girişi kendi derlemesinde (`vite.chat.config.ts`). */
+      exclude: ['src/**/*.test.*', 'src/chat/**'],
       rollupTypes: true,
       tsconfigPath: resolve(__dirname, 'tsconfig.build.json'),
     }),

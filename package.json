@@ -20,6 +20,12 @@
       "require": "./build/index.cjs"
     },
     "./styles.css": "./build/styles.css",
+    "./chat": {
+      "types": "./build/types/chat/index.d.ts",
+      "import": "./build/chat.js",
+      "require": "./build/chat.cjs"
+    },
+    "./chat.css": "./build/chat.css",
     "./package.json": "./package.json"
   },
   "sideEffects": [
@@ -59,7 +65,7 @@
   "scripts": {
     "prepare": "git rev-parse --git-dir >/dev/null 2>&1 && git config core.hooksPath .githooks || true",
     "tokens": "node scripts/build-palette.mjs && node scripts/build-tokens.mjs",
-    "build": "npm run tokens && vite build",
+    "build": "npm run tokens && vite build && vite build --config vite.chat.config.ts && tsc -p tsconfig.chat.json",
     "dev": "npm run tokens && vite build --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src __tests__ scripts --max-warnings 0 && stylelint \"src/**/*.scss\"",

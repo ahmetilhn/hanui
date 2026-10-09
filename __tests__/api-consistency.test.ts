@@ -1,7 +1,16 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const COMPONENTS = resolve(__dirname, '../src/components');
+/* Ana giriş VE sohbet girişi: aynı sözleşme iki girişte de geçerli. */
+const ROOTS = [resolve(__dirname, '../src/components'), resolve(__dirname, '../src/chat')];
+
+const directoryOf = new Map<string, string>(
+  ROOTS.flatMap(root =>
+    readdirSync(root, { withFileTypes: true })
+      .filter(entry => entry.isDirectory() && entry.name !== '__tests__')
+      .map(entry => [entry.name, resolve(root, entry.name)] as [string, string]),
+  ),
+);
 
 const NATIVE_BOOLEANS = new Set([
   'disabled',
@@ -33,7 +42,7 @@ const STATE_NOT_TONE = ['status', 'type'];
 type PropEntry = { component: string; name: string; type: string };
 
 const readDeprecated = (component: string): Set<string> => {
-  const file = resolve(COMPONENTS, component, 'index.tsx');
+  const file = resolve(directoryOf.get(component) ?? '', 'index.tsx');
 
   let source: string;
   try {
@@ -53,7 +62,7 @@ const readDeprecated = (component: string): Set<string> => {
 };
 
 const readProps = (component: string): PropEntry[] => {
-  const file = resolve(COMPONENTS, component, 'index.tsx');
+  const file = resolve(directoryOf.get(component) ?? '', 'index.tsx');
 
   let source: string;
   try {
@@ -72,9 +81,7 @@ const readProps = (component: string): PropEntry[] => {
   return entries;
 };
 
-const components = readdirSync(COMPONENTS, { withFileTypes: true })
-  .filter(entry => entry.isDirectory() && entry.name !== '__tests__')
-  .map(entry => entry.name);
+const components = [...directoryOf.keys()];
 
 const props = components.flatMap(readProps);
 

@@ -53,18 +53,26 @@ const ALLOWED: Record<Family, Record<string, string>> = {
   },
 };
 
-const COMPONENTS = 'src/components';
+/* Ana giriş VE sohbet girişi — sohbet bileşenleri yeşilin en kolay yayılacağı yer. */
+const ROOTS = ['src/components', 'src/chat'];
+
+const componentDirs = (): [string, string][] =>
+  ROOTS.flatMap(root =>
+    readdirSync(root, { withFileTypes: true })
+      .filter(entry => entry.isDirectory())
+      .map(entry => [entry.name, `${root}/${entry.name}`] as [string, string]),
+  );
 
 const usages = (): Record<Family, Set<string>> => {
   const found = Object.fromEntries(
     Object.keys(FAMILIES).map(family => [family, new Set<string>()]),
   ) as Record<Family, Set<string>>;
 
-  for (const component of readdirSync(COMPONENTS)) {
-    const files = readdirSync(`${COMPONENTS}/${component}`).filter(name => name.endsWith('.scss'));
+  for (const [component, dir] of componentDirs()) {
+    const files = readdirSync(dir).filter(name => name.endsWith('.scss'));
 
     for (const file of files) {
-      const source = readFileSync(`${COMPONENTS}/${component}/${file}`, 'utf8');
+      const source = readFileSync(`${dir}/${file}`, 'utf8');
 
       for (const [family, pattern] of Object.entries(FAMILIES) as [Family, RegExp][])
         if (source.match(pattern)) found[family].add(component);
@@ -91,15 +99,15 @@ describe('yeşil ayak izi', () => {
   });
 
   it('4.x rol ailesi geri gelmez — seçim mürekkep (`selected*`), bağlantı `link*`', () => {
-    const offenders = readdirSync(COMPONENTS).filter(component =>
-      readdirSync(`${COMPONENTS}/${component}`)
-        .filter(name => name.endsWith('.scss'))
-        .some(file =>
-          /\$(?:role|on-role)(?![\w])|\$role-/.test(
-            readFileSync(`${COMPONENTS}/${component}/${file}`, 'utf8'),
+    const offenders = componentDirs()
+      .filter(([, dir]) =>
+        readdirSync(dir)
+          .filter(name => name.endsWith('.scss'))
+          .some(file =>
+            /\$(?:role|on-role)(?![\w])|\$role-/.test(readFileSync(`${dir}/${file}`, 'utf8')),
           ),
-        ),
-    );
+      )
+      .map(([component]) => component);
 
     expect(offenders).toEqual([]);
   });

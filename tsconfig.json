@@ -26,6 +26,8 @@
        tanımıyordu. `tsconfig.build.json` testleri zaten dışarıda bırakıyor. */
     "types": ["node", "jest", "@testing-library/jest-dom"],
     "paths": {
+      /* `chat` girişi ana girişi PAKET ADIYLA alır (derlemede dışsal kalır); depo içinde kaynağa eşlenir. */
+      "@ahmetilhn/hanui": ["./src/index.ts"],
       "@/*": ["./src/*"],
       "@tests/*": ["./__tests__/*"]
     }

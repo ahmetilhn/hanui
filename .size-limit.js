@@ -25,6 +25,23 @@ export default [
     limit: '5.2 kB',
     gzip: true,
   },
+  /*
+   * SOHBET GİRİŞİ — ana girişten AYRI ölçülür ve ana giriş içinde SAYILMAZ (`@ahmetilhn/hanui`
+   * dışsal: tüketici onu zaten indiriyor). Bütçe ilk ölçümden konur, yeşile boyamak için büyümez.
+   */
+  {
+    name: 'chat girişi (tümü)',
+    path: 'build/chat.js',
+    ignore: ['@ahmetilhn/hanui'],
+    limit: '14 kB',
+    gzip: true,
+  },
+  {
+    name: 'chat.css',
+    path: 'build/chat.css',
+    limit: '6 kB',
+    gzip: true,
+  },
   {
     name: 'yalnızca Badge (ağaç sarsma)',
     path: 'build/index.js',

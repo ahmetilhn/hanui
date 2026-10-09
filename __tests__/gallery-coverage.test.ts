@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+import * as chat from '@/chat';
 import * as hanui from '@/index';
 
 const source = readFileSync(resolve(__dirname, '../playground/scenarios.tsx'), 'utf8');
@@ -9,7 +10,8 @@ const isComponent = (value: unknown): boolean =>
   (typeof value === 'function' && /^[A-Z]/.test((value as { name?: string }).name ?? '')) ||
   (typeof value === 'object' && value !== null && '$$typeof' in value);
 
-const exported = Object.entries(hanui)
+/* Ana giriş VE sohbet girişi — galeri ikisini de gösterir. */
+const exported = [...Object.entries(hanui), ...Object.entries(chat)]
   .filter(([name, value]) => /^[A-Z]/.test(name) && isComponent(value))
   .map(([name]) => name);
 

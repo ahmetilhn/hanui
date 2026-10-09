@@ -95,6 +95,7 @@ import {
   UISize,
   UIVariant,
 } from '../src/index';
+import { Legend } from '../src/chat';
 
 import { SOLO_ONLY } from './solo';
 
@@ -1226,6 +1227,21 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
           <Input aria-label="Ara" placeholder="Geniş alan" />
         </FilterBarField>
       </FilterBar>
+    ),
+  },
+  // --- Sohbet (@ahmetilhn/hanui/chat) ---
+  Legend: {
+    default: (
+      <Legend
+        items={[
+          { id: 'prefix', label: 'Önek', tone: 'cat-1' },
+          { id: 'map', label: 'Harita', tone: 'cat-2' },
+          { id: 'state', label: 'Durum', tone: 'cat-3' },
+          { id: 'user', label: 'Kullanıcı', tone: 'cat-4' },
+          { id: 'turn', label: 'Tur içi', tone: 'cat-5' },
+          { id: 'wait', label: 'Bekleme', tone: 'muted' },
+        ]}
+      />
     ),
   },
   Pagination: {

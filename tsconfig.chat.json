@@ -1,0 +1,16 @@
+{
+  /* `@ahmetilhn/hanui/chat` tipleri — dosya başına, `build/types/chat`. Ayrıntı: `vite.chat.config.ts`. */
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "rootDir": "src",
+    "outDir": "build/types",
+    /* `@ahmetilhn/hanui` EŞLENMEZ: paketin kendi `exports`u üzerinden derlenmiş ana tiplere çözülür. */
+    "paths": { "@/*": ["./src/*"] },
+    "types": []
+  },
+  "include": ["src/chat", "src/types/scss.d.ts"],
+  "exclude": ["src/**/*.test.*"]
+}

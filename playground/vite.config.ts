@@ -8,9 +8,11 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   root: resolve(import.meta.dirname, '.'),
   resolve: {
-    alias: {
-      '@': resolve(import.meta.dirname, '../src'),
-    },
+    /* `chat` bileşenleri ana girişi paket adıyla alır; galeride kaynağa eşlenir. */
+    alias: [
+      { find: /^@ahmetilhn\/hanui$/, replacement: resolve(import.meta.dirname, '../src/index.ts') },
+      { find: '@', replacement: resolve(import.meta.dirname, '../src') },
+    ],
   },
   css: {
     postcss: { plugins: [hanuiLayer()] },

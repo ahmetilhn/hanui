@@ -138,6 +138,37 @@ export type HanuiLabels = Partial<{
     loading: string;
   }>;
 
+  /**
+   * Sohbet bileşenleri (`@ahmetilhn/hanui/chat`). Çağrı yerine ÖZGÜ metinler buraya girmez:
+   * `PromptInput.placeholder`, `ReasoningBlock.summary`, `ToolCall.name`.
+   */
+  chat: Partial<{
+    /** Sohbet akışının bölge adı ("Sohbet"). `ChatThread`. */
+    thread: string;
+    /** Gönder düğmesi. `PromptInput`. */
+    send: string;
+    /** Akışı durdur düğmesi. `PromptInput`. */
+    stop: string;
+    /** Kullanıcı yukarı kaydırınca beliren düğme ("En yeniye in"). `ChatThread`. */
+    scrollToLatest: string;
+    /** Yanıt tamamlandığında duyurulan cümle ("Yanıt hazır"). `ChatThread`. */
+    replyReady: string;
+    /** Mesaj eylemleri araç çubuğunun adı. `MessageActions`. */
+    messageActions: string;
+    /** Kaynak listesinin adı ("Kaynaklar"). `SourceList`. */
+    sources: string;
+    /** Atıf numarasının okunan adı, örn. `n => 'Kaynak ' + n`. `Citation`. */
+    citation: Formatter<[index: number]>;
+    /** stderr satırının önündeki gizli işaret ("hata çıktısı"): renk tek başına anlam taşımaz. */
+    stderr: string;
+    /** Araç çağrısının durum metinleri. `ToolCall`. */
+    toolStatus: Partial<Record<'running' | 'ok' | 'error' | 'aborted' | 'interrupted', string>>;
+    /** Kod bloğunu kopyalama düğmesi, örn. `language => language + ' kodunu kopyala'`. `CodeBlock`. */
+    codeCopy: Formatter<[language: string]>;
+    /** Kopyalandıktan sonra duyurulan cümle. `CodeBlock`. */
+    codeCopied: string;
+  }>;
+
   copyField: Partial<{
     /** Kopyalama düğmesinin adı. */
     copy: Formatter<[value: string]>;
