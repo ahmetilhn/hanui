@@ -70,23 +70,32 @@
   color: inherit;
   text-align: inherit;
 
-  &:hover .sort__arrow {
-    opacity: 1;
+  /* Siralanmis sutunun oku hover'da da rol renginde kalir. */
+  &:hover .sort__arrow:not(.sort__arrow--ascending, .sort__arrow--descending) {
+    color: $text;
   }
 
   @include focus-ring($ring-color, -2px);
 }
 
+/*
+ * Dinlenen ok pasif DEGIL: sutun siralanabiliyor, yalnizca henuz siralanmamis. `Rating`in bos
+ * yildizi gibi `border-strong`: `text-3` siralanmis okla (`role-text`) acik temada 1,08:1 kaliyor
+ * ve hangi sutunun sirali oldugu okunmuyordu.
+ */
 .sort__arrow {
   flex-shrink: 0;
   font-size: $font-size-2xs;
-  color: $text-3;
-  opacity: 0.35;
-  transition: opacity $duration-fast $ease-out;
+  color: $border-strong;
+  transition: color $duration-fast $ease-out;
+
+  /* Bu kipte her renk CanvasText olur ve dinlenen `▴` artan siralamanin okuyla ayni cizilir. */
+  @media (forced-colors: active) {
+    color: GrayText;
+  }
 
   &--ascending,
   &--descending {
-    opacity: 1;
     color: $role-text;
   }
 
