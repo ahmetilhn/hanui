@@ -132,6 +132,15 @@ export const pushModal = (): { token: symbol; pop: () => void } => {
 /** Verilen panel yığının EN ÜSTÜNDE mi. */
 export const isTopModal = (token: symbol): boolean => modalStack.at(-1) === token;
 
+/**
+ * `Escape`i tüketecek AÇIK bir yüzey var mı — kipsel pencere, açılır panel, bildirim.
+ * ⚠ Sayfa düzeyinde `Escape` dinleyen her kod (sohbetin "akışı durdur" kısayolu gibi) önce bunu
+ * sorar. Sormayan bir dinleyici, kullanıcı yalnızca bir modalı kapatmak isterken arkadaki işi de
+ * iptal ediyordu. Yüzey kapanırken yığından AYNI olayın içinde değil, bir sonraki render'da
+ * çıkar; yani dinleyici o tuş vuruşunda hâlâ `true` görür — istenen de bu.
+ */
+export const hasOpenSurface = (): boolean => modalStack.length > 0;
+
 /** Yalnızca test içindir: modül düzeyindeki yığın testler arasında sızmamalı. */
 export const resetModalStack = (): void => {
   modalStack.length = 0;

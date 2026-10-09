@@ -1,6 +1,7 @@
 import {
   captureFocus,
   focusFirstMeaningful,
+  hasOpenSurface,
   isTopModal,
   pushModal,
   resetModalStack,
@@ -127,5 +128,19 @@ describe('kipsel yığın', () => {
     pop();
 
     expect(isTopModal(token)).toBe(false);
+  });
+});
+
+describe('hasOpenSurface', () => {
+  beforeEach(() => resetModalStack());
+
+  it('yığın boşken false, bir yüzey açılınca true, kapanınca yine false', () => {
+    expect(hasOpenSurface()).toBe(false);
+
+    const { pop } = pushModal();
+    expect(hasOpenSurface()).toBe(true);
+
+    pop();
+    expect(hasOpenSurface()).toBe(false);
   });
 });

@@ -1,4 +1,9 @@
-import { buildThemeCss, resolveTokens, THEME_ATTRIBUTE } from '@/helpers/theme.helper';
+import {
+  buildThemeCss,
+  resolveTokens,
+  themeBootScript,
+  THEME_ATTRIBUTE,
+} from '@/helpers/theme.helper';
 import { DARK_THEME, LIGHT_THEME } from '@/theme/tokens';
 
 describe('buildThemeCss', () => {
@@ -90,5 +95,37 @@ describe('token sözleşmesi', () => {
     );
 
     expect(empty).toEqual([]);
+  });
+});
+
+describe('themeBootScript', () => {
+  const run = (script: string) => new Function(script)();
+
+  beforeEach(() => {
+    document.documentElement.removeAttribute('data-hanui-theme');
+    localStorage.clear();
+  });
+
+  it('kayıtlı AÇIK seçimi `<html>`e yazar', () => {
+    localStorage.setItem('theme', 'dark');
+    run(themeBootScript({ storageKey: 'theme' }));
+
+    expect(document.documentElement.getAttribute('data-hanui-theme')).toBe('dark');
+  });
+
+  it('kayıt yoksa ya da geçersizse öznitelik YAZMAZ — sistem tercihi izlenir', () => {
+    run(themeBootScript({ storageKey: 'theme' }));
+    expect(document.documentElement.hasAttribute('data-hanui-theme')).toBe(false);
+
+    localStorage.setItem('theme', 'system');
+    run(themeBootScript({ storageKey: 'theme' }));
+    expect(document.documentElement.hasAttribute('data-hanui-theme')).toBe(false);
+  });
+
+  it('anahtar betiğe KAÇIŞLI girer — tırnak betiği kırmaz', () => {
+    localStorage.setItem('a"b', 'light');
+
+    expect(() => run(themeBootScript({ storageKey: 'a"b' }))).not.toThrow();
+    expect(document.documentElement.getAttribute('data-hanui-theme')).toBe('light');
   });
 });

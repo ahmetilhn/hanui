@@ -102,3 +102,17 @@ export const applyThemeConfig = (config: HanuiThemeConfig | undefined): void => 
 
   if (!existing) document.head.appendChild(element);
 };
+
+/**
+ * İLK BOYAMADAN ÖNCE çalışacak tema betiği — `<head>` içine, React ağacından ÖNCE.
+ * Kayıtlı açık seçimi (`light` / `dark`) `<html data-hanui-theme>`e yazar; kayıt yoksa öznitelik
+ * yazılmaz ve sistem tercihi izlenir.
+ * ⚠ React ağacına konamaz: sağlayıcı ağaç monte olduktan sonra çalışıyor ve koyu tema seçmiş
+ * kullanıcı o ana kadar bir kare beyaz ekran görüyordu. İki tüketici bu betiği ELLE yazıyordu.
+ * ⚠ Depolama okunamazsa (gizli pencere, engellenmiş site verisi) sessizce sistem tercihine düşer.
+ * @example <script dangerouslySetInnerHTML={{ __html: themeBootScript({ storageKey: 'theme' }) }} />
+ */
+export const themeBootScript = ({ storageKey }: { storageKey: string }): string =>
+  `(function(){try{var t=localStorage.getItem(${JSON.stringify(storageKey)});` +
+  `if(t==="light"||t==="dark")document.documentElement.setAttribute("${THEME_ATTRIBUTE}",t)}` +
+  `catch(e){}})()`;

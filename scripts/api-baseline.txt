@@ -154,14 +154,17 @@ UploadFile
 VirtualRange
 applyThemeConfig
 buildThemeCss
+hasOpenSurface
 initHanui
 matchesSearch
 normalizeSearchTerm
 resolveTokens
+themeBootScript
 toast
 useAnnounce
 useHanui
 useHanuiTheme
+useHanuiTokens
 useListboxNavigation
 usePositioning
 useVirtualList

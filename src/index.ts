@@ -28,11 +28,18 @@ export {
   DENSITY_ATTRIBUTE,
   resolveTokens,
   THEME_ATTRIBUTE,
+  themeBootScript,
 } from './helpers/theme.helper';
+/*
+ * Sayfa düzeyinde `Escape` dinleyen kod (sohbetin "akışı durdur" kısayolu) önce bunu sorar; yığının
+ * kendisi (`pushModal` / `isTopModal`) iç API olarak kalır.
+ */
+export { hasOpenSurface } from './helpers/focus.helper';
 
 // --- Kancalar ---------------------------------------------------------
 export { default as useAnnounce } from './hooks/useAnnounce';
 export { default as useHanuiTheme } from './hooks/useHanuiTheme';
+export { default as useHanuiTokens } from './hooks/useHanuiTokens';
 export {
   default as useListboxNavigation,
   type ListboxNavigation,

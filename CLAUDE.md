@@ -796,6 +796,19 @@ Taban çizgisi bu yüzden repoda duruyor. (Bu satır bir dönem "iki tüketici d
 | `Formatter<TArgs>` | `helpers/label.helper.ts` **ve** `types/theme.type.ts` — birebir aynı imza, iki bildirim | tek bildirim `types/theme.type.ts`te | `index.ts`ten **dışa verilmiyor**; `.d.ts`te zaten tek `declare type` olarak görünüyordu |
 | `ListboxNavigation` | `hooks/useListboxNavigation.ts` (kardeşleri `types/hook.type.ts`te) | gövde `types/hook.type.ts`te, **hook yeniden ihraç ediyor** | `Combobox` deseninin aynısı: `src/index.ts` **değişmedi**, ad aynı yoldan geliyor |
 
+**5.1'de açılan adlar — her birinin kütüphane dışında çağıranı var:**
+
+| Ad | Neden dışa açık | Çağıran |
+|---|---|---|
+| `useHanuiTokens` | Çizim kütüphaneleri (recharts) `stroke`/`fill` için `var(--…)` okuyamıyor; çözülmüş değer gerekiyor ve tema değişince yenilenmeli | hanration `MetricsPanel` (kendi `useCssVars` kopyasıyla yapıyordu) |
+| `themeBootScript` | Tema ilk boyamadan ÖNCE yazılmalı; iki tüketici aynı betiği elle yazıyordu | hanration `THEME_BOOT_SCRIPT` |
+| `hasOpenSurface` | Sayfa düzeyinde `Escape` dinleyen kod önce açık bir yüzey olup olmadığını sormalı; sormayan, modalı kapatan tuşla arkadaki akışı da durduruyordu | hanration `Composer` |
+
+⚠ Sohbet planı `hasOpenSurface` yerine bir **kanca** (`useIsModalOpen`) öneriyordu.
+Çağıranın ihtiyacı reaktif bir durum değil, tuşa basıldığı ANDAKİ tek bir soru;
+kanca her yüzey açılıp kapandığında çağıranı yeniden çizdirirdi (KISS). Yığının
+kendisi (`pushModal` / `isTopModal`) iç API olarak kalır.
+
 **İç kancalar `src/index.ts`e EKLENMEZ.** Bu turda açılan `useDismissOnEscape`
 ve `useAsyncSearch` dışa verilmedi — her ihraç bir sürüm taahhüdüdür ve
 ikisinin de kütüphane dışında çağıranı yok (YAGNI).
