@@ -473,8 +473,8 @@ npm run playground # bileşen galerisi → http://localhost:5273
 - **Token sözleşmesi** — açık/koyu anahtar kümeleri ve üretilmiş SCSS kaynakla
   eşleşir. Ayrışma bugüne kadar sessizdi.
 - **Paket boyutu** — tek bileşen import eden bir uygulamanın ne indirdiği
-  ölçülür. Ölçülen (2026-10-10, `size-limit`): `Badge` **4,32 kB** · `Button`
-  **5,04 kB** · `styles.css` **22,1 kB** · tüm paket **40,16 kB** gzip.
+  ölçülür. Ölçülen (2026-10-10, `size-limit`): `Badge` **4,33 kB** · `Button`
+  **5,05 kB** · `styles.css` **22,37 kB** · tüm paket **40,17 kB** gzip.
   ⚠ **Bütçeler `.size-limit.js`te** (paket 42 kB, `styles.css` 24 kB) ve
   başlıkta kalan pay dar. Bu satır bir dönem
   `Badge 2,7 / Button 3,4 / paket 22,2` diyordu — ölçüm değil, bayat bir
