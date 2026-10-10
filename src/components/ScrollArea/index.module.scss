@@ -4,6 +4,8 @@
 .scrollArea {
   @include custom-scrollbar;
 
+  // Kapsayıcı blok: içindeki gizli metin (`visually-hidden`) kabın dışına taşmaz.
+  position: relative;
   overscroll-behavior: contain;
 
   &--vertical {

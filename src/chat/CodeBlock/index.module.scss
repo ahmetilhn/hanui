@@ -28,6 +28,8 @@
 }
 
 .block__body {
+  // Kapsayıcı blok: içindeki gizli metin (`visually-hidden`) kabın dışına taşmaz.
+  position: relative;
   overflow: auto;
 
   @include custom-scrollbar;

@@ -23,6 +23,8 @@
   justify-content: start;
   gap: $space-4;
 
+  // Kapsayıcı blok: içindeki gizli metin (`visually-hidden`) kabın dışına taşmaz.
+  position: relative;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   overscroll-behavior-x: contain;

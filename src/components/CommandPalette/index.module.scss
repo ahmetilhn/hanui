@@ -70,6 +70,8 @@
   &__list {
     flex: 1;
     min-height: 0;
+    // Kapsayıcı blok: içindeki gizli metin (`visually-hidden`) kabın dışına taşmaz.
+    position: relative;
     overflow-y: auto;
     margin: 0;
     padding: $space-1;

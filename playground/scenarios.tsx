@@ -1845,6 +1845,25 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         </ActionListItem>
       </ActionList>
     ),
+    /*
+     * Sanal kip (`rowHeight`). Galeride karşılığı yoktu; kaydırma kabı sızıntısı nöbetçisi
+     * (`e2e/scroll-containment.spec.ts`) bu kabı ölçer. Satır sonundaki nokta görsel olarak gizli
+     * bir ad taşır — sızıntının tüketicide ölçüldüğü bileşimin aynısı.
+     */
+    virtual: (
+      <ActionList label="Uzun bağlam haritası" rowHeight={44} maxHeight={176}>
+        {Array.from({ length: 40 }, (_, index) => (
+          <ActionListItem
+            key={index}
+            start={`A${index + 1}`}
+            end={<StatusDot tone="success" label="Bağlı" />}
+            onClick={noop}
+          >
+            Girdi {index + 1}
+          </ActionListItem>
+        ))}
+      </ActionList>
+    ),
   },
   ActionListItem: {
     link: (

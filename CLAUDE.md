@@ -643,6 +643,55 @@ yenilemelerden sonra masaüstü ve mobil görsel süit **yeşil** (40/40).
 altında kalıp eski taban dosyada durur (ölçüldü: radar ölçek sayıları). Küçük
 değişiklikte bölümün tabanı silinip `--update-snapshots=missing` ile yazılır.
 
+## Kaydırma kabı kapsayıcı bloktur (5.3.2)
+
+**Kural:** `overflow: auto|scroll` yazan her kural `position` da yazar (durağansa `relative`).
+
+Görsel olarak gizli metin (`visually-hidden` — `StatusDot` adı, `TerminalOutput` stderr öneki,
+`Citation`, grafiklerin gizli tablosu) `position: absolute` taşır ve **en yakın konumlu ataya** göre
+yerleşir. Kaydırma kabı konumlu değilse o ata kabın DIŞINDADIR: etiket kabın kırpmasına girmez,
+kabın içindeki statik yerinde (katlamanın çok altında) durur ve her atanın kaydırılabilir taşmasını
+uzatır.
+
+⚠ **Tüketicide ölçüldü (hanration, 2026-10-10):** `ChatThread`in KÖKÜ (`.thread`) konumluydu,
+kaydırma kabı (`.thread__scroll`) değil. `ToolCall` kartlarındaki nokta adları ana bölgenin
+`scrollHeight`ini 843 → 1053 px'e çıkardı; `overflow: hidden` uygulama çerçevesi programla
+kaydırılabilir oldu ve kipsel pencere kapanıp odağı geri verdiğinde tüm yerleşim ~210 px yukarı
+kaydı. Tüketici bunu çerçevesine `overflow: clip` yazarak örttü; kök düzeltme burada.
+
+Taramada **18 kaydırma kabından 16'sı konumsuzdu** — yalnızca `DataTable` (SCSS) ve `Menu` (satır
+içi `position: fixed`) konumluydu. Galeride ölçülen sızıntı (gizli etiket kabın 1200 px dibinde,
+chromium 1280×900; Pixel 7'de aynı mertebe):
+
+| kab | büyüyen | ne kadar |
+|---|---|---|
+| `ChatThread` | kök ve tüm atalar | +1024 px |
+| `TerminalOutput` | sayfa | +514 px — kendi stderr öneki de sızıyordu |
+| `ScrollArea` | sayfa | +626 px |
+| `ActionList` (sanal) | sayfa | +2171 px |
+
+Düzeltmeden sonra dördü de 0 ve görsel süitte tek piksel değişmedi (40/40; değişen tek taban
+`ActionList`in yeni `virtual` durumu).
+
+⚠ **Düzeltme mixin'de DEĞİL, kapta.** `clip-path` ve `overflow: hidden` gizli kutunun KENDİSİNİ
+taşmadan çıkarmaz (1×1 px kutu statik yerinde durur). Etiketi kapsayıcı bloğunun köşesine sabitlemek
+(`inset: 0`) taşmayı keserdi, ama ekran okuyucunun imleci etikete gittiğinde tarayıcı onu
+görünür alana getirmek için sayfayı o köşeye kaydırır.
+
+⚠ **`position: relative` kabın içindeki mutlak konumlu öğelerin dayanağını değiştirir.** Taranan
+kaplarda kabın dışına dayanmak İSTEYEN öğe yoktu: `ChatThread`in "en yeniye in" düğmesi dokta,
+`Carousel`in okları şeridin dışında, `Table`ın yapışkan başlığı `sticky` (zaten kaydırma kabına
+göre), `Tabs` çizgisi sekmenin kendisine göre.
+
+⚠ **`overflow: hidden` kırpma kapları kapsam dışı** (`Card`, `Avatar`, `Disclosure`…): içerik
+kutuyu aşmadıkça gizli etiketin statik yeri kutunun içinde kalıyor. Nöbetçi yalnızca `auto|scroll`
+okur.
+
+| nöbetçi | ne tutuyor |
+|---|---|
+| `__tests__/styles/scroll-containment.test.ts` | SCSS'te `overflow: auto\|scroll` yazan her kural konumlu; BEM değiştiricisi (`&--x`) ebeveyninden, `position` yazan mixin'in include'u (`tap-target`, `sticky-below-header`) sayılır. Tek istisna `Menu` — gerekçesiyle ve bayatlık denetimiyle |
+| `__tests__/e2e/scroll-containment.spec.ts` (4 × 3 proje) | gerçek yerleşim: kabın dibine konan gizli etiket hiçbir atanın `scrollHeight`ini büyütmez, `scrollIntoView` yalnızca kabı kaydırır. `desktop-behavior` + `ios` + `android` (`ANY_VIEWPORT_SPEC`) |
+
 ## `@ahmetilhn/hanui/chat` — sohbet bileşenlerinin AYRI girişi (5.2)
 
 **Neden ayrı:** 5.1 tüm girişi bütçenin sınırına taşıdı (42,00 / 42 kB) ve

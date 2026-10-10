@@ -645,6 +645,8 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
 @mixin scroll-row($gap: $space-4) {
   display: flex;
   gap: $gap;
+  // Kapsayıcı blok: içindeki gizli metin (`visually-hidden`) kabın dışına taşmaz.
+  position: relative;
   overflow-x: auto;
   scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;

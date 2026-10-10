@@ -87,6 +87,8 @@
 }
 
 .list {
+  // Kapsayıcı blok: içindeki gizli metin (`visually-hidden`) kabın dışına taşmaz.
+  position: relative;
   max-height: 280px;
   overflow-y: auto;
   padding: $space-1;

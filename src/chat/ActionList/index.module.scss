@@ -8,6 +8,8 @@
   border: 1px solid $border;
   border-radius: $radius-lg;
   background-color: $surface;
+  // Kapsayıcı blok: içindeki gizli metin (`visually-hidden`) kabın dışına taşmaz.
+  position: relative;
   overflow: hidden;
 
   &--virtual {

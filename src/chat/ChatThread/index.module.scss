@@ -13,6 +13,10 @@ $column: 768px;
 }
 
 .thread__scroll {
+  // ⚠ Kapsayıcı blok KAYDIRMA KABI olmalı, kök değil. Kök konumlu olduğu için `ToolCall` kartlarındaki
+  // `StatusDot` adı (`position: absolute`) köke göre yerleşiyordu: kırpılmıyor, katlamanın altındaki
+  // statik yerinde durup her atanın taşmasını uzatıyordu (ölçüldü: tüketicide +210 px kayma).
+  position: relative;
   overflow-y: auto;
   overscroll-behavior: contain;
 

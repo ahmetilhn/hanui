@@ -2,6 +2,8 @@
 @use '../../styles/mixins' as *;
 
 .scroller {
+  // Kapsayıcı blok: içindeki gizli metin (`visually-hidden`) kabın dışına taşmaz.
+  position: relative;
   overflow: auto;
   min-width: 0;
   align-self: stretch;

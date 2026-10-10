@@ -14,6 +14,8 @@
   line-height: $leading-relaxed;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+  // Kapsayıcı blok: stderr'in gizli öneki kabın dışına taşmaz.
+  position: relative;
   overflow-y: auto;
 
   @include custom-scrollbar;

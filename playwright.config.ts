@@ -11,6 +11,12 @@ const VISUAL_SPEC = /visual\.spec\.ts/;
  */
 const DESKTOP_BEHAVIOR_SPEC = /anchored-panel\.spec\.ts/;
 
+/**
+ * HER GÖRÜNÜMDE ölçülen davranış: masaüstünde de cihazlarda da. Kaydırma kabı sızıntısı tüketicide
+ * MASAÜSTÜNDE ölçüldü; cihaz projeleri bu dosyayı zaten koşuyor, masaüstü projesi ayrıca alır.
+ */
+const ANY_VIEWPORT_SPEC = /scroll-containment\.spec\.ts/;
+
 export default defineConfig({
   testDir: './__tests__/e2e',
   /* Bir bilesenin degismesi digerlerinin ciktisini etkilemiyor: tam paralel. */
@@ -59,7 +65,7 @@ export default defineConfig({
      */
     {
       name: 'desktop-behavior',
-      testMatch: DESKTOP_BEHAVIOR_SPEC,
+      testMatch: [DESKTOP_BEHAVIOR_SPEC, ANY_VIEWPORT_SPEC],
       use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 900 } },
     },
 

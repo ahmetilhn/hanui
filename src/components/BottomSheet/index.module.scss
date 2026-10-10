@@ -36,6 +36,8 @@
   &__body {
     flex: 1 1 auto;
     min-height: 0;
+    // Kapsayıcı blok: içindeki gizli metin (`visually-hidden`) kabın dışına taşmaz.
+    position: relative;
     overflow-y: auto;
     overscroll-behavior: contain;
     padding: $space-2 $space-3;

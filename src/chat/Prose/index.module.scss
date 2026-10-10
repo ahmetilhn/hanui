@@ -95,6 +95,8 @@
     display: block;
     max-width: 100%;
     margin: 0.9em 0;
+    // Kapsayıcı blok: içindeki gizli metin (`visually-hidden`) kabın dışına taşmaz.
+    position: relative;
     overflow-x: auto;
     border-collapse: collapse;
     font-size: $font-size-sm;
@@ -116,6 +118,8 @@
   // KaTeX: blok formül taşarsa yatay kayar, sayfayı genişletmez.
   :global(.katex-display) {
     margin: 0.9em 0;
+    // Kapsayıcı blok: içindeki gizli metin (`visually-hidden`) kabın dışına taşmaz.
+    position: relative;
     overflow-x: auto;
     overflow-y: hidden;
   }
