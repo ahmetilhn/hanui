@@ -430,18 +430,17 @@ bildirilir, metnin silinmesiyle değil.
   yazan her dosya `tap-target` içermeli" 32 satır işaretliyor ve ezici
   çoğunluğu süs (`Progress` 4px çubuk, `Spinner`, `Steps` 1px bağlayıcı çizgi).
   Liste kalıyor — yeni etkileşimli bileşen oraya da eklenir.
-- ⚠ **`--technical` GİRDİ VARYANTI 16px KORUMASINI DÜŞÜRÜYOR.**
-  `input-base` ölçüyü bilerek `$font-size-control` (`max(16px, …)`) ile kurar;
-  iOS Safari 16px altındaki bir metin girdisine odaklanıldığında sayfayı
-  **büyütür ve geri küçültmez**. Varyant bunu `$font-size-base`
-  (`clamp(15px, …, 16px)`) ile yeniden yazıyor → dar ekranda **15,03px**
-  (ölçüldü: `hanparca` şase sorgulama formu, 17 hane girilen en mobil akış).
-  ⚠ **DÜZELTME BU TURDA YAPILMADI ve gerekçesi ölçüldü:** ölçüyü
-  `$font-size-control`e çekmek alanı 1px uzatıyor, ızgarada satır yüksekliğini
-  büyütüyor ve dar ekran anlık görüntülerinin **40'tan fazlasını** kaydırıyor;
-  yineleyen güncelleme yakınsamadı. Bir sürümün bedeli olarak makul, ama
-  anlık görüntülerin toplu yenilenmesiyle **birlikte** yapılmalı. Tüketici
-  tarafı şimdilik ölçüyü kendisi veriyor (`MaskedInput`).
+- **Metin girdisi dar ekranda 16px ALTINA inmez.** iOS Safari 16px altındaki
+  bir girdiye odaklanıldığında sayfayı **büyütür ve geri küçültmez**.
+  `input-base` ölçüyü bu yüzden `$font-size-control` (`max(16px, …)`) ile kurar.
+  ⚠ **`Input --technical` kuralı çiğniyordu:** ölçüyü `$font-size-base`
+  (`clamp(15px, …, 16px)`) ile yeniden yazıyor ve dar ekranda **15,03px**
+  çiziyordu (ölçüldü: `hanparca` şase sorgulama formu). Düzeltme 5.3'te
+  yapıldı — dar ekranda alan 1px uzuyor ve görsel tabanların toplu
+  yenilenmesiyle birlikte girdi. Nöbetçi `__tests__/e2e/mobile.spec.ts`
+  "metin girdileri dar ekranda 16px ALTINA inmez": galerinin TAMAMINDA
+  hesaplanmış stili ölçer (düzeltmeden önce `Input` 15,06px ile kırıyordu).
+  Tüketicideki geçici ölçü (`MaskedInput`) 5.3'e geçince kaldırılabilir.
 - **Odak halkası `:focus-visible`**, bağlantı yeşili (`ring-color`), asla kaldırılmaz. `outline: none`
   yalnızca yerine başka bir gösterge çizildiği dört yerde. `:focus` kullanmak
   fareyle tıklandığında da halka gösteriyor ve kullanıcılar bunu hata sanıyordu.
@@ -632,10 +631,13 @@ tarafından çalıştırılmıyordu.
 `Combobox-light.png` **1232×155**; hatalı kod aynı bölümü **1232×180** çiziyor,
 yani taban çizgisi hatadan ÖNCE kaydedilmiş ve `visual.spec.ts` o günden beri
 kırmızı. Düzeltme taban çizgisini **bayt bayt** geri getiriyor — güncelleme
-gerekmedi. ⚠ `ızgara` testi ilk uyuşmazlıkta durduğu için tek bir bileşen
-bildiriyor; arkasında kalan bayat taban çizgileri (`Accordion`, `CopyField`,
-`Modal`, `rtl`, `compact`, `forced-colors` ve taban çizgisi **hiç olmayan**
-`CodeBadge`) bu turda **kapsam dışı** ve hâlâ kırmızı.
+gerekmedi. ⚠ `ızgara` testi ilk uyuşmazlıkta DURUR ve yalnızca tek bir bileşen
+bildirir — arkasındaki bayat tabanları göstermez. 5.0 ve 5.3'teki toplu
+yenilemelerden sonra masaüstü ve mobil görsel süit **yeşil** (40/40).
+⚠ `--update-snapshots=changed` küçük farkı YENİDEN YAZMAZ: eşik
+`maxDiffPixelRatio: 0.002`, yani iki küçük yazının kalktığı bir değişiklik eşiğin
+altında kalıp eski taban dosyada durur (ölçüldü: radar ölçek sayıları). Küçük
+değişiklikte bölümün tabanı silinip `--update-snapshots=missing` ile yazılır.
 
 ## `@ahmetilhn/hanui/chat` — sohbet bileşenlerinin AYRI girişi (5.2)
 
@@ -850,15 +852,49 @@ sonra komut çalışır. Nöbetçi `__tests__/components/CommandPalette.test.tsx
 Yeni `hotkey` (`'mod+k'`) + `onOpen`: kısayol kapalıyken açar, açıkken kapatır,
 başka bir kipsel yüzey açıkken dokunmaz (`hasOpenSurface`).
 
-### Sohbet planından BEKLEYEN altyapı maddesi — SCSS API (`exports["./scss"]`)
+### 5.3 — SCSS API (`@ahmetilhn/hanui/scss`)
 
-Plan, tüketicinin `@use '@ahmetilhn/hanui/scss'` ile token değişkenlerini ve
-mixin'leri almasını öneriyordu (hanration bunları kopyalamış ve değerler kaymış:
-`$tablet-breakpoint: 760px`, hanui'de 768 / 1024). **Bu turda yapılmadı:** SCSS
-kaynaklarının pakete girmesi (`files: ["build"]`) ve Next'in Sass çözücüsünün
-paket `exports`'unu hangi koşulla okuduğu (webpack `sass` koşulu, Turbopack)
-tüketicide doğrulanmadan yayınlanırsa kırılma YAYINDAN SONRA görünür. Doğru
-sıra: hanration'da yerel paketle (`npm pack`) bir `@use` denemesi, sonra ihraç.
+Tüketici token değişkenlerini ve mixin'leri KOPYALAMADAN alır:
+
+```scss
+@use '@ahmetilhn/hanui/scss' as hanui;
+
+.panel {
+  padding: hanui.$space-4;
+  @include hanui.focus-ring;
+  @media (max-width: hanui.$breakpoint-tablet-portrait) { … }
+}
+```
+
+**Neden:** hanration değişkenleri kopyalamıştı ve değerler kaymıştı
+(`$tablet-breakpoint: 760px`; hanui'de 768 / 1024).
+
+| Ne | Nerede |
+|---|---|
+| Kaynak | `src/styles/_index.scss` → `variables` + `mixins` iletir |
+| Derleme | `scripts/build-scss.mjs` → `build/scss/` (5 dosya, KAPALI liste) |
+| Dışa aktarım | `exports["./scss"]` — `sass` / `style` / `default` koşulları |
+| Ad taban çizgisi | `scripts/api-baseline.scss.txt` (`$değişken` + `@mixin`, 252 ad) |
+| Nöbetçi | `__tests__/styles/scss-api.test.ts` |
+
+⚠ **Modül KURAL BASMAZ.** `base.scss` ve `_tokens.generated.scss` (`:root`
+kuralları) bilerek dışarıda: tüketiciye `styles.css` zaten iniyor, modüle
+girselerdi her `@use` onları yeniden üretirdi (hanration'da her modül dosyasına
+`additionalData` ile enjekte ediliyor). Nöbetçi bunu ölçer: yalnızca `@use`
+edilen modülün çıktısı BOŞ.
+
+⚠ **Önce tüketicide denendi, sonra ihraç edildi** (kırılma yayından sonra
+görünürdü): hanration'da `npm pack` paketiyle Next 16.4 **Turbopack** ve
+**webpack** derlemelerinin ikisi de `exports` üzerinden çözdü; webpack çıktısında
+kırılma noktası `768px`. Değişkenler `var(--hanui-…)` dizeleri olduğu için tema
+çalışma zamanında döner — derleme anında sabitlenmez.
+
+⚠ **SCSS'teki her ad da bir SÜRÜM TAAHHÜDÜ.** `check:api` dördüncü girişi
+kopyalanan dosyalardaki üst düzey `$ad:` ve `@mixin ad` kümesini taban çizgisiyle
+karşılaştırır; bir değişkenin adı değişirse tüketicinin Sass derlemesi kırılır.
+
+⚠ jest'te Sass derlemesi **`@jest-environment node`** ister: dart2js Sass jsdom
+ortamında `Null check operator used on a null value` ile düşüyor.
 
 ### 5.1 — Faz 1 eklemeleri (yalnızca ekleme, kırıcı değil)
 
@@ -991,7 +1027,8 @@ aktarım kümesi taşımadan önce ve sonra **birebir aynı**.
 
 Ölçüm artık elle değil: `scripts/check-api.mjs` `build/index.d.ts`ten dışa
 aktarım adlarını çıkarır ve `scripts/api-baseline.txt` ile karşılaştırır
-(**167 ad**). Kapı `verify` içinde, `build`ten hemen sonra.
+(**176 ad**; alt girişler ayrı taban çizgilerinde: sohbet 30, grafikler 22). Kapı
+`verify` içinde, `build`ten hemen sonra.
 
 ```bash
 npm run check:api               # doğrula
@@ -1118,8 +1155,8 @@ açıklamasında zaten yazılıydı; nöbetçi `.size-limit.js` — **ve yalnız
 ### Ön-commit kancası
 
 `.githooks/pre-commit` (bu turda **eklendi**) — **Prettier** → **ESLint** →
-**Stylelint** → **TAM test süiti**. Ölçüldü (2026-10-10): süit 3,9 sn (53 dosya /
-542 test). `package.json`daki `prepare` betiği `core.hooksPath`i
+**Stylelint** → **TAM test süiti**. Ölçüldü (2026-10-10): süit ~7 sn (65 dosya /
+861 test). `package.json`daki `prepare` betiği `core.hooksPath`i
 `npm install` sırasında ayarlar.
 
 ### `PasswordInput` ve `ToastPortal` — iki uygulamadan buraya taşındı

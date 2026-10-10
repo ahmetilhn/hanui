@@ -1,0 +1,6 @@
+// SCSS API — `@use '@ahmetilhn/hanui/scss' as hanui;`
+// Tüketicinin token değişkenlerini ve mixin'leri KOPYALAMADAN almasının tek kapısı. Değişkenler
+// `var(--hanui-…)` dizeleri: tema çalışma zamanında döner, derleme anında sabitlenmez.
+// ⚠ Buraya giren her ad bir SÜRÜM TAAHHÜDÜDÜR (bkz. CLAUDE.md "SCSS API").
+@forward 'variables';
+@forward 'mixins';

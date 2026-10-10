@@ -32,6 +32,11 @@
       "require": "./build/charts.cjs"
     },
     "./charts.css": "./build/charts.css",
+    "./scss": {
+      "sass": "./build/scss/_index.scss",
+      "style": "./build/scss/_index.scss",
+      "default": "./build/scss/_index.scss"
+    },
     "./package.json": "./package.json"
   },
   "sideEffects": [
@@ -71,7 +76,7 @@
   "scripts": {
     "prepare": "git rev-parse --git-dir >/dev/null 2>&1 && git config core.hooksPath .githooks || true",
     "tokens": "node scripts/build-palette.mjs && node scripts/build-tokens.mjs",
-    "build": "npm run tokens && vite build && vite build --config vite.chat.config.ts && vite build --config vite.charts.config.ts && tsc -p tsconfig.subentries.json",
+    "build": "npm run tokens && vite build && vite build --config vite.chat.config.ts && vite build --config vite.charts.config.ts && tsc -p tsconfig.subentries.json && node scripts/build-scss.mjs",
     "dev": "npm run tokens && vite build --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src __tests__ scripts --max-warnings 0 && stylelint \"src/**/*.scss\"",

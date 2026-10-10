@@ -5,6 +5,7 @@
  * - `@ahmetilhn/hanui`      → `build/index.d.ts`             ↔ `scripts/api-baseline.txt`
  * - `@ahmetilhn/hanui/chat` → `build/types/chat/index.d.ts`  ↔ `scripts/api-baseline.chat.txt`
  * - `@ahmetilhn/hanui/charts` → `build/types/charts/index.d.ts` ↔ `scripts/api-baseline.charts.txt`
+ * - `@ahmetilhn/hanui/scss`   → `build/scss/*.scss` (`$degisken`, `@mixin`) ↔ `scripts/api-baseline.scss.txt`
  *
  * ⚠ Grep deseni `export { … }` DEGIL (ana giris icin). vite-plugin-dts her bildirimi tek tek
  * `export declare …` olarak yaziyor ve dosyanin sonunda yalnizca BOS bir `export { }` birakiyor.
@@ -15,8 +16,8 @@
  * ⚠ Sifir eslesmede acikca duser: olcemedigi seyi yesil gecmez.
  */
 
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 
@@ -32,6 +33,21 @@ const reexportedNames = source =>
       .filter(Boolean)
       .map(part => (part.includes(' as ') ? part.split(' as ')[1].trim() : part)),
   );
+
+/**
+ * SCSS API: `_index` yalnızca iletir; adlar kopyalanan modüllerde. Üst düzey `$ad:` ve `@mixin ad`
+ * — `_` ile başlayan (Sass'ta modüle özel) adlar sözleşme değil.
+ */
+const scssNames = (_source, file) =>
+  readdirSync(dirname(file))
+    .filter(name => name.endsWith('.scss'))
+    .flatMap(name => {
+      const text = readFileSync(join(dirname(file), name), 'utf8');
+      return [
+        ...[...text.matchAll(/^\$([a-z][\w-]*)\s*:/gm)].map(match => `$${match[1]}`),
+        ...[...text.matchAll(/^@mixin ([a-z][\w-]*)/gm)].map(match => `@mixin ${match[1]}`),
+      ];
+    });
 
 const ENTRIES = [
   {
@@ -52,6 +68,12 @@ const ENTRIES = [
     baselineFile: join(ROOT, 'scripts', 'api-baseline.charts.txt'),
     read: reexportedNames,
   },
+  {
+    name: '@ahmetilhn/hanui/scss',
+    declarationFile: join(ROOT, 'build', 'scss', '_index.scss'),
+    baselineFile: join(ROOT, 'scripts', 'api-baseline.scss.txt'),
+    read: scssNames,
+  },
 ];
 
 /** @returns {string[]} alfabetik, tekil disa aktarim adlari */
@@ -61,7 +83,7 @@ const readExportedNames = entry => {
     process.exit(1);
   }
 
-  const names = entry.read(readFileSync(entry.declarationFile, 'utf8'));
+  const names = entry.read(readFileSync(entry.declarationFile, 'utf8'), entry.declarationFile);
 
   if (names.length === 0) {
     console.error(

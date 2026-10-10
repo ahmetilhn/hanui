@@ -601,6 +601,31 @@ Ayrıştırma ve vurgulama tüketicide kalır: `Prose` markdown ayrıştırmaz,
 `CodeBlock` önceden vurgulanmış HTML alır (`html` prop'u — güvenliği sizin).
 Bileşen listesi ve kararlar: `CLAUDE.md` → "`@ahmetilhn/hanui/chat`".
 
+## SCSS API — `@ahmetilhn/hanui/scss`
+
+Token değişkenleri ve mixin'ler kopyalanmadan alınır. Değişkenler
+`var(--hanui-…)` dizeleridir; tema çalışma zamanında döner. Modül kural basmaz,
+`styles.css` yine gerekir.
+
+```scss
+@use '@ahmetilhn/hanui/scss' as hanui;
+
+.panel {
+  padding: hanui.$space-4;
+  border: 1px solid hanui.$border;
+
+  @include hanui.focus-ring;
+
+  @media (max-width: hanui.$breakpoint-tablet-portrait) {
+    padding: hanui.$space-3;
+  }
+}
+```
+
+Next.js (Turbopack ve webpack) paket `exports`'unu çözer. Başka bir derleyici
+çözemezse yol `node_modules/@ahmetilhn/hanui/build/scss` ile `loadPaths`e verilip
+`@use 'index' as hanui` yazılabilir.
+
 ## Grafikler — `@ahmetilhn/hanui/charts`
 
 On SVG grafiği, sıfır bağımlılık (çizim, ölçek ve istatistik kütüphanenin
