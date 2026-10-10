@@ -20,6 +20,31 @@ test('sayfa yatayda KAYMAZ', async ({ page }) => {
   expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth + ROUNDING);
 });
 
+/*
+ * iOS Safari 16px altındaki bir metin girdisine odaklanınca sayfayı BÜYÜTÜR ve geri küçültmez.
+ * Kural yazılıydı (`input-base` → `font-size-control`) ama `Input --technical` onu dar ekranda
+ * 15,03px ile eziyordu ve hiçbir nöbetçi görmedi. Ölçüm hesaplanmış stilden, galerinin TAMAMINDA.
+ */
+test('metin girdileri dar ekranda 16px ALTINA inmez', async ({ page }) => {
+  await openGallery(page);
+
+  const small = await page.evaluate(() =>
+    [
+      ...document.querySelectorAll<HTMLElement>(
+        'input:not([type=checkbox], [type=radio], [type=range], [type=file], [type=hidden], [readonly]), textarea:not([readonly]), [contenteditable=true]',
+      ),
+    ]
+      .filter(node => node.getClientRects().length > 0)
+      .map(node => ({
+        gallery: node.closest('[data-gallery]')?.getAttribute('data-gallery') ?? '?',
+        size: Number.parseFloat(getComputedStyle(node).fontSize),
+      }))
+      .filter(entry => entry.size < 16),
+  );
+
+  expect(small).toEqual([]);
+});
+
 test.describe('kaydırma kutusu — kenar solması', () => {
   const fadeStops = (node: HTMLElement) => {
     const style = getComputedStyle(node);

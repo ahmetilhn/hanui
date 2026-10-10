@@ -26,6 +26,11 @@ type Props = {
   valueText?: string;
   /** Yüzdeyi çubuğun yanında GÖRÜNÜR olarak yazar. */
   isValueVisible?: boolean;
+  /**
+   * ⚠ `brand` 5.0'dan beri MÜREKKEP çizer (`selected` — ilerleme bir seçim göstergesi), yeşil
+   * DEĞİL: yeşil yalnızca eylem, bağlantı ve odakta. Ad 4.x'ten kaldı; değiştirmek her çağrıyı
+   * kırardı ve kazancı yalnızca isim olurdu.
+   */
   tone?: 'brand' | 'success' | 'warning' | 'danger';
   /** `xs` 2 px — satır içi gösterge (bağlam doluluğu); etiket yanında okunur. */
   size?: 'xs' | 'sm' | 'md';
@@ -94,6 +99,11 @@ type CircleProps = {
   valueText?: string;
   /** Yüzdeyi çemberin ortasına yazar. */
   isValueVisible?: boolean;
+  /**
+   * ⚠ `brand` 5.0'dan beri MÜREKKEP çizer (`selected` — ilerleme bir seçim göstergesi), yeşil
+   * DEĞİL: yeşil yalnızca eylem, bağlantı ve odakta. Ad 4.x'ten kaldı; değiştirmek her çağrıyı
+   * kırardı ve kazancı yalnızca isim olurdu.
+   */
   tone?: 'brand' | 'success' | 'warning' | 'danger';
   /** Dış çap (px). */
   size?: number;
