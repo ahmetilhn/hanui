@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "playground",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "playground"],
+      "port": 5273
+    },
+    {
+      "name": "hanration-frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "/Users/ahmet/projects/hanration/frontend", "run", "dev"],
+      "port": 3000
+    }
+  ]
+}
