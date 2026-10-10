@@ -32,6 +32,10 @@ kararları `v4.1.0` etiketindeki CLAUDE.md'dedir. Geçiş tablosu: "Göç" →
 | Tek bölüm mü bölümler listesi mi? | `Disclosure` / `Accordion` | `Accordion` her bölümünü bir `Disclosure` olarak çizer; `<details>` mantığı tek yerde |
 | Durum noktası mı rozet mi? | `StatusDot` / `Badge` | Nokta süren bir durumu (bağlı, çalışıyor) ADIYLA taşır — `label` zorunlu, görsel olarak gizli. Rozet okunan bir etikettir |
 | Boş mu yüklenemedi mi? | `EmptyState` · `tone="error"` | Ağ hatasını "kayıt kalmamış" diye okuyan kullanıcı yanlış karar veriyor |
+| Satır listesi seçim mi eylem mi? | `ActionListItem isSelected` / `ActionListItem` | `isSelected` verilince satır `aria-pressed` taşır ve kalıcı bir durum vaat eder; eylemi seçim gibi sunmak yanlış söz |
+| Öneriler seçim mi eylem mi? | `ChipGroup` / `PromptSuggestions` | Öneri bir EYLEM (`onPick`); çip ise geri alınabilir bir seçim |
+| Parçaların toplamı mı zaman çizelgesi mi? | `SegmentBar` (`value`) / `SegmentBar` (`from`/`to`) | Tek görsel (`role="img"`); tam bir eksen gerekiyorsa `/charts` |
+| Hangi grafik? | `/charts` — bkz. "`@ahmetilhn/hanui/charts`" | Eğilim, karşılaştırma, parça-bütün ve dağılım ayrı grafikler; ayrımlar orada ölçülü |
 
 ## Yüzey ailesi ve yükseklik
 
@@ -965,9 +969,11 @@ Nöbetçi: `__tests__/components/Carousel.track.test.ts` — `fr` biriminin ya d
 ## Kod düzeni ve tasarım prensipleri — ZORUNLU
 
 **Bundan sonraki her geliştirme bu prensiplere uyar; kurallar aşağıdaki
-otomatik denetçilerle zorlanır** — `npm run verify` zinciri: `tokens` →
-`check:contrast` → `typecheck` → `lint` → `test:coverage` (satır ≥ 80) →
-`build` → **`check:api`** → `check:animations` → `size-limit`.
+otomatik denetçilerle zorlanır** — `npm run verify` zinciri: `check:palette` →
+`tokens` → `check:contrast` → `typecheck` → `lint` → `test:coverage` (satır 89 ·
+ifade 86 · fonksiyon 80 · dal 75) → `build` (ana giriş + `chat` + `charts` +
+`build/scss`) → **`check:api`** (dört giriş) → `check:animations` →
+`size-limit`. CI ayrıca `format:check` koşar.
 
 | Prensip | Ne demek |
 |---|---|
@@ -1072,6 +1078,8 @@ Taban çizgisi bu yüzden repoda duruyor. (Bu satır bir dönem "iki tüketici d
 **42,00 kB** taşıdı (bütçe 42 kB) ve `styles.css`i 23,07 / 24 kB'a. Sohbet
 bileşenleri bu yüzden ana girişe GİRMEZ, ayrı `chat` girişine gider — plan bunu
 "Hanparça'nın bütçesi büyümesin" diye öneriyordu, ölçüm artık zorunlu kılıyor.
+5.2'nin `HanuiThemeScript`i girişi 42,05 kB'a taşıdı ve bütçe 43 kB'a çekildi
+(gerekçe `.size-limit.js` ve "`@ahmetilhn/hanui/charts`" bölümünde).
 
 ⚠ Sohbet planı `hasOpenSurface` yerine bir **kanca** (`useIsModalOpen`) öneriyordu.
 Çağıranın ihtiyacı reaktif bir durum değil, tuşa basıldığı ANDAKİ tek bir soru;

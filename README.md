@@ -12,6 +12,10 @@ kurulu; tek çalışma zamanı bağımlılığı ikon seti (`react-bootstrap-ico
 - **Yerel öğeler korunur.** `<dialog>`, `<input type="range">`,
   `<input type="radio">` — odak tuzağı, klavye gezinmesi ve ekran okuyucu
   duyurusu tarayıcıdan gelir.
+- **Üç alt giriş, ana pakete sıfır bayt.** `@ahmetilhn/hanui/chat` (sohbet ve
+  araç arayüzleri), `@ahmetilhn/hanui/charts` (bağımlılıksız SVG grafikleri),
+  `@ahmetilhn/hanui/scss` (token değişkenleri ve mixin'ler). Kullanmayan uygulama
+  onları indirmez.
 
 ```bash
 npm install @ahmetilhn/hanui @ahmetilhn/handy-utils react-bootstrap-icons
@@ -57,20 +61,24 @@ Sağlayıcı **zorunlu değil**: paket kurulup hiçbir yapılandırma yapılmada
 Öznitelik yoksa `prefers-color-scheme` yedeği devreye girer — ama kullanıcının
 **açık bir seçimi** varsa sistem tercihi onu ezmez.
 
-### İlk boyamadan önce yazın
+### İlk boyamadan önce yazın — `HanuiThemeScript`
 
 ```tsx
-// app/layout.tsx — <head> içine.
-<script
-  dangerouslySetInnerHTML={{
-    __html: `document.documentElement.dataset.hanuiTheme =
-      localStorage.getItem('theme') ?? 'light';`,
-  }}
-/>
+// app/layout.tsx — sunucu düzeni, <head> içine.
+import { HanuiThemeScript } from '@ahmetilhn/hanui';
+
+<head>
+  <HanuiThemeScript storageKey="theme" />
+</head>;
 ```
 
-Bu satır React ağacına konamaz: sağlayıcı ağaç monte olduktan sonra çalışıyor
-ve koyu tema seçmiş kullanıcı o ana kadar **bir kare beyaz ekran** görüyor.
+Kayıtlı açık seçimi (`light` / `dark`) `<html data-hanui-theme>`e yazar; kayıt
+yoksa sistem tercihi izlenir. Satır içi betik HTML ayrıştırılırken çalışır.
+
+Bu iş sağlayıcıya bırakılamaz: sağlayıcı ağaç monte olduktan sonra çalışıyor ve
+koyu tema seçmiş kullanıcı o ana kadar **bir kare beyaz ekran** görüyor.
+⚠ Bir **bileşen**, fonksiyon değil: paket `'use client'` taşıdığı için dışa
+verilen düz bir fonksiyon Next'in sunucu düzeninde çağrılamıyor.
 
 ### Token'ları ezmek
 
@@ -345,6 +353,12 @@ büyür, bir duyuru şeridi çıkıp kaybolduğunda değişir.
 | Geri bild. | `Alert` · `Badge` · `StatusDot` · `CodeBadge` · `Kbd` · `EmptyState` · `Skeleton` (+ `SkeletonCard`, `SkeletonRows`, `SkeletonTable`) · `Spinner` · `Progress` · `Steps` · `Divider` · `Avatar` · `Rating` · `Price` · `Stat` · `CopyField` · `Breadcrumb` · `ToastHub` (+ `ToastPortal`) |
 | Kipsel | `Modal` · `Drawer` · `BottomSheet` · `ConfirmDialog` · `PromptDialog` · `CommandPalette` |
 | Veri | `Table` (+ `TableScroller`) · `DataTable` (+ `DataTableRow`) · `FilterBar` (+ `FilterBarField`) · `Pagination` · `Timeline` |
+| Tema ve kancalar | `HanuiProvider` · `HanuiThemeScript` · `initHanui` · `useHanui` · `useHanuiTheme` · `useHanuiTokens` · `useAnnounce` · `useStickToBottom` · `usePositioning` · `useVirtualList` · `useListboxNavigation` · `hasOpenSurface` |
+| Sohbet — `/chat` | `ChatThread` · `ChatMessage` · `PromptInput` · `PromptSuggestions` · `Prose` · `CodeBlock` · `ReasoningBlock` (+ `ReasoningText`) · `ToolCall` (+ `ToolCallSection`) · `TerminalOutput` · `SourceList` · `Citation` · `MessageActions` · `AppBar` · `ActionList` (+ `ActionListItem`) · `SegmentBar` · `Legend` · `DescriptionList` |
+| Grafik — `/charts` | `LineChart` · `AreaChart` · `BarChart` · `ComposedChart` · `PieChart` · `ScatterPlot` · `Heatmap` · `BoxPlot` · `Histogram` · `RadarChart` |
+
+Alt girişlerin stilleri ayrı dosyada ve `styles.css`ten **sonra** içe aktarılır:
+`@ahmetilhn/hanui/chat.css`, `@ahmetilhn/hanui/charts.css`.
 
 ### Seçenek sayısı öğeyi belirler
 
@@ -428,11 +442,29 @@ Paket `'use client'` sınırını **kendi içinde** çizer: sunucu bileşenlerin
 doğrudan import edilebilir, `children` sunucuda çizilip aktarılır.
 
 ```tsx
-// app/layout.tsx
+// app/layout.tsx — sunucu bileşeni
 import '@ahmetilhn/hanui/styles.css';
-import { HanuiProvider } from '@ahmetilhn/hanui';
+import '@ahmetilhn/hanui/chat.css'; // yalnızca /chat kullanılıyorsa
+import '@ahmetilhn/hanui/charts.css'; // yalnızca /charts kullanılıyorsa
+import { HanuiProvider, HanuiThemeScript } from '@ahmetilhn/hanui';
 import NextLink from 'next/link';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="tr" suppressHydrationWarning>
+      <head>
+        <HanuiThemeScript storageKey="theme" />
+      </head>
+      <body>
+        <HanuiProvider linkComponent={NextLink}>{children}</HanuiProvider>
+      </body>
+    </html>
+  );
+}
 ```
+
+`suppressHydrationWarning`: tema betiği `<html>`e sunucunun yazmadığı bir
+öznitelik ekliyor; uyarı yalnızca o öğe için susturulur.
 
 ---
 
@@ -448,14 +480,14 @@ npm run playground # bileşen galerisi → http://localhost:5273
 | Komut                     |                                                                 |
 | ------------------------- | --------------------------------------------------------------- |
 | `npm run tokens`          | SCSS token dosyalarını `theme/tokens.ts`ten üretir              |
-| `npm run build`           | `build/` (ESM + CJS + `.d.ts` + `styles.css`)                   |
+| `npm run build`           | `build/` — ana giriş + `chat` + `charts` (ESM + CJS + `.d.ts` + CSS) ve `build/scss/` |
 | `npm run test`            | Jest + Testing Library + `jest-axe`                              |
-| `npm run test:coverage`   | kapsam kapısı — `helpers`/`hooks`/`theme` satır ≥ %80            |
+| `npm run test:coverage`   | kapsam kapısı — tüm `src/`: satır 89 · ifade 86 · fonksiyon 80 · dal 75 |
 | `npm run test:visual`     | görsel regresyon (Playwright); `verify` İÇİNDE DEĞİL, aşağı bkz. |
 | `npm run test:device`     | iOS (WebKit) + Android (Chromium) davranış nöbetçileri, aşağı bkz. |
 | `npm run check:contrast`  | WCAG kontrast ölçümü, iki temada 210 çift                        |
 | `npm run check:palette`   | palet tarifinin çıktısı mı + nötr chroma tavanı + tint ve kategori ayrışması |
-| `npm run check:api`       | genel API nöbetçisi — `build/index.d.ts` ↔ `scripts/api-baseline.txt` (167 ad) |
+| `npm run check:api`       | genel API nöbetçisi — dört giriş, dört taban çizgisi (ana 176 · sohbet 30 · grafik 22 · SCSS 252 ad) |
 | `npm run size`            | paket boyutu bütçesi (`size-limit`)                              |
 | `npm run playground`      | bileşen galerisi (tema · RTL · yoğunluk anahtarı)                |
 | `npm run lint`            | ESLint (TS) + stylelint (SCSS)                                    |
@@ -484,11 +516,21 @@ npm run playground # bileşen galerisi → http://localhost:5273
   bileşen eklerken bütçenin fiilen dolu olduğu bilinerek girilir; `size-limit`
   kırmızıya döndüğünde doğru tepki limiti yükseltmek değil, ne eklendiğini
   ölçmektir (`npm run size`).
-- **Genel API** — `build/index.d.ts`teki dışa aktarım kümesi
-  `scripts/api-baseline.txt` ile karşılaştırılır (`npm run check:api`, 167 ad).
-  Düşen bir ad **kırıcı**dır ama bugün görünmez: iki tüketici de sürümü tam
-  pinliyor, yani kırılma bir sonraki yükseltmede ortaya çıkar. Bilinçli
-  değişiklikte `node scripts/check-api.mjs --update` + CLAUDE.md'ye gerekçe.
+- **Genel API** — her girişin dışa aktarım kümesi kendi taban çizgisiyle
+  karşılaştırılır (`npm run check:api`): ana giriş `scripts/api-baseline.txt`
+  (176), `chat` (30), `charts` (22), `scss` (252 `$değişken` + `@mixin`). Düşen
+  bir ad **kırıcı**dır ve tüketiciler caret ile aldığı için bir sonraki
+  `npm install`da derleme hatası olarak çıkar. Bilinçli değişiklikte
+  `node scripts/check-api.mjs --update` + CLAUDE.md'ye gerekçe.
+- **Alt giriş sınırı** — `chat` ve `charts` ana girişi yalnızca PAKET ADIYLA
+  alır (`subentry-boundary.test.ts`); göreli bir yol `HanuiProvider` bağlamının
+  ve kipsel yüzey yığınının ikinci bir kopyasını paketlerdi.
+- **Yeşil ayak izi** — bileşen SCSS'inde yeşil token ailesine uzanan her
+  bileşen gerekçeli bir izin listesinde (`green-footprint.test.ts`).
+- **Opacity ile soluklaştırma yasak** — `0`/`1` dışındaki her `opacity`
+  derlemeyi kırar (`passive-opacity.test.ts`); pasiflik token'larla çizilir.
+- **iOS yakınlaştırması** — galerideki her metin girdisi dar ekranda ≥16px
+  (`e2e/mobile.spec.ts`, hesaplanmış stil).
 - **Odak halkası ve hareket ölçeği** — stylelint, `focus-ring` mixin'i dışında
   `outline` ve bileşen SCSS'inde ham süre değeri (`0.7s`) yazılmasını
   engelliyor. Üç bileşen kendi halkasını, iki bileşen kendi süresini
@@ -536,6 +578,10 @@ yol, Playwright'ın resmi konteynerinde koşup `linux` referanslarını orada
 > `=all` mod, pikseli değişen her dosyayı yazar (bayt bayt aynı olanlara
 > dokunmaz, o yüzden dosya sayısı toplamdan az çıkabilir). Doğrulama:
 > yenilemeden sonra bir referansın baskın renklerini örnekleyin.
+> ⚠ `=changed` de yetmez: yalnızca eşiği (`maxDiffPixelRatio: 0.002`) aşan
+> farkı yazar — iki küçük yazının kalktığı bir değişiklik eşiğin altında kalıp
+> eski referans dosyada durur. Küçük bir değişiklikte bölümün referansını silip
+> `=missing` ile yazdırın.
 
 `master`a her push `npm publish` çalıştırır — **`package.json` sürümünü
 yükseltmeyi unutmayın**, aynı sürüm ikinci kez yayımlanamaz ve iş akışı kırmızı
@@ -690,6 +736,19 @@ Eski adlara takma ad **yok**. Kendi CSS'inizde `--hanui-role*` okuyan ya da
 Görünüm değişiklikleri: açık sayfa krem (`#faf9f5`), koyu sayfa sıcak siyah
 (`#141413`), kart ve panel durgunken gölgesiz, `info` tonu nötr, `CodeBadge`
 mürekkep. Ayrıntı ve ölçümler: `CLAUDE.md` → "Renk kararları (5.0)".
+
+## 5.1 – 5.3'te eklenenler
+
+Hepsi ekleme; 5.0'ın token sözleşmesi dışında kırıcı değişiklik yok.
+
+| Sürüm | Ne |
+|---|---|
+| 5.1 | `Disclosure`, `StatusDot`, `Kbd`; `useHanuiTokens`, `useStickToBottom`, `hasOpenSurface`; `Modal size="xl"`, `Button size={UISize.XSMALL}` + `shape="pill"`, `IconButton shape="round"`, `Textarea variant="bare"`, `Progress size="xs"`, etkileşimli `CodeBadge`, `Avatar` (`icon`, `shape="rounded"`, `tone="brand"`), `Stat variant="inline"`, `ScrollArea isFollowingEnd`; `CommandPalette` `hotkey` + komut kapanıştan SONRA çalışır |
+| 5.2 | `HanuiThemeScript`; `@ahmetilhn/hanui/chat` — 20 sohbet bileşeni |
+| 5.3 | `@ahmetilhn/hanui/charts` — 10 SVG grafiği; `@ahmetilhn/hanui/scss`; `Input --technical` dar ekranda ≥16px; `QuantityStepper` ve `DataTable` pasif/dinlenme hâli opacity yerine token |
+
+Ayrıntı ve ölçülmüş gerekçeler: `CLAUDE.md` → "Göç ve `@deprecated` yollar",
+"`@ahmetilhn/hanui/chat`", "`@ahmetilhn/hanui/charts`".
 
 ## Tasarım sözleşmesi
 
