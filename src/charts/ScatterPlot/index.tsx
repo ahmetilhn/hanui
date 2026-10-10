@@ -5,9 +5,9 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import { useHanui } from '@ahmetilhn/hanui';
 
 import { named } from '../../helpers/component.helper';
-import { ValueAxis } from '../core/axes';
+import { placeTicks, ValueAxis } from '../core/axes';
 import ChartFrame from '../core/ChartFrame';
-import { compactNumber, fullNumber, type ValueFormat } from '../core/format';
+import { fullNumber, tickLabels, type ValueFormat } from '../core/format';
 import { plotArea, tickCount } from '../core/margins';
 import { type ChartTone, toneAt, toneColor } from '../core/palette';
 import { niceDomain, scaleLinear, ticks } from '../core/scale';
@@ -80,7 +80,7 @@ const ScatterPlot = ({
   const [hidden, setHidden] = useState<ReadonlySet<string>>(() => new Set());
 
   const full = useMemo(() => fullNumber(labels?.locale), [labels?.locale]);
-  const compact = useMemo(() => compactNumber(labels?.locale), [labels?.locale]);
+  const tickFormat = useMemo(() => tickLabels(labels?.locale), [labels?.locale]);
   const fx = formatX ?? full;
   const fy = formatY ?? full;
 
@@ -107,7 +107,7 @@ const ScatterPlot = ({
     const xDomain = niceDomain(...extent(flat.map(point => point.x)));
     const yDomain = niceDomain(...extent(flat.map(point => point.y)));
     const yTicks = ticks(yDomain[0], yDomain[1], tickCount(height, false));
-    const area = plotArea(width, height, yTicks.map(compact), { right: 20 });
+    const area = plotArea(width, height, tickFormat(yTicks), { right: 20 });
     const x = scaleLinear(xDomain, [area.left, area.right]);
     const y = scaleLinear(yDomain, [area.bottom, area.top]);
 
@@ -134,13 +134,10 @@ const ScatterPlot = ({
       area,
       placed,
       index: spatialIndex(placed.map(point => ({ x: point.cx, y: point.cy }))),
-      xTicks: ticks(xDomain[0], xDomain[1], tickCount(area.width, true)).map(value => ({
-        position: x(value),
-        label: compact(value),
-      })),
-      yTicks: yTicks.map(value => ({ position: y(value), label: compact(value) })),
+      xTicks: placeTicks(ticks(xDomain[0], xDomain[1], tickCount(area.width, true)), x, tickFormat),
+      yTicks: placeTicks(yTicks, y, tickFormat),
     };
-  }, [flat, width, height, compact]);
+  }, [flat, width, height, tickFormat]);
 
   const plot = useMemo(
     () => (

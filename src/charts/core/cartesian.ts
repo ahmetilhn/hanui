@@ -1,7 +1,7 @@
 /** KARTEZYEN GEOMETRİ — Çizgi, Alan, Çubuk ve Bileşik grafiğin ortak, saf (DOM'suz) motoru. */
 
-import { fitLabel, labelWidth, type Tick } from './axes';
-import type { ValueFormat } from './format';
+import { fitLabel, labelWidth, placeTicks, type Tick } from './axes';
+import type { TickFormat } from './format';
 import { type ChartTone } from './palette';
 import { areaPath, type Curve, linePath, type MaybePoint } from './path';
 import {
@@ -39,8 +39,9 @@ export type CartesianInput = {
   orientation: Orientation;
   curve: Curve;
   formatX: (value: unknown) => string;
-  formatLeft: ValueFormat;
-  formatRight: ValueFormat;
+  /** Değer ekseni bölmeleri — basamak listeden çıktığı için LİSTE alır. */
+  formatLeft: TickFormat;
+  formatRight: TickFormat;
   /** Değer ekseninin sabit uçları; verilmeyen uç veriden. */
   domain?: readonly [number | undefined, number | undefined];
 };
@@ -173,9 +174,9 @@ export const cartesianGeometry = (input: CartesianInput): CartesianGeometry => {
   const hasRightAxis = rightDomain !== null && !isHorizontal;
 
   /* --- Kenar boşlukları: bölme yazısının en uzunu kadar. --- */
-  const leftLabels = linearTicks(leftDomain[0], leftDomain[1], 5).map(input.formatLeft);
+  const leftLabels = input.formatLeft(linearTicks(leftDomain[0], leftDomain[1], 5));
   const rightLabels = rightDomain
-    ? linearTicks(rightDomain[0], rightDomain[1], 5).map(input.formatRight)
+    ? input.formatRight(linearTicks(rightDomain[0], rightDomain[1], 5))
     : [];
   const categoryLabels = rows.map(row => formatX(row[xKey]));
 
@@ -323,18 +324,19 @@ export const cartesianGeometry = (input: CartesianInput): CartesianGeometry => {
   const toTicks = (
     scale: typeof leftScale,
     domain: readonly [number, number],
-    format: ValueFormat,
+    format: TickFormat,
   ): Tick[] =>
-    linearTicks(
-      domain[0],
-      domain[1],
-      isHorizontal
-        ? Math.max(2, Math.floor(area.width / 90))
-        : Math.max(2, Math.floor(area.height / 48)),
-    ).map(value => ({
-      position: scale(value),
-      label: format(value),
-    }));
+    placeTicks(
+      linearTicks(
+        domain[0],
+        domain[1],
+        isHorizontal
+          ? Math.max(2, Math.floor(area.width / 90))
+          : Math.max(2, Math.floor(area.height / 48)),
+      ),
+      scale,
+      format,
+    );
 
   const categoryTicks: Tick[] = xScale
     ? linearTicks(xScale.domain[0], xScale.domain[1], Math.max(2, Math.floor(area.width / 90))).map(

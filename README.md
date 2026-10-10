@@ -713,8 +713,10 @@ Her grafik tek bir sekme durağıdır: oklar öğeleri gezer (gelinen öğe
 duyurulur), `Home`/`End` uçlara gider, `Escape` vurguyu kaldırır. Ekran okuyucu
 grafiği gizli bir **veri tablosu** olarak da okur. Genişlik kapsayıcıdan ölçülür
 (`width` ile sabitlenebilir), yükseklik `height`. Sayılar `labels.locale`
-yereliyle biçimlenir; `formatValue` / `format` ile ezilir. Renkler kategorik
-paletten (`tone`: `cat-1`…`cat-5`, `series-1`, `series-2`, `muted`).
+yereliyle biçimlenir; ipucu, duyuru ve tablo `formatValue` / `format` ile
+ezilir. Eksen bölmeleri bunu KULLANMAZ: kısa gösterimde ("12 B", "0,005") ve
+birimsiz kalır, basamak sayısı bölme adımından gelir. Renkler kategorik paletten
+(`tone`: `cat-1`…`cat-5`, `series-1`, `series-2`, `muted`).
 
 ## 5.0'a geçiş
 
@@ -746,6 +748,7 @@ Hepsi ekleme; 5.0'ın token sözleşmesi dışında kırıcı değişiklik yok.
 | 5.1 | `Disclosure`, `StatusDot`, `Kbd`; `useHanuiTokens`, `useStickToBottom`, `hasOpenSurface`; `Modal size="xl"`, `Button size={UISize.XSMALL}` + `shape="pill"`, `IconButton shape="round"`, `Textarea variant="bare"`, `Progress size="xs"`, etkileşimli `CodeBadge`, `Avatar` (`icon`, `shape="rounded"`, `tone="brand"`), `Stat variant="inline"`, `ScrollArea isFollowingEnd`; `CommandPalette` `hotkey` + komut kapanıştan SONRA çalışır |
 | 5.2 | `HanuiThemeScript`; `@ahmetilhn/hanui/chat` — 20 sohbet bileşeni |
 | 5.3 | `@ahmetilhn/hanui/charts` — 10 SVG grafiği; `@ahmetilhn/hanui/scss`; `Input --technical` dar ekranda ≥16px; `QuantityStepper` ve `DataTable` pasif/dinlenme hâli opacity yerine token |
+| 5.3.2 | Düzeltme: kaydırma kapları kapsayıcı blok (`ChatThread`, `ScrollArea`, `TerminalOutput`, `ActionList` ve 12 kab daha) — görsel olarak gizli metin kabın dışına taşıp atalarını kaydırılabilir yapmıyor; grafik ekseni 0,1'in altındaki adımda sıfıra çökmüyor |
 
 Ayrıntı ve ölçülmüş gerekçeler: `CLAUDE.md` → "Göç ve `@deprecated` yollar",
 "`@ahmetilhn/hanui/chat`", "`@ahmetilhn/hanui/charts`".

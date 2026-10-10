@@ -5,9 +5,9 @@ import { memo, useCallback, useMemo } from 'react';
 import { useHanui } from '@ahmetilhn/hanui';
 
 import { named } from '../../helpers/component.helper';
-import { ValueAxis } from '../core/axes';
+import { placeTicks, ValueAxis } from '../core/axes';
 import ChartFrame from '../core/ChartFrame';
-import { compactNumber, fullNumber, type ValueFormat } from '../core/format';
+import { fullNumber, tickLabels, type ValueFormat } from '../core/format';
 import { plotArea, tickCount } from '../core/margins';
 import { type ChartTone, toneColor } from '../core/palette';
 import { niceDomain, scaleLinear, ticks } from '../core/scale';
@@ -61,7 +61,7 @@ const Histogram = ({
   const { labels } = useHanui();
   const [containerRef, width] = useChartWidth(fixedWidth);
   const full = useMemo(() => fullNumber(labels?.locale), [labels?.locale]);
-  const compact = useMemo(() => compactNumber(labels?.locale), [labels?.locale]);
+  const tickFormat = useMemo(() => tickLabels(labels?.locale), [labels?.locale]);
   const fv = formatValue ?? full;
 
   const bins = useMemo(() => histogram(values, binCount), [values, binCount]);
@@ -70,7 +70,7 @@ const Histogram = ({
     const maxCount = Math.max(1, ...bins.map(bin => bin.count));
     const yDomain = niceDomain(0, maxCount);
     const yTicks = ticks(0, yDomain[1], tickCount(height, false)).filter(Number.isInteger);
-    const area = plotArea(width, height, yTicks.map(compact));
+    const area = plotArea(width, height, tickFormat(yTicks));
     const lower = bins[0]?.from ?? 0;
     const upper = bins[bins.length - 1]?.to ?? 1;
     const x = scaleLinear([lower, upper], [area.left, area.right]);
@@ -85,13 +85,10 @@ const Histogram = ({
         height: Math.max(0, area.bottom - y(bin.count)),
         center: (x(bin.from) + x(bin.to)) / 2,
       })),
-      xTicks: ticks(lower, upper, tickCount(area.width, true)).map(value => ({
-        position: x(value),
-        label: compact(value),
-      })),
-      yTicks: yTicks.map(value => ({ position: y(value), label: compact(value) })),
+      xTicks: placeTicks(ticks(lower, upper, tickCount(area.width, true)), x, tickFormat),
+      yTicks: placeTicks(yTicks, y, tickFormat),
     };
-  }, [bins, width, height, compact]);
+  }, [bins, width, height, tickFormat]);
 
   const range = (index: number) => `${fv(bins[index].from)} – ${fv(bins[index].to)}`;
 

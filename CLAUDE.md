@@ -773,7 +773,7 @@ On grafik, **sıfır bağımlılık**: ölçek, istatistik ve yol üretimi
 | Derleme | `vite.charts.config.ts` → `build/charts.js`, `charts.cjs`, `charts.css` |
 | Bütçe | tümü 16 kB (ölçülen 14,02) · yalnızca `LineChart` 8,5 kB (7,19) · `charts.css` 2 kB (1,55) |
 | API taban çizgisi | `scripts/api-baseline.charts.txt` (22 ad) |
-| Testler | `__tests__/charts/` — çekirdek (35), davranış (21), eksen taraması (her senaryo × {kapalı, ipucu açık}) |
+| Testler | `__tests__/charts/` — çekirdek (37), davranış (22), eksen taraması (her senaryo × {kapalı, ipucu açık}) |
 
 | Grafik | Hangisi, ne zaman | Ayrımın nedeni |
 |---|---|---|
@@ -847,11 +847,21 @@ Fiziksel `left`: SVG koordinatları RTL'de aynalanmaz.
 | Bant ölçekleri DİZİNLE anahtarlanır | Aynı adlı iki satır ("Pzt", "Pzt") tek banda çöküyordu |
 | Bir sayfada iki ısı haritası farklı `linearGradient` kimliği (`useId`) | Aynı kimlik ikinci haritanın ölçeğini ilkinin rengiyle boyar |
 | Radar ölçek sayıları halkalar sıkışınca seyrelir (en dıştaki kalır) | 300 px'te halka aralığı 14 px, yazı 11 px — beş sayı üst üste biniyordu |
+| Eksen bölmesinin basamağı bölme LİSTESİNDEN (`tickLabels`) | Sabit "en çok bir ondalık" 0,1'in altındaki her adımı sıfıra çökertiyordu: 0,001-0,014 USD'lik maliyet ekseni "0 · 0 · 0" (ölçüldü: hanration, 5.3.2'de düzeldi); kısa gösterimde 12 050 ile 12 100 ikisi de "12,1 B" |
 
 ⚠ **Kayan nokta payı iki yerde ölçüldü ve ikisi de SESSİZDİ:**
 `ticks(0.1, 0.3)` → `0.3 / 0.1 = 2.9999999999999996` → uçtaki bölme
 düşüyordu; histogramda `(max − start) / step` `5.000000001` çıkıp boş bir
 altıncı bölme açıyordu. İkisi de `1e-9` payıyla ve nöbetçisi `core.test.ts`.
+
+⚠ **Eksen `formatValue` KULLANMAZ — bilerek.** `formatValue` / seri `format`ı ipucunu, duyuruyu ve
+gizli tabloyu yazar; eksen kısa gösterimde ve birimsiz kalır ("$0,0140" dar eksende üst üste
+biniyor). Birim grafiğin adında. Bu yüzden 5.3.1'deki "0 · 0 · 0" hatası tüketicinin
+`formatValue`sundan DEĞİLDİ: eksen biçimleyicisi bölme adımını hiç bilmiyordu ve her değeri tek tek
+`maximumFractionDigits: 1` ile yazıyordu. `tickLabels` bölme listesini alır; gereken basamak tek
+değerden değil en ince bölmeden çıkar. ⚠ `TickFormat` bilerek LİSTE alır: tek değer alan bir
+biçimleyiciye ikinci parametre (adım) eklemek `ticks.map(format)` çağrısında DİZİNİ adım diye
+geçirirdi.
 
 ⚠ **`Math.min(...dizi)` / `Math.max(...dizi)` YASAK** (veri dizisi üzerinde).
 Yayma argüman sayısı sınırına takılır: ~125 000 gözlemde `RangeError`. Tek yol

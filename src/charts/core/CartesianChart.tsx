@@ -7,7 +7,7 @@ import { useHanui } from '@ahmetilhn/hanui';
 import { CategoryAxis, ValueAxis } from './axes';
 import { type CartesianSeries, cartesianGeometry, type Orientation, toNumber } from './cartesian';
 import ChartFrame from './ChartFrame';
-import { compactNumber, fullNumber, type ValueFormat } from './format';
+import { fullNumber, tickLabels, type ValueFormat } from './format';
 import { toneAt, toneColor } from './palette';
 import type { Curve } from './path';
 import { nearestIndex } from './scale';
@@ -81,7 +81,7 @@ const CartesianChart = ({
   const [hidden, setHidden] = useState<ReadonlySet<string>>(() => new Set());
 
   const valueFormat = useMemo(() => formatValue ?? fullNumber(locale), [formatValue, locale]);
-  const axisFormat = useMemo(() => compactNumber(locale), [locale]);
+  const axisFormat = useMemo(() => tickLabels(locale), [locale]);
   const formatXValue = useCallback(
     (value: unknown) =>
       value === null || value === undefined ? '' : formatX(value as string | number),

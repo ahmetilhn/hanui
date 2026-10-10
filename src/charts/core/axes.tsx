@@ -1,3 +1,4 @@
+import type { TickFormat } from './format';
 import type { PlotArea } from './types';
 
 import styles from './axes.module.scss';
@@ -6,6 +7,16 @@ export type Tick = {
   /** Eksen boyunca konum (px). */
   position: number;
   label: string;
+};
+
+/** Bölme değerlerini konumlu bölmelere çevirir. Yazılar LİSTE olarak biçimlenir — basamak tüm bölmelerden. */
+export const placeTicks = (
+  values: readonly number[],
+  scale: (value: number) => number,
+  format: TickFormat,
+): Tick[] => {
+  const labels = format(values);
+  return values.map((value, index) => ({ position: scale(value), label: labels[index] }));
 };
 
 /** Bir karakterin yaklaşık genişliği (px) — 11 px eksen yazısında ölçülmüş ortalama. */

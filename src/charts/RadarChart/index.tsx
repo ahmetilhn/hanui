@@ -7,7 +7,7 @@ import { useHanui } from '@ahmetilhn/hanui';
 import { named } from '../../helpers/component.helper';
 import { fitLabel, labelWidth } from '../core/axes';
 import ChartFrame from '../core/ChartFrame';
-import { compactNumber, fullNumber, type ValueFormat } from '../core/format';
+import { fullNumber, tickLabels, type ValueFormat } from '../core/format';
 import { type ChartTone, toneAt, toneColor } from '../core/palette';
 import { polar, polygonPath } from '../core/path';
 import { niceDomain, ticks as tickValues } from '../core/scale';
@@ -80,7 +80,7 @@ const RadarChart = ({
   const { labels } = useHanui();
   const [containerRef, width] = useChartWidth(fixedWidth);
   const [hidden, setHidden] = useState<ReadonlySet<string>>(() => new Set());
-  const compact = useMemo(() => compactNumber(labels?.locale), [labels?.locale]);
+  const tickFormat = useMemo(() => tickLabels(labels?.locale), [labels?.locale]);
   const full = useMemo(() => fullNumber(labels?.locale), [labels?.locale]);
   const fv = formatValue ?? full;
 
@@ -132,6 +132,7 @@ const RadarChart = ({
     const { cx, cy, radius, angles, rings, scale, labelRoom } = geometry;
     const ringGap = rings.length > 0 ? scale(rings[0]) : radius;
     const ringEvery = Math.max(1, Math.ceil(RING_LABEL_HEIGHT / Math.max(1, ringGap)));
+    const ringLabels = tickFormat(rings);
 
     return (
       <g>
@@ -168,7 +169,7 @@ const RadarChart = ({
           {rings.map((ring, index) =>
             (rings.length - 1 - index) % ringEvery === 0 ? (
               <text key={ring} x={cx + 4} y={cy - scale(ring)} dy="1.1em">
-                {compact(ring)}
+                {ringLabels[index]}
               </text>
             ) : null,
           )}
@@ -196,7 +197,7 @@ const RadarChart = ({
         </g>
       </g>
     );
-  }, [geometry, shapes, axes, compact]);
+  }, [geometry, shapes, axes, tickFormat]);
 
   const pick = useCallback(
     (px: number, py: number) => {

@@ -3,6 +3,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { type ReactNode } from 'react';
 
 import {
+  AreaChart,
   BarChart,
   BoxPlot,
   Heatmap,
@@ -306,6 +307,35 @@ describe('ChartFrame — işaretçi', () => {
 });
 
 describe('grafiklerin kendi kuralları', () => {
+  /*
+   * ⚠ TÜKETİCİDE ÖLÇÜLDÜ: kümülatif maliyet grafiği (0,001-0,014 USD, `formatValue` verilmiş) eksende
+   * "0 · 0 · 0" okunuyordu. Eksen `formatValue`yu bilerek kullanmaz (kısa gösterim); hata kısa
+   * gösterimin sabit tek ondalığıydı.
+   */
+  it('alan: kuruşun altındaki değerlerde eksen bölmeleri sıfıra ÇÖKMEZ; `formatValue` tabloda kalır', () => {
+    const { container } = wrap(
+      <AreaChart
+        label="Kümülatif maliyet"
+        xKey="turn"
+        data={[
+          { turn: '1', cost: 0.001 },
+          { turn: '2', cost: 0.006 },
+          { turn: '3', cost: 0.014 },
+        ]}
+        series={[{ key: 'cost', label: 'Maliyet' }]}
+        formatValue={value => `$${value.toFixed(4)}`}
+        width={600}
+      />,
+    );
+
+    const valueTicks = [...container.querySelectorAll('text.axis__label[text-anchor="end"]')].map(
+      node => node.textContent,
+    );
+
+    expect(valueTicks).toEqual(['0', '0,002', '0,004', '0,006', '0,008', '0,01', '0,012', '0,014']);
+    expect(screen.getByRole('table', { name: 'Kümülatif maliyet' })).toHaveTextContent('$0.0140');
+  });
+
   it('pasta: sıfır ve eksi değer dilim AÇMAZ ama tabloda görünür; gizlenen dilim toplamdan düşer', () => {
     const { container } = wrap(
       <PieChart

@@ -5,9 +5,9 @@ import { memo, useCallback, useMemo } from 'react';
 import { useHanui } from '@ahmetilhn/hanui';
 
 import { named } from '../../helpers/component.helper';
-import { CategoryAxis, ValueAxis } from '../core/axes';
+import { CategoryAxis, placeTicks, ValueAxis } from '../core/axes';
 import ChartFrame from '../core/ChartFrame';
-import { compactNumber, fullNumber, type ValueFormat } from '../core/format';
+import { fullNumber, tickLabels, type ValueFormat } from '../core/format';
 import { plotArea, tickCount } from '../core/margins';
 import { type ChartTone, toneAt, toneColor } from '../core/palette';
 import { niceDomain, scaleBand, scaleLinear, ticks } from '../core/scale';
@@ -72,7 +72,7 @@ const BoxPlot = ({
   const { labels } = useHanui();
   const [containerRef, width] = useChartWidth(fixedWidth);
   const full = useMemo(() => fullNumber(labels?.locale), [labels?.locale]);
-  const compact = useMemo(() => compactNumber(labels?.locale), [labels?.locale]);
+  const tickFormat = useMemo(() => tickLabels(labels?.locale), [labels?.locale]);
   const fv = formatValue ?? full;
 
   const stats = useMemo(
@@ -90,7 +90,7 @@ const BoxPlot = ({
     const [low, high] = all.length ? extent(all) : [0, 1];
     const yDomain = niceDomain(low, high);
     const yTicks = ticks(yDomain[0], yDomain[1], tickCount(height, false));
-    const area = plotArea(width, height, yTicks.map(compact));
+    const area = plotArea(width, height, tickFormat(yTicks));
     const band = scaleBand(
       groups.map(group => group.id),
       [area.left, area.right],
@@ -102,13 +102,13 @@ const BoxPlot = ({
       area,
       band,
       y,
-      yTicks: yTicks.map(value => ({ position: y(value), label: compact(value) })),
+      yTicks: placeTicks(yTicks, y, tickFormat),
       groupTicks: groups.map(group => ({
         position: band(group.id) + band.bandwidth / 2,
         label: group.label,
       })),
     };
-  }, [stats, groups, width, height, compact]);
+  }, [stats, groups, width, height, tickFormat]);
 
   const summary = (value: BoxStats) => [
     { id: 'max', label: summaryLabels.max, value: fv(value.whiskerHigh) },

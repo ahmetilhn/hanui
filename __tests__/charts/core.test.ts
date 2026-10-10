@@ -1,5 +1,5 @@
 import { cartesianGeometry, type CartesianInput, toNumber } from '@/charts/core/cartesian';
-import { compactNumber, fullNumber } from '@/charts/core/format';
+import { fullNumber, tickLabels } from '@/charts/core/format';
 import { plotArea, tickCount } from '@/charts/core/margins';
 import { TONE_ORDER, toneAt, toneColor } from '@/charts/core/palette';
 import { arcPath, areaPath, linePath, polar, polygonPath } from '@/charts/core/path';
@@ -231,9 +231,36 @@ describe('palet, biçim, kenar boşluğu', () => {
   });
 
   it('sayı biçimi yerele göre; eksen kısa, ipucu tam', () => {
-    expect(compactNumber('tr-TR')(12_500)).toMatch(/^12,5\sB$/);
+    expect(tickLabels('tr-TR')([12_500])[0]).toMatch(/^12,5\sB$/);
     expect(fullNumber('tr-TR')(12_500)).toBe('12.500');
     expect(fullNumber('en-US')(1234.5)).toBe('1,234.5');
+  });
+
+  /*
+   * ⚠ Eksen eskiden sabit "en çok bir ondalık" yazıyordu: 0,005 adımlı maliyet ekseni "0 · 0 · 0 · 0"
+   * okunuyordu (ölçüldü: tüketicide). Basamak artık bölme LİSTESİNDEN çıkıyor.
+   */
+  it('eksen bölmesi: basamak listeden — 0,1 altındaki adım sıfıra çökmez, kısa gösterim çakışmaz', () => {
+    const axis = (values: readonly number[], locale = 'tr-TR') =>
+      tickLabels(locale)(values).map(label => label.replace(/\s/g, ' '));
+
+    expect(axis([0, 0.005, 0.01, 0.015])).toEqual(['0', '0,005', '0,01', '0,015']);
+    expect(axis(ticks(0, 0.014, 3))).toEqual(['0', '0,005', '0,01']);
+    expect(axis([12_000, 12_050, 12_100])).toEqual(['12 B', '12,05 B', '12,1 B']);
+    expect(axis([0, 5_000, 10_000, 15_000])).toEqual(['0', '5 B', '10 B', '15 B']);
+    expect(axis([0, 200_000, 1_000_000, 1_200_000])).toEqual(['0', '200 B', '1 Mn', '1,2 Mn']);
+    expect(axis([-0.02, -0.01, 0, 0.01])).toEqual(['-0,02', '-0,01', '0', '0,01']);
+    expect(axis([0, 20, 40, 60])).toEqual(['0', '20', '40', '60']);
+    expect(axis([0, 0.002, 0.004], 'en-US')).toEqual(['0', '0.002', '0.004']);
+  });
+
+  it('eksen bölmesi: kayan nokta artığı basamak sayılmaz; sıfır ve tek bölme', () => {
+    const axis = tickLabels('tr-TR');
+
+    expect(axis([0.1, 0.2, 0.1 + 0.2])).toEqual(['0,1', '0,2', '0,3']);
+    expect(axis([0])).toEqual(['0']);
+    expect(axis([0.005])).toEqual(['0,005']);
+    expect(axis([])).toEqual([]);
   });
 
   it('çizim alanı en uzun sol yazıya göre genişler, hiç sıfıra inmez', () => {
@@ -292,8 +319,8 @@ describe('kartezyen geometri', () => {
     orientation: 'vertical',
     curve: 'linear',
     formatX: String,
-    formatLeft: String,
-    formatRight: String,
+    formatLeft: values => values.map(String),
+    formatRight: values => values.map(String),
     ...overrides,
   });
 
