@@ -15,7 +15,7 @@ type Props = HTMLAttributes<HTMLDivElement> & {
  *
  * ⚠ AYRIŞTIRICI İÇERMEZ: `react-markdown`, `remark`/`rehype` eklentileri ve KaTeX tüketicide kalır;
  * hanui yalnızca çıktının nasıl göründüğünü verir (`linkComponent` ile aynı desen). Bir UI paketinin
- * markdown ayrıştırıcısı taşıması, Hanparça'nın hiç kullanmadığı yüzlerce kB demek.
+ * markdown ayrıştırıcısı taşıması, sohbet kullanmayan tüketicinin hiç kullanmadığı yüzlerce kB demek.
  */
 const Prose: FC<Props> = ({ className, testId, ...rest }) => (
   <div className={cx(styles.prose, className)} data-testid={testId} {...rest} />

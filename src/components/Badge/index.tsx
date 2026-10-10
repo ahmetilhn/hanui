@@ -10,9 +10,9 @@ export type BadgeTone =
   | 'danger'
   | 'warning'
   | 'info'
-  /** Birincil sınıflandırma tinti (yeşil aile — Hanparça "Orijinal"). */
+  /** Birincil sınıflandırma tinti (yeşil aile — örn. "Orijinal"). */
   | 'oem'
-  /** İkincil sınıflandırma tinti (menekşe aile — Hanparça "Muadil"). */
+  /** İkincil sınıflandırma tinti (menekşe aile — örn. "Muadil"). */
   | 'alt'
   /** İndirim / olumlu değişim yüzdesi. Tutarın kendisi nötr kalır. */
   | 'sale'

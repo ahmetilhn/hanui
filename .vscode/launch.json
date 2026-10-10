@@ -23,7 +23,7 @@
       "autoAttachChildProcesses": false
     },
     {
-      // Kütüphane derlemesi izleme kipinde: hanparca-frontend/-admin'e
+      // Kütüphane derlemesi izleme kipinde: tüketici uygulamalara
       // `npm link` ile bağlıyken kaynakta yapılan değişikliği `build/`e taşır.
       // Galeri bunu KULLANMAZ — orada `src/` doğrudan okunuyor.
       "name": "hanui — build --watch (link için)",

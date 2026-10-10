@@ -17,7 +17,7 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
 };
 
 /**
- * Şifre girdisi — yanında göz düğmesi. `hanparca-admin` ve `hanparca-frontend`te BİREBİR AYNI dosya
+ * Şifre girdisi — yanında göz düğmesi. iki tüketici uygulamada BİREBİR AYNI dosya
  * olarak duruyordu
  */
 const PasswordInput: FC<Props> = ({ className, showLabel, hideLabel, ...rest }) => {

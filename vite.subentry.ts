@@ -10,7 +10,7 @@ import { defineConfig, type UserConfig } from 'vite';
  * ⚠ Ana giriş (`@ahmetilhn/hanui`) DIŞSAL: alt giriş onu paket adıyla alır. Paketlenseydi
  * `HanuiProvider`ın bağlamı (metinler, yönlendirici) ve kipsel yüzey yığını iki kopyaya bölünür,
  * alt girişin bileşenleri sağlayıcının metinlerini göremez ve ana bileşenlerin CSS'i alt girişin
- * CSS'ine de girerdi. Alt girişin kodu ve CSS'i ana pakete hiç girmez; Hanparça'nın bütçesi değişmez.
+ * CSS'ine de girerdi. Alt girişin kodu ve CSS'i ana pakete hiç girmez; ana girişi kullanan uygulamanın bütçesi değişmez.
  *
  * Tipler bu derlemede DEĞİL, `tsconfig.subentries.json` ile dosya başına üretilir
  * (`build/types/<giriş>`): `vite-plugin-dts`in toplama adımı girişi `<outDir>/index.d.ts` diye

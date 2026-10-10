@@ -1,16 +1,16 @@
 # @ahmetilhn/hanui
 
-Hanparca tasarım sistemi. React 19 · TypeScript strict · SCSS Modules · Vite.
+Erişilebilir, tema güdümlü React tasarım sistemi. React 19 · TypeScript strict · SCSS Modules · Vite.
 
 Bu dosya **tasarım sözleşmesini ve ölçülmüş kararları** tutar. Kurulum,
 kullanım, token ezme, metin sözleşmesi ve geliştirme komutları `README.md`
 içindedir.
 
-⚠ Bu sözleşme `hanparca-frontend` ve `hanparca-admin` için de **normatiftir**.
-Onların CLAUDE.md'leri yalnızca uygulamaya özgü sapmaları yazar.
+⚠ Bu sözleşme kütüphaneyi kullanan uygulamalar için de **normatiftir**.
+Onların belgeleri yalnızca uygulamaya özgü sapmaları yazar.
 
-⚠ **Bu dosya 5.x'i anlatır.** Hanparça uygulamaları hanui'yi `^4.1.0` ile
-alıyor ve 5.x'e kendiliğinden geçmez; geçene kadar onlar için geçerli renk
+⚠ **Bu dosya 5.x'i anlatır.** hanui'yi `^4.1.0` ile alan uygulamalar 5.x'e
+kendiliğinden geçmez; geçene kadar onlar için geçerli renk
 kararları `v4.1.0` etiketindeki CLAUDE.md'dedir. Geçiş tablosu: "Göç" →
 "5.0 token sözleşmesi".
 
@@ -181,7 +181,7 @@ kremde 3,23:1) açık temada hiçbir metin token'ına girmez.
 ⚠ Saf beyaz ve saf siyah palette YOK (`palette.contract.test.ts`).
 
 ⚠ Değişiklik tüketicilerde **elle** izlenen iki yerde yankılanır:
-`hanparca-frontend` `manifest.ts` → `background_color` ve uygulamaların
+e-ticaret vitrininin `manifest.ts` → `background_color`ı ve uygulamaların
 `themeColor`'ı. hanration için: `layout.tsx` → `themeColor` açık/koyu çifti.
 
 ### Koyu tema: zemin SICAK SİYAH, yeşil vurgudur
@@ -212,7 +212,7 @@ sınırı `nav-line` çizer. Alt bilgi bir kademe yukarı çıkar.
 | Bağlantı | `link` / `link-hover` | `#17704e` | `#60d4a1` |
 | Odak halkası | `ring-color` | `#1f7b56` | `#60d4a1` |
 | Marka şeridi, logo, marka madalyonu | `band-*` | çam + mint | aynı |
-| Dönüşüm eylemi (Hanparça) | `cart*` | `#1ba055` | `#37c971` |
+| Dönüşüm eylemi ("sepete ekle") | `cart*` | `#1ba055` | `#37c971` |
 | Olumlu DURUM | `ok-*`, `green-accent` | anlamsal | anlamsal |
 
 **Seçim mürekkeptir:** etkin sayfa, seçili çip/seçenek/satır, sekme çizgisi,
@@ -428,7 +428,7 @@ bildirilir, metnin silinmesiyle değil.
   `Chip` 40px, `Pagination` dar ekranda **36×40**. `__tests__/styles/tap-targets.test.ts`
   ELLE bakılan bir liste ve ikisi listede değildi — yani kural yazılıydı,
   kısmen zorlanıyordu ve aradan geçen iki bileşen sessizce kaldı. İkisi de
-  TÜKETİCİDE ölçüldü (`hanparca-frontend`, 390px ve 320px gerçek tarayıcı),
+  TÜKETİCİDE ölçüldü (e-ticaret vitrini, 390px ve 320px gerçek tarayıcı),
   hanui'nin kendi ızgarasında değil.
   ⚠ Türetilmiş bir kural denendi ve **elendi**: "44px altında sabit yükseklik
   yazan her dosya `tap-target` içermeli" 32 satır işaretliyor ve ezici
@@ -439,7 +439,7 @@ bildirilir, metnin silinmesiyle değil.
   `input-base` ölçüyü bu yüzden `$font-size-control` (`max(16px, …)`) ile kurar.
   ⚠ **`Input --technical` kuralı çiğniyordu:** ölçüyü `$font-size-base`
   (`clamp(15px, …, 16px)`) ile yeniden yazıyor ve dar ekranda **15,03px**
-  çiziyordu (ölçüldü: `hanparca` şase sorgulama formu). Düzeltme 5.3'te
+  çiziyordu (ölçüldü: bir şase sorgulama formu). Düzeltme 5.3'te
   yapıldı — dar ekranda alan 1px uzuyor ve görsel tabanların toplu
   yenilenmesiyle birlikte girdi. Nöbetçi `__tests__/e2e/mobile.spec.ts`
   "metin girdileri dar ekranda 16px ALTINA inmez": galerinin TAMAMINDA
@@ -646,7 +646,7 @@ değişiklikte bölümün tabanı silinip `--update-snapshots=missing` ile yazı
 ## `@ahmetilhn/hanui/chat` — sohbet bileşenlerinin AYRI girişi (5.2)
 
 **Neden ayrı:** 5.1 tüm girişi bütçenin sınırına taşıdı (42,00 / 42 kB) ve
-sohbet bileşenlerinin Hanparça'da çağıranı yok. Ana girişe girselerdi vitrinin
+sohbet bileşenlerinin e-ticaret vitrininde çağıranı yok. Ana girişe girselerdi vitrinin
 indirdiği paket ve `styles.css` büyürdü. Ayrı girişte ana pakete **sıfır bayt**
 eklendi (ölçüldü: ana giriş 42 000 bayt, önce ve sonra).
 
@@ -1027,7 +1027,7 @@ yanlış alarm.
 ⚠ **Public API DEĞİŞMEDİ, ölçüldü.** `build/index.d.ts` içindeki dışa
 aktarım kümesi taşımadan önce ve sonra **birebir aynı**.
 `src/index.ts` bir cephedir; tip gövdeleri nerede yaşarsa yaşasın tüketici
-(`hanparca-frontend`, `hanparca-admin`) aynı adları aynı yerden alır.
+(vitrin ve yönetim paneli) aynı adları aynı yerden alır.
 
 ### `src/index.ts`teki her ad bir SÜRÜM TAAHHÜDÜDÜR — `check:api` bunu ölçer
 
@@ -1050,7 +1050,7 @@ Betiğin deseni `export declare (const|type|function|class|interface|enum) Ad`
 ve **sıfır eşleşmede açıkça düşer** — ölçemediği şeyi yeşil geçmez.
 
 **Tip taşımalarında diff ZORUNLU.** Tüketiciler hanui'yi **caret** ile alıyor
-(`hanparca-frontend` ve hanration `^4.1.0`), yani küçük sürümde düşen bir ad
+(`^4.1.0`, `^5.3.0`), yani küçük sürümde düşen bir ad
 bir sonraki `npm install`da, sebebi çoktan unutulmuşken derleme hatası üretir.
 Taban çizgisi bu yüzden repoda duruyor. (Bu satır bir dönem "iki tüketici de
 `2.4.0` ile tam pinli" diyordu; artık doğru değil.)
@@ -1077,7 +1077,7 @@ Taban çizgisi bu yüzden repoda duruyor. (Bu satır bir dönem "iki tüketici d
 ⚠ **Paket bütçesi SINIRDA (2026-10-10):** 5.1'in eklemeleri tüm girişi 40,17 →
 **42,00 kB** taşıdı (bütçe 42 kB) ve `styles.css`i 23,07 / 24 kB'a. Sohbet
 bileşenleri bu yüzden ana girişe GİRMEZ, ayrı `chat` girişine gider — plan bunu
-"Hanparça'nın bütçesi büyümesin" diye öneriyordu, ölçüm artık zorunlu kılıyor.
+"vitrinin bütçesi büyümesin" diye öneriyordu, ölçüm artık zorunlu kılıyor.
 5.2'nin `HanuiThemeScript`i girişi 42,05 kB'a taşıdı ve bütçe 43 kB'a çekildi
 (gerekçe `.size-limit.js` ve "`@ahmetilhn/hanui/charts`" bölümünde).
 
@@ -1169,7 +1169,7 @@ açıklamasında zaten yazılıydı; nöbetçi `.size-limit.js` — **ve yalnız
 
 ### `PasswordInput` ve `ToastPortal` — iki uygulamadan buraya taşındı
 
-Her ikisi de `hanparca-admin` ve `hanparca-frontend`te **birebir aynı dosya**
+Her ikisi de iki tüketici uygulamada (yönetim paneli ve vitrin) **birebir aynı dosya**
 olarak duruyordu ve ikisi de zaten bu kütüphanenin bileşenlerini sarmalıyordu
 (`Input`+`IconButton`, `ToastHub`) — yani en baştan buraya aitlerdi.
 
@@ -1178,7 +1178,7 @@ olarak duruyordu ve ikisi de zaten bu kütüphanenin bileşenlerini sarmalıyord
 | `PasswordInput` | `Input` + `IconButton` sarmalayıcısı. Etiketler `labels.passwordShow` / `labels.passwordHide` üzerinden; sabit Türkçe metin gömülü DEĞİL. |
 | `ToastPortal` | `ToastHub` portal kullanıyor ve `document` olmadan çalışamıyor; sunucuda çizilen ağaçta hidrasyon uyuşmazlığı üretir. Montaj bekleyen sarmalayıcı uygulamanın değil bileşenin sorunu. |
 
-⚠ **Uygulamalar HENÜZ GEÇMEDİ.** `hanparca-admin` ve `hanparca-frontend`
+⚠ **Uygulamalar HENÜZ GEÇMEDİ.** Yönetim paneli ve vitrin
 hanui'yi npm'den alıyor (`2.1.1`) ve bu bileşenler `2.1.0`da. Geçiş için
 sırasıyla: `npm publish` → iki uygulamada bağımlılığı yükselt → yerel
 `components/PasswordInput` ve `components/ToastPortal` klasörlerini sil →
@@ -1201,7 +1201,7 @@ renkleri eski görünür. Doğru sıra: `npm publish` → iki uygulamada dep bum
   (bir uygulamanın kroması genel bir tasarım sistemine girer) ya da bileşeni
   yeniden tasarlamayı gerektirir (zemin rengi tüketiciden gelen CSS özel
   değişkenleriyle). İkincisi doğru yol ama ayrı bir tur.
-- **`Logo`** marka varlığı taşıyor (`/brand/*.svg`, "Hanparca"). MIT
+- **`Logo`** marka varlığı taşıyor (`/brand/*.svg`, uygulamanın markası). MIT
   lisanslı, genel amaçlı bir tasarım sistemine tek bir şirketin markasını
   koymak yanlış olur. Doğru ayrıştırma: mekanizma (temaya göre kaynak
   değiştirme, orana göre boyutlandırma) hanui'ye, varlıklar uygulamada.

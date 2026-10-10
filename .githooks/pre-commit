@@ -1,5 +1,5 @@
 #!/bin/sh
-# Hanparca ön-commit kancası — Prettier + ESLint + Stylelint + testler
+# hanui ön-commit kancası — Prettier + ESLint + Stylelint + testler
 # ⚠ Testler ÇALIŞMA ALANINI görür, index'i değil.
 
 set -eu

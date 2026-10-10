@@ -40,7 +40,7 @@
   /*
    * Olcu `font-size-control` (`max(16px, …)`), `font-size-base` DEGIL: iOS Safari 16px altindaki
    * bir girdiye odaklaninca sayfayi buyutur ve geri kucultmez. `base` dar ekranda 15,03px'e iniyordu
-   * (olculdu: Hanparca sase sorgulama formu, 17 hane girilen en mobil akis).
+   * (olculdu: bir sase sorgulama formu, 17 hane girilen en mobil akis).
    */
   &--technical {
     @include technical-text($font-size-control);

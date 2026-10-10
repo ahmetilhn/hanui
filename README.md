@@ -755,7 +755,7 @@ Ayrıntı ve ölçülmüş gerekçeler: `CLAUDE.md` → "Göç ve `@deprecated` 
 Öğe seçimi (hangi durumda hangi bileşen), yüzey/yükseklik merdiveni, renk
 kararları, durum tintleri, tipografi rolleri, erişilebilirlik eşikleri, hareket
 ölçeği ve `@deprecated` göç yolları **`CLAUDE.md`** içindedir. O dosya
-`hanparca-frontend` ve `hanparca-admin` için de normatiftir.
+kütüphaneyi kullanan uygulamalar için de normatiftir.
 
 ## Lisans
 

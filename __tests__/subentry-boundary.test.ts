@@ -61,7 +61,7 @@ describe.each(ENTRIES)('%s girişinin sınırı', entry => {
   });
 });
 
-it('ana giriş alt girişleri İÇE AKTARMAZ — Hanparça`nın paketine sohbet ya da grafik kodu inmez', () => {
+it('ana giriş alt girişleri İÇE AKTARMAZ — yalnızca ana girişi kullanan uygulamaya sohbet ya da grafik kodu inmez', () => {
   const offenders = files('src')
     .filter(path => !ENTRIES.some(entry => path.startsWith(entry)))
     .filter(path => imports(path).some(specifier => /(^|\/)(chat|charts)(\/|$)/.test(specifier)));

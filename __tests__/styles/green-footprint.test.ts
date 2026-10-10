@@ -14,7 +14,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 const FAMILIES = {
   /** Birincil eylem dolgusu ve sınırı. `action-soft` (pasif dolgu) nötr olduğu için dışarıda. */
   action: /\$(?:action(?:-hover|-active|-line)?|on-action)(?![\w-])/g,
-  /** Dönüşüm eylemi (Hanparça "sepete ekle"). */
+  /** Dönüşüm eylemi ("sepete ekle"). */
   cart: /\$(?:cart(?:-[a-z]+)?|on-cart)(?![\w-])/g,
   /** Bağlantı metni. */
   link: /\$link(?:-hover)?(?![\w-])/g,

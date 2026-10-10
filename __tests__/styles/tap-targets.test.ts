@@ -6,7 +6,7 @@ const read = (path: string): string => readFileSync(path, 'utf8');
  * ⚠ BU LISTE ELLE BAKILIR ve tam da bu yuzden IKI IHLAL KACIRDI: `Chip` (40px)
  * ve `Pagination` (dar ekranda 36×40) yillardir listede degildi, dolayisiyla
  * nobetci yesil koserken kural cignenıyordu. Ikisi de hanui'nin kendi
- * urununde degil, TUKETICIDE olculdu (hanparca vitrini, 390px ve 320px).
+ * urununde degil, TUKETICIDE olculdu (e-ticaret vitrini, 390px ve 320px).
  *
  * ⚠ TURETILMIS BIR KURAL DENENDI VE ELENDI: "44px altinda sabit yukseklik
  * yazan her dosya `tap-target` icermeli" kurali 32 satir isaretliyor ve ezici
