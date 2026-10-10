@@ -280,6 +280,30 @@ export const CATEGORY_SHAPE = {
 export const MIN_CATEGORY_DELTA_E = 8;
 
 /**
+ * SÖZDİZİMİ RENKLERİ — `CodeBlock`ın yerleşik vurgulayıcısı. Kategorik paletin beş tonu, METİN
+ * aydınlığında: renk ailesi grafiklerle aynı, eşik farklı (kod 12-13 px metin → 4,5:1).
+ * ⚠ Yeşil YOK: dize rengi çoğu temada yeşil ve kod bloğu bağlantının, birincil eylemin yanında
+ * duruyor. Fark satırının yeşili (`ok-fg`) bir DURUM, sözdizimi rengi değil.
+ * Kapılar: her ton iki temanın dört yüzeyinde ≥4,5:1 (`check:contrast`, metin katmanı) ve iki
+ * ton arasında ΔE ≥ `MIN_SYNTAX_DELTA_E` (üreteç) — koyu temada açık tonlar birbirine yaklaşıyor.
+ */
+export const SYNTAX_HUES = {
+  keyword: CATEGORY_HUES.cat5,
+  string: CATEGORY_HUES.cat2,
+  number: CATEGORY_HUES.series2,
+  name: CATEGORY_HUES.cat1,
+  type: CATEGORY_HUES.cat4,
+};
+
+export const SYNTAX_SHAPE = {
+  light: { l: 0.5, s: 0.85 },
+  dark: { l: 0.78, s: 0.85 },
+};
+
+/** Sözdizimi tonlarının birbirinden en az uzaklığı (OKLab ΔE×100). */
+export const MIN_SYNTAX_DELTA_E = 8;
+
+/**
  * YILDIZ ALTINI — açık temada metin eşiğini de geçmeli (puan sayısı yanında).
  * ⚠ 5.0'da l .545 → .52: krem kartta (`surface-2`) 4,15:1'e düşüyordu.
  */

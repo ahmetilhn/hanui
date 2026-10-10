@@ -13,6 +13,7 @@ import {
   STAR,
   STATUS,
   SURFACE_DARK,
+  SYNTAX,
 } from './palette';
 import { HanuiFonts } from '@/types/theme.type';
 
@@ -422,6 +423,31 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
   'cat-5': CATEGORY.cat5Dark,
   'series-1': NEUTRAL.n150,
   'series-2': CATEGORY.series2Dark,
+};
+
+/**
+ * SÖZDİZİMİ TOKEN'LARI — `CodeBlock`ın vurgulayıcısı. Kategorik tonlar METİN aydınlığında: kod
+ * gövdesinde (`surface-inset`) ve üç yüzeyde ≥4,5:1. Yorum `text-3`, noktalama `text-2` — ayrı
+ * token değil. `syntax-name`: işlev çağrısı, özellik/anahtar, öznitelik, değişken.
+ * ⚠ Temaya bağlı ama ANA TABLODA DEĞİL. Yalnızca sohbet girişi kullanıyor; `LIGHT_THEME`e
+ * girdiklerinde çalışma zamanı tablosuyla HER bileşenin paketine biniyorlardı (ölçüldü: yalnızca
+ * `Button` alan uygulama 5,12 → 5,28 kB, `styles.css` +0,1 kB). Değişkenleri `chat.css` taşır
+ * (`_syntax.generated.scss`); ezme CSS'te (`--hanui-syntax-*`), `HanuiProvider theme`inde değil.
+ */
+export const SYNTAX_LIGHT_THEME = {
+  'syntax-keyword': SYNTAX.keyword,
+  'syntax-string': SYNTAX.string,
+  'syntax-number': SYNTAX.number,
+  'syntax-name': SYNTAX.name,
+  'syntax-type': SYNTAX.type,
+} as const;
+
+export const SYNTAX_DARK_THEME: Record<keyof typeof SYNTAX_LIGHT_THEME, string> = {
+  'syntax-keyword': SYNTAX.keywordDark,
+  'syntax-string': SYNTAX.stringDark,
+  'syntax-number': SYNTAX.numberDark,
+  'syntax-name': SYNTAX.nameDark,
+  'syntax-type': SYNTAX.typeDark,
 };
 
 /** ÖLÇÜ TOKEN'LARI — temadan bağımsız, çalışma zamanında EZİLEBİLİR. */

@@ -1,5 +1,7 @@
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
+// Sözdizimi token'ları sohbet girişinde yaşar: `:root` kuralları `chat.css`e iner (bkz. `tokens.ts`).
+@use '../../styles/syntax.generated' as *;
 
 .block {
   margin: 0.9em 0;
@@ -55,4 +57,43 @@
   @include for-dark {
     color: var(--shiki-dark);
   }
+}
+
+// Yerleşik vurgulayıcı: her parça türü bir token. Yorum `text-3` + eğik (renk tek başına anlam
+// taşımaz), noktalama `text-2`, fark satırları durum aileleri (`+`/`-` öneki de anlamı taşıyor).
+.block__token--comment {
+  color: $text-3;
+  font-style: italic;
+}
+
+.block__token--keyword {
+  color: $syntax-keyword;
+}
+
+.block__token--string {
+  color: $syntax-string;
+}
+
+.block__token--number {
+  color: $syntax-number;
+}
+
+.block__token--name {
+  color: $syntax-name;
+}
+
+.block__token--type {
+  color: $syntax-type;
+}
+
+.block__token--punctuation {
+  color: $text-2;
+}
+
+.block__token--inserted {
+  color: $ok-fg;
+}
+
+.block__token--deleted {
+  color: $bad-fg;
 }

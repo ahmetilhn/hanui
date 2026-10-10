@@ -2,7 +2,7 @@
 import { contrast, round } from './lib/contrast.mjs';
 import { loadTokens } from './lib/load-tokens.mjs';
 
-const { LIGHT_THEME, DARK_THEME } = await loadTokens();
+const { LIGHT_THEME, DARK_THEME, SYNTAX_LIGHT_THEME, SYNTAX_DARK_THEME } = await loadTokens();
 
 const THRESHOLD = { text: 4.5, large: 3, graphic: 3 };
 
@@ -66,6 +66,16 @@ const buildPairs = () => {
     add('link', surface, 'text');
     add('link-hover', surface, 'text');
   }
+
+  /*
+   * Kod gövdesi (`surface-inset`) ve kodun durabileceği üç yüzey: sözdizimi renkleri 12-13 px
+   * METİN. Fark satırları durum ailesinin ön planını kod gövdesinde taşır.
+   */
+  for (const surface of ['surface-inset', 'page', 'surface', 'surface-2'])
+    for (const role of ['keyword', 'string', 'number', 'name', 'type'])
+      add(`syntax-${role}`, surface, 'text');
+  add('ok-fg', 'surface-inset', 'text');
+  add('bad-fg', 'surface-inset', 'text');
 
   // --- Durum üçlüleri ---
   for (const tint of TINTS) add(`${tint}-fg`, `${tint}-bg`, 'text');
@@ -149,9 +159,10 @@ const format = row =>
   `${row.isFailing ? '✗' : '·'} ${String(row.ratio.toFixed(2)).padStart(6)}:1 ` +
   `(≥${row.required || '—'})  ${row.fg} / ${row.bg}`;
 
+/* Sözdizimi token'ları ana tablonun dışında (sohbet girişinde) ama aynı yüzeylerin üzerinde. */
 const themes = [
-  ['LIGHT', LIGHT_THEME],
-  ['DARK', DARK_THEME],
+  ['LIGHT', { ...LIGHT_THEME, ...SYNTAX_LIGHT_THEME }],
+  ['DARK', { ...DARK_THEME, ...SYNTAX_DARK_THEME }],
 ];
 
 const pairs = buildPairs();

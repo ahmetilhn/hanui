@@ -37,8 +37,31 @@ export default [
     name: 'chat girişi (tümü)',
     path: 'build/chat.js',
     ignore: ['@ahmetilhn/hanui'],
-    /* İlk ölçüm (2026-10-10, 20 bileşen): 6,29 kB. */
-    limit: '8 kB',
+    /*
+     * İlk ölçüm (2026-10-10, 20 bileşen): 6,29 kB. ⚠ 8 → 13 kB (2026-10-10): `CodeBlock`ın
+     * yerleşik vurgulayıcısı (30+ dil, 4,93 kB) ve biçimlendiricisi (0,43 kB) girişi 11,74 kB'a
+     * taşıdı. Bedeli YALNIZCA `CodeBlock` alan öder — aşağıdaki iki ağaç sarsma ölçümü bunu tutar.
+     * Karşılaştırma: tüketicinin tembel yüklediği Shiki bunun onlarca katı.
+     */
+    limit: '13 kB',
+    gzip: true,
+  },
+  {
+    name: 'yalnızca ChatThread (ağaç sarsma — vurgulayıcı SIZMAZ)',
+    path: 'build/chat.js',
+    import: '{ ChatThread }',
+    ignore: ['@ahmetilhn/hanui'],
+    /* İlk ölçüm: 1,03 kB. Vurgulayıcı modül düzeyinde bir çağrıyla ayakta kalırsa buraya biner. */
+    limit: '1.3 kB',
+    gzip: true,
+  },
+  {
+    name: 'yalnızca CodeBlock (vurgulayıcı + biçimlendirici)',
+    path: 'build/chat.js',
+    import: '{ CodeBlock }',
+    ignore: ['@ahmetilhn/hanui'],
+    /* İlk ölçüm: 6,22 kB. Yeni bir dil buradan geçer. */
+    limit: '7 kB',
     gzip: true,
   },
   {

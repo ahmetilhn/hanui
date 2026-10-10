@@ -380,6 +380,8 @@ turuncusu, yeşil, okra, erik) sabit L/C şablonundan, değişen yalnızca ton a
   `#252523`, koyuda krem); `cat-3` orta aydınlıkta bir kategori yeşili, çam ya da
   mint değil.
 - ⚠ `cat-2` kil **turuncusu** (H 42): H 30'da tehlike ailesiyle (H 25) karışıyordu.
+- Sözdizimi renkleri (`syntax-*`) aynı beş tondan, **metin** aydınlığında —
+  bkz. "`CodeBlock` — yerleşik vurgulayıcı ve biçimlendirici".
 
 ## Tipografi rolleri
 
@@ -705,7 +707,7 @@ eklendi (ölçüldü: ana giriş 42 000 bayt, önce ve sonra).
 | Derleme | `vite.chat.config.ts` (`vite.subentry.ts`) → `build/chat.js`, `chat.cjs`, `chat.css` |
 | Tipler | `tsconfig.subentries.json` → `build/types/chat/` (dosya başına) |
 | Dışa aktarım | `exports["./chat"]`, `exports["./chat.css"]` |
-| Bütçe | `chat.js` 8 kB (ölçülen 6,29) · `chat.css` 5 kB (ölçülen 3,90) |
+| Bütçe | `chat.js` 13 kB (ölçülen 11,78; vurgulayıcıdan önce 6,29) · yalnızca `CodeBlock` 7 kB (6,25) · yalnızca `ChatThread` 1,3 kB (1,03) · `chat.css` 5 kB (4,19) |
 | API taban çizgisi | `scripts/api-baseline.chat.txt` (30 ad) |
 
 ⚠ **ANA GİRİŞ DIŞSAL — sohbet kodu onu PAKET ADIYLA alır.** Bir sohbet
@@ -743,7 +745,7 @@ girişinin cephe dosyasındaki `export { … } from` satırlarını okur.
 | | `PromptInput` | `Enter` gönderir, `Shift+Enter` satır, IME yazımında `Enter` GÖNDERMEZ; `Escape` akışı durdurur ama açık bir yüzey varken DOKUNMAZ (`hasOpenSurface`). Gönder = çam (ekranın tek PRIMARY'si) |
 | | `PromptSuggestions` | EYLEM ızgarası, seçim değil (`ChipGroup` değil) |
 | Yanıt | `Prose` | Tipografi kabı; ayrıştırıcı İÇERMEZ (markdown/KaTeX tüketicide) |
-| | `CodeBlock` | Vurgulayıcı İÇERMEZ; Shiki çift tema değişkenleri `for-dark` ile; `html` güvenliği ÇAĞIRANIN |
+| | `CodeBlock` | Yerleşik vurgulayıcı + biçimlendirici, bağımlılıksız (aşağıda); `html` (Shiki) verilirse onun yerine geçer — güvenliği ÇAĞIRANIN |
 | | `ReasoningBlock` + `ReasoningText` | Tur sürerken açık, bitince kapanır — kullanıcı dokunduysa tercihine DOKUNULMAZ |
 | | `ToolCall` + `ToolCallSection` | Durum nokta + OKUNAN metin (`labels.chat.toolStatus`); çalışan nokta NÖTR nabız |
 | | `TerminalOutput` | Mürekkep yüzey (`shell*`), sona yapışık; stderr gizli önek taşır (renk tek başına anlam taşımaz) |
@@ -759,6 +761,91 @@ girişinin cephe dosyasındaki `export { … } from` satırlarını okur.
 parça başına `Tooltip` yerine tek bir okunan özet (çubuğun içinde sekme durağı
 dizmek daha az bilgi verip daha çok tuş istiyordu); `code-bg` / `terminal-*`
 token'ları eklenmedi (`surface-inset` ve `shell*` karşılıyor).
+
+### `CodeBlock` — yerleşik vurgulayıcı ve biçimlendirici (5.4)
+
+5.2'de `CodeBlock` "vurgulayıcı İÇERMEZ" diye kuruldu, Shiki tüketicideydi. Sonuç:
+Shiki bağlamayan her tüketicide (galeri dahil) kod **renksiz** çiziliyordu; bağlayanda
+da renkler Shiki'nin `github-*` temasından geliyordu — kontrastı ölçülmüyor, hanui
+paletiyle hiçbir bağı yok.
+
+| Karar | Gerekçe |
+|---|---|
+| Bağımlılıksız sözcük çözümleyici: dilin kuralları TEK birleşik düzenli ifadede, tek geçiş | Shiki bunun onlarca katı ve eşzamansız (ilk boyama renksiz, sunucu çiziminde renk yok). Grafikler de sıfır bağımlılıkla kuruldu |
+| Dilbilgisi çözümleyicisi DEĞİL — bilinen yaklaşıklıklar | JSX metnindeki büyük harfli kelime tip boyanır; kesme işaretli JSX metni (`Don't`) satırın kalanını dize sayar; YAML düz değerleri boyanmaz. Shiki doğruluğu gerekiyorsa `html` |
+| Diller: ts/tsx/js/jsx, json, bash/sh/zsh, python, ruby, yaml, toml, css/scss/less, html/xml/svg, markdown, sql, diff, graphql, dockerfile, c/c++/c#, java, kotlin, swift, go, rust, php (takma adlarla 56 ad) | hanration'ın Shiki'ye verdiği listenin tamamı. Tanınmayan dil düz |
+| Geriye bakış (`(?<=…)`) YOK | Safari 16.4 öncesinde ifade kurulurken `SyntaxError` — kod bloğu hiç çizilmezdi. Önceki karaktere bağlı kurallar `reject` ile (`a#b` yorum değil, `useState<string>` etiket değil) |
+| `/` bağlama göre düzenli ifade ya da bölme | Bağlamsız kural `a / b / c`yi düzenli ifade boyuyordu. Karakter sınıfının kapanışı tam kuralda zorunlu: isteğe bağlı `]` birkaç bin `[`de üstel geri dönüş yapıp sayfayı kilitliyordu |
+| Özellik erişimi anahtar kelime değil (`map.get`, `obj.type`) | Bağlamsal anahtar kelimeler (`get`, `type`, `of`) en sık özellik adı |
+| Rust yaşam süresi (`'a`) dize açmaz | Tek tırnağı dize sayan kural satırın kalanını boyuyordu |
+| Kapanmamış yorum ve dize METNİN SONUNA kadar | Akan yanıtta blok bitmeden renk doğru tarafta kalır |
+| `<span>` + sınıf; `dangerouslySetInnerHTML` YOK | Yerleşik yol XSS yüzeyi açmaz (`html` yolunun güvenliği yine çağıranın) |
+
+⚠ **20 000 karakterin üstü düz çizilir** (`HIGHLIGHT_LIMIT`). Maliyet çözümlemede
+değil `<span>` sayısında. Ölçüldü (chromium, galeri sunucusu, React geliştirme
+kipi):
+
+| kod | çözümleme | parça | DOM + yerleşim | React ilk çizim | akışta güncelleme |
+|---|---:|---:|---:|---:|---:|
+| 20 000 karakter | 3,8 ms | 1 555 | 17 ms | 139 ms | 78 ms |
+| 50 000 karakter | 8,5 ms | 4 333 | 66 ms | 590 ms | 173 ms |
+
+**Biçimlendirici** (`format.ts`):
+
+- JSON **metin üzerinden** yeniden girintilenir. `JSON.parse` + `stringify`
+  2^53'ün üstünü yuvarlıyor (`12345678901234567890` → `12345678901234567000`),
+  kaçışları çözüyor ve yinelenen anahtarın ilkini siliyordu — biçimlendirici
+  gösterdiği veriyi değiştiriyordu. Ayrıştırma yalnızca geçerliliği sınar; çıktı
+  `JSON.stringify(…, null, 2)` ile birebir. Geçersiz JSON (akan yarım blok, JSONC)
+  dokunulmaz.
+- Kenarlardaki boş satırlar atılır: çitli bloğun son `\n`i gövdede boş bir satır
+  çiziyordu (hanration bunu `replace(/\n$/, '')` ile elle yapıyordu).
+- ⚠ **Başka dilde girinti DEĞİŞMEZ.** Ortak girintiyi atan bir biçimlendirici
+  reddedildi: dosyadan alınmış parçanın girintisi o dosyadaki derinliği anlatıyor,
+  Python'da anlamın kendisi.
+- Kopyalanan metin ekranda görünendir. `html` verildiyse `code` biçimlendirilmez
+  ve olduğu gibi kopyalanır — HTML ondan üretildi, ikisi ayrışmamalı.
+
+**Sözdizimi renkleri — `syntax-*`, yalnızca `chat.css`:**
+
+| Token | Ton | Açık | Koyu | Ne |
+|---|---|---|---|---|
+| `syntax-keyword` | erik (`cat5`) | `#a4277a` | `#f691cc` | anahtar kelime, HTML etiketi, fark başlığı |
+| `syntax-string` | kil (`cat2`) | `#9d451f` | `#f59e7c` | dize, düzenli ifade |
+| `syntax-number` | menekşe (`series2`) | `#7b2dcd` | `#c2a7f5` | sayı, değişmez (`true`, `null`), SABİT (`MAX_SIZE`) |
+| `syntax-name` | mavi (`cat1`) | `#2063b0` | `#8dbaf5` | işlev çağrısı, özellik/anahtar, öznitelik, değişken |
+| `syntax-type` | okra (`cat4`) | `#76611f` | `#d9b341` | tip, sınıf, JSX bileşeni |
+
+Yorum `text-3` + eğik, noktalama `text-2`, fark satırları `ok-fg` / `bad-fg`
+(anlamı `+`/`-` öneki de taşır) — ayrı token değil.
+
+- Kontrast: kod gövdesinde (`surface-inset`) açıkta 5,28-5,97:1, koyuda
+  9,05-9,63:1; dört yüzeyde en düşük 4,96:1 (`check:contrast`, metin katmanı ≥4,5).
+- En yakın çift koyu temada sayı / ad: **ΔE 8,02**; kapı
+  `MIN_SYNTAX_DELTA_E = 8` (üreteç). Koyu temada açık tonlar birbirine yaklaşıyor:
+  doygunluk `.7`yken bu çift 5,7'ye düşüyordu.
+- ⚠ **Yeşil YOK.** Dize çoğu temada yeşil, ama kod bloğu bağlantının ve birincil
+  eylemin yanında duruyor.
+- ⚠ **Ana token tablosunda DEĞİL.** `LIGHT_THEME`e eklendiklerinde çalışma zamanı
+  tablosuyla HER bileşenin paketine biniyorlardı — ölçüldü: yalnızca `Button` alan
+  uygulama 5,12 → **5,28 kB** (bütçe 5,2), `Badge` 4,33 → 4,49, `styles.css`
+  +0,1 kB; vitrin kullanmadığı bir özelliğin bedelini ödüyordu. Yol:
+  `SYNTAX_LIGHT_THEME` / `SYNTAX_DARK_THEME` (`tokens.ts`) →
+  `_syntax.generated.scss` → yalnızca `CodeBlock` `@use` eder → `:root` kuralları
+  `chat.css`e iner. Ana pakete sıfır bayt (42,05 kB ve 23,09 kB, önce ve sonra).
+  Bedeli: ezme CSS'te (`--hanui-syntax-keyword`); `HanuiProvider theme`,
+  `useHanuiTokens` ve SCSS API bu adları tanımaz.
+
+**Bütçe:** sohbet girişi 6,29 → 11,78 kB (vurgulayıcı 4,93, biçimlendirici 0,43);
+bütçe 8 → 13 kB. Bedeli yalnızca `CodeBlock` alan öder — diller ve kelime kümeleri
+ilk kullanımda kurulur (fabrika), modül düzeyinde açıklamasız çağrı yok.
+
+| nöbetçi | ne tutuyor |
+|---|---|
+| `__tests__/chat/code-block.test.tsx` | parçalar birleşince kodun KENDİSİ; hiçbir kural bayrak, yakalayan grup ya da boş eşleşme taşımaz; dil başına ölçülmüş kararlar; biçimlendiricinin `JSON.stringify` eşdeğerliği ve metni koruması; kopyalanan metin |
+| `__tests__/theme/tokens.contract.test.ts` "sözdizimi token'ları" | `_syntax.generated.scss` tabloyla birebir; ana token dosyasında `--hanui-syntax-` geçerse kırar |
+| `.size-limit.js` "yalnızca ChatThread" (1,3 kB) | vurgulayıcı başka bir sohbet bileşenine sızarsa |
+| `.size-limit.js` "yalnızca CodeBlock" (7 kB) | yeni bir dil buradan geçer |
 
 ## `@ahmetilhn/hanui/charts` — SVG grafikleri (5.3)
 
@@ -901,6 +988,15 @@ olarak bu hataydı.
 
 Tüketicide değer ezmesi yazan yerler (`--hanui-page: #ffffff` gibi) ayrıca
 gözden geçirilir: 5.0'da açık sayfa krem.
+
+### 5.4 — `CodeBlock` kendisi vurgular ve biçimlendirir
+
+API değişmedi (yeni prop yok), çizim değişti: `html` verilmeyen blok artık renkli,
+JSON yeniden girintili, kenar boş satırları atılmış ve **kopyalanan metin ekranda
+görünen** metin. `html` veren tüketicide (hanration'ın Shiki sarmalayıcısı) Shiki
+yanıtı gelene kadar hanui renkleri görünür, sonra Shiki'ninkiler — iki palet arasında
+bir renk sıçraması. Sarmalayıcıyı kaldırıp `language` + `code` geçmek bu sıçramayı ve
+Shiki'nin tembel yüklemesini birlikte kaldırır; Shiki doğruluğu gerekiyorsa kalır.
 
 ### 5.1 — `CommandPalette` komutu KAPANDIKTAN SONRA çalıştırır
 

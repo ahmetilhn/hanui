@@ -215,3 +215,20 @@ export const CATEGORY = {
   series2: '#8f3beb',
   series2Dark: '#b699eb',
 } as const;
+
+/**
+ * SÖZDİZİMİ — `CodeBlock`ın vurgulayıcısı; kategorik tonlar METİN aydınlığında (≥4,5:1).
+ * ⚠ Yeşil yok: fark satırının yeşili bir durum (`ok-fg`), sözdizimi rengi değil.
+ */
+export const SYNTAX = {
+  keyword: '#a4277a',
+  keywordDark: '#f691cc',
+  string: '#9d451f',
+  stringDark: '#f59e7c',
+  number: '#7b2dcd',
+  numberDark: '#c2a7f5',
+  name: '#2063b0',
+  nameDark: '#8dbaf5',
+  type: '#76611f',
+  typeDark: '#d9b341',
+} as const;

@@ -643,8 +643,23 @@ Metinler aynı sağlayıcıdan, `labels.chat` altında:
 >
 ```
 
-Ayrıştırma ve vurgulama tüketicide kalır: `Prose` markdown ayrıştırmaz,
-`CodeBlock` önceden vurgulanmış HTML alır (`html` prop'u — güvenliği sizin).
+`CodeBlock` kodu kendisi vurgular ve biçimlendirir — bağımlılık yok, renkler
+temayla döner:
+
+```tsx
+<CodeBlock language="json" code={JSON.stringify(payload)} />
+```
+
+JSON iki boşlukla yeniden girintilenir (değerler metin olarak korunur: büyük
+sayılar yuvarlanmaz), kenardaki boş satırlar atılır; başka dilde girintiye
+dokunulmaz. 30'dan fazla dil tanınır (ts/tsx, json, bash, python, yaml, css,
+html, sql, diff, go, rust…), tanınmayan dil düz çizilir. Kopyala düğmesi ekranda
+görüneni kopyalar. Renkler `chat.css`teki `--hanui-syntax-keyword`, `-string`,
+`-number`, `-name`, `-type` değişkenleridir; CSS'te ezilir. Shiki düzeyinde
+doğruluk isterseniz önceden vurgulanmış HTML'i `html` olarak verin (güvenliği
+sizin) — yerleşik vurgulayıcının yerine geçer.
+
+Markdown ayrıştırması tüketicide kalır: `Prose` yalnızca tipografi kabıdır.
 Bileşen listesi ve kararlar: `CLAUDE.md` → "`@ahmetilhn/hanui/chat`".
 
 ## SCSS API — `@ahmetilhn/hanui/scss`
@@ -739,7 +754,7 @@ Görünüm değişiklikleri: açık sayfa krem (`#faf9f5`), koyu sayfa sıcak si
 (`#141413`), kart ve panel durgunken gölgesiz, `info` tonu nötr, `CodeBadge`
 mürekkep. Ayrıntı ve ölçümler: `CLAUDE.md` → "Renk kararları (5.0)".
 
-## 5.1 – 5.3'te eklenenler
+## 5.1 – 5.4'te eklenenler
 
 Hepsi ekleme; 5.0'ın token sözleşmesi dışında kırıcı değişiklik yok.
 
@@ -749,6 +764,7 @@ Hepsi ekleme; 5.0'ın token sözleşmesi dışında kırıcı değişiklik yok.
 | 5.2 | `HanuiThemeScript`; `@ahmetilhn/hanui/chat` — 20 sohbet bileşeni |
 | 5.3 | `@ahmetilhn/hanui/charts` — 10 SVG grafiği; `@ahmetilhn/hanui/scss`; `Input --technical` dar ekranda ≥16px; `QuantityStepper` ve `DataTable` pasif/dinlenme hâli opacity yerine token |
 | 5.3.2 | Düzeltme: kaydırma kapları kapsayıcı blok (`ChatThread`, `ScrollArea`, `TerminalOutput`, `ActionList` ve 12 kab daha) — görsel olarak gizli metin kabın dışına taşıp atalarını kaydırılabilir yapmıyor; grafik ekseni 0,1'in altındaki adımda sıfıra çökmüyor |
+| 5.4 | `CodeBlock` yerleşik vurgulayıcı ve biçimlendirici (bağımlılıksız, 30+ dil); sözdizimi renkleri `--hanui-syntax-*` (yalnızca `chat.css`) |
 
 Ayrıntı ve ölçülmüş gerekçeler: `CLAUDE.md` → "Göç ve `@deprecated` yollar",
 "`@ahmetilhn/hanui/chat`", "`@ahmetilhn/hanui/charts`".

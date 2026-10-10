@@ -1711,10 +1711,25 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     ),
   },
   CodeBlock: {
-    plain: (
+    typescript: (
       <CodeBlock
         language="ts"
-        code={"const greet = (name: string) => `Merhaba ${name}`;\ngreet('hanui');"}
+        code={
+          "import { useState } from 'react';\n\n// Selamlama — `name` boşsa varsayılan.\nconst MAX_LENGTH = 40;\n\nexport const greet = (name: string, isLoud = false): string => {\n  const text = `Merhaba ${name.slice(0, MAX_LENGTH)}`;\n  return isLoud ? text.toUpperCase() : text;\n};"
+        }
+      />
+    ),
+    /* Tek satır gelen JSON biçimlendirilir; değerler metin olarak korunur. */
+    json: (
+      <CodeBlock
+        language="json"
+        code='{"id":12345678901234567890,"name":"hanui","tags":["chat","charts"],"isPublic":true,"owner":null}'
+      />
+    ),
+    diff: (
+      <CodeBlock
+        language="diff"
+        code={'@@ -1,3 +1,3 @@\n const a = 1;\n-const b = a / 2;\n+const b = a * 2;'}
       />
     ),
   },

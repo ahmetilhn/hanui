@@ -1,6 +1,6 @@
 'use client';
 
-import { type FC, memo, useEffect, useRef, useState } from 'react';
+import { type FC, Fragment, memo, useEffect, useMemo, useRef, useState } from 'react';
 
 import { CheckLg, ClipboardFill } from 'react-bootstrap-icons';
 
@@ -10,15 +10,21 @@ import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import { resolveFormatter, resolveLabel } from '../../helpers/label.helper';
 
+import { formatCode } from './format';
+import { highlight } from './highlight';
 import styles from './index.module.scss';
 
 type Props = {
-  /** Ham kod — kopyalanan ve `html` yokken çizilen metin. */
+  /** Ham kod. `html` yoksa biçimlendirilip vurgulanır; kopyalanan metin ekranda görünendir. */
   code: string;
-  /** Dil adı; başlık şeridinde ve kopyalama düğmesinin adında. */
+  /**
+   * Dil adı (`ts`, `json`, `bash`, `diff`…); başlık şeridinde, kopyalama düğmesinin adında ve
+   * vurgulayıcının seçiminde. Tanınmayan dil düz çizilir.
+   */
   language?: string;
   /**
-   * ÖNCEDEN VURGULANMIŞ HTML (Shiki çıktısı). Verilmezse düz `<pre>` çizilir.
+   * ÖNCEDEN VURGULANMIŞ HTML (Shiki çıktısı) — yerleşik vurgulayıcının yerine geçer; `code`
+   * biçimlendirilmez ve olduğu gibi kopyalanır.
    * ⚠ GÜVENLİK ÇAĞIRANIN: bu dize olduğu gibi DOM'a yazılır. Yalnızca kendi vurgulayıcınızın
    * ürettiği çıktıyı verin; kullanıcı girdisini asla doğrudan geçirmeyin.
    */
@@ -35,8 +41,10 @@ const COPIED_FOR = 1600;
 /**
  * Kod bloğu — başlık şeridi (dil + kopyala) ve kod gövdesi.
  *
- * ⚠ Vurgulayıcı İÇERMEZ (Shiki tüketicide). Shiki'nin çift tema çıktısı (`--shiki-light` /
- * `--shiki-dark` değişkenleri) burada temaya bağlanır; vurgusuz kod da aynı kutuda okunur.
+ * Yerleşik vurgulayıcı ve biçimlendirici (bağımlılıksız): renkler `syntax-*` token'larından,
+ * yani temayla döner ve kontrastı derlemede ölçülür. JSON yeniden girintilenir, kenarlardaki boş
+ * satırlar atılır. Shiki düzeyinde doğruluk gerekiyorsa `html` verilir; Shiki'nin çift tema
+ * çıktısı (`--shiki-light` / `--shiki-dark`) burada temaya bağlanır.
  * Kod satırları SARILMAZ: dar ekranda kutu yatay kayar (kodun girintisi anlamdır).
  */
 const CodeBlock: FC<Props> = ({ code, language, html, maxHeight, className, testId }) => {
@@ -45,11 +53,15 @@ const CodeBlock: FC<Props> = ({ code, language, html, maxHeight, className, test
   const [isCopied, setIsCopied] = useState(false);
   const timer = useRef<number | undefined>(undefined);
 
+  /* Çağıranın HTML'i `code`dan üretildi; biçimlendirmek ikisini ayrıştırırdı. */
+  const source = useMemo(() => (html ? code : formatCode(code, language)), [code, html, language]);
+  const tokens = useMemo(() => (html ? [] : highlight(source, language)), [source, html, language]);
+
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(code);
+      await navigator.clipboard.writeText(source);
     } catch {
       return;
     }
@@ -87,7 +99,18 @@ const CodeBlock: FC<Props> = ({ code, language, html, maxHeight, className, test
           <div className={styles.block__highlighted} dangerouslySetInnerHTML={{ __html: html }} />
         ) : (
           <pre className={styles.block__pre}>
-            <code>{code}</code>
+            <code>
+              {/* Düz parça da anahtar taşır: dizideki yalın dize React'te key uyarısı basar. */}
+              {tokens.map((token, index) =>
+                token.type ? (
+                  <span key={index} className={styles[`block__token--${token.type}`]}>
+                    {token.text}
+                  </span>
+                ) : (
+                  <Fragment key={index}>{token.text}</Fragment>
+                ),
+              )}
+            </code>
           </pre>
         )}
       </div>

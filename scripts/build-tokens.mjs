@@ -12,6 +12,8 @@ const PREFIX = '--hanui-';
 const {
   LIGHT_THEME,
   DARK_THEME,
+  SYNTAX_LIGHT_THEME,
+  SYNTAX_DARK_THEME,
   DEFAULT_FONTS,
   METRIC_TOKENS,
   COMPACT_DENSITY,
@@ -34,7 +36,22 @@ const fontDeclarations = (indent = '  ') =>
     .join('\n');
 
 // Tema yayini: secim `<html data-hanui-theme>` ile tasinir, yoksa `prefers-color-scheme` yedegi
-// devreye girer.
+// devreye girer. Ana tokenlar ve sohbet girisinin sozdizimi tokenlari AYNI secicilerle yayilir.
+const themeRules = (light, dark) => `@media (prefers-color-scheme: dark) {
+  :root:not([data-hanui-theme]) {
+    @include ${dark};
+  }
+}
+
+:root[data-hanui-theme='dark'] {
+  @include ${dark};
+}
+
+:root[data-hanui-theme='light'] {
+  @include ${light};
+}
+`;
+
 const tokensFile = `${BANNER}@mixin light {
 ${declarations(LIGHT_THEME)}
 
@@ -61,20 +78,7 @@ ${fontDeclarations()}
   @include light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-hanui-theme]) {
-    @include dark;
-  }
-}
-
-:root[data-hanui-theme='dark'] {
-  @include dark;
-}
-
-:root[data-hanui-theme='light'] {
-  @include light;
-}
-
+${themeRules('light', 'dark')}
 :root[data-hanui-density='compact'] {
 ${declarations(COMPACT_DENSITY)}
 }
@@ -111,12 +115,34 @@ const metricsFile = `${BANNER}${Object.keys(METRIC_TOKENS)
   .join('\n')}
 `;
 
+// Sozdizimi tokenlari: kurallar VE degiskenler tek dosyada. Yalnizca `CodeBlock` `@use` eder, yani
+// `:root` kurallari `chat.css`e iner; ana `styles.css`e ve SCSS API'sine girmez.
+const syntaxFile = `${BANNER}@mixin syntax-light {
+${declarations(SYNTAX_LIGHT_THEME)}
+}
+
+@mixin syntax-dark {
+${declarations(SYNTAX_DARK_THEME)}
+}
+
+:root {
+  @include syntax-light;
+}
+
+${themeRules('syntax-light', 'syntax-dark')}
+${Object.keys(SYNTAX_LIGHT_THEME)
+  .map(name => `$${name}: var(${PREFIX}${name});`)
+  .join('\n')}
+`;
+
 mkdirSync(STYLES_DIR, { recursive: true });
 writeFileSync(resolve(STYLES_DIR, '_tokens.generated.scss'), tokensFile, 'utf8');
 writeFileSync(resolve(STYLES_DIR, '_colors.generated.scss'), colorsFile, 'utf8');
 writeFileSync(resolve(STYLES_DIR, '_metrics.generated.scss'), metricsFile, 'utf8');
+writeFileSync(resolve(STYLES_DIR, '_syntax.generated.scss'), syntaxFile, 'utf8');
 
 console.log(
   `hanui: ${Object.keys(LIGHT_THEME).length} renk + ${Object.keys(METRIC_TOKENS).length} ölçü` +
-    ' token üretildi → _tokens.generated.scss, _colors.generated.scss, _metrics.generated.scss',
+    ` + ${Object.keys(SYNTAX_LIGHT_THEME).length} sözdizimi token üretildi → _tokens.generated.scss,` +
+    ' _colors.generated.scss, _metrics.generated.scss, _syntax.generated.scss',
 );

@@ -19,6 +19,7 @@ import {
   MINT,
   MIN_CATEGORY_DELTA_E,
   MIN_SATURATION,
+  MIN_SYNTAX_DELTA_E,
   MIN_TINT_DELTA_E,
   NEUTRAL_CHROMA_CEILING,
   NEUTRAL_STEPS,
@@ -28,6 +29,8 @@ import {
   STATUS_OVERRIDES,
   STATUS_SHAPE,
   SURFACE_DARK_STEPS,
+  SYNTAX_HUES,
+  SYNTAX_SHAPE,
   mix,
   resolve as resolveStep,
 } from './lib/palette-recipe.mjs';
@@ -95,6 +98,14 @@ const category = Object.fromEntries(
   ]),
 );
 
+/** Sözdizimi: kategorik tonlar, metin aydınlığında (`light` / `dark`). */
+const syntax = Object.fromEntries(
+  Object.entries(SYNTAX_HUES).flatMap(([name, hue]) => [
+    [name, mix({ ...SYNTAX_SHAPE.light, h: hue })],
+    [`${name}Dark`, mix({ ...SYNTAX_SHAPE.dark, h: hue })],
+  ]),
+);
+
 const corporate = Object.fromEntries(
   Object.entries(CORPORATE_STEPS).map(([name, step]) => [name, mix(step)]),
 );
@@ -122,6 +133,7 @@ const every = [
   ...Object.values(accent),
   ...Object.values(star),
   ...Object.values(category),
+  ...Object.values(syntax),
 ];
 
 /** ⚠ Eski paletten tek bir değer bile hayatta kalmamalı. */
@@ -326,6 +338,14 @@ const file = () =>
  */`,
       entries(category),
     ),
+    block(
+      'SYNTAX',
+      `/**
+ * SÖZDİZİMİ — \`CodeBlock\`ın vurgulayıcısı; kategorik tonlar METİN aydınlığında (≥4,5:1).
+ * ⚠ Yeşil yok: fark satırının yeşili bir durum (\`ok-fg\`), sözdizimi rengi değil.
+ */`,
+      entries(syntax),
+    ),
   ].join('\n');
 
 /** ⚠ İki kategori tonu grafikte YAN YANA duruyor; birbirine yakınsa lejant anlamını yitirir. */
@@ -347,9 +367,29 @@ const assertCategoriesDistinct = () => {
     throw new Error(`Kategori tonlari birbirine cok yakin:\n  ${violations.join('\n  ')}`);
 };
 
+/** ⚠ Koyu temada açık tonlar birbirine yaklaşıyor; iki sözdizimi rengi aynı satırda yan yana. */
+const assertSyntaxDistinct = () => {
+  const violations = [];
+
+  for (const suffix of ['', 'Dark']) {
+    const names = Object.keys(SYNTAX_HUES);
+    names.forEach((first, index) =>
+      names.slice(index + 1).forEach(second => {
+        const distance = deltaE(syntax[`${first}${suffix}`], syntax[`${second}${suffix}`]);
+        if (distance < MIN_SYNTAX_DELTA_E)
+          violations.push(`${first}${suffix} / ${second}${suffix} ΔE ${distance.toFixed(1)}`);
+      }),
+    );
+  }
+
+  if (violations.length > 0)
+    throw new Error(`Sozdizimi tonlari birbirine cok yakin:\n  ${violations.join('\n  ')}`);
+};
+
 assertVividEnough();
 assertNeutralStaysNeutral();
 assertCategoriesDistinct();
+assertSyntaxDistinct();
 assertTintsSeparate();
 assertNoLegacyHex();
 

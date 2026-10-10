@@ -7,6 +7,8 @@ import {
   DEFAULT_FONTS,
   LIGHT_THEME,
   METRIC_TOKENS,
+  SYNTAX_DARK_THEME,
+  SYNTAX_LIGHT_THEME,
 } from '@/theme/tokens';
 
 const STYLES = resolve(__dirname, '../../src/styles');
@@ -112,5 +114,34 @@ describe('üretilmiş SCSS kaynakla eşleşir', () => {
       .filter(name => !name.startsWith('font-') && !['header-offset'].includes(name));
 
     expect(colorNames.sort()).toEqual(Object.keys(LIGHT_THEME).sort());
+  });
+});
+
+describe('sözdizimi token`ları — sohbet girişinin kendi dosyası', () => {
+  const syntaxFile = readGenerated('_syntax.generated.scss');
+
+  it('açık ve koyu BİREBİR aynı anahtarları taşır ve ana tabloyla KESİŞMEZ', () => {
+    expect(Object.keys(SYNTAX_DARK_THEME).sort()).toEqual(Object.keys(SYNTAX_LIGHT_THEME).sort());
+    expect(Object.keys(SYNTAX_LIGHT_THEME).filter(name => name in LIGHT_THEME)).toEqual([]);
+  });
+
+  it.each([
+    ['syntax-light', SYNTAX_LIGHT_THEME],
+    ['syntax-dark', SYNTAX_DARK_THEME],
+  ])('`@mixin %s` tam eşlemeyi yayar', (name, theme) => {
+    expect(declarations(mixinBody(syntaxFile, name))).toEqual(theme);
+  });
+
+  it('her token için `$ad: var(--hanui-ad)` satırı var, fazlası yok', () => {
+    const declared = [...syntaxFile.matchAll(/^\$([\w-]+): var\(--hanui-([\w-]+)\);$/gm)];
+
+    for (const [, name, variable] of declared) expect(name).toBe(variable);
+
+    expect(declared.map(([, name]) => name).sort()).toEqual(Object.keys(SYNTAX_LIGHT_THEME).sort());
+  });
+
+  /* Ana dosyaya girerlerse `styles.css` ve çalışma zamanı tablosuyla HER bileşene binerler. */
+  it('ana token dosyasında YOKTUR', () => {
+    expect(readGenerated('_tokens.generated.scss')).not.toContain('--hanui-syntax-');
   });
 });
