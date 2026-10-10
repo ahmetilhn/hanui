@@ -637,8 +637,8 @@ eklendi (ölçüldü: ana giriş 42 000 bayt, önce ve sonra).
 | Ne | Nerede |
 |---|---|
 | Kaynak | `src/chat/<Bileşen>/` · cephe `src/chat/index.ts` |
-| Derleme | `vite.chat.config.ts` → `build/chat.js`, `chat.cjs`, `chat.css` |
-| Tipler | `tsconfig.chat.json` → `build/types/chat/` (dosya başına) |
+| Derleme | `vite.chat.config.ts` (`vite.subentry.ts`) → `build/chat.js`, `chat.cjs`, `chat.css` |
+| Tipler | `tsconfig.subentries.json` → `build/types/chat/` (dosya başına) |
 | Dışa aktarım | `exports["./chat"]`, `exports["./chat.css"]` |
 | Bütçe | `chat.js` 8 kB (ölçülen 6,29) · `chat.css` 5 kB (ölçülen 3,90) |
 | API taban çizgisi | `scripts/api-baseline.chat.txt` (30 ad) |
@@ -653,7 +653,7 @@ derleme yine de yeşil biter:
   yanlış yüzeyi kapatır
 - bir bileşen kopyası → CSS'i `chat.css`e de girer
 
-Nöbetçi `__tests__/chat/boundary.test.ts`: göreli yolla yalnızca DURUMSUZ
+Nöbetçi `__tests__/subentry-boundary.test.ts`: göreli yolla yalnızca DURUMSUZ
 yardımcılar (`cx`, `named`, metin çözümü, tipler, sabitler) ve SCSS alınabilir;
 `@/` takma adı da yasak (dosya başına tiplerde çözülmeden kalıyor). Aynı test ana
 girişin sohbeti içe aktarmadığını da ölçer. Derlenmiş `chat.js`te
@@ -694,6 +694,110 @@ girişinin cephe dosyasındaki `export { … } from` satırlarını okur.
 parça başına `Tooltip` yerine tek bir okunan özet (çubuğun içinde sekme durağı
 dizmek daha az bilgi verip daha çok tuş istiyordu); `code-bg` / `terminal-*`
 token'ları eklenmedi (`surface-inset` ve `shell*` karşılıyor).
+
+## `@ahmetilhn/hanui/charts` — SVG grafikleri (5.3)
+
+On grafik, **sıfır bağımlılık**: ölçek, istatistik ve yol üretimi
+`src/charts/core/`ta saf fonksiyon. Sohbet girişiyle aynı kurgu
+(`vite.subentry.ts`, `tsconfig.subentries.json`, `subentry-boundary` nöbetçisi)
+— ana pakete **sıfır bayt**.
+
+| Ne | Nerede |
+|---|---|
+| Kaynak | `src/charts/<Grafik>/` · ortak çekirdek `src/charts/core/` · cephe `src/charts/index.ts` |
+| Derleme | `vite.charts.config.ts` → `build/charts.js`, `charts.cjs`, `charts.css` |
+| Bütçe | tümü 16 kB (ölçülen 14,02) · yalnızca `LineChart` 8,5 kB (7,19) · `charts.css` 2 kB (1,55) |
+| API taban çizgisi | `scripts/api-baseline.charts.txt` (22 ad) |
+| Testler | `__tests__/charts/` — çekirdek (35), davranış (21), eksen taraması (her senaryo × {kapalı, ipucu açık}) |
+
+| Grafik | Hangisi, ne zaman | Ayrımın nedeni |
+|---|---|---|
+| `LineChart` / `AreaChart` | Eğilim / toplamın parçaları | Alan dolgusu bir HACİM vaat eder; yığılmamış alanlar birbirini örter |
+| `BarChart` / `Histogram` | Ayrık kategori / sürekli değişkenin bölmeleri | Histogramın x'i SÜREKLİ ve sütunlar bitişik — kategori çubuğu gibi aralıklı çizmek dağılımı parçalıyordu |
+| `ComposedChart` | Farklı birimde iki ölçü | Sağ eksen yalnızca bir seri ona bağlıysa çizilir |
+| `PieChart` / `BarChart` | ≤6 parça / daha çok | Kategorik palet altı tonda döner; yedinci dilim birinciyle aynı renk |
+| `BoxPlot` / `Histogram` | Grupları karşılaştırma / tek grubun şekli | |
+| `Heatmap` / `ScatterPlot` | İki KATEGORİK eksen / iki SAYISAL eksen | |
+| `RadarChart` | Aynı ölçekte 3+ eksen | Birimleri farklı eksenler önce 0-100'e normalleştirilir — ortak ölçek yoksa alan bir şey söylemez |
+
+⚠ **Ana giriş bütçesi 42 → 43 kB (bu turda).** Aşım grafiklerden DEĞİL:
+`HanuiThemeScript` (5.2) 42 000 baytlık girişi 42 050'ye taşıdı ve önceki dalda
+`size-limit` koşulmamıştı. Sohbet ve grafikler tam da bu bütçe yüzünden ayrı
+girişte; ana girişe eklenecek her yeni bileşen önce "alt girişe aday mı?"
+sorusundan geçer. Gerekçe `.size-limit.js`te.
+
+### Çerçeve sözleşmesi — `core/ChartFrame.tsx`
+
+Her grafik aynı çerçeveyi kullanır; yeni grafik bu maddelerin HİÇBİRİNİ
+kendisi yazmaz:
+
+- **`<svg role="img">` + `aria-label`**, açıklama `aria-describedby` ile. Tek
+  sekme durağı (`tabIndex=0`; öğe yoksa hiç). Oklar gezer, `Home`/`End`,
+  `Escape`; ızgarada (`columns`) `↑`/`↓` satır atlar. Gelinen öğe
+  `useAnnounce` ile **duyurulur** — ipucu `aria-hidden`, çünkü okunan karşılığı
+  duyuru ve tablo.
+- **Gizli veri tablosu** (`caption` = grafiğin adı, ilk hücre `th scope="row"`).
+  Ekran okuyucu grafiği tablo olarak da okur; eksik değer `—`.
+  ⚠ Gizleme sınıfı tablonun KABINDA, tablonun kendisinde değil: `<table>`
+  `width: 1px` ve `overflow: hidden`ı yok sayıp içeriği kadar genişliyor. 390 px
+  görünümde ısı haritasının tablosu 424 px'e çıkıp sayfaya görünmez bir yatay
+  kaydırma açıyordu ve Pixel 7 öykünmesinde (DPR 2,625) bu, görsel testlerin
+  YANLIŞ BÖLÜMÜ yakalamasına yol açtı (`RadarChart-light.png` içinde Histogram).
+  Nöbetçi `behaviour.test.tsx` + Android `mobile.spec.ts` "sayfa yatayda KAYMAZ".
+- **Genişlik** kapsayıcıdan ölçülür (`ResizeObserver`, boyamadan önce). Ölçüm
+  gelene kadar 640 px; ⚠ içerik boyutlu bir kapta (genişliksiz flex öğesi,
+  `inline-block`) bu değer grafiğin **tercih edilen genişliği** olur — sığmazsa
+  küçülür ama geniş bir kapta 640'ta kalır. Tam genişlik için kaba genişlik verin
+  (blok, `flex: 1`) ya da `width` geçin. Galeride grafikler bu yüzden 640 px.
+- **Lejant** aç/kapa düğmeleri (`aria-pressed`). Gizli seri içi boş kare +
+  üstü çizili ad (renk tek başına anlam taşımaz). ⚠ SON görünen seri
+  gizlenemez — boş bir grafik "veri yok" gibi okunuyordu.
+- **İşaretçi**: tek dinleyici, kare başına bir isabet hesabı
+  (`requestAnimationFrame`). Ağır çizim (`plot`) belleğe alınmış öğe; üzerine
+  gelindiğinde yeniden çizilen yalnızca vurgu katmanı (`overlay`/`underlay`).
+- **Renk**: `var(--hanui-cat-N)` + `color-mix` ile tint; yeşil marka ailesi
+  YOK (yeşil ayak izi nöbetçisi `src/charts`i de tarıyor).
+
+⚠ **İpucunun yatay konumu ÖLÇÜLEREK yazılır** (`useLayoutEffect`, boyamadan
+önce). Genişlik içeriğe bağlı; sabit bir varsayımla dar ekranda ipucu kutudan
+taşıp yatay kaydırma açıyordu. `inward` (kartezyen) sığmayınca öteki yana
+çevrilir; `outward` (pasta, radar) **kenara kırpılır** — çevirmek ipucunu
+halkanın ortasındaki toplamın üstüne atıyordu (ölçüldü: 10 px eksik yüzünden).
+Fiziksel `left`: SVG koordinatları RTL'de aynalanmaz.
+
+### Ölçülmüş veri kararları
+
+| Karar | Gerekçe |
+|---|---|
+| `null` çizgiyi KESER, sıfıra indirmez | Eksik veri ≠ sıfır; sıfıra inen çizgi olmamış bir düşüş çiziyordu |
+| İki boşluk arasındaki TEK değer işaretle çizilir | Tek noktalı yol görünmez — veri vardı ama grafikte yoktu |
+| Çubuk/alan varken sıfır tanım aralığında | Sıfırdan başlamayan çubuğun boyu oranı yalan söyler |
+| Yığında artı ve eksi AYRI birikir | Eksi çubuk artı yığının ortasından başlıyordu |
+| Yatay yön yalnızca tümü çubuksa | Yatay çizgi grafiği zamanı dikey eksene koyar |
+| Monoton kübik eğri (Fritsch–Carlson) | Catmull-Rom veri noktaları arasında AŞIYOR — olmayan bir tepe çiziyordu |
+| Bıyık ucu bir GÖZLEM (Tukey, 1,5 × IQR) | Q3 + 1,5 × IQR'ye kadar çizmek verinin hiç ulaşmadığı bir değeri gösterirdi |
+| Histogramın son bölmesi en büyük değeri İÇERİR | `[alt, üst)` kuralı en büyük gözlemi dışarıda bırakıyordu |
+| Pasta: sıfır ve eksi değer dilim açmaz, tabloda görünür | Bütünün parçası olamaz; gizlemek veriyi yok saymak olurdu |
+| Isı haritasında `NaN`/`null` BOŞ hücre (kesik kenarlık) | Sıfır rengiyle boyamak "değer sıfır" demekti |
+| Bant ölçekleri DİZİNLE anahtarlanır | Aynı adlı iki satır ("Pzt", "Pzt") tek banda çöküyordu |
+| Bir sayfada iki ısı haritası farklı `linearGradient` kimliği (`useId`) | Aynı kimlik ikinci haritanın ölçeğini ilkinin rengiyle boyar |
+| Radar ölçek sayıları halkalar sıkışınca seyrelir (en dıştaki kalır) | 300 px'te halka aralığı 14 px, yazı 11 px — beş sayı üst üste biniyordu |
+
+⚠ **Kayan nokta payı iki yerde ölçüldü ve ikisi de SESSİZDİ:**
+`ticks(0.1, 0.3)` → `0.3 / 0.1 = 2.9999999999999996` → uçtaki bölme
+düşüyordu; histogramda `(max − start) / step` `5.000000001` çıkıp boş bir
+altıncı bölme açıyordu. İkisi de `1e-9` payıyla ve nöbetçisi `core.test.ts`.
+
+⚠ **`Math.min(...dizi)` / `Math.max(...dizi)` YASAK** (veri dizisi üzerinde).
+Yayma argüman sayısı sınırına takılır: ~125 000 gözlemde `RangeError`. Tek yol
+`core/stats.ts` → `extent`; nöbetçi 200 000 gözlemli test. Etiket listesi gibi
+sınırlı dizilerde (eksen yazıları) serbest.
+
+⚠ **`check:api` grafik girişinin tip adlarını SAYMIYORDU.** Cephe
+`export type { ChartRow } from …` yazıyor ve desen yalnızca `export { … }`
+okuyordu: taban çizgisi 22 yerine **17** ad tutuyordu ve `ChartTone`,
+`ValueFormat` gibi adların düşmesi yeşil geçerdi. Desen düzeltildi; sohbet
+girişi etkilenmemişti (orada `export type {` satırı yok).
 
 ## Göç ve `@deprecated` yollar
 

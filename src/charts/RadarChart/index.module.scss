@@ -1,0 +1,35 @@
+@use '../../styles/variables' as *;
+
+.grid {
+  fill: none;
+  stroke: $border;
+  stroke-width: 1;
+}
+
+.shape {
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.labels {
+  fill: $text-3;
+  font-family: $font-ui;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+// Eksen adı ölçek sayısından bir kademe güçlü: önce NE, sonra KAÇ okunur.
+.axisLabel {
+  fill: $text-2;
+  font-size: 12px;
+}
+
+.spoke {
+  stroke: $border-strong;
+  stroke-width: 1.5;
+}
+
+.marker {
+  stroke: $surface;
+  stroke-width: 2;
+}

@@ -3,7 +3,7 @@
  *
  * ⚠ Ana girişe ait HER ŞEY (bileşenler, `useHanui`, kancalar) paket adıyla alınır:
  * `import { … } from '@ahmetilhn/hanui'`. Göreli yol yalnızca durumsuz yardımcılar (`cx`,
- * `named`, metin çözümü) ve SCSS içindir. Nöbetçi `__tests__/chat/boundary.test.ts`.
+ * `named`, metin çözümü) ve SCSS içindir. Nöbetçi `__tests__/subentry-boundary.test.ts`.
  * Stiller `@ahmetilhn/hanui/chat.css` — `styles.css`ten AYRI ve ONDAN SONRA içe aktarılır.
  */
 

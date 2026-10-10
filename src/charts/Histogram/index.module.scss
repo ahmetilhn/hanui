@@ -1,0 +1,10 @@
+@use '../../styles/variables' as *;
+
+.baseline {
+  stroke: $border-strong;
+  shape-rendering: crispedges;
+}
+
+.band {
+  fill: $surface-2;
+}

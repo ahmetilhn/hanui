@@ -127,6 +127,18 @@ import {
   ToolCall,
   ToolCallSection,
 } from '../src/chat';
+import {
+  AreaChart,
+  BarChart,
+  BoxPlot,
+  ComposedChart,
+  Heatmap,
+  Histogram,
+  LineChart,
+  PieChart,
+  RadarChart,
+  ScatterPlot,
+} from '../src/charts';
 
 import { SOLO_ONLY } from './solo';
 
@@ -180,6 +192,71 @@ const COLUMNS: DataTableColumn[] = [
 ];
 
 const noop = () => {};
+
+const MONTHLY = [
+  'Oca',
+  'Şub',
+  'Mar',
+  'Nis',
+  'May',
+  'Haz',
+  'Tem',
+  'Ağu',
+  'Eyl',
+  'Eki',
+  'Kas',
+  'Ara',
+].map((month, index) => ({
+  month,
+  revenue: Math.round(120 + 60 * Math.sin(index / 2) + index * 9),
+  cost: Math.round(90 + 30 * Math.cos(index / 3) + index * 4),
+  rate: Math.round((2.4 + Math.sin(index) * 0.8) * 10) / 10,
+}));
+
+/**
+ * Tohumlu sözde rastgele dizi — galeri ve görsel taban çizgisi her koşuda AYNI veriyi çizer.
+ * `Math.random` taban çizgisini her koşuda kırardı.
+ */
+const seeded = (seed: number) => () => {
+  seed = (seed * 1664525 + 1013904223) % 4294967296;
+  return seed / 4294967296;
+};
+
+/** Yaklaşık normal dağılım (on iki tekdüze örneğin toplamı). */
+const normal = (next: () => number, mean: number, spread: number) =>
+  mean + (Array.from({ length: 12 }, next).reduce((sum, value) => sum + value, 0) - 6) * spread;
+
+const DELIVERY_DAYS = (() => {
+  const next = seeded(7);
+  return Array.from({ length: 240 }, () =>
+    Math.max(0.5, Math.round(normal(next, 3.2, 1.1) * 10) / 10),
+  );
+})();
+
+const CARRIER_DAYS = ['Aras', 'Yurtiçi', 'MNG', 'PTT'].map((label, index) => {
+  const next = seeded(11 + index);
+  const values = Array.from(
+    { length: 60 },
+    () => Math.round(normal(next, 2.4 + index * 0.6, 0.5 + index * 0.15) * 10) / 10,
+  );
+  /* Her grupta birkaç gerçek aykırı: bıyıkların gözleme oturduğu görünsün. */
+  return { id: label.toLowerCase(), label, values: [...values, 6.8 + index, 0.4] };
+});
+
+const HOURS = ['00', '03', '06', '09', '12', '15', '18', '21'];
+const WEEKDAYS = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
+const ORDERS_BY_HOUR = WEEKDAYS.map((_, day) =>
+  HOURS.map((__, hour) =>
+    day === 6 && hour === 1
+      ? null
+      : Math.round(
+          20 +
+            80 * Math.max(0, Math.sin(((hour - 1.5) / 7) * Math.PI)) +
+            (day >= 5 ? 25 : 0) +
+            day * 3,
+        ),
+  ),
+);
 
 /** MEDYA ÖRNEĞİ — gömülü, ağdan gelmeyen ve ÇERÇEVEDEN FARKLI oranda. */
 const MEDIA_SAMPLE = `data:image/svg+xml;utf8,${encodeURIComponent(
@@ -1260,6 +1337,227 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
           <Input aria-label="Ara" placeholder="Geniş alan" />
         </FilterBarField>
       </FilterBar>
+    ),
+  },
+  // --- Grafikler (@ahmetilhn/hanui/charts) ---
+  LineChart: {
+    twoSeries: (
+      <LineChart
+        label="Aylık gelir ve gider"
+        xKey="month"
+        xLabel="Ay"
+        data={MONTHLY}
+        series={[
+          { key: 'revenue', label: 'Gelir' },
+          { key: 'cost', label: 'Gider' },
+        ]}
+        hasPoints
+      />
+    ),
+    gap: (
+      <LineChart
+        label="Eksik veriyle günlük ziyaret"
+        xKey="day"
+        data={[
+          { day: 1, visits: 120 },
+          { day: 2, visits: 180 },
+          { day: 3, visits: null },
+          { day: 4, visits: 160 },
+          { day: 5, visits: 210 },
+          { day: 6, visits: 190 },
+        ]}
+        series={[{ key: 'visits', label: 'Ziyaret' }]}
+        height={200}
+      />
+    ),
+  },
+  AreaChart: {
+    stacked: (
+      <AreaChart
+        label="Kanala göre trafik"
+        xKey="month"
+        data={MONTHLY}
+        series={[
+          { key: 'revenue', label: 'Organik' },
+          { key: 'cost', label: 'Ücretli' },
+        ]}
+        isStacked
+      />
+    ),
+  },
+  BarChart: {
+    grouped: (
+      <BarChart
+        label="Çeyreklik satış"
+        xKey="month"
+        data={MONTHLY.slice(0, 6)}
+        series={[
+          { key: 'revenue', label: 'Bu yıl' },
+          { key: 'cost', label: 'Geçen yıl' },
+        ]}
+      />
+    ),
+    horizontal: (
+      <BarChart
+        label="Kategoriye göre stok"
+        xKey="name"
+        data={[
+          { name: 'Fren balatası', stock: 420 },
+          { name: 'Yağ filtresi', stock: 310 },
+          { name: 'Ateşleme bujisi uzun adlı kategori', stock: 180 },
+          { name: 'Silecek', stock: -40 },
+        ]}
+        series={[{ key: 'stock', label: 'Stok' }]}
+        orientation="horizontal"
+        height={220}
+      />
+    ),
+  },
+  ComposedChart: {
+    default: (
+      <ComposedChart
+        label="Sipariş adedi ve dönüşüm oranı"
+        xKey="month"
+        data={MONTHLY}
+        series={[
+          { key: 'revenue', label: 'Sipariş', type: 'bar' },
+          {
+            key: 'rate',
+            label: 'Dönüşüm %',
+            type: 'line',
+            axis: 'right',
+            format: value => `%${value}`,
+          },
+        ]}
+      />
+    ),
+  },
+  PieChart: {
+    donut: (
+      <PieChart
+        label="Kategoriye göre ciro"
+        valueLabel="Ciro"
+        centerLabel="Toplam"
+        data={[
+          { id: 'brake', label: 'Fren', value: 4200 },
+          { id: 'filter', label: 'Filtre', value: 3100 },
+          { id: 'ignition', label: 'Ateşleme', value: 1800 },
+          { id: 'body', label: 'Kaporta', value: 1200 },
+          { id: 'other', label: 'Diğer', value: 650 },
+        ]}
+      />
+    ),
+    pie: (
+      <PieChart
+        label="Ödeme yöntemi"
+        valueLabel="Sipariş"
+        variant="pie"
+        height={220}
+        data={[
+          { id: 'card', label: 'Kart', value: 72 },
+          { id: 'transfer', label: 'Havale', value: 18 },
+          { id: 'cod', label: 'Kapıda', value: 10 },
+        ]}
+      />
+    ),
+  },
+  ScatterPlot: {
+    bubble: (
+      <ScatterPlot
+        label="Fiyat ve satış ilişkisi"
+        xLabel="Fiyat (₺)"
+        yLabel="Aylık satış"
+        sizeLabel="Stok"
+        series={[
+          {
+            id: 'oem',
+            label: 'Orijinal',
+            data: [
+              { x: 420, y: 38, size: 120, label: 'Fren balatası' },
+              { x: 960, y: 22, size: 40, label: 'Amortisör' },
+              { x: 180, y: 64, size: 300, label: 'Yağ filtresi' },
+              { x: 1450, y: 9, size: 18, label: 'Debriyaj seti' },
+            ],
+          },
+          {
+            id: 'alt',
+            label: 'Muadil',
+            data: [
+              { x: 260, y: 71, size: 210, label: 'Fren balatası' },
+              { x: 610, y: 35, size: 90, label: 'Amortisör' },
+              { x: 95, y: 112, size: 500, label: 'Yağ filtresi' },
+              { x: 880, y: 17, size: 30, label: 'Debriyaj seti' },
+            ],
+          },
+        ]}
+      />
+    ),
+  },
+  Heatmap: {
+    default: (
+      <Heatmap
+        label="Gün ve saate göre sipariş"
+        valueLabel="Sipariş"
+        columns={HOURS}
+        rows={WEEKDAYS}
+        values={ORDERS_BY_HOUR}
+      />
+    ),
+  },
+  BoxPlot: {
+    default: (
+      <BoxPlot
+        label="Kargo firmasına göre teslim süresi (gün)"
+        groupLabel="Kargo firması"
+        groups={CARRIER_DAYS}
+        labels={{
+          min: 'En küçük',
+          q1: '1. çeyrek',
+          median: 'Medyan',
+          q3: '3. çeyrek',
+          max: 'En büyük',
+          outliers: 'Aykırı',
+          count: 'Gözlem',
+        }}
+      />
+    ),
+  },
+  Histogram: {
+    default: (
+      <Histogram
+        label="Teslim süresinin dağılımı"
+        valueLabel="Teslim süresi (gün)"
+        countLabel="Sipariş"
+        values={DELIVERY_DAYS}
+      />
+    ),
+  },
+  RadarChart: {
+    default: (
+      <RadarChart
+        label="Tedarikçi karşılaştırması"
+        max={100}
+        axes={[
+          { key: 'price', label: 'Fiyat' },
+          { key: 'speed', label: 'Teslim hızı' },
+          { key: 'quality', label: 'Kalite' },
+          { key: 'stock', label: 'Stok derinliği' },
+          { key: 'returns', label: 'İade kolaylığı' },
+          { key: 'support', label: 'Destek' },
+        ]}
+        series={[
+          {
+            id: 'a',
+            label: 'Tedarikçi A',
+            values: { price: 82, speed: 64, quality: 71, stock: 90, returns: 55, support: 60 },
+          },
+          {
+            id: 'b',
+            label: 'Tedarikçi B',
+            values: { price: 58, speed: 88, quality: 84, stock: 47, returns: 76, support: null },
+          },
+        ]}
+      />
     ),
   },
   // --- Sohbet (@ahmetilhn/hanui/chat) ---

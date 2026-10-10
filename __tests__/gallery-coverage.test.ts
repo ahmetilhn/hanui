@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+import * as charts from '@/charts';
 import * as chat from '@/chat';
 import * as hanui from '@/index';
 
@@ -10,8 +11,8 @@ const isComponent = (value: unknown): boolean =>
   (typeof value === 'function' && /^[A-Z]/.test((value as { name?: string }).name ?? '')) ||
   (typeof value === 'object' && value !== null && '$$typeof' in value);
 
-/* Ana giriş VE sohbet girişi — galeri ikisini de gösterir. */
-const exported = [...Object.entries(hanui), ...Object.entries(chat)]
+/* Ana giriş VE alt girişler — galeri hepsini gösterir. */
+const exported = [...Object.entries(hanui), ...Object.entries(chat), ...Object.entries(charts)]
   .filter(([name, value]) => /^[A-Z]/.test(name) && isComponent(value))
   .map(([name]) => name);
 

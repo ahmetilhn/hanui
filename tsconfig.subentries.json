@@ -1,5 +1,5 @@
 {
-  /* `@ahmetilhn/hanui/chat` tipleri — dosya başına, `build/types/chat`. Ayrıntı: `vite.chat.config.ts`. */
+  /* Alt girişlerin tipleri — dosya başına, `build/types/<giriş>`. Ayrıntı: `vite.subentry.ts`. */
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
@@ -11,6 +11,6 @@
     "paths": { "@/*": ["./src/*"] },
     "types": ["node"]
   },
-  "include": ["src/chat", "src/types/scss.d.ts"],
+  "include": ["src/chat", "src/charts", "src/types/scss.d.ts"],
   "exclude": ["src/**/*.test.*"]
 }

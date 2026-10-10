@@ -1,0 +1,21 @@
+@use '../../styles/variables' as *;
+
+.labels {
+  fill: $text-3;
+  font-family: $font-ui;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+// Boş hücre: veri yok (sıfır değil) — tarama deseni yerine kesik kenarlık, zemin yüzey.
+.empty {
+  fill: $surface;
+  stroke: $border-strong;
+  stroke-dasharray: 2 2;
+}
+
+.focus {
+  fill: none;
+  stroke: $text;
+  stroke-width: 2;
+}

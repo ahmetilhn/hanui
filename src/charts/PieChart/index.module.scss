@@ -1,0 +1,21 @@
+@use '../../styles/variables' as *;
+
+// Ayırıcı yüzey renginde: iki temada da dilimleri ayırır.
+.slice {
+  stroke: $surface;
+  stroke-linejoin: round;
+}
+
+.center__value {
+  fill: $text;
+  font-family: $font-heading;
+  font-size: $font-size-xl;
+  font-weight: $weight-semibold;
+  font-variant-numeric: tabular-nums;
+}
+
+.center__label {
+  fill: $text-3;
+  font-family: $font-ui;
+  font-size: $font-size-xs;
+}

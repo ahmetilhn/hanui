@@ -1,0 +1,11 @@
+@use '../../styles/variables' as *;
+
+.point {
+  stroke-width: 1;
+}
+
+// Etkin noktanın halkası.
+.marker {
+  fill: none;
+  stroke-width: 2;
+}

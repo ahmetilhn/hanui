@@ -1,0 +1,117 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.chart {
+  margin: 0;
+  min-width: 0;
+}
+
+.chart__canvas {
+  position: relative;
+  width: 100%;
+}
+
+.chart__svg {
+  display: block;
+  overflow: visible;
+  // Dokunmatikte grafiğin üzerinde sürüklemek sayfayı yatay KAYDIRMAZ, dikey kaydırma serbest.
+  touch-action: pan-y;
+  border-radius: $radius-sm;
+
+  @include focus-ring;
+}
+
+.chart__overlay {
+  pointer-events: none;
+}
+
+.chart__tooltip {
+  position: absolute;
+  z-index: $z-raised;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 120px;
+  max-width: 260px;
+  padding: $space-2 $space-3;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  background-color: $surface;
+  box-shadow: $shadow-lg;
+  color: $text;
+  font-size: $font-size-xs;
+  pointer-events: none;
+  translate: 0 -50%;
+}
+
+.chart__tooltipTitle {
+  margin-bottom: 2px;
+  font-weight: $weight-semibold;
+}
+
+.chart__tooltipRow {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+}
+
+.chart__tooltipLabel {
+  flex: 1;
+  min-width: 0;
+  color: $text-2;
+
+  @include truncate;
+}
+
+.chart__tooltipValue {
+  font-variant-numeric: tabular-nums;
+  font-weight: $weight-medium;
+}
+
+.chart__swatch {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: $radius-xs;
+
+  @media (forced-colors: active) {
+    border: 1px solid CanvasText;
+  }
+}
+
+.chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-1 $space-2;
+  margin: $space-2 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chart__legendItem {
+  @include tap-target;
+
+  display: inline-flex;
+  align-items: center;
+  gap: $space-2;
+  padding: 2px $space-2;
+  border: 0;
+  border-radius: $radius-sm;
+  color: $text-2;
+  font: inherit;
+  font-size: $font-size-xs;
+  cursor: pointer;
+
+  @include interactive-surface;
+  @include focus-ring;
+
+  // Gizli seri: ad ÇİZİLİ — renk tek başına durum taşımaz (kare de içi boş).
+  &--hidden {
+    color: $text-3;
+    text-decoration: line-through;
+  }
+}
+
+.chart__srOnly {
+  @include visually-hidden;
+}

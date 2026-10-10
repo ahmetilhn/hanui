@@ -1,0 +1,46 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.area {
+  stroke: none;
+}
+
+.bar {
+  shape-rendering: geometricprecision;
+}
+
+.point {
+  stroke: $surface;
+  stroke-width: 1.5;
+}
+
+// Etkin noktanın halkası — yüzey rengi kenar, iki temada da noktayı çizgiden ayırır.
+.marker {
+  stroke: $surface;
+  stroke-width: 2;
+}
+
+.crosshair {
+  stroke: $border-strong;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  shape-rendering: crispedges;
+}
+
+// Etkin kategorinin bandı — çubukların ALTINDA (alt katman), renklerini değiştirmez.
+.band {
+  fill: $surface-2;
+}
+
+.zero {
+  stroke: $text-3;
+  stroke-width: 1;
+  shape-rendering: crispedges;
+}

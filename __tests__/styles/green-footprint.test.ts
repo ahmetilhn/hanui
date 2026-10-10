@@ -56,8 +56,8 @@ const ALLOWED: Record<Family, Record<string, string>> = {
   },
 };
 
-/* Ana giriş VE sohbet girişi — sohbet bileşenleri yeşilin en kolay yayılacağı yer. */
-const ROOTS = ['src/components', 'src/chat'];
+/* Ana giriş VE alt girişler — sohbet ve grafik bileşenleri yeşilin en kolay yayılacağı yer. */
+const ROOTS = ['src/components', 'src/chat', 'src/charts'];
 
 const componentDirs = (): [string, string][] =>
   ROOTS.flatMap(root =>

@@ -4,11 +4,14 @@
  *
  * - `@ahmetilhn/hanui`      → `build/index.d.ts`             ↔ `scripts/api-baseline.txt`
  * - `@ahmetilhn/hanui/chat` → `build/types/chat/index.d.ts`  ↔ `scripts/api-baseline.chat.txt`
+ * - `@ahmetilhn/hanui/charts` → `build/types/charts/index.d.ts` ↔ `scripts/api-baseline.charts.txt`
  *
  * ⚠ Grep deseni `export { … }` DEGIL (ana giris icin). vite-plugin-dts her bildirimi tek tek
  * `export declare …` olarak yaziyor ve dosyanin sonunda yalnizca BOS bir `export { }` birakiyor.
- * Sohbet girisinin tipleri ise dosya basina (`tsc`) ve cephe dosyasi `export { … } from` satirlari
- * tasiyor — iki giris iki desen.
+ * Alt girislerin tipleri ise dosya basina (`tsc`) ve cephe dosyasi `export { … } from` satirlari
+ * tasiyor — ana giris ve alt girisler iki desen.
+ * ⚠ Cephe `export type { … } from` da yazabilir (grafik girisi): ilk desen yalnizca `export { … }`
+ * okuyordu ve tip adlarini SESSIZCE atliyordu — taban cizgisi 22 yerine 17 ad sayiyordu.
  * ⚠ Sifir eslesmede acikca duser: olcemedigi seyi yesil gecmez.
  */
 
@@ -18,7 +21,7 @@ import { join } from 'node:path';
 const ROOT = new URL('..', import.meta.url).pathname;
 
 const DECLARED_NAME = /^export declare (?:const|type|function|class|interface|enum) ([A-Za-z0-9_$]+)/gm;
-const REEXPORT_BLOCK = /^export \{([^}]*)\} from /gm;
+const REEXPORT_BLOCK = /^export (?:type )?\{([^}]*)\} from /gm;
 
 /** `export { default as X, type Y, Z } from` → `X`, `Y`, `Z`. */
 const reexportedNames = source =>
@@ -41,6 +44,12 @@ const ENTRIES = [
     name: '@ahmetilhn/hanui/chat',
     declarationFile: join(ROOT, 'build', 'types', 'chat', 'index.d.ts'),
     baselineFile: join(ROOT, 'scripts', 'api-baseline.chat.txt'),
+    read: reexportedNames,
+  },
+  {
+    name: '@ahmetilhn/hanui/charts',
+    declarationFile: join(ROOT, 'build', 'types', 'charts', 'index.d.ts'),
+    baselineFile: join(ROOT, 'scripts', 'api-baseline.charts.txt'),
     read: reexportedNames,
   },
 ];

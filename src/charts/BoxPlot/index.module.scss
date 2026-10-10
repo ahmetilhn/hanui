@@ -1,0 +1,23 @@
+@use '../../styles/variables' as *;
+
+.box line {
+  stroke-width: 1.5;
+}
+
+.box rect {
+  stroke-width: 1.5;
+}
+
+// Medyan kutunun içinde KALIN çizgi — kutunun rengiyle aynı ton, ayrımı kalınlık taşır.
+.box .median {
+  stroke-width: 2.5;
+}
+
+.outlier {
+  fill: $surface;
+  stroke-width: 1.5;
+}
+
+.band {
+  fill: $surface-2;
+}

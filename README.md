@@ -474,8 +474,10 @@ npm run playground # bileşen galerisi → http://localhost:5273
   eşleşir. Ayrışma bugüne kadar sessizdi.
 - **Paket boyutu** — tek bileşen import eden bir uygulamanın ne indirdiği
   ölçülür. Ölçülen (2026-10-10, `size-limit`): `Badge` **4,33 kB** · `Button`
-  **5,05 kB** · `styles.css` **22,37 kB** · tüm paket **40,17 kB** gzip.
-  ⚠ **Bütçeler `.size-limit.js`te** (paket 42 kB, `styles.css` 24 kB) ve
+  **5,12 kB** · `styles.css` **23,07 kB** · tüm paket **42,05 kB** gzip. Alt
+  girişler ana pakette SAYILMAZ: sohbet **6,32 kB**, grafikler **14,02 kB**
+  (yalnızca `LineChart` **7,19 kB**).
+  ⚠ **Bütçeler `.size-limit.js`te** (paket 43 kB, `styles.css` 24 kB) ve
   başlıkta kalan pay dar. Bu satır bir dönem
   `Badge 2,7 / Button 3,4 / paket 22,2` diyordu — ölçüm değil, bayat bir
   kopyaydı ve okuyana **%70 boş alan** olduğunu düşündürüyordu. Yeni bir
@@ -598,6 +600,50 @@ Metinler aynı sağlayıcıdan, `labels.chat` altında:
 Ayrıştırma ve vurgulama tüketicide kalır: `Prose` markdown ayrıştırmaz,
 `CodeBlock` önceden vurgulanmış HTML alır (`html` prop'u — güvenliği sizin).
 Bileşen listesi ve kararlar: `CLAUDE.md` → "`@ahmetilhn/hanui/chat`".
+
+## Grafikler — `@ahmetilhn/hanui/charts`
+
+On SVG grafiği, sıfır bağımlılık (çizim, ölçek ve istatistik kütüphanenin
+kendisinde). Ana paketi ve `styles.css`i büyütmez.
+
+```tsx
+import '@ahmetilhn/hanui/styles.css';
+import '@ahmetilhn/hanui/charts.css'; // styles.css'TEN SONRA
+
+import { BarChart, LineChart, PieChart } from '@ahmetilhn/hanui/charts';
+
+<LineChart
+  label="Aylık gelir ve gider"
+  description="Gelir ekimde zirve yaptı"
+  xKey="month"
+  data={[
+    { month: 'Oca', revenue: 120, cost: 90 },
+    { month: 'Şub', revenue: 180, cost: null }, // null = veri yok: çizgi KESİLİR
+  ]}
+  series={[
+    { key: 'revenue', label: 'Gelir' },
+    { key: 'cost', label: 'Gider', format: value => `${value} ₺` },
+  ]}
+/>;
+```
+
+| Grafik | Ne zaman |
+|---|---|
+| `LineChart` · `AreaChart` | Zaman içinde eğilim; `AreaChart isStacked` toplamın parçaları |
+| `BarChart` | Kategorileri karşılaştırma; `orientation="horizontal"` uzun adlar için |
+| `ComposedChart` | Çubuk + çizgi; farklı birim `axis: 'right'` |
+| `PieChart` | Bir bütünün ≤6 parçası (`variant="donut"` varsayılan) |
+| `ScatterPlot` | İki değişkenin ilişkisi; `size` ile balon |
+| `Heatmap` | İki kategorik eksende yoğunluk (gün × saat) |
+| `BoxPlot` · `Histogram` | Dağılım: grupları karşılaştırma · tek değişkenin şekli |
+| `RadarChart` | Birkaç seriyi aynı eksen takımında; eksenler AYNI ölçekte |
+
+Her grafik tek bir sekme durağıdır: oklar öğeleri gezer (gelinen öğe
+duyurulur), `Home`/`End` uçlara gider, `Escape` vurguyu kaldırır. Ekran okuyucu
+grafiği gizli bir **veri tablosu** olarak da okur. Genişlik kapsayıcıdan ölçülür
+(`width` ile sabitlenebilir), yükseklik `height`. Sayılar `labels.locale`
+yereliyle biçimlenir; `formatValue` / `format` ile ezilir. Renkler kategorik
+paletten (`tone`: `cat-1`…`cat-5`, `series-1`, `series-2`, `muted`).
 
 ## 5.0'a geçiş
 
