@@ -111,7 +111,7 @@ export const focusFirstMeaningful = (
 /**
  * KİPSEL YIĞIN — üst üste binen paneller. Sahiplik LIFO: en son açılan yüzey tuşu tüketir.
  * ⚠ Yığın yalnızca `<dialog>` tabanlı kipsel yüzeyleri DEĞİL, `Escape` ile kapanan HER yüzeyi taşır
- * (`Popover`, `Toast`, `Tooltip`
+ * (`Popover`, `Toast`, `Tooltip`).
  */
 const modalStack: symbol[] = [];
 
@@ -134,10 +134,19 @@ export const isTopModal = (token: symbol): boolean => modalStack.at(-1) === toke
 
 /**
  * `Escape`i tüketecek AÇIK bir yüzey var mı — kipsel pencere, açılır panel, bildirim.
- * ⚠ Sayfa düzeyinde `Escape` dinleyen her kod (sohbetin "akışı durdur" kısayolu gibi) önce bunu
- * sorar. Sormayan bir dinleyici, kullanıcı yalnızca bir modalı kapatmak isterken arkadaki işi de
- * iptal ediyordu. Yüzey kapanırken yığından AYNI olayın içinde değil, bir sonraki render'da
- * çıkar; yani dinleyici o tuş vuruşunda hâlâ `true` görür — istenen de bu.
+ * ⚠ Sayfa düzeyinde `Escape` dinleyen her kod (sohbetin "akışı durdur" kısayolu gibi) İKİSİNİ BİRDEN
+ * sorar: `event.defaultPrevented || hasOpenSurface()`. Sormayan bir dinleyici, kullanıcı yalnızca bir
+ * yüzeyi kapatmak isterken arkadaki işi de iptal ediyordu.
+ * - `Popover`, `Tooltip` ve `Toast` tuşu belge düzeyindeki kendi dinleyicilerinde tüketir, işaretler
+ *   (`preventDefault`) ve AYNI tuş vuruşunda yığından düşer: gerçek tarayıcıda React ayrık olayın
+ *   güncellemesini dinleyiciler arasında boşaltır. Yüzeyin dinleyicisinden SONRA koşan kod (pencerede
+ *   ya da belgede sonradan eklenmiş) burada `false` görür; ona kalan kanıt `defaultPrevented`.
+ *   Ölçüldü (2026-10-27): yardım `Popover`ını kapatan `Escape` bir grafik seçimini de siliyordu.
+ *   jsdom bunu göremez: `fireEvent` betikten gönderilir, dinleyiciler arasında mikro görev
+ *   boşaltılmaz.
+ * - Yüzeyin dinleyicisinden ÖNCE koşan kod işareti göremez ama yığın henüz düşmemiştir: `true`.
+ * - `<dialog>` tabanlı kipsel yüzeyler (`Modal`, `Drawer`, `BottomSheet`, `CommandPalette`) tuş olayı
+ *   bittikten sonra `cancel` ile kapanır: tuş boyunca burada `true`.
  */
 export const hasOpenSurface = (): boolean => modalStack.length > 0;
 

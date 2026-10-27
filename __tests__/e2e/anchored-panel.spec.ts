@@ -239,3 +239,59 @@ test.describe('menü açılışında odak', () => {
     await expect(page.getByRole('menuitem', { name: 'Verisini kopyala' })).toBeFocused();
   });
 });
+
+/*
+ * Escape'i tuketen yuzey tusu ISARETLER. `Popover` ve `Tooltip` tusu belge duzeyindeki kendi
+ * dinleyicilerinde tuketir ve AYNI tus vurusunda kapanir: gercek tarayicida React ayrik olayin
+ * guncellemesini dinleyiciler arasinda bosaltiyor, yuzey penceredeki sayfa dinleyicisi kosmadan
+ * yigindan duser ve orada `hasOpenSurface()` false doner. Sayfaya kalan kanit `defaultPrevented`.
+ * jsdom bunu goremez: `fireEvent` betikten gonderilir, dinleyiciler arasinda mikro gorev bosaltilmaz.
+ */
+const recordEscape = (page: Page) =>
+  page.evaluate(() => {
+    const seen: boolean[] = [];
+    Object.assign(window, { escapeSeen: seen });
+    window.addEventListener('keydown', event => {
+      if (event.key === 'Escape') seen.push(event.defaultPrevented);
+    });
+  });
+
+const escapeSeen = (page: Page) =>
+  page.evaluate(() => (window as unknown as { escapeSeen: boolean[] }).escapeSeen);
+
+test.describe('Escape — sayfa düzeyindeki dinleyici', () => {
+  test('Popover Escape ile kapanır ve tuşu İŞARETLER', async ({ page }) => {
+    await page.goto('/?theme=light&solo=Popover');
+    await recordEscape(page);
+    await page.getByRole('button', { name: 'Popover aç' }).click();
+    const surface = page.getByRole('dialog', { name: 'Yardım' });
+    await expect(surface).toBeVisible();
+
+    await page.keyboard.press('Escape');
+
+    await expect(surface).toBeHidden();
+    expect(await escapeSeen(page)).toEqual([true]);
+  });
+
+  test('Tooltip Escape ile kapanır ve tuşu İŞARETLER', async ({ page }) => {
+    await page.goto('/?theme=light&solo=Tooltip');
+    await recordEscape(page);
+    await page.getByRole('button', { name: 'Üzerine gel' }).hover();
+    const bubble = page.getByRole('tooltip');
+    await expect(bubble).toBeVisible();
+
+    await page.keyboard.press('Escape');
+
+    await expect(bubble).toBeHidden();
+    expect(await escapeSeen(page)).toEqual([true]);
+  });
+
+  test('açık yüzey yokken Escape İŞARETLENMEZ', async ({ page }) => {
+    await page.goto('/?theme=light&solo=Popover');
+    await recordEscape(page);
+
+    await page.keyboard.press('Escape');
+
+    expect(await escapeSeen(page)).toEqual([false]);
+  });
+});

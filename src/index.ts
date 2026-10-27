@@ -31,8 +31,9 @@ export {
   THEME_ATTRIBUTE,
 } from './helpers/theme.helper';
 /*
- * Sayfa düzeyinde `Escape` dinleyen kod (sohbetin "akışı durdur" kısayolu) önce bunu sorar; yığının
- * kendisi (`pushModal` / `isTopModal`) iç API olarak kalır.
+ * Sayfa düzeyinde `Escape` dinleyen kod (sohbetin "akışı durdur" kısayolu)
+ * `event.defaultPrevented || hasOpenSurface()` sorar; yığının kendisi (`pushModal` / `isTopModal`)
+ * iç API olarak kalır.
  */
 export { hasOpenSurface } from './helpers/focus.helper';
 
