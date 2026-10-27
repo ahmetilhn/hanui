@@ -220,3 +220,22 @@ test.describe('tetikleyici içi süsler — caret ve temizleme düğmesi', () =>
     }
   });
 });
+
+/*
+ * Odak GERCEK tarayicida olculur: yuzey konumu olculene kadar `visibility: hidden` tasir ve gizli
+ * oge odak ALMAZ. jsdom gorunurlugu bilmedigi icin birim testleri bunu goremiyordu.
+ */
+test.describe('menü açılışında odak', () => {
+  test('Menu açılınca odak İLK öğede', async ({ page }) => {
+    await page.goto('/?theme=light&solo=Menu');
+    await page.getByRole('button', { name: 'Eylemler' }).click();
+
+    await expect(page.getByRole('menuitem', { name: 'Kopyala' })).toBeFocused();
+  });
+
+  test('ContextMenu açılınca odak İLK öğede', async ({ page }) => {
+    await page.goto('/?theme=light&solo=ContextMenu');
+
+    await expect(page.getByRole('menuitem', { name: 'Verisini kopyala' })).toBeFocused();
+  });
+});

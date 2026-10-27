@@ -346,7 +346,7 @@ büyür, bir duyuru şeridi çıkıp kaybolduğunda değişir.
 
 | Grup | Bileşenler |
 | --- | --- |
-| Eylem | `Button` · `IconButton` · `TextLink` · `Tooltip` · `Menu` · `Popover` |
+| Eylem | `Button` · `IconButton` · `TextLink` · `Tooltip` · `Menu` · `ContextMenu` · `Popover` |
 | Seçim | `Chip` · `ChipGroup` · `SegmentedControl` · `Select` · `Combobox` · `Checkbox` · `Switch` · `Radio` · `RadioCard` · `RangeSlider` · `RatingInput` · `QuantityStepper` · `TableCheckbox` |
 | Girdi | `Input` · `PasswordInput` · `Textarea` · `TagInput` · `DateField` · `FileUpload` · `Field` |
 | Yüzey | `Card` (+ `CardMedia`, `CardOverlay`, `CardBody`, `CardFooter`) · `SummaryCard` · `Panel` (+ `PanelForm`, `PanelRow`) · `PageHeader` · `SectionHeader` · `Tile` · `Directory` (+ `DirectoryGroup`, `DirectoryRow`, `DirectoryJump`) · `Carousel` · `ScrollArea` · `Disclosure` · `Accordion` · `Tabs` |
@@ -754,7 +754,7 @@ Görünüm değişiklikleri: açık sayfa krem (`#faf9f5`), koyu sayfa sıcak si
 (`#141413`), kart ve panel durgunken gölgesiz, `info` tonu nötr, `CodeBadge`
 mürekkep. Ayrıntı ve ölçümler: `CLAUDE.md` → "Renk kararları (5.0)".
 
-## 5.1 – 5.5'te eklenenler
+## 5.1 – 5.6'da eklenenler
 
 Hepsi ekleme; 5.0'ın token sözleşmesi dışında kırıcı değişiklik yok.
 
@@ -766,6 +766,7 @@ Hepsi ekleme; 5.0'ın token sözleşmesi dışında kırıcı değişiklik yok.
 | 5.3.2 | Düzeltme: kaydırma kapları kapsayıcı blok (`ChatThread`, `ScrollArea`, `TerminalOutput`, `ActionList` ve 12 kab daha) — görsel olarak gizli metin kabın dışına taşıp atalarını kaydırılabilir yapmıyor; grafik ekseni 0,1'in altındaki adımda sıfıra çökmüyor |
 | 5.4 | `CodeBlock` yerleşik vurgulayıcı ve biçimlendirici (bağımlılıksız, 30+ dil); sözdizimi renkleri `--hanui-syntax-*` (yalnızca `chat.css`) |
 | 5.5 | `Input`, `DateField`, `DateRange` `size="sm"` (36px — `Select sm` ve `Button` SMALL ile tek hiza); SCSS `input-sm` mixin'i; yerel sayısal `size` niteliği bu üç girdinin tipinden çıktı |
+| 5.6 | `ContextMenu` — imleç noktasında açılan menü (sağ tık), `role="menu"` dışında başlık; `Menu` ile ortak yüzey; `usePositioning` öğesiz (nokta) çapayı da ölçer; düzeltme: `Menu` açılışta odağı gerçekten ilk öğeye taşır (gerçek tarayıcıda `<body>`de kalıyordu) |
 
 Ayrıntı ve ölçülmüş gerekçeler: `CLAUDE.md` → "Göç ve `@deprecated` yollar",
 "`@ahmetilhn/hanui/chat`", "`@ahmetilhn/hanui/charts`".

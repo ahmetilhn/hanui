@@ -90,7 +90,8 @@ for (const name of SOLO_ONLY)
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await openGallery(page, `&solo=${name}`);
 
-    const surface = page.locator('dialog[open]').first();
+    /* Kipsel yuzeyler `<dialog>`; `ContextMenu` dialog degil, yuzeyi `testId` ile bulunur. */
+    const surface = page.locator('dialog[open], [data-testid="solo-surface"]').first();
     await expect(surface).toBeVisible();
 
     const fits = await surface.evaluate(node => {

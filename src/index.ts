@@ -80,7 +80,7 @@ export { default as Button } from './components/Button';
 export { default as IconButton, type IconButtonVariant } from './components/IconButton';
 export { default as TextLink } from './components/TextLink';
 export { default as Tooltip } from './components/Tooltip';
-export { default as Menu, type MenuItem } from './components/Menu';
+export { ContextMenu, default as Menu, type MenuItem } from './components/Menu';
 export { default as Popover } from './components/Popover';
 
 // --- Seçim ------------------------------------------------------------

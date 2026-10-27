@@ -6,4 +6,5 @@ export const SOLO_ONLY = [
   'PromptDialog',
   'Drawer',
   'CommandPalette',
+  'ContextMenu',
 ] as const;

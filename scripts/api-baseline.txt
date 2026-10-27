@@ -35,6 +35,7 @@ CommandPalette
 CommonElementProps
 ConfirmDialog
 ConfirmKind
+ContextMenu
 CopyField
 Crumb
 DARK_THEME

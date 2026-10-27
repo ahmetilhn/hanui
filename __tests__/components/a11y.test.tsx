@@ -28,6 +28,7 @@ const {
   Combobox,
   CommandPalette,
   ConfirmDialog,
+  ContextMenu,
   CopyField,
   DataTable,
   DataTableRow,
@@ -431,6 +432,21 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       <Menu
         label="Satır eylemleri"
         trigger={<button type="button">Eylemler</button>}
+        items={[
+          { id: 'copy', label: 'Kopyala', onSelect: () => {} },
+          { id: 'delete', label: 'Sil', onSelect: () => {}, isDanger: true },
+        ]}
+      />
+    ),
+  },
+  /* Acik hali taranir: baslik `role="menu"`nun DISINDA, menuye `aria-describedby` ile bagli. */
+  ContextMenu: {
+    open: (
+      <ContextMenu
+        point={{ x: 40, y: 40 }}
+        onClose={() => {}}
+        label="Seçim seçenekleri"
+        header={<span>Seçim #1 · 3 mum</span>}
         items={[
           { id: 'copy', label: 'Kopyala', onSelect: () => {} },
           { id: 'delete', label: 'Sil', onSelect: () => {}, isDanger: true },

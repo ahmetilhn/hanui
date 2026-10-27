@@ -9,6 +9,8 @@ import {
   MoonStarsFill,
   StarFill,
   TerminalFill,
+  TrashFill,
+  ZoomIn,
 } from 'react-bootstrap-icons';
 
 import {
@@ -32,6 +34,7 @@ import {
   Combobox,
   CommandPalette,
   ConfirmDialog,
+  ContextMenu,
   CopyField,
   DataTable,
   DataTableRow,
@@ -835,6 +838,30 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
           { id: 'export', label: 'Dışa aktar', onSelect: noop },
           { id: 'archive', label: 'Arşivle', onSelect: noop, isDisabled: true },
           { id: 'delete', label: 'Sil', onSelect: noop, isDanger: true },
+        ]}
+      />
+    ),
+  },
+  /*
+   * Imlec noktasinda ACIK hali — `?solo=ContextMenu`. Izgarada cizilmez: yuzey `position: fixed`
+   * ile sayfanin uzerine konumlanir ve komsu bolumlerin ekran goruntusunu orterdi.
+   */
+  ContextMenu: {
+    open: (
+      <ContextMenu
+        point={{ x: 48, y: 96 }}
+        onClose={noop}
+        label="Seçim seçenekleri"
+        testId="solo-surface"
+        header={
+          <>
+            <strong>Seçim #2</strong> · 12 mum · +1,8 %
+          </>
+        }
+        items={[
+          { id: 'copy', label: 'Verisini kopyala', icon: <Clipboard />, onSelect: noop },
+          { id: 'zoom', label: 'Yakınlaştır', icon: <ZoomIn />, onSelect: noop },
+          { id: 'delete', label: 'Sil', icon: <TrashFill />, onSelect: noop, isDanger: true },
         ]}
       />
     ),

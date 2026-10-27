@@ -19,6 +19,7 @@ kararları `v4.1.0` etiketindeki CLAUDE.md'dedir. Geçiş tablosu: "Göç" →
 | Soru | Cevap | Ayrımın nedeni |
 |---|---|---|
 | Seçim mi eylem mi? | `Select` / `Menu` | `listbox` "2 seçenekten biri seçili" der, `menu` "menü, 3 öğe". Eylemi listbox sunmak kalıcı bir seçim vaat ediyordu |
+| Düğmeden mi sağ tıktan mı? | `Menu` / `ContextMenu` | Aynı yüzey (klavye, odak, dışarı tıklama tek yerde); `ContextMenu` tetikleyicisiz, imleç noktasında açılır ve eylemlerin üstüne `role="menu"` DIŞINDA bir başlık alır |
 | Kaç seçenek? | ≤7 `ChipGroup` · 5-20 `Select` · 20+ `Combobox` | Aramasız liste 20 satırdan sonra taranamıyor |
 | Filtre mi görünüm mü? | `ChipGroup` / `SegmentedControl` | Çipe ikinci kez basmak seçimi KALDIRIR; bölmeli denetimde "hiçbiri" yok |
 | Panel mi sekme mi? | `Tabs` / `SegmentedControl` | `Tabs` `aria-controls` ile bir panele bağlanır; yoksa var olmayan panel vaat ediliyor |
@@ -989,6 +990,45 @@ olarak bu hataydı.
 Tüketicide değer ezmesi yazan yerler (`--hanui-page: #ffffff` gibi) ayrıca
 gözden geçirilir: 5.0'da açık sayfa krem.
 
+### 5.6 — `ContextMenu`: imleç noktasında açılan menü (yalnızca ekleme)
+
+Tüketicide elle yazılmış bir sağ tık menüsü vardı (backtest panelinin grafiği):
+odak, oklar, Escape ve dışarı tıklama `Menu`nün kopyasıydı, `role="menu"`nün içinde
+bir `<dl>` duruyordu (menü yalnız `menuitem` taşır) ve konum çağıranda sabit bir
+genişlik/yükseklik tahminiyle kırpılıyordu. `Menu` yalnız bir tetikleyiciye
+bağlanabildiği için kütüphane bunu karşılamıyordu.
+
+| Ne | Nasıl |
+|---|---|
+| Ortak gövde | `Menu` içindeki iç `MenuSurface`: konum, portal, odak, klavye, dışarı tıklama TEK yerde; `Menu` ve `ContextMenu` yalnız açılışı yönetir. `Menu`nün DOM'u ve davranışı DEĞİŞMEDİ (testleri dokunulmadan geçiyor) |
+| Nokta çapası | `usePositioning` artık `{ getBoundingClientRect }` taşıyan her çapayı ölçer; nokta 0×0 dikdörtgen. `ResizeObserver` yalnız gerçek `Element` gözler (nokta `TypeError` fırlatırdı). Tipi genişledi, mevcut çağıranlar aynı |
+| Konum | Noktanın sağ altı (2px boşluk), sığmazsa üste döner, görünüm alanına kırpılır — çağıran kırpmaz |
+| Portal | Noktanın DOM öğesi yok; ağaçtaki gizli bir `<span hidden>` sahibi en yakın açık `<dialog>`u bulur (modalın içindeki menü üst katmanın ALTINDA kalmasın) |
+| Başlık | `header` `role="menu"`nün DIŞINDA, menüye `aria-describedby` ile bağlı — ok tuşları öğelerde gezerken bağlam okunur |
+| Odak | Açılışta ilk etkin öğe; kapanışta (Escape, Tab, dışarı tıklama, seçim, sökülme) açılıştan önceki öğe. Yakalama `useLayoutEffect`te: yüzeyin "ilk öğeye odak" etkisinden ÖNCE koşmalı |
+| Escape | `preventDefault` — sayfa düzeyinde Escape dinleyen kod `event.defaultPrevented` ile menüyü kapatan tuşu kendi eylemine saymaz (`hasOpenSurface` yalnız kipsel yığını bilir) |
+| Yeni nokta | Yüzey noktayla anahtarlı: yeniden ölçülür, odak ilk öğeye döner |
+
+⚠ **5.5'e kadarki `Menu` açılışta odağı HİÇ taşımıyordu (gerçek tarayıcıda).**
+Yüzey konumu ölçülene kadar `visibility: hidden` taşır; ölçüm `useLayoutEffect`te
+durum yazar, ama ayrık olayda (tık, sağ tık) React o commit'in pasif etkilerini
+yeniden çizimden ÖNCE boşaltıyor — "ilk öğeye odak" etkisi gizli yüzeye gidip
+sessizce düşüyor, odak `<body>`de kalıyordu. Ok tuşları da bu yüzden menüye
+ulaşmıyordu. jsdom görünürlüğü bilmediği için birim testleri yeşildi. Ölçüldü:
+chromium, 5.5.0 `Menu` ve yeni `ContextMenu` ikisi de kırmızı; düzeltme (odak
+`isPositioned`i bekler) ikisini de yeşile çevirdi. Nöbetçi
+`anchored-panel.spec.ts` → "menü açılışında odak" (`desktop-behavior`).
+
+⚠ **Çağıranın iki işi var:** `contextmenu` olayında `preventDefault()` ve
+`point = { x: clientX, y: clientY }`. Portallanan yüzeydeki olaylar React ağacında
+çağırana KABARCIKLANIR — menünün içindeki sağ tık çağıranın `onContextMenu`sine de
+düşer; çağıran `event.currentTarget.contains(event.target)` ile süzer.
+
+Galeri: `ContextMenu` `SOLO_ONLY`de (`?solo=ContextMenu`) — ızgarada çizilseydi
+`position: fixed` yüzey komşu bölümlerin ekran görüntüsünü örterdi; ızgara tabanları
+bu yüzden DEĞİŞMEDİ. `mobile.spec` "görünen alanın içinde durur" testi yüzeyi
+`dialog[open]` ya da `data-testid="solo-surface"` ile bulur.
+
 ### 5.5 — `Input`, `DateField`, `DateRange`: `size="sm"` (yalnızca ekleme)
 
 `Select`in `sm`i vardı, girdilerin yoktu: aynı araç çubuğunda `Select sm` **36px**,
@@ -1224,7 +1264,7 @@ aktarım kümesi taşımadan önce ve sonra **birebir aynı**.
 
 Ölçüm artık elle değil: `scripts/check-api.mjs` `build/index.d.ts`ten dışa
 aktarım adlarını çıkarır ve `scripts/api-baseline.txt` ile karşılaştırır
-(**176 ad**; alt girişler ayrı taban çizgilerinde: sohbet 30, grafikler 22). Kapı
+(**177 ad** — 5.6: `ContextMenu`; alt girişler ayrı taban çizgilerinde: sohbet 30, grafikler 22). Kapı
 `verify` içinde, `build`ten hemen sonra.
 
 ```bash

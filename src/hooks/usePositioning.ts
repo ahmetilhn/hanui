@@ -79,7 +79,11 @@ const fits = (
  * temeli.
  */
 const usePositioning = (
-  anchorRef: { current: HTMLElement | null },
+  /*
+   * Capa yalniz OLCULUR: bir DOM ogesi (tetikleyici) ya da ogesi olmayan bir nokta (`ContextMenu`
+   * imlec konumu — `{ getBoundingClientRect }`, 0×0 dikdortgen).
+   */
+  anchorRef: { current: { getBoundingClientRect: () => PositioningRect } | null },
   surfaceRef: { current: HTMLElement | null },
   { side = 'top', align = 'center', offset = 8, padding = 8, isOpen }: PositioningOptions,
 ): PositioningState => {
@@ -179,7 +183,8 @@ const usePositioning = (
      */
     const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(schedule);
     if (observer && surfaceRef.current) observer.observe(surfaceRef.current);
-    if (observer && anchorRef.current) observer.observe(anchorRef.current);
+    /* `observe` oge ister: nokta capasi `TypeError` firlatirdi (boyutu da hic degismez). */
+    if (observer && anchorRef.current instanceof Element) observer.observe(anchorRef.current);
 
     return () => {
       window.removeEventListener('resize', schedule);

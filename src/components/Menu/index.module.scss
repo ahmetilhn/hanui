@@ -41,6 +41,21 @@
   }
 }
 
+/* `ContextMenu` basligi: eylemlerin ustunde okunan baglam, ogelerden cizgiyle ayrilir. */
+.menu__header {
+  padding: $space-2 $space-3;
+  margin-bottom: $space-1;
+  border-bottom: 1px solid $border;
+  font-family: $font-ui;
+  font-size: $font-size-sm;
+  color: $text-2;
+}
+
+/* Baslik varken `role="menu"` yuzeyin ICINDE: ogeler arasi bosluk yuzeyle ayni. */
+.menu__list {
+  @include stack(2px);
+}
+
 .menu__item {
   @include row($space-2);
 
