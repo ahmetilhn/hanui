@@ -559,6 +559,31 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
   }
 }
 
+// YOGUN OLCU (`size="sm"`): arac cubugu ve filtre seridi icin 36px — `Button` SMALL ile ayni
+// yukseklik, yani ayni seritteki dugme, secim ve girdi tek hizada durur. `input-base`ten SONRA
+// gelir. 5.5'e kadar yalniz `Select`te vardi: `DateField` 44px'te kaliyor ve `Select sm` ile ayni
+// seritte 36 / 45,7px'lik kutular cikiyordu (olculdu: bir backtest panelinin ust cubugu, Chrome).
+//
+// `$is-text-entry`: metin girdisi dar ekranda ve dokunmatikte `font-size-control`a (>= 16px)
+// doner — iOS Safari 16px altindaki girdiye odaklaninca sayfayi buyutur ve geri kucultmez.
+// `Select` tetikleyicisi bir dugme; odakta buyutme yok, o yuzden bayrak onda kapali.
+@mixin input-sm($is-text-entry: false) {
+  min-height: 36px;
+  padding-block: 0;
+  padding-inline: $space-3;
+  font-size: $font-size-sm;
+
+  @if $is-text-entry {
+    @include for-mobile {
+      font-size: $font-size-control;
+    }
+
+    @include for-touch {
+      font-size: $font-size-control;
+    }
+  }
+}
+
 @mixin filter-surface {
   display: flex;
   flex-wrap: wrap;

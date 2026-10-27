@@ -30,10 +30,8 @@
   }
 
   &--sm {
-    min-height: 36px;
-    padding-block: 0;
-    padding-inline: $space-3;
-    font-size: $font-size-sm;
+    @include input-sm;
+
     font-weight: $weight-medium;
   }
 

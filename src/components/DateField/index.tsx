@@ -8,19 +8,22 @@ import { useHanui } from '../../theme/context';
 
 import styles from './index.module.scss';
 
-type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
+/* `size` yerel ozellikte karakter genisligi (`number`); burada olcu adi — `Input` ile ayni. */
+type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> & {
   /** `date` (varsayılan) · `datetime-local` · `month` · `time`. */
   type?: 'date' | 'datetime-local' | 'month' | 'time';
+  /** `sm` yoğun şeritler içindir (araç çubuğu, `Select size="sm"` yanında); varsayılan form ölçüsü `md`. */
+  size?: 'sm' | 'md';
   testId?: string;
 };
 
 /** Tarih alanı — yerel `<input type="date">`. */
 const DateField = forwardRef<HTMLInputElement, Props>(
-  ({ type = 'date', className, testId, ...rest }, ref) => (
+  ({ type = 'date', size = 'md', className, testId, ...rest }, ref) => (
     <input
       ref={ref}
       type={type}
-      className={cx(styles.dateField, className)}
+      className={cx(styles.dateField, size === 'sm' && styles['dateField--sm'], className)}
       data-testid={testId}
       {...rest}
     />
@@ -49,6 +52,8 @@ type RangeProps = {
   max?: string;
   /** Seçilen aralığın okunur özetini gösterir. */
   isSummaryVisible?: boolean;
+  /** İki alanın ölçüsü — `DateField.size`. */
+  size?: Props['size'];
   isDisabled?: boolean;
   className?: string;
   testId?: string;
@@ -64,6 +69,7 @@ const DateRangeBase = ({
   min,
   max,
   isSummaryVisible,
+  size,
   isDisabled,
   className,
   testId,
@@ -89,6 +95,7 @@ const DateRangeBase = ({
         <DateField
           className={styles.range__field}
           aria-label={startLabel}
+          size={size}
           value={value.start}
           min={min}
           /* Baslangic bitisi GECEMEZ: tarayici gecersiz araligi en bastan sectirmiyor. */
@@ -104,6 +111,7 @@ const DateRangeBase = ({
         <DateField
           className={styles.range__field}
           aria-label={endLabel}
+          size={size}
           value={value.end}
           min={value.start || min}
           max={max}

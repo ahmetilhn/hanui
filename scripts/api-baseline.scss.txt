@@ -222,6 +222,7 @@ $z-tooltip
 @mixin heading
 @mixin hide-scrollbar
 @mixin input-base
+@mixin input-sm
 @mixin interactive-surface
 @mixin label
 @mixin mirror-in-rtl

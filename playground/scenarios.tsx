@@ -465,6 +465,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     invalid: <Input aria-label="Ad" defaultValue="—" aria-invalid />,
     disabled: <Input aria-label="Ad" defaultValue="Değiştirilemez" disabled />,
     technical: <Input aria-label="Şase" defaultValue="WVWZZZ1KZAW000001" isTechnical />,
+    small: <Input aria-label="Ara" placeholder="Kod ya da ad" size="sm" />,
   },
   PasswordInput: {
     default: <PasswordInput aria-label="Şifre" placeholder="••••••••" />,
@@ -1075,6 +1076,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     default: <DateField aria-label="Doğum tarihi" defaultValue="1990-05-12" />,
     month: <DateField type="month" aria-label="Dönem" defaultValue="2026-03" />,
     disabled: <DateField aria-label="Tarih" defaultValue="2026-03-01" disabled />,
+    small: <DateField aria-label="Tarih" defaultValue="2026-03-01" size="sm" />,
   },
   DateRange: {
     default: (
@@ -1092,6 +1094,16 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
         onChange={noop}
         startLabel="Başlangıç"
         endLabel="Bitiş"
+      />
+    ),
+    small: (
+      <DateRange
+        value={{ start: '2026-03-01', end: '2026-03-14' }}
+        onChange={noop}
+        startLabel="Başlangıç"
+        endLabel="Bitiş"
+        separator="→"
+        size="sm"
       />
     ),
   },
@@ -1303,10 +1315,11 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     ),
   },
   FilterBar: {
+    /* Seritte tek olcu: `Input` da `Select` gibi `sm` (36px). */
     default: (
-      <FilterBar onSubmit={noop} actions={<Button>Uygula</Button>}>
+      <FilterBar onSubmit={noop} actions={<Button size={UISize.SMALL}>Uygula</Button>}>
         <FilterBarField>
-          <Input aria-label="Ara" placeholder="Kod ya da ad" />
+          <Input aria-label="Ara" placeholder="Kod ya da ad" size="sm" />
         </FilterBarField>
         <FilterBarField>
           <Select options={OPTIONS} value="a" onChange={noop} label="Durum" size="sm" />

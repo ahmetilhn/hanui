@@ -29,6 +29,11 @@
 .input {
   @include input-base;
 
+  /* `--hasPrefix` / `--hasSuffix`ten ONCE: ikon payi yogun olcunun yatay dolgusunu ezer. */
+  &--sm {
+    @include input-sm(true);
+  }
+
   &--hasPrefix {
     padding-inline-start: calc(#{$space-8} - #{$space-2});
   }

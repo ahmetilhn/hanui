@@ -17,6 +17,10 @@
   &:not(:focus):placeholder-shown {
     color: $text-2;
   }
+
+  &--sm {
+    @include input-sm(true);
+  }
 }
 
 .range {

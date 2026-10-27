@@ -754,7 +754,7 @@ Görünüm değişiklikleri: açık sayfa krem (`#faf9f5`), koyu sayfa sıcak si
 (`#141413`), kart ve panel durgunken gölgesiz, `info` tonu nötr, `CodeBadge`
 mürekkep. Ayrıntı ve ölçümler: `CLAUDE.md` → "Renk kararları (5.0)".
 
-## 5.1 – 5.4'te eklenenler
+## 5.1 – 5.5'te eklenenler
 
 Hepsi ekleme; 5.0'ın token sözleşmesi dışında kırıcı değişiklik yok.
 
@@ -765,6 +765,7 @@ Hepsi ekleme; 5.0'ın token sözleşmesi dışında kırıcı değişiklik yok.
 | 5.3 | `@ahmetilhn/hanui/charts` — 10 SVG grafiği; `@ahmetilhn/hanui/scss`; `Input --technical` dar ekranda ≥16px; `QuantityStepper` ve `DataTable` pasif/dinlenme hâli opacity yerine token |
 | 5.3.2 | Düzeltme: kaydırma kapları kapsayıcı blok (`ChatThread`, `ScrollArea`, `TerminalOutput`, `ActionList` ve 12 kab daha) — görsel olarak gizli metin kabın dışına taşıp atalarını kaydırılabilir yapmıyor; grafik ekseni 0,1'in altındaki adımda sıfıra çökmüyor |
 | 5.4 | `CodeBlock` yerleşik vurgulayıcı ve biçimlendirici (bağımlılıksız, 30+ dil); sözdizimi renkleri `--hanui-syntax-*` (yalnızca `chat.css`) |
+| 5.5 | `Input`, `DateField`, `DateRange` `size="sm"` (36px — `Select sm` ve `Button` SMALL ile tek hiza); SCSS `input-sm` mixin'i; yerel sayısal `size` niteliği bu üç girdinin tipinden çıktı |
 
 Ayrıntı ve ölçülmüş gerekçeler: `CLAUDE.md` → "Göç ve `@deprecated` yollar",
 "`@ahmetilhn/hanui/chat`", "`@ahmetilhn/hanui/charts`".

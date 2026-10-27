@@ -989,6 +989,42 @@ olarak bu hataydı.
 Tüketicide değer ezmesi yazan yerler (`--hanui-page: #ffffff` gibi) ayrıca
 gözden geçirilir: 5.0'da açık sayfa krem.
 
+### 5.5 — `Input`, `DateField`, `DateRange`: `size="sm"` (yalnızca ekleme)
+
+`Select`in `sm`i vardı, girdilerin yoktu: aynı araç çubuğunda `Select sm` **36px**,
+yanındaki `DateField` **45,7px** çiziliyordu (ölçüldü: bir backtest panelinin üst
+çubuğu, Chrome, 1024px). Yoğun ölçü artık `input-sm` mixin'inde TEK yerde;
+`Select`, `Input` ve `DateField` onu kullanır, `DateRange` iki alana geçirir.
+`Button` SMALL da 36px — şeritte düğme, seçim ve girdi tek hizada.
+
+| | `md` (varsayılan) | `sm` |
+|---|---|---|
+| Yükseklik | 44px | 36px |
+| Dolgu | `space-3` / `space-4` | dikey 0 / yatay `space-3` |
+| Yazı | `font-size-control` | `font-size-sm`; metin girdisi dar ekranda (≤640px) ve dokunmatikte `font-size-control` (≥16px) |
+
+⚠ **Yerel `size` niteliği `Input`, `DateField` ve `PasswordInput` tiplerinden
+ÇIKTI.** Yerelde karakter genişliği (`number`), burada ölçü adı — `Select.size`
+ile aynı. Kütüphanede ve iki tüketicide (hanration, backtest paneli) sayısal
+`size` geçen çağrı yok (aranarak ölçüldü); genişlik CSS'ten gelir. Sayısal
+geçen bir tüketici varsa derleme kırılır: `style={{ width: '12ch' }}` yazılır.
+
+⚠ **`sm` dokunma hedefini 44px'e TAMAMLAMAZ.** `<input>` sözde öğe taşımıyor,
+yani `tap-target` (`::after`) orada çalışmaz. `Select sm` ile aynı karar: `sm`
+masaüstü şeritleri içindir; dokunmatik formda `md` kalır.
+
+⚠ `isTechnical` + `sm`: `--technical` ölçüyü `font-size-control`a yazar ve
+`--sm`den sonra gelir — teknik girdi yoğun ölçüde de 16px yazar. Çağıranı yok,
+ayrıca çözülmedi (YAGNI).
+
+Görsel tabanlar: `Input`, `DateField`, `DateRange` (yeni `small` senaryoları)
+ve `FilterBar` (`default` artık `Input sm` + `Button` SMALL — şeridin doğru
+kullanımı; `mixed` bilerek karışık kalır) — 16 dosya. Galeride bu bölümlerin
+altındaki 27 bölüm yalnızca KAYDI: sayfa uzayınca alt piksel konumları değişti
+ve eşiği aşan 80 dosya `--update-snapshots=changed` ile yenilendi (içerik farkı
+yok; `LineChart` ve `FilterBarField` fark görüntüleriyle doğrulandı — yalnızca
+metin kenarları). Temiz `master`da aynı koşu 40/40 geçiyordu.
+
 ### 5.4 — `CodeBlock` kendisi vurgular ve biçimlendirir
 
 API değişmedi (yeni prop yok), çizim değişti: `html` verilmeyen blok artık renkli,
@@ -1033,7 +1069,7 @@ Tüketici token değişkenlerini ve mixin'leri KOPYALAMADAN alır:
 | Kaynak | `src/styles/_index.scss` → `variables` + `mixins` iletir |
 | Derleme | `scripts/build-scss.mjs` → `build/scss/` (5 dosya, KAPALI liste) |
 | Dışa aktarım | `exports["./scss"]` — `sass` / `style` / `default` koşulları |
-| Ad taban çizgisi | `scripts/api-baseline.scss.txt` (`$değişken` + `@mixin`, 252 ad) |
+| Ad taban çizgisi | `scripts/api-baseline.scss.txt` (`$değişken` + `@mixin`, 253 ad — 5.5: `input-sm`) |
 | Nöbetçi | `__tests__/styles/scss-api.test.ts` |
 
 ⚠ **Modül KURAL BASMAZ.** `base.scss` ve `_tokens.generated.scss` (`:root`

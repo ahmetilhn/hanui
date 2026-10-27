@@ -5,20 +5,25 @@ import { named } from '../../helpers/component.helper';
 
 import styles from './index.module.scss';
 
-/* `prefix` HTML'in RDFa nitelikleri arasinda yer alir ve React onu `string` olarak tanimlar. */
-type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix'> & {
+/*
+ * `prefix` HTML'in RDFa nitelikleri arasinda yer alir ve React onu `string` olarak tanimlar.
+ * `size` yerel ozellikte karakter genisligi (`number`); burada olcu adi — genislik CSS'ten gelir.
+ */
+type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix' | 'size'> & {
   /** Solda gösterilen ikon veya ön ek (arama simgesi, para birimi). */
   prefix?: ReactNode;
   /** Sağda gösterilen ikon veya birim (göz simgesi, "kg"). */
   suffix?: ReactNode;
   /** Teknik veri: */
   isTechnical?: boolean;
+  /** `sm` yoğun şeritler içindir (araç çubuğu, `Select size="sm"` yanında); varsayılan form ölçüsü `md`. */
+  size?: 'sm' | 'md';
   testId?: string;
 };
 
 /** Metin girdisi. */
 const Input = /*#__PURE__*/ forwardRef<HTMLInputElement, Props>(
-  ({ prefix, suffix, isTechnical, className, testId, ...rest }, ref) => (
+  ({ prefix, suffix, isTechnical, size = 'md', className, testId, ...rest }, ref) => (
     <span className={cx(styles.wrapper, className)}>
       {prefix && (
         <span className={styles.wrapper__prefix} aria-hidden>
@@ -29,6 +34,7 @@ const Input = /*#__PURE__*/ forwardRef<HTMLInputElement, Props>(
         ref={ref}
         className={cx(
           styles.input,
+          size === 'sm' && styles['input--sm'],
           /*
            * `Boolean(...)`: `prefix` bir `ReactNode` ve `0` da gecerli bir deger — `prefix &&`
            * ifadesi o durumda dize degil sayi donuyordu.

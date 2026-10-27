@@ -9,7 +9,8 @@ import Input from '../Input';
 
 import styles from './index.module.scss';
 
-type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
+/* `size`: `Input`ta artik olcu adi (`sm` / `md`); yerel karakter genisligi `Input`a gecemez. */
+type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> & {
   /** Şifre gizliyken düğmenin erişilebilir adı. */
   showLabel?: string;
   /** Şifre görünürken düğmenin erişilebilir adı. */
