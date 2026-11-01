@@ -27,7 +27,16 @@
 .disclosure__summary {
   @include row($space-3);
 
-  padding: $space-4;
+  /*
+   * Hover zemini satirin kenarindan `space-1` iceride ve kendi yaricapiyla cizilir (saydam kenarlik +
+   * `background-clip: padding-box`); yaricap cercevenin ic egrisiyle es merkezli (ic = dis - dolgu).
+   * Eskiden kare zemin yuvarlak cercevenin icinde kenardan kenara uzaniyordu (`Accordion`un ortadaki
+   * bolumleri). Dolgu kenarlik kadar azaldi: baslik ve icerik ayni hizada kalir.
+   */
+  border: $space-1 solid transparent;
+  border-radius: calc(#{$radius-lg} - 1px);
+  background-clip: padding-box;
+  padding: calc(#{$space-4} - #{$space-1});
   cursor: pointer;
   list-style: none;
   font-size: $font-size-sm;

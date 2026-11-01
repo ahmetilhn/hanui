@@ -69,26 +69,18 @@ $jump-height: 49px;
   align-items: center;
   gap: $space-3;
   min-height: 44px;
-  padding: $space-2 $space-3;
-  border: 1px solid transparent;
+
+  /* Eski 1px saydam kenarligin yeri dolguya katildi: satir kutusu ayni olcude kalir. */
+  padding: calc(#{$space-2} + 1px) calc(#{$space-3} + 1px);
   border-radius: $radius-md;
   text-decoration: none;
   color: inherit;
-  transition:
-    background-color $duration-fast $ease-out,
-    border-color $duration-fast $ease-out,
-    color $duration-fast $ease-out;
 
-  &:hover {
-    background-color: $surface;
-    border-color: $border;
-    color: $link;
-
-    .row__name {
-      color: $link;
-    }
-  }
-
+  /*
+   * Hover yalniz zemini bir kademe degistirir (Durum katmanlari). Eskiden kenarlik ve bag rengi de
+   * degisiyordu: satirin kutusunda bir cerceve belirip kayboluyor, ad yesile donuyordu.
+   */
+  @include interactive-surface($rest: transparent, $hover: $surface-2, $pressed: $surface-3);
   @include focus-ring($ring-color, -2px);
 
   @include reduced-motion {

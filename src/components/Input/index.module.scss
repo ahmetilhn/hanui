@@ -34,12 +34,22 @@
     @include input-sm(true);
   }
 
+  /*
+   * Pay = kenar boslugu + onek/sonekin olculen genisligi (`Input` yazar) + `space-2`. Olcum gelmeden
+   * (sunucu cizimi) ikon olcusu varsayilir. Eskiden akiskan bolum araligi `space-8`den turuyordu: dar
+   * ekranda 18px ikonla metin arasinda 2px, genis ekranda 26px kaliyor; tek karakterli para simgesinde
+   * yazilan tutar simgeden kopuk duruyordu.
+   */
   &--hasPrefix {
-    padding-inline-start: calc(#{$space-8} - #{$space-2});
+    padding-inline-start: calc(
+      #{$space-3} + var(--hanui-input-prefix-width, #{$icon-md}) + #{$space-2}
+    );
   }
 
   &--hasSuffix {
-    padding-inline-end: calc(#{$space-8} - #{$space-2});
+    padding-inline-end: calc(
+      #{$space-3} + var(--hanui-input-suffix-width, #{$icon-md}) + #{$space-2}
+    );
   }
 
   /*

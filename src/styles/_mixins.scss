@@ -532,8 +532,12 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
     color: $text-3;
   }
 
+  /*
+   * Hover cizgisi bir ton koyulasir. Eskiden metin tonuna (`text-3`) atliyordu: acik ve ince cizgili
+   * temalarda hover'da alan kalin cerceveli gorunuyordu. Karisim token tanimlamaz; tema degerlerini izler.
+   */
   &:hover:not(:disabled):not([aria-invalid='true']) {
-    border-color: $text-3;
+    border-color: color-mix(in oklab, #{$border-strong}, #{$text} 30%);
   }
 
   &:focus {

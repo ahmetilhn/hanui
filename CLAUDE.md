@@ -990,6 +990,26 @@ olarak bu hataydı.
 Tüketicide değer ezmesi yazan yerler (`--hanui-page: #ffffff` gibi) ayrıca
 gözden geçirilir: 5.0'da açık sayfa krem.
 
+### 5.6.2 — `DirectoryRow`, `Disclosure`, alanlar: hover ve önek payı
+
+Dört bulgu tüketicide ölçüldü (2026-11-01, bir kurumsal site ve yönetim paneli; sayfaların üzerine
+gelip basarak stil farkını ölçen betikle): üçü "Durum katmanları" ve "Yarıçap ritmi" kurallarını
+çiğniyordu, biri akışkan bölüm aralığını bileşen içinde kullanıyordu.
+
+| Ne | Eskiden | Şimdi |
+|---|---|---|
+| `DirectoryRow` hover | zemin `surface` + kenarlık `border` + ad `link`: satır kutusunda bir çerçeve belirip kayboluyordu | `interactive-surface`: yalnız zemin bir kademe (`surface-2`), basılınca 1 px. Saydam 1 px kenarlığın yeri dolguya katıldı, satır ölçüsü aynı |
+| `Disclosure` başlığı hover | kare `surface-2` zemin kenardan kenara; `Accordion`un ortadaki bölümlerinde yuvarlak çerçevenin içinde köşesiz bir bant | Zemin `space-1` içeride (saydam kenarlık + `background-clip: padding-box`), yarıçap `radius-lg − 1px` (çerçevenin iç eğrisiyle eş merkezli). Dolgu kenarlık kadar azaldı; başlık ve içerik hizası aynı |
+| Önek/sonek payı (`Input`) | `space-8 − space-2`: akışkan bölüm aralığı; 18 px ikonla metin arası dar ekranda 2 px, geniş ekranda 26 px; tek karakterli para simgesinde tutar simgeden kopuk | `space-3` + ölçülen genişlik + `space-2`. `Input` önek/soneki `ResizeObserver` ile ölçüp `--hanui-input-prefix-width` / `--hanui-input-suffix-width` yazar; ölçüm yokken (sunucu, jsdom) `icon-md` varsayılır |
+| Alan hover çizgisi (`input-base`) | `text-3`e atlıyordu: ince çizgili temalarda hover'da kalın çerçeve | `color-mix(in oklab, border-strong, text 30%)` — bir ton koyu; token tanımlamaz, temayı izler. `Input`, `Textarea`, `Select`, `Combobox`, `DateField`, `TagInput` aynı mixin'den |
+
+⚠ `prefix={0}` artık hiçbir şey basmaz; eskiden `prefix && …` girdinin yanına başıboş bir "0" metni
+yazıyordu.
+
+Nöbetçi: `__tests__/styles/hover-surfaces.test.ts` (dört kural), `__tests__/components/Input.test.tsx`
+(ölçüm ve değişkenler). Tüketici kendi katmanında aynı düzeltmeleri yaptıysa (ör. `[class*='hanui-row-']:hover`)
+5.6.2'ye geçince kaldırabilir.
+
 ### 5.6.1 — `Popover`, `Tooltip`, `Toast` `Escape`i İŞARETLER
 
 Üçü `Escape`i belge düzeyindeki ortak dinleyicide (`hooks/useDismissOnEscape`) tüketiyor ama tuşu
