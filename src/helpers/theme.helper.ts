@@ -18,6 +18,17 @@ export const DENSITY_ATTRIBUTE = 'data-hanui-density';
 /** Geçiş animasyonlarını tek kare boyunca kapatan sınıf (bkz. `base.scss`). */
 export const THEME_SWITCHING_CLASS = 'hanui-theme-switching';
 
+/** Ezmelerin katmanı — `scripts/lib/postcss-hanui-layer.mjs`in varsayılanıyla aynı olmak zorunda. */
+export const THEME_LAYER = 'hanui';
+
+/**
+ * Ezme kurallarının kök seçicisi: `_tokens.generated.scss`teki karşılığından bir öğe (`html`) daha
+ * özgül — (0,1,1) > (0,1,0), (0,2,1) > (0,2,0). Katman içinde ezme varsayılanı KAYNAK SIRASINDAN
+ * bağımsız yener. Açık temanın `html:root`u (0,1,1) koyu varsayılanın `:root:not([…])`ına
+ * (0,2,0) yenilir: açık ezme koyu temaya sızmaz.
+ */
+const THEME_ROOT = 'html:root';
+
 /** Verilen şemanın tam token eşlemesi — ezmeler uygulanmış hâliyle. */
 export const resolveTokens = (
   scheme: HanuiColorScheme,
@@ -29,7 +40,14 @@ export const resolveTokens = (
   return { ...base, ...overrides };
 };
 
-/** Yapılandırmayı CSS metnine çevirir. */
+/**
+ * Yapılandırmayı CSS metnine çevirir. Çıktının tamamı `@layer hanui` içinde: tüketicinin katmansız
+ * her kuralı ezmeyi özgüllükten ve sıradan bağımsız yener (README, "CSS'imizi ezmek").
+ * ⚠ 5.6.2'ye kadar ezme katmansızdı: `:root:not([data-hanui-theme])` (0,2,0) tüketicinin `<html>`e
+ * yazdığı ezmeyi (`html:has(.panel)`, 0,1,1) hidrasyondan SONRA eziyordu — sunucu çiziminde
+ * tüketicinin rengi, bir kare sonra temanınki (ölçüldü: panelin kırmızı sil düğmesi koyu temada
+ * beyaza dönüyordu). Katmansız açık ezme koyu varsayılanı da yeniyor, koyu temaya sızıyordu.
+ */
 export const buildThemeCss = (config: HanuiThemeConfig): string => {
   const blocks: string[] = [];
 
@@ -46,7 +64,7 @@ export const buildThemeCss = (config: HanuiThemeConfig): string => {
 
   if (fontEntries.length > 0)
     blocks.push(
-      `:root {\n${fontEntries
+      `${THEME_ROOT} {\n${fontEntries
         .map(([role, stack]) => `  ${TOKEN_PREFIX}font-${role}: ${stack};`)
         .join('\n')}\n}`,
     );
@@ -56,35 +74,49 @@ export const buildThemeCss = (config: HanuiThemeConfig): string => {
 
   if (Object.keys(metrics).length > 0) {
     const body = declarations(metrics as Record<string, string>);
-    blocks.push(`:root {\n${body}\n}`);
-    blocks.push(`:root[${DENSITY_ATTRIBUTE}='compact'] {\n${body}\n}`);
+    blocks.push(`${THEME_ROOT} {\n${body}\n}`);
+    blocks.push(`${THEME_ROOT}[${DENSITY_ATTRIBUTE}='compact'] {\n${body}\n}`);
   }
 
   /*
-   * Acik tema iki secicide birden yazilir: `:root` (varsayilan) ve
-   * `:root[data-hanui-theme='light']` (kullanicinin acik secimi).
+   * Acik tema iki secicide birden yazilir: `html:root` (varsayilan) ve
+   * `html:root[data-hanui-theme='light']` (kullanicinin acik secimi).
    */
   if (config.light && Object.keys(config.light).length > 0) {
     const body = declarations(config.light);
-    blocks.push(`:root {\n${body}\n}`);
-    blocks.push(`:root[${THEME_ATTRIBUTE}='light'] {\n${body}\n}`);
+    blocks.push(`${THEME_ROOT} {\n${body}\n}`);
+    blocks.push(`${THEME_ROOT}[${THEME_ATTRIBUTE}='light'] {\n${body}\n}`);
   }
 
   if (config.dark && Object.keys(config.dark).length > 0) {
     const body = declarations(config.dark);
-    blocks.push(`:root[${THEME_ATTRIBUTE}='dark'] {\n${body}\n}`);
+    blocks.push(`${THEME_ROOT}[${THEME_ATTRIBUTE}='dark'] {\n${body}\n}`);
     blocks.push(
-      `@media (prefers-color-scheme: dark) {\n  :root:not([${THEME_ATTRIBUTE}]) {\n${declarations(
+      `@media (prefers-color-scheme: dark) {\n  ${THEME_ROOT}:not([${THEME_ATTRIBUTE}]) {\n${declarations(
         config.dark,
         '    ',
       )}\n  }\n}`,
     );
   }
 
-  return blocks.join('\n\n');
+  if (blocks.length === 0) return '';
+
+  return `@layer ${THEME_LAYER} {\n${blocks.join('\n\n').replace(/^(?=.)/gm, '  ')}\n}`;
 };
 
-/** Ezmeleri belgeye yazar. */
+/**
+ * `<style>` içine HTML olarak yazılacak CSS: `</style` dizisi etiketi kapatamaz. Değerler
+ * yapılandırmadan (kiracının veritabanındaki marka rengi) gelebilir; `\/` CSS'te `/` demek.
+ */
+export const toStyleHtml = (css: string): string => css.replace(/<\/style/gi, '<\\/style');
+
+/**
+ * Ezmeleri `<head>`in sonuna yazar — React dışındaki yol (`initHanui`); sağlayıcı ezmeyi ağaçta
+ * çizer.
+ * ⚠ Stil sayfalarından SONRA çağrılmalı: `@layer hanui` belgede ilk kez burada görülürse katman
+ * sırası buradan kurulur ve tüketicinin sonra gelen `@layer reset, hanui;` bildirimi `reset`i
+ * `hanui`nin üstüne koyar.
+ */
 export const applyThemeConfig = (config: HanuiThemeConfig | undefined): void => {
   if (!isClient()) return;
 

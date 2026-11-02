@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { isClient } from '@ahmetilhn/handy-utils';
 
 import { THEME_ATTRIBUTE, THEME_STYLE_ID, TOKEN_PREFIX } from '../helpers/theme.helper';
+import { useHanui } from '../theme/context';
 import type { HanuiToken } from '@/types/theme.type';
 
 /** Sunucuda ve ilk karede dönen değer: çizim kütüphaneleri boş dizeyi siyah boyuyor. */
@@ -24,7 +25,8 @@ const isSame = (first: Record<string, string>, second: Record<string, string>): 
 /**
  * Token'ların ÇÖZÜLMÜŞ değerleri — CSS değişkeni okuyamayan çizim kütüphaneleri için (recharts
  * `stroke`/`fill` prop'ları `var(--…)` kabul etmiyor).
- * Tema değiştiğinde (açık seçim, sistem tercihi, `initHanui` ezmesi) yeniden çizer.
+ * Tema değiştiğinde (açık seçim, sistem tercihi, `HanuiProvider` ya da `initHanui` ezmesi)
+ * yeniden çizer.
  * ⚠ Sunucu çıktısında ve hidrasyondan önceki ilk karede her değer `currentColor`.
  * @example const colors = useHanuiTokens(['series-1', 'series-2', 'border']);
  */
@@ -33,6 +35,12 @@ const useHanuiTokens = <TName extends HanuiToken>(
 ): Record<TName, string> => {
   /* Dizi her render'da yeni nesne olabilir; abonelik ADLARA bağlanır, kimliğe değil. */
   const key = names.join('|');
+  /*
+   * Sağlayıcının ezmesi ağaçtaki `<style>`da; tema ilk kez verildiğinde o etiket `<head>`e değil
+   * ağaca eklenir ve aşağıdaki gözlemci onu görmez. Bağlamdaki tema nesnesi yalnızca İÇERİK
+   * değişince yenilenir (sağlayıcının `themeKey`i).
+   */
+  const { theme } = useHanui();
 
   const [values, setValues] = useState(
     () => Object.fromEntries(names.map(name => [name, FALLBACK])) as Record<TName, string>,
@@ -71,7 +79,7 @@ const useHanuiTokens = <TName extends HanuiToken>(
       observer.disconnect();
       query?.removeEventListener('change', update);
     };
-  }, [key]);
+  }, [key, theme]);
 
   return values;
 };

@@ -990,6 +990,42 @@ olarak bu hataydı.
 Tüketicide değer ezmesi yazan yerler (`--hanui-page: #ffffff` gibi) ayrıca
 gözden geçirilir: 5.0'da açık sayfa krem.
 
+### 5.6.3 — Tema ezmesi katmanda ve sunucu çiziminde
+
+Tüketicide ölçüldü (2026-11-02, yönetim paneli, koyu tema; JS kapalı ve açık çizimin hesaplanmış
+stilleri karşılaştırıldı): panel `<html>`e kendi paletini yazıyor
+(`html:has(.panel-root-layout) { --hanui-danger-solid: #dc2626 }`, 0,1,1). Sunucu çiziminde sil
+düğmesi kırmızı, hidrasyondan sonra `#ededed` (sitenin teması); alanların zemini `#161618 → #121212`,
+çizgisi `#36363c → #4d4d4d`, `action` indigodan griye dönüyordu. Neden: `HanuiProvider` ezmeyi
+`useEffect` içinde, `<head>`in sonuna, KATMANSIZ bir `<style>`a yazıyordu; koyu temanın
+`:root:not([data-hanui-theme])` seçicisi (0,2,0) tüketicinin ezmesini yeniyordu. "Kütüphane CSS'inin
+tamamı `@layer hanui` içinde" sözleşmesini bozan tek kural buydu.
+
+| Ne | Eskiden | Şimdi |
+|---|---|---|
+| Ezmenin katmanı | katmansız: tüketicinin katmansız kuralıyla özgüllük ve sıra yarışı | `@layer hanui` içinde: tüketicinin katmansız kuralı her zaman kazanır |
+| Seçici | varsayılanla aynı (`:root`, `:root:not([…])`…) | `html:root…` — karşılığından bir öğe özgül: katman içinde varsayılanı **sıradan bağımsız** yener |
+| Açık ezme koyu temada | katmansız `:root` koyu varsayılanı da yeniyordu: `light`a yazılan `ring-color` koyu temaya sızıyordu | `html:root` (0,1,1) koyu varsayılana (0,2,0) yenilir; `resolveTokens`in "açık koyuya sızmaz" sözleşmesiyle aynı |
+| Ne zaman | `useEffect`: sunucu çıktısında yok; ilk kare varsayılan palet, bir kare sonra tema (tüketici bu yüzden temanın statik kopyasını üretiyordu) | sağlayıcı ezmeyi çocuklarından önce `<style id="hanui-theme-overrides">` olarak **çizer**; sunucu çıktısında var, hidrasyonda aynı düğüm kullanılır |
+| `useHanuiTokens` | `<head>`e eklenen etiketi gözlüyordu | sağlayıcının teması değişince (bağlamdaki tema nesnesi) yeniden okur |
+
+- ⚠ Sağlayıcı `<body>` içinde olmalı: `<html>`i sararsa `<style>` belgenin köküne düşer. Ağaçta
+  çizilmesinin ikinci nedeni katman sırası: `<body>`deki etiket `<head>`deki stil sayfalarından ve
+  tüketicinin `@layer reset, hanui;` bildiriminden HER ZAMAN sonra gelir. React 19'un
+  `<style precedence>` taşıması `<head>`te nereye koyacağını garanti etmiyor; önce gelirse `hanui`
+  katmanı ilk orada görülür ve tüketicinin `reset` katmanı kütüphanenin üstüne çıkar.
+- ⚠ `dangerouslySetInnerHTML` zorunlu: React 18 `<style>` çocuğunu HTML olarak kaçışlıyor,
+  seçicideki `'` `&#x27;` oluyordu. Değer veritabanından gelebileceği için `</style` dizisi
+  `toStyleHtml` ile `<\/style`a çevrilir (CSS'te `\/` = `/`).
+- `initHanui` (`applyThemeConfig`) `<head>`e yazmaya devam eder, artık katmanlı; stil sayfalarından
+  SONRA çağrılmalı (README).
+- jsdom'un CSS ayrıştırıcısı `@layer`ı tanımıyor; `jest.setup.ts` yalnız bu hatayı susturur.
+
+Nöbetçi: `__tests__/helpers/theme.helper.test.ts` (katman, `html:root`, `toStyleHtml`),
+`__tests__/theme/HanuiProvider.test.tsx` (ağaçta çizim, ilk efekt, hidrasyon),
+`__tests__/theme/HanuiProvider.server.test.tsx` (sunucu çıktısı). Tüketici temanın statik kopyasını
+yalnızca ilk boyama için üretiyorsa 5.6.3'te kaldırabilir.
+
 ### 5.6.2 — `DirectoryRow`, `Disclosure`, alanlar: hover ve önek payı
 
 Dört bulgu tüketicide ölçüldü (2026-11-01, bir kurumsal site ve yönetim paneli; sayfaların üzerine

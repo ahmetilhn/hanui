@@ -274,7 +274,8 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   HanuiProvider: {
     description: (
       <p style={{ maxWidth: '52ch' }}>
-        Sağlayıcı görünür bir şey çizmez: tema ezmelerini belgeye yazar, metinleri ve yönlendirici
+        Sağlayıcı görünür bir şey çizmez: tema ezmelerini çocuklarından önce bir{' '}
+        <code>&lt;style&gt;</code> olarak çizer (sunucu çıktısında da), metinleri ve yönlendirici
         bileşenini ağaca dağıtır. Bu sayfanın tamamı zaten onun içinde.
       </p>
     ),

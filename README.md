@@ -101,8 +101,20 @@ const THEME = {
 </HanuiProvider>;
 ```
 
-React'in dışından (bir `<head>` betiğinden, Storybook'tan) aynı işi
-`initHanui({ theme })` yapar.
+Sağlayıcı ezmeyi çocuklarından önce bir `<style>` olarak **çizer**: sunucu
+çıktısında da vardır, ilk boyamada uygulanır; hidrasyondan sonra hiçbir renk
+değişmez. Bu yüzden sağlayıcı `<body>` içinde durur, `<html>`i saramaz.
+
+Ezme `@layer hanui` içindedir: aynı token'ı kendi CSS'inizde ezerseniz
+(`html:has(.panel) { --hanui-danger-solid: #dc2626 }`) sizinki özgüllüğe ve
+sıraya bakılmaksızın kazanır. Açık temaya verilen değer koyu temaya sızmaz;
+koyu temada da istiyorsanız `dark`a da yazın.
+
+React'in dışından (Storybook'tan, stil sayfalarından sonra çalışan bir
+betikten) aynı işi `initHanui({ theme })` yapar; ezmeyi `<head>`in sonuna
+yazar. ⚠ Stil sayfalarınızdan **önce** çağırmayın: `@layer hanui` belgede ilk
+kez orada görülürse katman sırası oradan kurulur ve sonra gelen
+`@layer reset, hanui;` bildiriminiz `reset`i kütüphanenin üstüne koyar.
 
 **Kütüphane font YÜKLEMEZ.** `fonts` yalnızca `font-family` dizesi; yüklemeyi
 (`next/font`, `@font-face`, CDN) siz yaparsınız. Bir UI paketinin ağdan font
@@ -132,7 +144,8 @@ hedefi küçülmez**: görsel kutu daralır, `tap-target` örtüsü 44 px kalır
 
 ### CSS'imizi ezmek — `@layer hanui`
 
-Kütüphane CSS'inin tamamı `@layer hanui` içinde. Katmanlı bir kural, katmansız
+Kütüphane CSS'inin tamamı `@layer hanui` içinde — tema ezmeleri
+(`HanuiProvider theme`, `initHanui`) dahil. Katmanlı bir kural, katmansız
 bir kurala **her zaman yenilir** — özgüllüğe ve sıraya bakılmaksızın:
 
 ```css

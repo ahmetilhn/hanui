@@ -1,8 +1,8 @@
 'use client';
 
-import { type FC, type ReactNode, useEffect, useMemo, useRef } from 'react';
+import { type FC, type ReactNode, useMemo, useRef } from 'react';
 
-import { applyThemeConfig } from '../helpers/theme.helper';
+import { buildThemeCss, THEME_STYLE_ID, toStyleHtml } from '../helpers/theme.helper';
 import type { HanuiLinkComponent } from '../types/link.type';
 import HanuiContext from './context';
 import type { HanuiLabels, HanuiThemeConfig } from '@/types/theme.type';
@@ -21,7 +21,8 @@ type Props = {
 };
 
 /**
- * Kütüphane sağlayıcısı.
+ * Kütüphane sağlayıcısı. `<body>` içine konur: tema ezmesini çocuklarından önce bir `<style>`
+ * olarak çizer.
  * @example <HanuiProvider linkComponent={NextLink} theme={{ light: { link: '#0a58ca' } }}> <App…
  */
 const HanuiProvider: FC<Props> = ({ children, theme, linkComponent, labels }) => {
@@ -31,10 +32,18 @@ const HanuiProvider: FC<Props> = ({ children, theme, linkComponent, labels }) =>
    */
   const themeKey = useMemo(() => (theme ? JSON.stringify(theme) : ''), [theme]);
 
-  useEffect(() => {
-    applyThemeConfig(theme);
+  /*
+   * Ezme AGACTA cizilir, efektte belgeye yazilmaz: sunucu ciktisinda da var ve ilk boyamada
+   * uygulanir. 5.6.2'ye kadar `useEffect` icindeki `applyThemeConfig` `<head>`e hidrasyondan SONRA
+   * yaziyordu; ilk karede varsayilan palet, bir kare sonra tema gorunuyordu. `<body>` icinde
+   * oldugu icin tuketicinin `<head>`deki stil sayfalarindan (katman sirasi bildirimi dahil) sonra
+   * gelir.
+   */
+  const themeHtml = useMemo(
+    () => (theme ? toStyleHtml(buildThemeCss(theme)) : ''),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [themeKey]);
+    [themeKey],
+  );
 
   /* `theme` bir REFERANSTAN okunur, bagimliliktan degil. */
   const themeRef = useRef(theme);
@@ -50,7 +59,14 @@ const HanuiProvider: FC<Props> = ({ children, theme, linkComponent, labels }) =>
     [themeKey, linkComponent, labels],
   );
 
-  return <HanuiContext.Provider value={value}>{children}</HanuiContext.Provider>;
+  return (
+    <HanuiContext.Provider value={value}>
+      {themeHtml !== '' && (
+        <style id={THEME_STYLE_ID} dangerouslySetInnerHTML={{ __html: themeHtml }} />
+      )}
+      {children}
+    </HanuiContext.Provider>
+  );
 };
 
 export default HanuiProvider;
