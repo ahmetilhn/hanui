@@ -3,10 +3,10 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { LABELS } from '../fixtures/labels';
 
 import CodeBadge from '@/components/CodeBadge';
-import HanuiProvider from '@/theme/HanuiProvider';
+import UiProvider from '@/theme/UiProvider';
 
 const renderBadge = (ui: React.ReactElement) =>
-  render(<HanuiProvider labels={LABELS}>{ui}</HanuiProvider>);
+  render(<UiProvider labels={LABELS}>{ui}</UiProvider>);
 
 describe('CodeBadge', () => {
   it('kodu çizer; `isCopyable` verilmeden kopyalama düğmesi YOKTUR', () => {
@@ -34,9 +34,9 @@ describe('CodeBadge', () => {
     expect(container.querySelector('[class*="badge--md"]')).not.toBeNull();
 
     rerender(
-      <HanuiProvider labels={LABELS}>
+      <UiProvider labels={LABELS}>
         <CodeBadge code="P0101" size="lg" />
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     expect(container.querySelector('[class*="badge--lg"]')).not.toBeNull();

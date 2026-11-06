@@ -1,15 +1,13 @@
 /**
- * @ahmetilhn/hanui — açık genel API. Dışa verilen her ad bir SÖZLEŞMEDİR: bir sonraki büyük sürüme
+ * @handijit/ui — açık genel API. Dışa verilen her ad bir SÖZLEŞMEDİR: bir sonraki büyük sürüme
  * kadar kaldırılmaz ve davranışı sessizce değişmez.
  */
 
-import './styles/base.scss';
-
 // --- Tema -------------------------------------------------------------
-export { default as HanuiProvider } from './theme/HanuiProvider';
-export { default as initHanui } from './theme/initHanui';
-export { default as HanuiThemeScript } from './theme/HanuiThemeScript';
-export { useHanui } from './theme/context';
+export { default as UiProvider } from './theme/UiProvider';
+export { default as initUi } from './theme/initUi';
+export { default as UiThemeScript } from './theme/UiThemeScript';
+export { useUi } from './theme/context';
 export {
   COMPACT_DENSITY,
   DARK_THEME,
@@ -21,7 +19,7 @@ export {
  * ⚠ `applyThemeConfig` DE PUBLIC ve bu zorunlu: onsuz `resolveTokens` + `buildThemeCss` cifti ISE
  * YARAMIYORDU
  * ⚠ `THEME_ATTRIBUTE` / `DENSITY_ATTRIBUTE` de disariya veriliyor: iki tuketici de
- * `data-hanui-theme` dizesini ELLE yaziyor…
+ * `data-ui-theme` dizesini ELLE yaziyor…
  */
 export {
   applyThemeConfig,
@@ -39,8 +37,8 @@ export { hasOpenSurface } from './helpers/focus.helper';
 
 // --- Kancalar ---------------------------------------------------------
 export { default as useAnnounce } from './hooks/useAnnounce';
-export { default as useHanuiTheme } from './hooks/useHanuiTheme';
-export { default as useHanuiTokens } from './hooks/useHanuiTokens';
+export { default as useUiTheme } from './hooks/useUiTheme';
+export { default as useUiTokens } from './hooks/useUiTokens';
 export { default as useStickToBottom } from './hooks/useStickToBottom';
 export {
   default as useListboxNavigation,
@@ -58,7 +56,7 @@ export { default as useVirtualList } from './hooks/useVirtualList';
 export { default as UIVariant } from './enums/ui-variant.enum';
 export { default as UISize } from './enums/ui-size.enum';
 export type { CommonElementProps } from './types/common-element-props.type';
-export type { HanuiLinkComponent, HanuiLinkExtraProps, HanuiLinkProps } from './types/link.type';
+export type { UiLinkComponent, UiLinkExtraProps, UiLinkProps } from './types/link.type';
 
 // --- Sabitler ---------------------------------------------------------
 export {
@@ -190,17 +188,17 @@ export type {
   PositioningState,
 } from './types/positioning.type';
 export type {
-  HanuiColorPreference,
-  HanuiColorScheme,
-  HanuiContextValue,
-  HanuiDensity,
-  HanuiFonts,
-  HanuiLabels,
-  HanuiMetricToken,
-  HanuiMetrics,
-  HanuiResolvedTokens,
-  HanuiThemeConfig,
-  HanuiThemeTokens,
-  HanuiToken,
-  InitHanuiOptions,
+  UiColorPreference,
+  UiColorScheme,
+  UiContextValue,
+  UiDensity,
+  UiFonts,
+  UiLabels,
+  UiMetricToken,
+  UiMetrics,
+  UiResolvedTokens,
+  UiThemeConfig,
+  UiThemeTokens,
+  UiToken,
+  InitUiOptions,
 } from './types/theme.type';

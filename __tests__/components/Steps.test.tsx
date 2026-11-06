@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { LABELS } from '../fixtures/labels';
 
 import Steps from '@/components/Steps';
-import HanuiProvider from '@/theme/HanuiProvider';
+import UiProvider from '@/theme/UiProvider';
 
 const STEPS = [
   { id: 'a', label: 'Hava filtresi', description: 'En düşük maliyetli ihtimal' },
@@ -13,9 +13,9 @@ const STEPS = [
 describe('Steps — statik talimat modu', () => {
   it('`currentIndex` yokken durum semantiği YOKTUR: aria-current yok, tüm işaretler numara', () => {
     const { container } = render(
-      <HanuiProvider labels={LABELS}>
+      <UiProvider labels={LABELS}>
         <Steps label="Kontrol sırası" orientation="vertical" steps={STEPS} />
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     expect(container.querySelector('[aria-current]')).toBeNull();
@@ -27,9 +27,9 @@ describe('Steps — statik talimat modu', () => {
 
   it('`currentIndex` verildiğinde ilerleme semantiği aynen durur', () => {
     const { container } = render(
-      <HanuiProvider labels={LABELS}>
+      <UiProvider labels={LABELS}>
         <Steps label="Ödeme adımları" currentIndex={1} steps={STEPS} />
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     expect(container.querySelector('[aria-current="step"]')).not.toBeNull();

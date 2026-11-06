@@ -40,9 +40,9 @@ describe('Combobox otomatik odak', () => {
     const user = userEvent.setup();
     renderCombobox();
 
-    await user.click(screen.getByRole('button', { name: 'Marka' }));
+    await user.click(screen.getByRole('combobox', { name: 'Marka' }));
 
-    const search = screen.getByRole('combobox');
+    const search = screen.getByRole('textbox', { name: 'Ara…' });
 
     expect(search).toBeInTheDocument();
     expect(search).not.toHaveFocus();
@@ -53,8 +53,8 @@ describe('Combobox otomatik odak', () => {
     const user = userEvent.setup();
     renderCombobox();
 
-    await user.click(screen.getByRole('button', { name: 'Marka' }));
-    const search = screen.getByRole('combobox');
+    await user.click(screen.getByRole('combobox', { name: 'Marka' }));
+    const search = screen.getByRole('textbox', { name: 'Ara…' });
 
     await user.click(search);
     await user.keyboard('BM');
@@ -68,8 +68,8 @@ describe('Combobox otomatik odak', () => {
     const user = userEvent.setup();
     renderCombobox();
 
-    await user.click(screen.getByRole('button', { name: 'Marka' }));
+    await user.click(screen.getByRole('combobox', { name: 'Marka' }));
 
-    expect(screen.getByRole('combobox')).toHaveFocus();
+    expect(screen.getByRole('textbox', { name: 'Ara…' })).toHaveFocus();
   });
 });

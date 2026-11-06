@@ -2,7 +2,7 @@
 
 import { type FC, memo, useRef } from 'react';
 
-import { useHanui, useStickToBottom } from '@ahmetilhn/hanui';
+import { useUi, useStickToBottom } from '@handijit/ui';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
@@ -41,7 +41,7 @@ const TerminalOutput: FC<Props> = ({
   className,
   testId,
 }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const ref = useRef<HTMLPreElement>(null);
   useStickToBottom(ref);
 

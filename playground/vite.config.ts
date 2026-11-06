@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
 
 // @ts-expect-error — eklenti düz JS; tip bildirimi yok ve gerekmiyor.
-import hanuiLayer from '../scripts/lib/postcss-hanui-layer.mjs';
+import uiLayer from '../scripts/lib/postcss-ui-layer.mjs';
 import { defineConfig } from 'vite';
 
 /** Galeri uygulaması — kütüphane derlemesinden AYRI. */
@@ -10,14 +10,14 @@ export default defineConfig({
   resolve: {
     /* `chat` bileşenleri ana girişi paket adıyla alır; galeride kaynağa eşlenir. */
     alias: [
-      { find: /^@ahmetilhn\/hanui$/, replacement: resolve(import.meta.dirname, '../src/index.ts') },
+      { find: /^@ahmetilhn\/ui$/, replacement: resolve(import.meta.dirname, '../src/index.ts') },
       { find: '@', replacement: resolve(import.meta.dirname, '../src') },
     ],
   },
   css: {
-    postcss: { plugins: [hanuiLayer()] },
+    postcss: { plugins: [uiLayer()] },
     modules: {
-      generateScopedName: 'hanui-[local]-[hash:base64:5]',
+      generateScopedName: 'ui-[local]-[hash:base64:5]',
     },
     preprocessorOptions: {
       scss: {

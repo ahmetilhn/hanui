@@ -5,7 +5,7 @@ import { render } from '@testing-library/react';
 import { HeartFill, HouseFill } from 'react-bootstrap-icons';
 
 import { axe } from '@tests/support/axe';
-import * as hanui from '@/index';
+import * as ui from '@/index';
 
 const {
   Accordion,
@@ -46,8 +46,8 @@ const {
   FileUpload,
   FilterBar,
   FilterBarField,
-  HanuiProvider,
-  HanuiThemeScript,
+  UiProvider,
+  UiThemeScript,
   IconButton,
   Input,
   Kbd,
@@ -96,22 +96,22 @@ const {
   ToastHub,
   ToastPortal,
   Tooltip,
-} = hanui;
+} = ui;
 
 const OPTIONS = [
   { value: 'a', label: 'Birinci' },
   { value: 'b', label: 'İkinci', description: 'İkincil satır' },
 ];
 
-const COLUMNS: hanui.DataTableColumn[] = [
+const COLUMNS: ui.DataTableColumn[] = [
   { key: 'name', label: 'Ad' },
   { key: 'actions', srLabel: 'Eylemler' },
 ];
 
 const SCENARIOS: Record<string, Record<string, ReactElement>> = {
-  HanuiProvider: { default: <HanuiProvider>içerik</HanuiProvider> },
+  UiProvider: { default: <UiProvider>içerik</UiProvider> },
   /* Görünür bir şey çizmez; sunucu çıktısındaki betik ilk boyamadan önce çalışır. */
-  HanuiThemeScript: { default: <HanuiThemeScript storageKey="theme" /> },
+  UiThemeScript: { default: <UiThemeScript storageKey="theme" /> },
 
   Button: {
     default: <Button>Kaydet</Button>,
@@ -844,7 +844,7 @@ const cases = Object.entries(SCENARIOS).flatMap(([component, states]) =>
 
 describe('eksen taraması', () => {
   it.each(cases)('%s — %s', async (_component, _state, element) => {
-    render(<HanuiProvider labels={LABELS}>{element}</HanuiProvider>);
+    render(<UiProvider labels={LABELS}>{element}</UiProvider>);
 
     expect(await axe(document.body)).toHaveNoViolations();
   });
@@ -855,7 +855,7 @@ describe('senaryo defteri `index.ts` ile eşleşir', () => {
     (typeof value === 'function' && /^[A-Z]/.test((value as { name?: string }).name ?? '')) ||
     (typeof value === 'object' && value !== null && '$$typeof' in value);
 
-  const exported = Object.entries(hanui)
+  const exported = Object.entries(ui)
     .filter(([name, value]) => /^[A-Z]/.test(name) && isComponent(value))
     .map(([name]) => name);
 

@@ -1,5 +1,3 @@
-
-
 /** Doğrusal → sRGB gamma. */
 const toGamma = channel =>
   channel <= 0.0031308 ? channel * 12.92 : 1.055 * channel ** (1 / 2.4) - 0.055;
@@ -35,7 +33,12 @@ const oklchToRgb = ({ l, c, h }) => {
 const EPSILON = 0.0001;
 
 const isInGamut = ({ r, g, b }) =>
-  r >= -EPSILON && r <= 1 + EPSILON && g >= -EPSILON && g <= 1 + EPSILON && b >= -EPSILON && b <= 1 + EPSILON;
+  r >= -EPSILON &&
+  r <= 1 + EPSILON &&
+  g >= -EPSILON &&
+  g <= 1 + EPSILON &&
+  b >= -EPSILON &&
+  b <= 1 + EPSILON;
 
 /** `{ l, c, h }` → `#rrggbb`. ⚠ Gamut dışı renk KIRPILMAZ, chroma DÜŞÜRÜLÜR. */
 export const toHex = ({ l, c, h }) => {
@@ -61,7 +64,9 @@ const toLinear = channel =>
 /** `#rrggbb` → `{ l, a, b, c }` (OKLab + chroma). Kapıların ölçüm aracı. */
 export const fromHex = hex => {
   const value = hex.replace('#', '');
-  const [r, g, b] = [0, 2, 4].map(start => toLinear(parseInt(value.slice(start, start + 2), 16) / 255));
+  const [r, g, b] = [0, 2, 4].map(start =>
+    toLinear(parseInt(value.slice(start, start + 2), 16) / 255),
+  );
 
   const long = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
   const medium = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);

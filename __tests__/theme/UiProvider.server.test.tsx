@@ -5,26 +5,26 @@
 import { renderToString } from 'react-dom/server';
 
 import { THEME_STYLE_ID } from '@/helpers/theme.helper';
-import HanuiProvider from '@/theme/HanuiProvider';
+import UiProvider from '@/theme/UiProvider';
 
-describe('HanuiProvider — sunucu çizimi', () => {
+describe('UiProvider — sunucu çizimi', () => {
   it('tema ezmesi SUNUCU çıktısında ve çocuklardan önce', () => {
     const html = renderToString(
-      <HanuiProvider theme={{ dark: { 'danger-solid': '#ededed' } }}>
+      <UiProvider theme={{ dark: { 'danger-solid': '#ededed' } }}>
         <p>içerik</p>
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
-    expect(html.startsWith(`<style id="${THEME_STYLE_ID}">@layer hanui {`)).toBe(true);
-    expect(html).toContain('--hanui-danger-solid: #ededed;');
+    expect(html.startsWith(`<style id="${THEME_STYLE_ID}">@layer ui {`)).toBe(true);
+    expect(html).toContain('--ui-danger-solid: #ededed;');
     expect(html.indexOf('<style')).toBeLessThan(html.indexOf('<p>'));
   });
 
   it('tema verilmezse hiçbir şey çizmez — sağlayıcı yalnızca bağlam', () => {
     const html = renderToString(
-      <HanuiProvider>
+      <UiProvider>
         <p>içerik</p>
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     expect(html).toBe('<p>içerik</p>');
@@ -32,12 +32,12 @@ describe('HanuiProvider — sunucu çizimi', () => {
 
   it('CSS HTML varlığına çevrilmez — seçicideki tırnak bozulmaz', () => {
     const html = renderToString(
-      <HanuiProvider theme={{ light: { link: '#0d6efd' } }}>
+      <UiProvider theme={{ light: { link: '#0d6efd' } }}>
         <p>içerik</p>
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
-    expect(html).toContain("html:root[data-hanui-theme='light']");
+    expect(html).toContain("html:root[data-ui-theme='light']");
     expect(html).not.toContain('&#x27;');
   });
 });

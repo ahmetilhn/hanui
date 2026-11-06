@@ -4,7 +4,7 @@ import { type FC, Fragment, memo, useEffect, useMemo, useRef, useState } from 'r
 
 import { CheckLg, ClipboardFill } from 'react-bootstrap-icons';
 
-import { IconButton, useAnnounce, useHanui } from '@ahmetilhn/hanui';
+import { IconButton, useAnnounce, useUi } from '@handijit/ui';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
@@ -48,7 +48,7 @@ const COPIED_FOR = 1600;
  * Kod satırları SARILMAZ: dar ekranda kutu yatay kayar (kodun girintisi anlamdır).
  */
 const CodeBlock: FC<Props> = ({ code, language, html, maxHeight, className, testId }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const announce = useAnnounce();
   const [isCopied, setIsCopied] = useState(false);
   const timer = useRef<number | undefined>(undefined);

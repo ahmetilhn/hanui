@@ -1,11 +1,9 @@
-'use client';
-
 import {
   type AnchorHTMLAttributes,
   type ButtonHTMLAttributes,
   forwardRef,
   memo,
-  type MouseEvent,
+  type MouseEventHandler,
   type ReactNode,
 } from 'react';
 
@@ -14,8 +12,8 @@ import { named } from '../../helpers/component.helper';
 import UISize from '../../enums/ui-size.enum';
 import UIVariant from '../../enums/ui-variant.enum';
 import type { CommonElementProps } from '../../types/common-element-props.type';
-import type { HanuiLinkExtraProps } from '../../types/link.type';
-import HanuiLink from '../Link';
+import type { UiLinkExtraProps } from '../../types/link.type';
+import UiLink from '../Link';
 import Spinner from '../Spinner';
 
 import styles from './index.module.scss';
@@ -41,7 +39,7 @@ type Props = BaseProps &
     /** Uygulama dışına çıkan bağlantı: yeni sekmede açılır ve yönlendirici devreye girmez. */
     isExternal?: boolean;
     /** Yönlendiriciye geçirilecek ek props (`{ scroll: false }`, `{ replace: true }`). */
-    linkProps?: HanuiLinkExtraProps;
+    linkProps?: UiLinkExtraProps;
   };
 
 /**
@@ -69,6 +67,8 @@ const Button = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
     },
     ref,
   ) => {
+    const isInert = Boolean(disabled) || Boolean(isLoading);
+
     const classNames = cx(
       styles.button,
       styles[`button--${variant.toLowerCase()}`],
@@ -76,6 +76,7 @@ const Button = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
       shape === 'pill' && styles['button--pill'],
       isFullWidth && styles['button--full'],
       isLoading && styles['button--loading'],
+      href && isInert && styles['button--inert'],
       className,
     );
 
@@ -92,20 +93,20 @@ const Button = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
      * Olculen ariza: tip `ButtonHTMLAttributes` oldugu icin `onClick`, `aria-*`, `data-*`, `id`,
      * `title`, `onBlur` hepsi TIP DENETIMINDEN geciyordu ama…
      * ⚠ BAGLANTI DALLARI DA `...rest` YAYAR.
+     *
+     * 6.0: BAĞLANTI DALI İŞLEV PROP'U ÜRETMEZ. Bileşen `'use client'` taşımaz; sunucu bileşeninden
+     * çizildiğinde `UiLink` (istemci) bir işlev alsaydı RSC serileştirmesi düşerdi ("Functions
+     * cannot be passed directly to Client Components"). Pasif bağlantı (`disabled` / `isLoading`)
+     * `aria-disabled` + `tabIndex=-1` + `pointer-events: none` (`button--inert`) ile durdurulur;
+     * tüketicinin `onClick`i yalnızca etkinken ve verildiyse iletilir.
      */
-    const isInert = Boolean(disabled) || Boolean(isLoading);
-
     const linkGuards = {
       'aria-busy': isLoading,
       'aria-disabled': isInert || undefined,
       tabIndex: isInert ? -1 : rest.tabIndex,
-      onClick: (event: MouseEvent<HTMLAnchorElement>) => {
-        if (isInert) {
-          event.preventDefault();
-          return;
-        }
-        rest.onClick?.(event as unknown as MouseEvent<HTMLButtonElement>);
-      },
+      onClick: isInert
+        ? undefined
+        : (rest.onClick as unknown as MouseEventHandler<HTMLAnchorElement> | undefined),
     };
 
     if (href && isExternal)
@@ -125,7 +126,7 @@ const Button = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
 
     if (href)
       return (
-        <HanuiLink
+        <UiLink
           {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}
           {...linkGuards}
           href={href}
@@ -134,7 +135,7 @@ const Button = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
           {...linkProps}
         >
           {content}
-        </HanuiLink>
+        </UiLink>
       );
 
     return (

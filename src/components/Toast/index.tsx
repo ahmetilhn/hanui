@@ -15,7 +15,7 @@ import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import useDismissOnEscape from '../../hooks/useDismissOnEscape';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 import IconButton from '../IconButton';
 
 import styles from './index.module.scss';
@@ -202,7 +202,7 @@ type HubProps = {
 
 /** Bildirim yığını — uygulamada BİR KEZ çizilir. */
 const ToastHub = ({ closeLabel, regionLabel, className }: HubProps) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const [toasts, setToasts] = useState<ToastRecord[]>([]);
 
   useEffect(() => {

@@ -13,14 +13,14 @@ import {
   RadarChart,
   ScatterPlot,
 } from '@/charts';
-import { HanuiProvider } from '@/index';
+import { UiProvider } from '@/index';
 
 /*
  * GRAFİK DAVRANIŞI — klavye, işaretçi isabeti, lejant, ipucu yerleşimi ve gizli tablo.
  * jsdom yerleşim yapmıyor: genişlik `width` ile sabitlenir, SVG'nin kutusu elle verilir.
  */
 
-const wrap = (node: ReactNode) => render(<HanuiProvider labels={LABELS}>{node}</HanuiProvider>);
+const wrap = (node: ReactNode) => render(<UiProvider labels={LABELS}>{node}</UiProvider>);
 
 const chart = (name: string) => screen.getByRole('img', { name }) as unknown as SVGSVGElement;
 
@@ -96,7 +96,7 @@ describe('ChartFrame — klavye', () => {
 
     expect(tooltip()).toHaveAttribute('aria-hidden', 'true');
     await waitFor(() =>
-      expect(document.getElementById('hanui-live-region-polite')).toHaveTextContent('Oca'),
+      expect(document.getElementById('ui-live-region-polite')).toHaveTextContent('Oca'),
     );
   });
 

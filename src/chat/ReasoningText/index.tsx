@@ -1,6 +1,6 @@
 import { type FC, memo } from 'react';
 
-import { ScrollArea } from '@ahmetilhn/hanui';
+import { ScrollArea } from '@handijit/ui';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';

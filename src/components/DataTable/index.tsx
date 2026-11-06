@@ -1,3 +1,5 @@
+'use client';
+
 import { Children, type FC, type HTMLAttributes, memo, type ReactNode } from 'react';
 
 import { ExclamationCircleFill } from 'react-bootstrap-icons';
@@ -5,7 +7,7 @@ import { ExclamationCircleFill } from 'react-bootstrap-icons';
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import { resolveLabel } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -76,7 +78,7 @@ const DataTable: FC<Props> = ({
   testId,
 }) => {
   /* Bosluk karari satir SAYISINDAN verilir; cagiranin ayrica `isEmpty` gecmesi gerekmez. */
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const rowCount = Children.count(children);
 
   const renderStateRow = (content: ReactNode, modifier?: 'error') => (

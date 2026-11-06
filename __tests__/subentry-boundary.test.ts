@@ -4,9 +4,9 @@ import { join } from 'node:path';
 /*
  * ALT GİRİŞLERİN SINIRI — `src/chat` ve `src/charts` ana girişe ait her şeyi PAKET ADIYLA alır.
  *
- * ⚠ Alt giriş derlemesinde `@ahmetilhn/hanui` dışsal kalır. Bir alt giriş dosyası ana girişin bir
+ * ⚠ Alt giriş derlemesinde `@handijit/ui` dışsal kalır. Bir alt giriş dosyası ana girişin bir
  * modülüne GÖRELİ yolla uzanırsa o modülün ikinci bir kopyası `chat.js` / `charts.js`e paketlenir:
- * - `theme/context` → alt giriş bileşenleri `HanuiProvider`ın metinlerini ve yönlendiricisini GÖRMEZ
+ * - `theme/context` → alt giriş bileşenleri `UiProvider`ın metinlerini ve yönlendiricisini GÖRMEZ
  * - `helpers/focus.helper` → kipsel yüzey yığını ikiye bölünür, Escape yanlış yüzeyi kapatır
  * - bir bileşen → CSS'i alt girişin CSS'ine de girer, iki kez iner
  * Derleme bunların hiçbirinde kırılmaz; bu test kırar.

@@ -1,18 +1,16 @@
-'use client';
-
 import {
   type AnchorHTMLAttributes,
   type ButtonHTMLAttributes,
   forwardRef,
   memo,
-  type MouseEvent,
+  type MouseEventHandler,
   type ReactNode,
 } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
-import type { HanuiLinkExtraProps } from '../../types/link.type';
-import HanuiLink from '../Link';
+import type { UiLinkExtraProps } from '../../types/link.type';
+import UiLink from '../Link';
 
 import styles from './index.module.scss';
 
@@ -32,7 +30,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   /** Verilirse öğe bir bağlantı olarak çizilir. */
   href?: string;
   /** Yönlendiriciye geçirilecek ek props. */
-  linkProps?: HanuiLinkExtraProps;
+  linkProps?: UiLinkExtraProps;
   testId?: string;
 };
 
@@ -70,25 +68,23 @@ const IconButton = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
 
     if (href)
       return (
-        <HanuiLink
+        <UiLink
           {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}
           href={href}
           className={classNames}
           aria-label={label}
           aria-disabled={isInert || undefined}
           tabIndex={isInert ? -1 : rest.tabIndex}
-          onClick={(event: MouseEvent<HTMLAnchorElement>) => {
-            if (isInert) {
-              event.preventDefault();
-              return;
-            }
-            rest.onClick?.(event as unknown as MouseEvent<HTMLButtonElement>);
-          }}
+          onClick={
+            isInert
+              ? undefined
+              : (rest.onClick as unknown as MouseEventHandler<HTMLAnchorElement> | undefined)
+          }
           data-testid={testId}
           {...linkProps}
         >
           {icon}
-        </HanuiLink>
+        </UiLink>
       );
 
     return (

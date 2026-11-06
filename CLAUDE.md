@@ -1,4 +1,4 @@
-# @ahmetilhn/hanui
+# @handijit/ui
 
 Erişilebilir, tema güdümlü React tasarım sistemi. React 19 · TypeScript strict · SCSS Modules · Vite.
 
@@ -9,7 +9,7 @@ içindedir.
 ⚠ Bu sözleşme kütüphaneyi kullanan uygulamalar için de **normatiftir**.
 Onların belgeleri yalnızca uygulamaya özgü sapmaları yazar.
 
-⚠ **Bu dosya 5.x'i anlatır.** hanui'yi `^4.1.0` ile alan uygulamalar 5.x'e
+⚠ **Bu dosya 5.x'i anlatır.** @handijit/ui'yi `^4.1.0` ile alan uygulamalar 5.x'e
 kendiliğinden geçmez; geçene kadar onlar için geçerli renk
 kararları `v4.1.0` etiketindeki CLAUDE.md'dedir. Geçiş tablosu: "Göç" →
 "5.0 token sözleşmesi".
@@ -36,7 +36,7 @@ kararları `v4.1.0` etiketindeki CLAUDE.md'dedir. Geçiş tablosu: "Göç" →
 | Satır listesi seçim mi eylem mi? | `ActionListItem isSelected` / `ActionListItem` | `isSelected` verilince satır `aria-pressed` taşır ve kalıcı bir durum vaat eder; eylemi seçim gibi sunmak yanlış söz |
 | Öneriler seçim mi eylem mi? | `ChipGroup` / `PromptSuggestions` | Öneri bir EYLEM (`onPick`); çip ise geri alınabilir bir seçim |
 | Parçaların toplamı mı zaman çizelgesi mi? | `SegmentBar` (`value`) / `SegmentBar` (`from`/`to`) | Tek görsel (`role="img"`); tam bir eksen gerekiyorsa `/charts` |
-| Hangi grafik? | `/charts` — bkz. "`@ahmetilhn/hanui/charts`" | Eğilim, karşılaştırma, parça-bütün ve dağılım ayrı grafikler; ayrımlar orada ölçülü |
+| Hangi grafik? | `/charts` — bkz. "`@handijit/ui/charts`" | Eğilim, karşılaştırma, parça-bütün ve dağılım ayrı grafikler; ayrımlar orada ölçülü |
 
 ## Yüzey ailesi ve yükseklik
 
@@ -310,7 +310,7 @@ sis ikincil metin (6,46:1) + üçüncü kademe (5,20:1) + `BAND.darkLine` ayır�
 
 ⚠ Tema alt ağaca **kapsamlandırılamaz**: `_tokens.generated.scss` `light`/`dark`
 karışımlarını yalnızca `:root`a bağlar. "Bu şeridi koyu temaya sabitle" demek
-için `data-hanui-theme`i bir `<div>`e yazmak **çalışmaz**; doğru yol tam olarak
+için `data-ui-theme`i bir `<div>`e yazmak **çalışmaz**; doğru yol tam olarak
 budur — temadan bağımsız bir token ailesi (`band-*`, `shell*`).
 
 ### Bağlantı ve odak — yeşil kalan üç yerden ikisi
@@ -432,7 +432,7 @@ bildirilir, metnin silinmesiyle değil.
   ELLE bakılan bir liste ve ikisi listede değildi — yani kural yazılıydı,
   kısmen zorlanıyordu ve aradan geçen iki bileşen sessizce kaldı. İkisi de
   TÜKETİCİDE ölçüldü (e-ticaret vitrini, 390px ve 320px gerçek tarayıcı),
-  hanui'nin kendi ızgarasında değil.
+  @handijit/ui'nin kendi ızgarasında değil.
   ⚠ Türetilmiş bir kural denendi ve **elendi**: "44px altında sabit yükseklik
   yazan her dosya `tap-target` içermeli" 32 satır işaretliyor ve ezici
   çoğunluğu süs (`Progress` 4px çubuk, `Spinner`, `Steps` 1px bağlayıcı çizgi).
@@ -695,7 +695,7 @@ okur.
 | `__tests__/styles/scroll-containment.test.ts` | SCSS'te `overflow: auto\|scroll` yazan her kural konumlu; BEM değiştiricisi (`&--x`) ebeveyninden, `position` yazan mixin'in include'u (`tap-target`, `sticky-below-header`) sayılır. Tek istisna `Menu` — gerekçesiyle ve bayatlık denetimiyle |
 | `__tests__/e2e/scroll-containment.spec.ts` (4 × 3 proje) | gerçek yerleşim: kabın dibine konan gizli etiket hiçbir atanın `scrollHeight`ini büyütmez, `scrollIntoView` yalnızca kabı kaydırır. `desktop-behavior` + `ios` + `android` (`ANY_VIEWPORT_SPEC`) |
 
-## `@ahmetilhn/hanui/chat` — sohbet bileşenlerinin AYRI girişi (5.2)
+## `@handijit/ui/chat` — sohbet bileşenlerinin AYRI girişi (5.2)
 
 **Neden ayrı:** 5.1 tüm girişi bütçenin sınırına taşıdı (42,00 / 42 kB) ve
 sohbet bileşenlerinin e-ticaret vitrininde çağıranı yok. Ana girişe girselerdi vitrinin
@@ -715,7 +715,7 @@ eklendi (ölçüldü: ana giriş 42 000 bayt, önce ve sonra).
 dosyası `../../components/…` ya da `../../theme/context` gibi göreli bir yolla
 ana girişe uzanırsa o modülün İKİNCİ BİR KOPYASI `chat.js`e paketlenir ve
 derleme yine de yeşil biter:
-- `theme/context` kopyası → sohbet bileşenleri `HanuiProvider`ın metinlerini
+- `theme/context` kopyası → sohbet bileşenleri `UiProvider`ın metinlerini
   ve yönlendiricisini GÖRMEZ
 - `helpers/focus.helper` kopyası → kipsel yüzey yığını ikiye bölünür, `Escape`
   yanlış yüzeyi kapatır
@@ -752,7 +752,7 @@ girişinin cephe dosyasındaki `export { … } from` satırlarını okur.
 | | `TerminalOutput` | Mürekkep yüzey (`shell*`), sona yapışık; stderr gizli önek taşır (renk tek başına anlam taşımaz) |
 | | `SourceList` + `Citation` | Atıfın okunan adı `labels.chat.citation(n)` |
 | | `MessageActions` | `role="toolbar"`, ok/`Home`/`End` |
-| Uygulama | `AppBar` | Kendi yüksekliğini `--hanui-header-height`e yazar |
+| Uygulama | `AppBar` | Kendi yüksekliğini `--ui-header-height`e yazar |
 | | `ActionList` + `ActionListItem` | `isSelected` verilirse SEÇİM (`aria-pressed`), verilmezse EYLEM; `rowHeight` ile sanal (`aria-posinset`/`aria-setsize`) |
 | Veri | `SegmentBar` | Yığılmış (`value`) ya da zaman çizelgesi (`from`/`to`); TEK görsel (`role="img"`), adı tüm parçaları okur |
 | | `Legend` · `DescriptionList` | Kategorik palet; `tone` (`color` değil — tek ad kuralı) |
@@ -767,7 +767,7 @@ token'ları eklenmedi (`surface-inset` ve `shell*` karşılıyor).
 
 5.2'de `CodeBlock` "vurgulayıcı İÇERMEZ" diye kuruldu, Shiki tüketicideydi. Sonuç:
 Shiki bağlamayan her tüketicide (galeri dahil) kod **renksiz** çiziliyordu; bağlayanda
-da renkler Shiki'nin `github-*` temasından geliyordu — kontrastı ölçülmüyor, hanui
+da renkler Shiki'nin `github-*` temasından geliyordu — kontrastı ölçülmüyor, @handijit/ui
 paletiyle hiçbir bağı yok.
 
 | Karar | Gerekçe |
@@ -834,8 +834,8 @@ Yorum `text-3` + eğik, noktalama `text-2`, fark satırları `ok-fg` / `bad-fg`
   `SYNTAX_LIGHT_THEME` / `SYNTAX_DARK_THEME` (`tokens.ts`) →
   `_syntax.generated.scss` → yalnızca `CodeBlock` `@use` eder → `:root` kuralları
   `chat.css`e iner. Ana pakete sıfır bayt (42,05 kB ve 23,09 kB, önce ve sonra).
-  Bedeli: ezme CSS'te (`--hanui-syntax-keyword`); `HanuiProvider theme`,
-  `useHanuiTokens` ve SCSS API bu adları tanımaz.
+  Bedeli: ezme CSS'te (`--ui-syntax-keyword`); `UiProvider theme`,
+  `useUiTokens` ve SCSS API bu adları tanımaz.
 
 **Bütçe:** sohbet girişi 6,29 → 11,78 kB (vurgulayıcı 4,93, biçimlendirici 0,43);
 bütçe 8 → 13 kB. Bedeli yalnızca `CodeBlock` alan öder — diller ve kelime kümeleri
@@ -844,11 +844,11 @@ ilk kullanımda kurulur (fabrika), modül düzeyinde açıklamasız çağrı yok
 | nöbetçi | ne tutuyor |
 |---|---|
 | `__tests__/chat/code-block.test.tsx` | parçalar birleşince kodun KENDİSİ; hiçbir kural bayrak, yakalayan grup ya da boş eşleşme taşımaz; dil başına ölçülmüş kararlar; biçimlendiricinin `JSON.stringify` eşdeğerliği ve metni koruması; kopyalanan metin |
-| `__tests__/theme/tokens.contract.test.ts` "sözdizimi token'ları" | `_syntax.generated.scss` tabloyla birebir; ana token dosyasında `--hanui-syntax-` geçerse kırar |
+| `__tests__/theme/tokens.contract.test.ts` "sözdizimi token'ları" | `_syntax.generated.scss` tabloyla birebir; ana token dosyasında `--ui-syntax-` geçerse kırar |
 | `.size-limit.js` "yalnızca ChatThread" (1,3 kB) | vurgulayıcı başka bir sohbet bileşenine sızarsa |
 | `.size-limit.js` "yalnızca CodeBlock" (7 kB) | yeni bir dil buradan geçer |
 
-## `@ahmetilhn/hanui/charts` — SVG grafikleri (5.3)
+## `@handijit/ui/charts` — SVG grafikleri (5.3)
 
 On grafik, **sıfır bağımlılık**: ölçek, istatistik ve yol üretimi
 `src/charts/core/`ta saf fonksiyon. Sohbet girişiyle aynı kurgu
@@ -874,7 +874,7 @@ On grafik, **sıfır bağımlılık**: ölçek, istatistik ve yol üretimi
 | `RadarChart` | Aynı ölçekte 3+ eksen | Birimleri farklı eksenler önce 0-100'e normalleştirilir — ortak ölçek yoksa alan bir şey söylemez |
 
 ⚠ **Ana giriş bütçesi 42 → 43 kB (bu turda).** Aşım grafiklerden DEĞİL:
-`HanuiThemeScript` (5.2) 42 000 baytlık girişi 42 050'ye taşıdı ve önceki dalda
+`UiThemeScript` (5.2) 42 000 baytlık girişi 42 050'ye taşıdı ve önceki dalda
 `size-limit` koşulmamıştı. Sohbet ve grafikler tam da bu bütçe yüzünden ayrı
 girişte; ana girişe eklenecek her yeni bileşen önce "alt girişe aday mı?"
 sorusundan geçer. Gerekçe `.size-limit.js`te.
@@ -908,7 +908,7 @@ kendisi yazmaz:
 - **İşaretçi**: tek dinleyici, kare başına bir isabet hesabı
   (`requestAnimationFrame`). Ağır çizim (`plot`) belleğe alınmış öğe; üzerine
   gelindiğinde yeniden çizilen yalnızca vurgu katmanı (`overlay`/`underlay`).
-- **Renk**: `var(--hanui-cat-N)` + `color-mix` ile tint; yeşil marka ailesi
+- **Renk**: `var(--ui-cat-N)` + `color-mix` ile tint; yeşil marka ailesi
   YOK (yeşil ayak izi nöbetçisi `src/charts`i de tarıyor).
 
 ⚠ **İpucunun yatay konumu ÖLÇÜLEREK yazılır** (`useLayoutEffect`, boyamadan
@@ -971,7 +971,7 @@ olmayan bir `@deprecated` prop derlemeyi kırar.
 
 ### 5.0 token sözleşmesi — KIRICI, takma ad YOK
 
-Renk token'ları prop değil, ama `--hanui-*` adları tüketicinin sözleşmesi. 5.0
+Renk token'ları prop değil, ama `--ui-*` adları tüketicinin sözleşmesi. 5.0
 büyük sürüm olduğu için eski adlar **bırakılmadı**: `role*` iki farklı renk
 taşıyacaktı ve 4.0.0'da `blue*`/`amber*` adlarının yanlış rengi anlatması tam
 olarak bu hataydı.
@@ -987,43 +987,94 @@ olarak bu hataydı.
 | `shell*` | aynı ad | **değer çamdan mürekkebe** ve temaya göre dönmüyor; yeni `on-shell`, `on-shell-2`, `on-shell-danger`, `shell-line` |
 | — | `cat-1…5`, `series-1/2` | yeni |
 
-Tüketicide değer ezmesi yazan yerler (`--hanui-page: #ffffff` gibi) ayrıca
+Tüketicide değer ezmesi yazan yerler (`--ui-page: #ffffff` gibi) ayrıca
 gözden geçirilir: 5.0'da açık sayfa krem.
+
+### 1.0 (`@handijit/ui`) — yeni ad; bileşen başına modül, dosya başına `'use client'`, CSS bileşen başına dosyada
+
+Paket `@ahmetilhn/hanui` 5.6.3'ten `@handijit/ui` 1.0.0'a taşındı (handijit organizasyonu). İç adlar da
+değişti: `hanui-` → `ui-`, `--hanui-*` → `--ui-*`, `@layer ui`, `data-ui-*`, `Hanui*` → `Ui*`. Aşağıdaki
+teknik değişiklikler 6.0 olarak hazırlandı ve 1.0.0 adıyla yayımlandı.
+
+Tüketicide ölçüldü (handijit.com, Next 16 / Turbopack, 6–7 Kasım 2026): 5.x paketi tek 203 KB'lık
+modül ve ilk satırı `'use client'`; her sayfaya 40 KB gz @handijit/ui JS iniyor, `styles.css` (173 KB ham,
+23 KB gz) tamamen yükleniyor ve ~%90'ı kullanılmıyor, ana sayfada 37 düğme + 121 çip = 420–548
+istemci referansı (her `Button` bir hidrasyon sınırı), `turbopackModuleFragments` tek dosyayı
+~2.000 halkalık değerlendirme zincirine bölüp tarayıcı yığınını taşırıyordu ("Maximum call stack
+size exceeded"; tüketici ayarı kapatmak zorunda kaldı).
+
+| Ne | 5.x | 6.0 |
+|---|---|---|
+| Çıktı | tek `index.js` + `styles.css` | Rollup `preserveModules`: `build/components/<Ad>/index.js` + `style.css`; cephe saf yeniden dışa aktarım; `exports` 68 alt yol (`scripts/build-exports.mjs`) |
+| `'use client'` | kaynaktan sökülüp paketin başına tek satır | kaynakta dosya başına; `vite.modules.ts` aynı modülün çıktısına geri yazar. 18 bileşen yönergesiz (`__tests__/client-boundary.test.ts`) |
+| CSS | tüketici `styles.css`i içe aktarır | aynı; ek olarak `base.css` + `components/<Ad>/style.css` dosyaları (tüketici kendi derlemesinde TEK dosyaya birleştirir). JS CSS içe aktarmaz — aşağıda |
+| Tipler | `rollupTypes` tek dosya | dosya başına; `check-api` cepheyi `export { … } from` satırlarından okur |
+
+Kararlar ve neden öyle:
+- **Sınıf haritası gömülür.** `preserveModules` her `index.module.scss`i ayrı bir JS parçası yapar
+  (`index.module.scss.js`). Parça çalıştırılarak okunur (biçimi kestirmek yerine) ve ithalatçısına
+  tek satırlık nesne olarak gömülür; ESM'de `import x from`, CJS'de sıkıştırılmış
+  `x=require("…")` → `x={default:{…}}`. Satır haritası kaymaz (tek satır ↔ tek satır).
+- **JS çıktısı CSS içe aktarmaz; cephe de `base.scss` içe aktarmaz.** Modüllerin `import './style.css'`
+  taşıdığı sürüm tüketicide ölçüldü (Next 16.4.5 / Turbopack, Lighthouse yavaş 4G, 3 koşu medyanı):
+  render-blocking CSS 6 → 12–15 dosya (her istemci sınırının CSS'i ayrı dosya), LCP 1,9 → 2,5 s —
+  bayt 46,7 → 33,3 kB AZALMIŞKEN. Dosya sayısı LCP'yi bayttan çok etkiliyor; `cssChunking: 'graph'`
+  19 dosyaya çıkardı. Karar: CSS'in nasıl ineceği tüketicinin açık seçimi (`styles.css` tek dosya, ya da
+  taban + bileşen dosyalarının tüketici derlemesinde birleştirilmesi). Cephe yan etki taşımaz ki Next'in
+  `optimizePackageImports` dönüşümü onu saf saysın. `src/styles/base.ts` yalnızca derlemeye `base.css`
+  girişi vermek için var.
+- **Bağlantı `Button`/`IconButton` işlev prop'u üretmez.** Sunucu bileşeni, istemci bileşenine
+  (`UiLink`) işlev geçiremez. Pasif bağlantı: `aria-disabled` + `tabIndex=-1` + `pointer-events:
+  none`. `UiLink` istemci kalır (`useUi` ile yönlendirici okur) — sunucuda çizilen `Button`un
+  içinde istemci yaprak olarak durur; `children` serileştirilebilir.
+- **`Breadcrumb`/`Stat`/`Steps`/`Spinner`/`Field` istemci kaldı.** Sağlayıcı metinlerini `useUi` ile
+  okuyorlar; sunucuya almak metinleri zorunlu prop yapmayı gerektirirdi — sağlayıcıya güvenen tüketicide
+  ekran okuyucu metni düşerdi. handijit.com'da sayfa başına 1'er tane; kazanç yok.
+- **`memo` ve `forwardRef` sunucuda sorun değil.** React Flight sunucu çizimi ikisini de çözer
+  (`REACT_MEMO_TYPE` → `type.type`). `named()`/`#__PURE__` deseni aynen kalır.
+- **Üç paketleyici, üç davranış (CSS içe aktaran JS denemesinde).** esbuild erişilemeyen modüllerin
+  CSS'ini de topluyordu (yalnızca `Badge` → 67 CSS dosyası, 180 kB); Turbopack her sınırı ayrı dosyaya
+  böldü; `turbopackModuleFragments` açıkken CSS tamamen düştü. Bu da JS'in CSS taşımaması kararının
+  ikinci gerekçesi.
+- **Alt girişler (`chat`, `charts`) değişmedi:** tek dosya + tepe yönerge. Hepsi zaten istemci.
+- **`turbopackModuleFragments` tüketicide KAPALI kalır.** 5.x'te parçalara ihtiyaç duyuran şey tek
+  dosyaydı; bileşen başına modülle o ihtiyaç bitti (hizmet sayfası toplam JS 191,8 → 162,1 kB parçalar
+  kapalıyken). Açıkken yan etkisiz modüllerin CSS içe aktarımlarını düşürdüğü de ölçüldü (Next 16.4.5).
 
 ### 5.6.3 — Tema ezmesi katmanda ve sunucu çiziminde
 
 Tüketicide ölçüldü (2026-11-02, yönetim paneli, koyu tema; JS kapalı ve açık çizimin hesaplanmış
 stilleri karşılaştırıldı): panel `<html>`e kendi paletini yazıyor
-(`html:has(.panel-root-layout) { --hanui-danger-solid: #dc2626 }`, 0,1,1). Sunucu çiziminde sil
+(`html:has(.panel-root-layout) { --ui-danger-solid: #dc2626 }`, 0,1,1). Sunucu çiziminde sil
 düğmesi kırmızı, hidrasyondan sonra `#ededed` (sitenin teması); alanların zemini `#161618 → #121212`,
-çizgisi `#36363c → #4d4d4d`, `action` indigodan griye dönüyordu. Neden: `HanuiProvider` ezmeyi
+çizgisi `#36363c → #4d4d4d`, `action` indigodan griye dönüyordu. Neden: `UiProvider` ezmeyi
 `useEffect` içinde, `<head>`in sonuna, KATMANSIZ bir `<style>`a yazıyordu; koyu temanın
-`:root:not([data-hanui-theme])` seçicisi (0,2,0) tüketicinin ezmesini yeniyordu. "Kütüphane CSS'inin
-tamamı `@layer hanui` içinde" sözleşmesini bozan tek kural buydu.
+`:root:not([data-ui-theme])` seçicisi (0,2,0) tüketicinin ezmesini yeniyordu. "Kütüphane CSS'inin
+tamamı `@layer ui` içinde" sözleşmesini bozan tek kural buydu.
 
 | Ne | Eskiden | Şimdi |
 |---|---|---|
-| Ezmenin katmanı | katmansız: tüketicinin katmansız kuralıyla özgüllük ve sıra yarışı | `@layer hanui` içinde: tüketicinin katmansız kuralı her zaman kazanır |
+| Ezmenin katmanı | katmansız: tüketicinin katmansız kuralıyla özgüllük ve sıra yarışı | `@layer ui` içinde: tüketicinin katmansız kuralı her zaman kazanır |
 | Seçici | varsayılanla aynı (`:root`, `:root:not([…])`…) | `html:root…` — karşılığından bir öğe özgül: katman içinde varsayılanı **sıradan bağımsız** yener |
 | Açık ezme koyu temada | katmansız `:root` koyu varsayılanı da yeniyordu: `light`a yazılan `ring-color` koyu temaya sızıyordu | `html:root` (0,1,1) koyu varsayılana (0,2,0) yenilir; `resolveTokens`in "açık koyuya sızmaz" sözleşmesiyle aynı |
-| Ne zaman | `useEffect`: sunucu çıktısında yok; ilk kare varsayılan palet, bir kare sonra tema (tüketici bu yüzden temanın statik kopyasını üretiyordu) | sağlayıcı ezmeyi çocuklarından önce `<style id="hanui-theme-overrides">` olarak **çizer**; sunucu çıktısında var, hidrasyonda aynı düğüm kullanılır |
-| `useHanuiTokens` | `<head>`e eklenen etiketi gözlüyordu | sağlayıcının teması değişince (bağlamdaki tema nesnesi) yeniden okur |
+| Ne zaman | `useEffect`: sunucu çıktısında yok; ilk kare varsayılan palet, bir kare sonra tema (tüketici bu yüzden temanın statik kopyasını üretiyordu) | sağlayıcı ezmeyi çocuklarından önce `<style id="ui-theme-overrides">` olarak **çizer**; sunucu çıktısında var, hidrasyonda aynı düğüm kullanılır |
+| `useUiTokens` | `<head>`e eklenen etiketi gözlüyordu | sağlayıcının teması değişince (bağlamdaki tema nesnesi) yeniden okur |
 
 - ⚠ Sağlayıcı `<body>` içinde olmalı: `<html>`i sararsa `<style>` belgenin köküne düşer. Ağaçta
   çizilmesinin ikinci nedeni katman sırası: `<body>`deki etiket `<head>`deki stil sayfalarından ve
-  tüketicinin `@layer reset, hanui;` bildiriminden HER ZAMAN sonra gelir. React 19'un
-  `<style precedence>` taşıması `<head>`te nereye koyacağını garanti etmiyor; önce gelirse `hanui`
+  tüketicinin `@layer reset, @handijit/ui;` bildiriminden HER ZAMAN sonra gelir. React 19'un
+  `<style precedence>` taşıması `<head>`te nereye koyacağını garanti etmiyor; önce gelirse `@handijit/ui`
   katmanı ilk orada görülür ve tüketicinin `reset` katmanı kütüphanenin üstüne çıkar.
 - ⚠ `dangerouslySetInnerHTML` zorunlu: React 18 `<style>` çocuğunu HTML olarak kaçışlıyor,
   seçicideki `'` `&#x27;` oluyordu. Değer veritabanından gelebileceği için `</style` dizisi
   `toStyleHtml` ile `<\/style`a çevrilir (CSS'te `\/` = `/`).
-- `initHanui` (`applyThemeConfig`) `<head>`e yazmaya devam eder, artık katmanlı; stil sayfalarından
+- `initUi` (`applyThemeConfig`) `<head>`e yazmaya devam eder, artık katmanlı; stil sayfalarından
   SONRA çağrılmalı (README).
 - jsdom'un CSS ayrıştırıcısı `@layer`ı tanımıyor; `jest.setup.ts` yalnız bu hatayı susturur.
 
 Nöbetçi: `__tests__/helpers/theme.helper.test.ts` (katman, `html:root`, `toStyleHtml`),
-`__tests__/theme/HanuiProvider.test.tsx` (ağaçta çizim, ilk efekt, hidrasyon),
-`__tests__/theme/HanuiProvider.server.test.tsx` (sunucu çıktısı). Tüketici temanın statik kopyasını
+`__tests__/theme/UiProvider.test.tsx` (ağaçta çizim, ilk efekt, hidrasyon),
+`__tests__/theme/UiProvider.server.test.tsx` (sunucu çıktısı). Tüketici temanın statik kopyasını
 yalnızca ilk boyama için üretiyorsa 5.6.3'te kaldırabilir.
 
 ### 5.6.2 — `DirectoryRow`, `Disclosure`, alanlar: hover ve önek payı
@@ -1036,14 +1087,14 @@ gelip basarak stil farkını ölçen betikle): üçü "Durum katmanları" ve "Ya
 |---|---|---|
 | `DirectoryRow` hover | zemin `surface` + kenarlık `border` + ad `link`: satır kutusunda bir çerçeve belirip kayboluyordu | `interactive-surface`: yalnız zemin bir kademe (`surface-2`), basılınca 1 px. Saydam 1 px kenarlığın yeri dolguya katıldı, satır ölçüsü aynı |
 | `Disclosure` başlığı hover | kare `surface-2` zemin kenardan kenara; `Accordion`un ortadaki bölümlerinde yuvarlak çerçevenin içinde köşesiz bir bant | Zemin `space-1` içeride (saydam kenarlık + `background-clip: padding-box`), yarıçap `radius-lg − 1px` (çerçevenin iç eğrisiyle eş merkezli). Dolgu kenarlık kadar azaldı; başlık ve içerik hizası aynı |
-| Önek/sonek payı (`Input`) | `space-8 − space-2`: akışkan bölüm aralığı; 18 px ikonla metin arası dar ekranda 2 px, geniş ekranda 26 px; tek karakterli para simgesinde tutar simgeden kopuk | `space-3` + ölçülen genişlik + `space-2`. `Input` önek/soneki `ResizeObserver` ile ölçüp `--hanui-input-prefix-width` / `--hanui-input-suffix-width` yazar; ölçüm yokken (sunucu, jsdom) `icon-md` varsayılır |
+| Önek/sonek payı (`Input`) | `space-8 − space-2`: akışkan bölüm aralığı; 18 px ikonla metin arası dar ekranda 2 px, geniş ekranda 26 px; tek karakterli para simgesinde tutar simgeden kopuk | `space-3` + ölçülen genişlik + `space-2`. `Input` önek/soneki `ResizeObserver` ile ölçüp `--ui-input-prefix-width` / `--ui-input-suffix-width` yazar; ölçüm yokken (sunucu, jsdom) `icon-md` varsayılır |
 | Alan hover çizgisi (`input-base`) | `text-3`e atlıyordu: ince çizgili temalarda hover'da kalın çerçeve | `color-mix(in oklab, border-strong, text 30%)` — bir ton koyu; token tanımlamaz, temayı izler. `Input`, `Textarea`, `Select`, `Combobox`, `DateField`, `TagInput` aynı mixin'den |
 
 ⚠ `prefix={0}` artık hiçbir şey basmaz; eskiden `prefix && …` girdinin yanına başıboş bir "0" metni
 yazıyordu.
 
 Nöbetçi: `__tests__/styles/hover-surfaces.test.ts` (dört kural), `__tests__/components/Input.test.tsx`
-(ölçüm ve değişkenler). Tüketici kendi katmanında aynı düzeltmeleri yaptıysa (ör. `[class*='hanui-row-']:hover`)
+(ölçüm ve değişkenler). Tüketici kendi katmanında aynı düzeltmeleri yaptıysa (ör. `[class*='ui-row-']:hover`)
 5.6.2'ye geçince kaldırabilir.
 
 ### 5.6.1 — `Popover`, `Tooltip`, `Toast` `Escape`i İŞARETLER
@@ -1143,7 +1194,7 @@ metin kenarları). Temiz `master`da aynı koşu 40/40 geçiyordu.
 API değişmedi (yeni prop yok), çizim değişti: `html` verilmeyen blok artık renkli,
 JSON yeniden girintili, kenar boş satırları atılmış ve **kopyalanan metin ekranda
 görünen** metin. `html` veren tüketicide (hanration'ın Shiki sarmalayıcısı) Shiki
-yanıtı gelene kadar hanui renkleri görünür, sonra Shiki'ninkiler — iki palet arasında
+yanıtı gelene kadar @handijit/ui renkleri görünür, sonra Shiki'ninkiler — iki palet arasında
 bir renk sıçraması. Sarmalayıcıyı kaldırıp `language` + `code` geçmek bu sıçramayı ve
 Shiki'nin tembel yüklemesini birlikte kaldırır; Shiki doğruluğu gerekiyorsa kalır.
 
@@ -1160,22 +1211,22 @@ sonra komut çalışır. Nöbetçi `__tests__/components/CommandPalette.test.tsx
 Yeni `hotkey` (`'mod+k'`) + `onOpen`: kısayol kapalıyken açar, açıkken kapatır,
 başka bir kipsel yüzey açıkken dokunmaz (`hasOpenSurface`).
 
-### 5.3 — SCSS API (`@ahmetilhn/hanui/scss`)
+### 5.3 — SCSS API (`@handijit/ui/scss`)
 
 Tüketici token değişkenlerini ve mixin'leri KOPYALAMADAN alır:
 
 ```scss
-@use '@ahmetilhn/hanui/scss' as hanui;
+@use '@handijit/ui/scss' as ui;
 
 .panel {
-  padding: hanui.$space-4;
-  @include hanui.focus-ring;
-  @media (max-width: hanui.$breakpoint-tablet-portrait) { … }
+  padding: ui.$space-4;
+  @include ui.focus-ring;
+  @media (max-width: ui.$breakpoint-tablet-portrait) { … }
 }
 ```
 
 **Neden:** hanration değişkenleri kopyalamıştı ve değerler kaymıştı
-(`$tablet-breakpoint: 760px`; hanui'de 768 / 1024).
+(`$tablet-breakpoint: 760px`; @handijit/ui'de 768 / 1024).
 
 | Ne | Nerede |
 |---|---|
@@ -1194,7 +1245,7 @@ edilen modülün çıktısı BOŞ.
 ⚠ **Önce tüketicide denendi, sonra ihraç edildi** (kırılma yayından sonra
 görünürdü): hanration'da `npm pack` paketiyle Next 16.4 **Turbopack** ve
 **webpack** derlemelerinin ikisi de `exports` üzerinden çözdü; webpack çıktısında
-kırılma noktası `768px`. Değişkenler `var(--hanui-…)` dizeleri olduğu için tema
+kırılma noktası `768px`. Değişkenler `var(--ui-…)` dizeleri olduğu için tema
 çalışma zamanında döner — derleme anında sabitlenmez.
 
 ⚠ **SCSS'teki her ad da bir SÜRÜM TAAHHÜDÜ.** `check:api` dördüncü girişi
@@ -1261,11 +1312,11 @@ kendisi.
 
 ⚠ **Duyarlı genişlik prop'tan GELMEZ.** Sayı tek bir kırılma noktası
 anlatabilir; kart genişliği ise mobilde ayrı, masaüstünde ayrıdır. Inline
-yazılan değer bu yüzden `--hanui-carousel-item-default` adını taşıyor ve
-tüketici kendi medya sorgusundan `--hanui-carousel-item` ile eziyor — inline
+yazılan değer bu yüzden `--ui-carousel-item-default` adını taşıyor ve
+tüketici kendi medya sorgusundan `--ui-carousel-item` ile eziyor — inline
 stil bir sınıf kuralına yenilmediği için tek isim kullanılsaydı ezme
 **imkânsız** olurdu. "Yarım kart görünsün" gibi ölçüler de aynı kapıdan:
-`--hanui-carousel-item: max(232px, calc((100% - 4.3 * 16px) / 4.3))`.
+`--ui-carousel-item: max(232px, calc((100% - 4.3 * 16px) / 4.3))`.
 
 Nöbetçi: `__tests__/components/Carousel.track.test.ts` — `fr` biriminin ya da
 `minmax(`in geri gelmesi ve ezme zincirinin düşmesi ayrı ayrı kırar.
@@ -1304,8 +1355,8 @@ ifade 86 · fonksiyon 80 · dal 75) → `build` (ana giriş + `chat` + `charts` 
 bileşen ile sözleşmesini ayırmak, tüketicinin iki dosya açmasını gerektirir
 ve bir bileşen kütüphanesinde okunurluğu **düşürür**.
 
-**Taşınanlar — gerçekten dağınık olanlar:** tema tipleri (`HanuiToken`,
-`HanuiThemeConfig`, `HanuiLabels`, `InitHanuiOptions`… — `theme/tokens.ts`
+**Taşınanlar — gerçekten dağınık olanlar:** tema tipleri (`UiToken`,
+`UiThemeConfig`, `UiLabels`, `InitUiOptions`… — `theme/tokens.ts`
 480 satırlık bir **veri** dosyası, tip bildirmesi işi değildi), kanca
 tipleri (`PositionSide`, `PositioningOptions`, `VirtualRange`,
 `AnnouncePoliteness`…) ve `ClassValue`.
@@ -1353,7 +1404,7 @@ node scripts/check-api.mjs --update   # taban çizgisini BİLİNÇLİ tazele
 Betiğin deseni `export declare (const|type|function|class|interface|enum) Ad`
 ve **sıfır eşleşmede açıkça düşer** — ölçemediği şeyi yeşil geçmez.
 
-**Tip taşımalarında diff ZORUNLU.** Tüketiciler hanui'yi **caret** ile alıyor
+**Tip taşımalarında diff ZORUNLU.** Tüketiciler @handijit/ui'yi **caret** ile alıyor
 (`^4.1.0`, `^5.3.0`), yani küçük sürümde düşen bir ad
 bir sonraki `npm install`da, sebebi çoktan unutulmuşken derleme hatası üretir.
 Taban çizgisi bu yüzden repoda duruyor. (Bu satır bir dönem "iki tüketici de
@@ -1370,8 +1421,8 @@ Taban çizgisi bu yüzden repoda duruyor. (Bu satır bir dönem "iki tüketici d
 
 | Ad | Neden dışa açık | Çağıran |
 |---|---|---|
-| `useHanuiTokens` | Çizim kütüphaneleri (recharts) `stroke`/`fill` için `var(--…)` okuyamıyor; çözülmüş değer gerekiyor ve tema değişince yenilenmeli | hanration `MetricsPanel` (kendi `useCssVars` kopyasıyla yapıyordu) |
-| `HanuiThemeScript` | Tema ilk boyamadan ÖNCE yazılmalı; iki tüketici aynı betiği elle yazıyordu. ⚠ BİLEŞEN, fonksiyon değil: paket `'use client'` taşıdığı için dışa verilen düz bir fonksiyon Next'in sunucu bileşeninde çağrılamıyor (ölçüldü: `next build` "Attempted to call themeBootScript() from the server" ile kırıldı). Bileşen sunucuda da çizilir | hanration `layout.tsx` (`THEME_BOOT_SCRIPT`) |
+| `useUiTokens` | Çizim kütüphaneleri (recharts) `stroke`/`fill` için `var(--…)` okuyamıyor; çözülmüş değer gerekiyor ve tema değişince yenilenmeli | hanration `MetricsPanel` (kendi `useCssVars` kopyasıyla yapıyordu) |
+| `UiThemeScript` | Tema ilk boyamadan ÖNCE yazılmalı; iki tüketici aynı betiği elle yazıyordu. ⚠ BİLEŞEN, fonksiyon değil: paket `'use client'` taşıdığı için dışa verilen düz bir fonksiyon Next'in sunucu bileşeninde çağrılamıyor (ölçüldü: `next build` "Attempted to call themeBootScript() from the server" ile kırıldı). Bileşen sunucuda da çizilir | hanration `layout.tsx` (`THEME_BOOT_SCRIPT`) |
 | `hasOpenSurface` | Sayfa düzeyinde `Escape` dinleyen kod `event.defaultPrevented \|\| hasOpenSurface()` sormalı; sormayan, yüzeyi kapatan tuşla arkadaki akışı da durduruyordu. Tek başına yetmez — bkz. 5.6.1 | hanration `Composer` |
 | `Disclosure` (+ `DisclosureVariant`) | Tek başına açılır bölüm; aynı kalıp hanration'da üç kez elle yazılmıştı | hanration `Disclosure`, `ProcessBlock`, `ToolCallCard` |
 | `StatusDot` (+ `StatusDotTone`) | Adı olan durum noktası; dört yerde elle çiziliyordu ve hiçbiri durumu okutmuyordu | hanration `Header`, `LiveStatusBar`, `ToolCallCard`, `EventsPanel` |
@@ -1382,8 +1433,8 @@ Taban çizgisi bu yüzden repoda duruyor. (Bu satır bir dönem "iki tüketici d
 **42,00 kB** taşıdı (bütçe 42 kB) ve `styles.css`i 23,07 / 24 kB'a. Sohbet
 bileşenleri bu yüzden ana girişe GİRMEZ, ayrı `chat` girişine gider — plan bunu
 "vitrinin bütçesi büyümesin" diye öneriyordu, ölçüm artık zorunlu kılıyor.
-5.2'nin `HanuiThemeScript`i girişi 42,05 kB'a taşıdı ve bütçe 43 kB'a çekildi
-(gerekçe `.size-limit.js` ve "`@ahmetilhn/hanui/charts`" bölümünde).
+5.2'nin `UiThemeScript`i girişi 42,05 kB'a taşıdı ve bütçe 43 kB'a çekildi
+(gerekçe `.size-limit.js` ve "`@handijit/ui/charts`" bölümünde).
 
 ⚠ Sohbet planı `hasOpenSurface` yerine bir **kanca** (`useIsModalOpen`) öneriyordu.
 Çağıranın ihtiyacı reaktif bir durum değil, tuşa basıldığı ANDAKİ tek bir soru;
@@ -1397,7 +1448,7 @@ ikisinin de kütüphane dışında çağıranı yok (YAGNI).
 ⚠ **14 CSS varyant union'ı enum dönüşümünden KALICI MUAF.** `AlertTone`,
 `BadgeTone`, `BadgeVariant`, `ChipSize`, `CardMediaFit`, `ConfirmKind`,
 `IconButtonVariant`, `ModalTone`, `StatTrend`, `TimelineStatus`, `ToastTone`,
-`PositionSide`, `PositionAlign`, `HanuiDensity`, `HanuiColorScheme` —
+`PositionSide`, `PositionAlign`, `UiDensity`, `UiColorScheme` —
 hepsi `className` besliyor ve tüketiciler düz dize geçiyor
 (`<Badge tone="success">`). Enum'a çevirmek o çağrıları **derlenmez** yapardı:
 `TS2322` ile, üstelik iki uygulamada onlarca yerde. Monorepodaki "tel değeri
@@ -1409,7 +1460,7 @@ telde karşılığı yok, CSS sınıf adı sonekleri.
 `tsconfig.json` → `target: ES2023`, `lib: ["DOM", "DOM.Iterable", "ESNext"]`.
 
 ⚠ **`target` burada ES2024 DEĞİL ve bunun ölçülmüş bir sebebi var.** Diğer
-depolar `ES2024` yazıyor; hanui'de o değer her derlemede **89 uyarı** basıyordu:
+depolar `ES2024` yazıyor; @handijit/ui'de o değer her derlemede **89 uyarı** basıyordu:
 
 ```
 ▲ [WARNING] Unrecognized target environment "es2024" [tsconfig.json]
@@ -1483,15 +1534,15 @@ olarak duruyordu ve ikisi de zaten bu kütüphanenin bileşenlerini sarmalıyord
 | `ToastPortal` | `ToastHub` portal kullanıyor ve `document` olmadan çalışamıyor; sunucuda çizilen ağaçta hidrasyon uyuşmazlığı üretir. Montaj bekleyen sarmalayıcı uygulamanın değil bileşenin sorunu. |
 
 ⚠ **Uygulamalar HENÜZ GEÇMEDİ.** Yönetim paneli ve vitrin
-hanui'yi npm'den alıyor (`2.1.1`) ve bu bileşenler `2.1.0`da. Geçiş için
+@handijit/ui'yi npm'den alıyor (`2.1.1`) ve bu bileşenler `2.1.0`da. Geçiş için
 sırasıyla: `npm publish` → iki uygulamada bağımlılığı yükselt → yerel
 `components/PasswordInput` ve `components/ToastPortal` klasörlerini sil →
-`import { PasswordInput, ToastPortal } from '@ahmetilhn/hanui'`. Yayın
+`import { PasswordInput, ToastPortal } from '@handijit/ui'`. Yayın
 yapılmadan yerel kopyaları silmek her iki uygulamayı da kırar.
 
 ⚠ **`2.2.0` (kurumsal palet) de aynı kapıda bekliyor.** Bağımlılık tam sürüme
 sabit (`"2.1.1"`, aralık değil), yani yeni palet **yayınlanana ve iki
-uygulamada `@ahmetilhn/hanui@2.2.0`'a yükseltilene kadar** vitrine/panele
+uygulamada `@handijit/ui@2.2.0`'a yükseltilene kadar** vitrine/panele
 inmez. Uygulamaların kendi dosyalarında duran marka yüzeyleri (logo varlıkları,
 panel rayı, `og.png`, `themeColor`, manifest, mail token'ları) bundan bağımsız
 ve **zaten güncel** — yani geçiş penceresinde kurumsal logo yeni, gövde
@@ -1500,7 +1551,7 @@ renkleri eski görünür. Doğru sıra: `npm publish` → iki uygulamada dep bum
 ### `ThemeToggle` ve `Logo` neden BURAYA TAŞINMADI
 
 - **`ThemeToggle`** `nav-fg`, `nav-bg`, `nav-hover`, `nav-line` token'larını
-  okuyor; bunlar uygulamanın üst bandına ait ve hanui'nin token
+  okuyor; bunlar uygulamanın üst bandına ait ve @handijit/ui'nin token
   sözleşmesinde **yok**. Buraya taşımak ya o token'ları kütüphaneye sokmayı
   (bir uygulamanın kroması genel bir tasarım sistemine girer) ya da bileşeni
   yeniden tasarlamayı gerektirir (zemin rengi tüketiciden gelen CSS özel
@@ -1508,7 +1559,7 @@ renkleri eski görünür. Doğru sıra: `npm publish` → iki uygulamada dep bum
 - **`Logo`** marka varlığı taşıyor (`/brand/*.svg`, uygulamanın markası). MIT
   lisanslı, genel amaçlı bir tasarım sistemine tek bir şirketin markasını
   koymak yanlış olur. Doğru ayrıştırma: mekanizma (temaya göre kaynak
-  değiştirme, orana göre boyutlandırma) hanui'ye, varlıklar uygulamada.
+  değiştirme, orana göre boyutlandırma) @handijit/ui'ye, varlıklar uygulamada.
 
 ⚠ İkisi de bugün **iki depoda kopya** ve ikisi de **ayrışmış** (`ThemeToggle`
 101 vs 96 satır — admin'de `Tooltip`, vitrinde `IconButton`; `Logo` 117 vs

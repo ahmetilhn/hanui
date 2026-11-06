@@ -1,32 +1,30 @@
 import { resolve } from 'node:path';
 
 // @ts-expect-error — eklenti düz JS; tip bildirimi yok ve gerekmiyor.
-import hanuiLayer from './scripts/lib/postcss-hanui-layer.mjs';
-import { defineConfig, type Plugin } from 'vite';
+import uiLayer from './scripts/lib/postcss-ui-layer.mjs';
+import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
-/** Dosya başındaki `'use client'` yönergelerini derlemeden ÖNCE söker. */
-const stripUseClient = (): Plugin => ({
-  name: 'hanui-strip-use-client',
-  enforce: 'pre',
-  transform(code, id) {
-    if (!/\.(t|j)sx?$/.test(id)) return null;
-    if (!/^\s*['"]use client['"];?/.test(code)) return null;
+import { clientDirectives, componentCss } from './vite.modules';
 
-    return { code: code.replace(/^\s*['"]use client['"];?\s*/, ''), map: null };
-  },
-});
+const BASE_ENTRY = resolve(__dirname, 'src/styles/base.ts');
 
-/** Kütüphane derlemesi. */
+/**
+ * KÜTÜPHANE DERLEMESİ — bileşen başına modül (6.0; gerekçe `vite.modules.ts`).
+ *
+ * `preserveModules`: `src/` ağacı `build/` altına birebir iner (`build/components/Button/index.js`,
+ * `build/index.js` cephe). `package.json` `exports` haritası her bileşene bir alt yol verir
+ * (`@handijit/ui/button`); cephe `.` yalnızca yeniden dışa aktarım taşır.
+ */
 export default defineConfig({
   plugins: [
-    stripUseClient(),
+    clientDirectives(),
+    componentCss({ baseEntry: BASE_ENTRY }),
     dts({
       entryRoot: 'src',
       include: ['src'],
       /* Alt girişler kendi derlemelerinde (`vite.subentry.ts`). */
       exclude: ['src/**/*.test.*', 'src/chat/**', 'src/charts/**'],
-      rollupTypes: true,
       tsconfigPath: resolve(__dirname, 'tsconfig.build.json'),
     }),
   ],
@@ -41,10 +39,10 @@ export default defineConfig({
    * Vite'in `esbuild.pure` secenegi denendi, cikisa acilama birakmiyor.
    */
   css: {
-    postcss: { plugins: [hanuiLayer()] },
+    postcss: { plugins: [uiLayer()] },
     modules: {
       /* Sınıf adları paket adıyla ön eklenir. */
-      generateScopedName: 'hanui-[local]-[hash:base64:5]',
+      generateScopedName: 'ui-[local]-[hash:base64:5]',
     },
     preprocessorOptions: {
       scss: {
@@ -56,18 +54,22 @@ export default defineConfig({
     outDir: 'build',
     emptyOutDir: true,
     sourcemap: true,
-    cssCodeSplit: false,
+    /* CSS modül başına: her bileşenin CSS'i kendi dosyasında (`vite.modules.ts`). */
+    cssCodeSplit: true,
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: resolve(__dirname, 'src/index.ts'),
+        base: BASE_ENTRY,
+      },
       formats: ['es', 'cjs'],
-      fileName: format => (format === 'es' ? 'index.js' : 'index.cjs'),
+      fileName: (format, name) => `${name}.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rollupOptions: {
       external: [
         'react',
         'react-dom',
         'react/jsx-runtime',
-        '@ahmetilhn/handy-utils',
+        '@handijit/utils',
         /*
          * İkonlar da EXTERNAL: paket tüketicide zaten var (uygulamalar kendi içerik ikonlarını aynı
          * setten alıyor).
@@ -75,20 +77,15 @@ export default defineConfig({
         'react-bootstrap-icons',
       ],
       output: {
-        banner: "'use client';",
-        assetFileNames: 'styles.css',
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+        /* Varsayılan ve adlı dışa aktarım birlikte (`Card` + `CardBody`): CJS'de `.default`. */
+        exports: 'named',
+        assetFileNames: '[name][extname]',
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',
         },
-      },
-      /*
-       * Rollup, dosya başındaki `'use client'` yönergelerini bundle ederken uyarı veriyor: yönerge
-       * modül düzeyinde anlamlı, bundle düzeyinde değil.
-       */
-      onwarn(warning, warn) {
-        if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
-        warn(warning);
       },
     },
   },

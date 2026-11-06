@@ -71,7 +71,7 @@ for (const { component, scroller } of CASES)
 
       const before = heights();
       const label = document.createElement('span');
-      label.className = 'hanui-visually-hidden';
+      label.className = 'ui-visually-hidden';
       label.textContent = 'Çalışıyor';
       element.append(label);
 

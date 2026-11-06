@@ -29,8 +29,11 @@
     border-color: $danger-solid;
   }
 
+  // Yoğun ölçü 36 px: görünmez `::after` ile dokunma alanı 44 px'e tamamlanır (WCAG 2.5.8; `Chip` ile
+  // aynı kurgu). Kutu büyümez; şeritteki tek yükseklik korunur.
   &--sm {
     @include input-sm;
+    @include tap-target;
 
     font-weight: $weight-medium;
   }

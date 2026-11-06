@@ -1,6 +1,6 @@
 import { type CSSProperties, type FC, memo } from 'react';
 
-import { isNumber } from '@ahmetilhn/handy-utils';
+import { isNumber } from '@handijit/utils';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';

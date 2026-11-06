@@ -2,7 +2,7 @@
 
 import { memo, useCallback, useMemo } from 'react';
 
-import { useHanui } from '@ahmetilhn/hanui';
+import { useUi } from '@handijit/ui';
 
 import { named } from '../../helpers/component.helper';
 import { CategoryAxis, placeTicks, ValueAxis } from '../core/axes';
@@ -69,7 +69,7 @@ const BoxPlot = ({
   className,
   testId,
 }: Props) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const [containerRef, width] = useChartWidth(fixedWidth);
   const full = useMemo(() => fullNumber(labels?.locale), [labels?.locale]);
   const tickFormat = useMemo(() => tickLabels(labels?.locale), [labels?.locale]);

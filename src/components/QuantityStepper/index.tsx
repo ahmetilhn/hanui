@@ -6,7 +6,7 @@ import { DashLg, PlusLg } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -41,7 +41,7 @@ const QuantityStepper: FC<Props> = ({
   className,
   testId,
 }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const groupLabel = resolveLabel('QuantityStepper.label', label, labels?.quantity?.label);
   const [draft, setDraft] = useState<string | null>(null);
 

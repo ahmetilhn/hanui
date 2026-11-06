@@ -2,8 +2,8 @@ import { type ElementType, type FC, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
-import type { HanuiLinkExtraProps } from '../../types/link.type';
-import HanuiLink from '../Link';
+import type { UiLinkExtraProps } from '../../types/link.type';
+import UiLink from '../Link';
 
 import styles from './index.module.scss';
 
@@ -40,7 +40,7 @@ type CardMediaProps = {
   /** Medya alanı tıklanabilirse: görsel bağlantının içine alınır. */
   href?: string;
   /** Yönlendiriciye geçirilecek ek props. */
-  linkProps?: HanuiLinkExtraProps;
+  linkProps?: UiLinkExtraProps;
   /** Görsel çerçeveyi nasıl doldurur — bkz. */
   fit?: CardMediaFit;
   /** @deprecated `fit` kullanın: `isContained` → `fit="contain"`, `isContained={false}` →… */
@@ -71,7 +71,7 @@ export const CardMedia: FC<CardMediaProps> = /*#__PURE__*/ named(
         {href ? (
           // `tabIndex={-1}` + `aria-hidden`: aynı hedefe giden başlık bağlantısı zaten sekme
           // sırasında.
-          <HanuiLink
+          <UiLink
             href={href}
             className={styles.media__link}
             tabIndex={-1}
@@ -79,7 +79,7 @@ export const CardMedia: FC<CardMediaProps> = /*#__PURE__*/ named(
             {...linkProps}
           >
             {content}
-          </HanuiLink>
+          </UiLink>
         ) : (
           content
         )}

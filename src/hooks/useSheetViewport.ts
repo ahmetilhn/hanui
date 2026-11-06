@@ -3,10 +3,10 @@
 import { useEffect } from 'react';
 
 /** Panelin kaplayabilecegi en fazla yukseklik — GORUNEN alanin yuksekligi. */
-const HEIGHT_VAR = '--hanui-sheet-height';
+const HEIGHT_VAR = '--ui-sheet-height';
 
 /** Panelin dibinin, yerlesim gorunum alaninin dibinden ne kadar yukarida duracagi. */
-const INSET_VAR = '--hanui-sheet-inset-bottom';
+const INSET_VAR = '--ui-sheet-inset-bottom';
 
 /* Tek olcum, tek dinleyici. */
 let openCount = 0;

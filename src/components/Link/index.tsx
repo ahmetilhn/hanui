@@ -2,14 +2,14 @@
 
 import type { AnchorHTMLAttributes, FC } from 'react';
 
-import { useHanui } from '../../theme/context';
-import type { HanuiLinkProps } from '../../types/link.type';
+import { useUi } from '../../theme/context';
+import type { UiLinkProps } from '../../types/link.type';
 
 /** Kütüphanenin İÇ bağlantı öğesi. */
-const HanuiLink: FC<HanuiLinkProps> = ({ children, ...rest }) => {
-  const { linkComponent: LinkComponent } = useHanui();
+const UiLink: FC<UiLinkProps> = ({ children, ...rest }) => {
+  const { linkComponent: LinkComponent } = useUi();
 
-  if (LinkComponent) return <LinkComponent {...(rest as HanuiLinkProps)}>{children}</LinkComponent>;
+  if (LinkComponent) return <LinkComponent {...(rest as UiLinkProps)}>{children}</LinkComponent>;
 
   /*
    * Yonlendirici yoksa ham `<a>`. `rest` indeks imzasi tasiyor (yonlendiriciye ozgu props icin);
@@ -18,4 +18,4 @@ const HanuiLink: FC<HanuiLinkProps> = ({ children, ...rest }) => {
   return <a {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}>{children}</a>;
 };
 
-export default HanuiLink;
+export default UiLink;

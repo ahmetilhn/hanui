@@ -1,8 +1,8 @@
 import { memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
-import type { HanuiLinkExtraProps } from '../../types/link.type';
-import HanuiLink from '../Link';
+import type { UiLinkExtraProps } from '../../types/link.type';
+import UiLink from '../Link';
 
 import styles from './index.module.scss';
 
@@ -15,14 +15,14 @@ type Props = {
   meta?: ReactNode;
   isActive?: boolean;
   /** Yönlendiriciye geçirilecek ek props. */
-  linkProps?: HanuiLinkExtraProps;
+  linkProps?: UiLinkExtraProps;
   className?: string;
   testId?: string;
 };
 
 /** Karo — ikon madalyonu + etiket. */
 const Tile = ({ label, icon, href, meta, isActive, linkProps, className, testId }: Props) => (
-  <HanuiLink
+  <UiLink
     href={href}
     className={cx(styles.tile, isActive && styles['tile--active'], className)}
     aria-current={isActive ? 'page' : undefined}
@@ -36,7 +36,7 @@ const Tile = ({ label, icon, href, meta, isActive, linkProps, className, testId 
     <span className={styles.tile__label}>{label}</span>
 
     {meta && <span className={styles.tile__meta}>{meta}</span>}
-  </HanuiLink>
+  </UiLink>
 );
 
 export default /*#__PURE__*/ memo(Tile) as typeof Tile;

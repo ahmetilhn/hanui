@@ -2,7 +2,7 @@
 
 import { memo, useCallback, useMemo, useState } from 'react';
 
-import { useHanui } from '@ahmetilhn/hanui';
+import { useUi } from '@handijit/ui';
 
 import { CategoryAxis, ValueAxis } from './axes';
 import { type CartesianSeries, cartesianGeometry, type Orientation, toNumber } from './cartesian';
@@ -75,7 +75,7 @@ const CartesianChart = ({
   className,
   testId,
 }: CartesianChartProps) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const locale = labels?.locale;
   const [containerRef, width] = useChartWidth(fixedWidth);
   const [hidden, setHidden] = useState<ReadonlySet<string>>(() => new Set());

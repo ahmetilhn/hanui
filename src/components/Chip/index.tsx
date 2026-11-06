@@ -1,13 +1,11 @@
-'use client';
-
 import { type ButtonHTMLAttributes, forwardRef, memo, type ReactNode } from 'react';
 
-import { isDefined } from '@ahmetilhn/handy-utils';
+import { isDefined } from '@handijit/utils';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
-import type { HanuiLinkExtraProps } from '../../types/link.type';
-import HanuiLink from '../Link';
+import type { UiLinkExtraProps } from '../../types/link.type';
+import UiLink from '../Link';
 
 import styles from './index.module.scss';
 
@@ -29,7 +27,7 @@ type Props = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
   /** Verilirse çip bir bağlantı olarak çizilir. */
   href?: string;
   /** Yönlendiriciye geçirilecek ek props. */
-  linkProps?: HanuiLinkExtraProps;
+  linkProps?: UiLinkExtraProps;
   /** Grup içindeki ARIA rolü. */
   role?: 'radio';
   testId?: string;
@@ -83,7 +81,7 @@ const Chip = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
 
     if (href)
       return (
-        <HanuiLink
+        <UiLink
           href={href}
           className={classNames}
           aria-label={children ? undefined : label}
@@ -92,7 +90,7 @@ const Chip = /*#__PURE__*/ forwardRef<HTMLButtonElement, Props>(
           {...linkProps}
         >
           {content}
-        </HanuiLink>
+        </UiLink>
       );
 
     return (

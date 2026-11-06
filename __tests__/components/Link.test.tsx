@@ -3,10 +3,10 @@ import { render, screen } from '@testing-library/react';
 
 import Breadcrumb from '@/components/Breadcrumb';
 import Button from '@/components/Button';
-import HanuiProvider from '@/theme/HanuiProvider';
-import type { HanuiLinkProps } from '@/types/link.type';
+import UiProvider from '@/theme/UiProvider';
+import type { UiLinkProps } from '@/types/link.type';
 
-const RouterLink: FC<HanuiLinkProps> = ({ href, children, scroll, ...rest }) => (
+const RouterLink: FC<UiLinkProps> = ({ href, children, scroll, ...rest }) => (
   <a href={href} data-router="yes" data-scroll={String(scroll)} {...(rest as object)}>
     {children}
   </a>
@@ -24,9 +24,9 @@ describe('bağlantı enjeksiyonu', () => {
 
   it('sağlayıcıdaki yönlendirici kullanılır', () => {
     render(
-      <HanuiProvider linkComponent={RouterLink}>
+      <UiProvider linkComponent={RouterLink}>
         <Button href="/urunler">Ürünler</Button>
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     expect(screen.getByRole('link', { name: 'Ürünler' })).toHaveAttribute('data-router', 'yes');
@@ -34,11 +34,11 @@ describe('bağlantı enjeksiyonu', () => {
 
   it('`linkProps` yönlendiriciye geçer', () => {
     render(
-      <HanuiProvider linkComponent={RouterLink}>
+      <UiProvider linkComponent={RouterLink}>
         <Button href="/urunler" linkProps={{ scroll: false }}>
           Ürünler
         </Button>
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     expect(screen.getByRole('link', { name: 'Ürünler' })).toHaveAttribute('data-scroll', 'false');
@@ -46,11 +46,11 @@ describe('bağlantı enjeksiyonu', () => {
 
   it('dış bağlantı yönlendiriciyi ATLAR ve `rel` taşır', () => {
     render(
-      <HanuiProvider linkComponent={RouterLink}>
+      <UiProvider linkComponent={RouterLink}>
         <Button href="https://example.com" isExternal>
           Dış site
         </Button>
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     const link = screen.getByRole('link', { name: 'Dış site' });

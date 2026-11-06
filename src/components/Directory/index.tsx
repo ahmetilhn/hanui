@@ -1,11 +1,13 @@
+'use client';
+
 import { type FC, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import { resolveLabel } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
-import type { HanuiLinkExtraProps } from '../../types/link.type';
-import HanuiLink from '../Link';
+import { useUi } from '../../theme/context';
+import type { UiLinkExtraProps } from '../../types/link.type';
+import UiLink from '../Link';
 
 import styles from './index.module.scss';
 
@@ -28,7 +30,7 @@ type DirectoryGroupProps = {
   /** Başlık kendisi bir hedefe götürüyorsa. */
   href?: string;
   /** Yönlendiriciye geçirilecek ek props. */
-  linkProps?: HanuiLinkExtraProps;
+  linkProps?: UiLinkExtraProps;
   /** Başlığın sağında duran sayaç ("14 alt kategori"). */
   meta?: ReactNode;
   children: ReactNode;
@@ -43,9 +45,9 @@ export const DirectoryGroup: FC<DirectoryGroupProps> = /*#__PURE__*/ named(
       <header className={styles.group__header}>
         <h2 className={styles.group__label}>
           {href ? (
-            <HanuiLink href={href} className={styles.group__link} {...linkProps}>
+            <UiLink href={href} className={styles.group__link} {...linkProps}>
               {label}
-            </HanuiLink>
+            </UiLink>
           ) : (
             label
           )}
@@ -67,7 +69,7 @@ type DirectoryRowProps = {
   /** Sağ uçta duran işaret: rozet, kayıt sayısı. */
   marker?: ReactNode;
   /** Yönlendiriciye geçirilecek ek props. */
-  linkProps?: HanuiLinkExtraProps;
+  linkProps?: UiLinkExtraProps;
   className?: string;
 };
 
@@ -75,11 +77,11 @@ type DirectoryRowProps = {
 export const DirectoryRow: FC<DirectoryRowProps> = /*#__PURE__*/ named(
   /*#__PURE__*/ memo(({ href, name, media, marker, linkProps, className }) => (
     <li>
-      <HanuiLink href={href} className={cx(styles.row, className)} {...linkProps}>
+      <UiLink href={href} className={cx(styles.row, className)} {...linkProps}>
         {media && <span className={styles.row__media}>{media}</span>}
         <span className={styles.row__name}>{name}</span>
         {marker && <span className={styles.row__marker}>{marker}</span>}
-      </HanuiLink>
+      </UiLink>
     </li>
   )),
   'DirectoryRow',
@@ -101,7 +103,7 @@ export const DirectoryJump: FC<DirectoryJumpProps> = /*#__PURE__*/ named(
      * Prop adi `labels` (grup etiketleri) config'in adiyla cakisiyor; config `config` olarak
      * alinir.
      */
-    const { labels: config } = useHanui();
+    const { labels: config } = useUi();
 
     return (
       <nav

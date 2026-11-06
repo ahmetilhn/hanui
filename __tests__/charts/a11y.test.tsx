@@ -5,7 +5,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import { axe } from '@tests/support/axe';
 import * as charts from '@/charts';
-import * as hanui from '@/index';
+import * as ui from '@/index';
 
 const {
   AreaChart,
@@ -172,13 +172,13 @@ const cases = Object.entries(SCENARIOS).flatMap(([component, states]) =>
 
 describe('grafik eksen taraması', () => {
   it.each(cases)('%s — %s', async (_component, _state, element) => {
-    render(<hanui.HanuiProvider labels={LABELS}>{element}</hanui.HanuiProvider>);
+    render(<ui.UiProvider labels={LABELS}>{element}</ui.UiProvider>);
 
     expect(await axe(document.body)).toHaveNoViolations();
   });
 
   it.each(cases)('%s — %s: ipucu açıkken de temiz', async (_component, _state, element) => {
-    render(<hanui.HanuiProvider labels={LABELS}>{element}</hanui.HanuiProvider>);
+    render(<ui.UiProvider labels={LABELS}>{element}</ui.UiProvider>);
     const svg = screen.getByRole('img');
     fireEvent.keyDown(svg, { key: 'ArrowRight' });
 

@@ -4,21 +4,43 @@
  * ⚠ 38 → 42 kB (2026-08-15). Gerekçe: 38 kB, paket **~22 kB**ken konmuştu ve README hâlâ o eski
  * sayıyı yazıyordu (düzeltildi).
  * ⚠ 42 → 43 kB (2026-10-10). Ölçüm 42,05 kB: 5.1 bileşenleri (`Disclosure`, `StatusDot`, `Kbd`)
- * girişi tam sınıra getirmişti, `HanuiThemeScript` (5.2 — sunucu düzeninde çizilen tema betiği,
+ * girişi tam sınıra getirmişti, `UiThemeScript` (5.2 — sunucu düzeninde çizilen tema betiği,
  * `themeBootScript()`in yerine) 49 B aştırdı. Sohbet ve grafikler bu bütçe yüzünden AYRI girişte;
  * ana girişe bundan sonra eklenen her bileşen önce alt girişe aday mı diye sorulur.
  */
 export default [
   {
-    name: 'ESM giriş noktası (tüm paket)',
+    name: 'ESM cephe (tüm paket, bileşen başına modüllerden paketlenir)',
     path: 'build/index.js',
-    limit: '43 kB',
+    /*
+     * ⚠ 43 → 44 kB (2026-11-07, 6.0). Ölçüm 43,29 kB: dosya başına `'use client'` ve CSS içe aktarım
+     * satırları, bağlantı düğmesinin `inert` sınıfı. Tüketici bunu indirmez (yalnızca ulaşılan
+     * modüller); asıl koruma aşağıdaki tek bileşen ölçümleri — 6.0'da `Button` 5,12 → 1,33 kB.
+     */
+    limit: '44 kB',
     gzip: true,
   },
   {
-    name: 'styles.css (TEK dosya — bkz. README)',
+    name: 'styles.css (TAM paket — 6.0: CJS ve paketleyicisiz kullanım için)',
     path: 'build/styles.css',
-    limit: '24 kB',
+    /* ⚠ 24 → 25 kB (2026-11-07, 6.0). Ölçüm 24,22 kB: bileşen değişkenlerinin `var(…, varsayılan)` biçimi + `Select sm` dokunma alanı. */
+    limit: '25 kB',
+    gzip: true,
+  },
+  {
+    /*
+     * 6.0: bileşen modülleri `base.css`i (token'lar, sıfırlama, @keyframes) ve kendi `style.css`ini
+     * içe aktarır; yalnızca `Button` kullanan sayfaya inen CSS budur. İlk ölçüm 2026-11-07.
+     */
+    name: 'base.css (token + taban)',
+    path: 'build/base.css',
+    limit: '4 kB',
+    gzip: true,
+  },
+  {
+    name: 'yalnızca Button CSS (components/Button/style.css)',
+    path: 'build/components/Button/style.css',
+    limit: '1.6 kB',
     gzip: true,
   },
   /* ASIL koruma: tuketici bunlari cekiyor. */
@@ -30,13 +52,13 @@ export default [
     gzip: true,
   },
   /*
-   * SOHBET GİRİŞİ — ana girişten AYRI ölçülür ve ana giriş içinde SAYILMAZ (`@ahmetilhn/hanui`
+   * SOHBET GİRİŞİ — ana girişten AYRI ölçülür ve ana giriş içinde SAYILMAZ (`@handijit/ui`
    * dışsal: tüketici onu zaten indiriyor). Bütçe ilk ölçümden konur, yeşile boyamak için büyümez.
    */
   {
     name: 'chat girişi (tümü)',
     path: 'build/chat.js',
-    ignore: ['@ahmetilhn/hanui'],
+    ignore: ['@handijit/ui'],
     /*
      * İlk ölçüm (2026-10-10, 20 bileşen): 6,29 kB. ⚠ 8 → 13 kB (2026-10-10): `CodeBlock`ın
      * yerleşik vurgulayıcısı (30+ dil, 4,93 kB) ve biçimlendiricisi (0,43 kB) girişi 11,74 kB'a
@@ -50,7 +72,7 @@ export default [
     name: 'yalnızca ChatThread (ağaç sarsma — vurgulayıcı SIZMAZ)',
     path: 'build/chat.js',
     import: '{ ChatThread }',
-    ignore: ['@ahmetilhn/hanui'],
+    ignore: ['@handijit/ui'],
     /* İlk ölçüm: 1,03 kB. Vurgulayıcı modül düzeyinde bir çağrıyla ayakta kalırsa buraya biner. */
     limit: '1.3 kB',
     gzip: true,
@@ -59,7 +81,7 @@ export default [
     name: 'yalnızca CodeBlock (vurgulayıcı + biçimlendirici)',
     path: 'build/chat.js',
     import: '{ CodeBlock }',
-    ignore: ['@ahmetilhn/hanui'],
+    ignore: ['@handijit/ui'],
     /* İlk ölçüm: 6,22 kB. Yeni bir dil buradan geçer. */
     limit: '7 kB',
     gzip: true,
@@ -75,7 +97,7 @@ export default [
   {
     name: 'charts girişi (tümü)',
     path: 'build/charts.js',
-    ignore: ['@ahmetilhn/hanui'],
+    ignore: ['@handijit/ui'],
     /* İlk ölçüm (2026-10-10, 10 grafik): 14,02 kB. */
     limit: '16 kB',
     gzip: true,
@@ -84,7 +106,7 @@ export default [
     name: 'yalnızca LineChart (ağaç sarsma)',
     path: 'build/charts.js',
     import: '{ LineChart }',
-    ignore: ['@ahmetilhn/hanui'],
+    ignore: ['@handijit/ui'],
     /* İlk ölçüm: 7,19 kB — ortak çekirdek (çerçeve, kartezyen geometri, eksenler) dahil. */
     limit: '8.5 kB',
     gzip: true,

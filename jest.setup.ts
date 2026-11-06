@@ -46,7 +46,7 @@ if (hasDom && !window.matchMedia)
 
 /*
  * jsdom'un CSS ayrıştırıcısı `@layer`ı tanımıyor ve her tema ezmesinde "Could not parse CSS
- * stylesheet" basıyor; ezme 5.6.3'ten beri `@layer hanui` içinde. Tarayıcıda geçerli bir kural —
+ * stylesheet" basıyor; ezme 5.6.3'ten beri `@layer ui` içinde. Tarayıcıda geçerli bir kural —
  * yalnız bu ayrıştırma hatası susturulur, başka her hata görünür kalır.
  */
 if (hasDom) {

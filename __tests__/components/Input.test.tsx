@@ -32,8 +32,8 @@ describe('Input', () => {
     render(<Input aria-label="Tutar" prefix="₺" />);
     const wrapper = screen.getByRole('textbox', { name: 'Tutar' }).parentElement!;
 
-    expect(wrapper.style.getPropertyValue('--hanui-input-prefix-width')).toBe('9px');
-    expect(wrapper.style.getPropertyValue('--hanui-input-suffix-width')).toBe('');
+    expect(wrapper.style.getPropertyValue('--ui-input-prefix-width')).toBe('9px');
+    expect(wrapper.style.getPropertyValue('--ui-input-suffix-width')).toBe('');
     expect(screen.getByRole('textbox')).toHaveClass('input--hasPrefix');
   });
 
@@ -42,12 +42,12 @@ describe('Input', () => {
     const { rerender } = render(<Input aria-label="Ağırlık" suffix="kg" />);
     const wrapper = screen.getByRole('textbox', { name: 'Ağırlık' }).parentElement!;
 
-    expect(wrapper.style.getPropertyValue('--hanui-input-suffix-width')).toBe('22px');
+    expect(wrapper.style.getPropertyValue('--ui-input-suffix-width')).toBe('22px');
 
     jest.restoreAllMocks();
     rerender(<Input aria-label="Ağırlık" />);
 
-    expect(wrapper.style.getPropertyValue('--hanui-input-suffix-width')).toBe('');
+    expect(wrapper.style.getPropertyValue('--ui-input-suffix-width')).toBe('');
     expect(screen.getByRole('textbox')).not.toHaveClass('input--hasSuffix');
   });
 

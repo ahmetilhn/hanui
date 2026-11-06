@@ -2,7 +2,7 @@
 
 import { type FC, memo, type ReactNode, useEffect, useRef, useState } from 'react';
 
-import { Disclosure, Spinner } from '@ahmetilhn/hanui';
+import { Disclosure, Spinner } from '@handijit/ui';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';

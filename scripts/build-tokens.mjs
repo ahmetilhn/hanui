@@ -7,7 +7,7 @@ import { loadTokens, ROOT } from './lib/load-tokens.mjs';
 const STYLES_DIR = resolve(ROOT, 'src/styles');
 
 /** CSS özel özelliği öneki. */
-const PREFIX = '--hanui-';
+const PREFIX = '--ui-';
 
 const {
   LIGHT_THEME,
@@ -35,19 +35,19 @@ const fontDeclarations = (indent = '  ') =>
     .map(([role, stack]) => `${indent}${PREFIX}font-${role}: ${stack};`)
     .join('\n');
 
-// Tema yayini: secim `<html data-hanui-theme>` ile tasinir, yoksa `prefers-color-scheme` yedegi
+// Tema yayini: secim `<html data-ui-theme>` ile tasinir, yoksa `prefers-color-scheme` yedegi
 // devreye girer. Ana tokenlar ve sohbet girisinin sozdizimi tokenlari AYNI secicilerle yayilir.
 const themeRules = (light, dark) => `@media (prefers-color-scheme: dark) {
-  :root:not([data-hanui-theme]) {
+  :root:not([data-ui-theme]) {
     @include ${dark};
   }
 }
 
-:root[data-hanui-theme='dark'] {
+:root[data-ui-theme='dark'] {
   @include ${dark};
 }
 
-:root[data-hanui-theme='light'] {
+:root[data-ui-theme='light'] {
   @include ${light};
 }
 `;
@@ -79,7 +79,7 @@ ${fontDeclarations()}
 }
 
 ${themeRules('light', 'dark')}
-:root[data-hanui-density='compact'] {
+:root[data-ui-density='compact'] {
 ${declarations(COMPACT_DENSITY)}
 }
 
@@ -90,7 +90,7 @@ ${declarations(NARROW_METRICS, '    ')}
 }
 `;
 
-// Renk sozlesmesi: her ad bir `var(--hanui-…)` isaret eder.
+// Renk sozlesmesi: her ad bir `var(--ui-…)` isaret eder.
 // ⚠ Bunun iki sonucu var ve ikisi de sessizce kiriliyor: (1) renk uzerinde SCSS renk fonksiyonu
 // CALISMAZ
 const colorsFile = `${BANNER}${Object.keys(LIGHT_THEME)
@@ -107,7 +107,7 @@ $sheet-inset-bottom: var(${PREFIX}sheet-inset-bottom, 0px);
 $sheet-height: var(${PREFIX}sheet-height, 100dvh);
 `;
 
-// Olcu sozlesmesi: bunlar da `var(--hanui-…)` isaret ediyor.
+// Olcu sozlesmesi: bunlar da `var(--ui-…)` isaret ediyor.
 // ⚠ Bedeli: SCSS ARITMETIGI CALISMAZ (`$space-8 - $space-2` derlenmez, Sass iki `var()` cagrisini
 // cikaramaz)
 const metricsFile = `${BANNER}${Object.keys(METRIC_TOKENS)
@@ -142,7 +142,7 @@ writeFileSync(resolve(STYLES_DIR, '_metrics.generated.scss'), metricsFile, 'utf8
 writeFileSync(resolve(STYLES_DIR, '_syntax.generated.scss'), syntaxFile, 'utf8');
 
 console.log(
-  `hanui: ${Object.keys(LIGHT_THEME).length} renk + ${Object.keys(METRIC_TOKENS).length} ölçü` +
+  `ui: ${Object.keys(LIGHT_THEME).length} renk + ${Object.keys(METRIC_TOKENS).length} ölçü` +
     ` + ${Object.keys(SYNTAX_LIGHT_THEME).length} sözdizimi token üretildi → _tokens.generated.scss,` +
     ' _colors.generated.scss, _metrics.generated.scss, _syntax.generated.scss',
 );

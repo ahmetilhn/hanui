@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import HanuiProvider from '@/theme/HanuiProvider';
+import UiProvider from '@/theme/UiProvider';
 import { resetLabelWarnings } from '@/helpers/label.helper';
 import Breadcrumb from '@/components/Breadcrumb';
 import CopyField from '@/components/CopyField';
@@ -10,9 +10,9 @@ import Input from '@/components/Input';
 import Modal from '@/components/Modal';
 import Rating from '@/components/Rating';
 import Spinner from '@/components/Spinner';
-import type { HanuiLabels } from '@/types/theme.type';
+import type { UiLabels } from '@/types/theme.type';
 
-const LABELS: HanuiLabels = {
+const LABELS: UiLabels = {
   close: 'Kapat',
   loading: 'Yükleniyor',
   required: '(zorunlu)',
@@ -26,7 +26,7 @@ const LABELS: HanuiLabels = {
   rating: { srLabel: (value, count) => `5 üzerinden ${value}${count ? `, ${count} oy` : ''}` },
 };
 
-const withProvider = (ui: React.ReactNode) => <HanuiProvider labels={LABELS}>{ui}</HanuiProvider>;
+const withProvider = (ui: React.ReactNode) => <UiProvider labels={LABELS}>{ui}</UiProvider>;
 
 beforeEach(resetLabelWarnings);
 

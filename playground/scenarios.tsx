@@ -52,8 +52,8 @@ import {
   FileUpload,
   FilterBar,
   FilterBarField,
-  HanuiProvider,
-  HanuiThemeScript,
+  UiProvider,
+  UiThemeScript,
   IconButton,
   Input,
   Kbd,
@@ -104,7 +104,7 @@ import {
   ToastPortal,
   Tooltip,
   type DataTableColumn,
-  type HanuiLabels,
+  type UiLabels,
   UISize,
   UIVariant,
 } from '../src/index';
@@ -147,7 +147,7 @@ import { SOLO_ONLY } from './solo';
 
 /** GALERİ DEFTERİ — görsel dilin tek görüldüğü yer. */
 
-export const LABELS: HanuiLabels = {
+export const LABELS: UiLabels = {
   close: 'Kapat',
   notifications: 'Bildirimler',
   cancel: 'Vazgeç',
@@ -271,7 +271,7 @@ const MEDIA_SAMPLE = `data:image/svg+xml;utf8,${encodeURIComponent(
 )}`;
 
 export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
-  HanuiProvider: {
+  UiProvider: {
     description: (
       <p style={{ maxWidth: '52ch' }}>
         Sağlayıcı görünür bir şey çizmez: tema ezmelerini çocuklarından önce bir{' '}
@@ -281,7 +281,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     ),
   },
   /* Görünür bir şey çizmez — `<head>`deki tema betiği. */
-  HanuiThemeScript: { default: <HanuiThemeScript storageKey="theme" /> },
+  UiThemeScript: { default: <UiThemeScript storageKey="theme" /> },
 
   // --- Eylem ---
   Button: {
@@ -482,7 +482,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     default: <Textarea aria-label="Not" placeholder="Notunuz" />,
     /* Çerçeveyi kapsayıcı çizer — galeride kapsayıcıyla birlikte gösterilir. */
     bare: (
-      <div style={{ padding: 12, border: '1px solid var(--hanui-border)', borderRadius: 12 }}>
+      <div style={{ padding: 12, border: '1px solid var(--ui-border)', borderRadius: 12 }}>
         <Textarea
           aria-label="Mesaj"
           placeholder="Mesajınızı yazın…"
@@ -597,7 +597,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     default: (
       <Card>
         <CardMedia ratio={1.4}>
-          <div style={{ width: '100%', height: '100%', background: 'var(--hanui-media-bg)' }} />
+          <div style={{ width: '100%', height: '100%', background: 'var(--ui-media-bg)' }} />
           <CardOverlay position="top-left">
             <Badge tone="danger" variant="solid">
               %20
@@ -1380,7 +1380,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       </FilterBar>
     ),
   },
-  // --- Grafikler (@ahmetilhn/hanui/charts) ---
+  // --- Grafikler (@handijit/ui/charts) ---
   LineChart: {
     twoSeries: (
       <LineChart
@@ -1601,7 +1601,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
       />
     ),
   },
-  // --- Sohbet (@ahmetilhn/hanui/chat) ---
+  // --- Sohbet (@handijit/ui/chat) ---
   AppBar: {
     default: (
       <AppBar
@@ -1624,7 +1624,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   },
   ChatThread: {
     default: (
-      <div style={{ height: 360, border: '1px solid var(--hanui-border)', borderRadius: 12 }}>
+      <div style={{ height: 360, border: '1px solid var(--ui-border)', borderRadius: 12 }}>
         <ChatThread
           dock={
             <PromptInput
@@ -1764,7 +1764,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     json: (
       <CodeBlock
         language="json"
-        code='{"id":12345678901234567890,"name":"hanui","tags":["chat","charts"],"isPublic":true,"owner":null}'
+        code='{"id":12345678901234567890,"name":"ui","tags":["chat","charts"],"isPublic":true,"owner":null}'
       />
     ),
     diff: (
@@ -1836,12 +1836,12 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     error: (
       <ToolCall icon={<TerminalFill />} name="bash" summary="rm -rf /" status="error" meta="5 ms" />
     ),
-    aborted: <ToolCall name="araştır" summary="hanui palet" status="aborted" />,
+    aborted: <ToolCall name="araştır" summary="ui palet" status="aborted" />,
   },
   ToolCallSection: {
     default: (
-      <ToolCall name="araştır" summary="hanui" status="ok" isDefaultOpen>
-        <ToolCallSection label="Girdi">hanui palet</ToolCallSection>
+      <ToolCall name="araştır" summary="ui" status="ok" isDefaultOpen>
+        <ToolCallSection label="Girdi">ui palet</ToolCallSection>
         <ToolCallSection label="Sonuç">3 kaynak bulundu.</ToolCallSection>
       </ToolCall>
     ),
@@ -1863,7 +1863,7 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     default: (
       <SourceList
         items={[
-          { id: '1', title: 'hanui CLAUDE.md', url: 'https://example.com', domain: 'example.com' },
+          { id: '1', title: 'ui CLAUDE.md', url: 'https://example.com', domain: 'example.com' },
           { id: '2', title: 'Yerel bağlam kaydı A3', onSelect: noop },
         ]}
       />
@@ -1988,4 +1988,4 @@ export const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   },
 };
 
-export { HanuiProvider, SOLO_ONLY };
+export { UiProvider, SOLO_ONLY };

@@ -6,7 +6,7 @@ import { StarFill } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
 import { resolveFormatter } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -42,7 +42,7 @@ const RatingInput = ({
   className,
   testId,
 }: Props) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const scale = ratingLabels ?? labels?.rating?.scale;
   const name = useId();
   const [hovered, setHovered] = useState<number | null>(null);

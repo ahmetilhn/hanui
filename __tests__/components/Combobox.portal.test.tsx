@@ -38,7 +38,7 @@ describe('Combobox — portallanan panel', () => {
       <Combobox options={OPTIONS} value={null} onChange={jest.fn()} labels={LABELS} />,
     );
 
-    await userEvent.click(screen.getByRole('button', { name: LABELS.placeholder }));
+    await userEvent.click(screen.getByRole('combobox', { name: LABELS.placeholder }));
 
     const listbox = screen.getByRole('listbox');
 
@@ -51,7 +51,7 @@ describe('Combobox — portallanan panel', () => {
     const onChange = jest.fn();
     render(<Combobox options={OPTIONS} value={null} onChange={onChange} labels={LABELS} />);
 
-    await userEvent.click(screen.getByRole('button', { name: LABELS.placeholder }));
+    await userEvent.click(screen.getByRole('combobox', { name: LABELS.placeholder }));
     await userEvent.click(screen.getByRole('option', { name: 'İzmir' }));
 
     expect(onChange).toHaveBeenCalledWith('izmir');
@@ -61,8 +61,8 @@ describe('Combobox — portallanan panel', () => {
   it('arama kutusuna tıklamak paneli KAPATMAZ', async () => {
     render(<Combobox options={OPTIONS} value={null} onChange={jest.fn()} labels={LABELS} />);
 
-    await userEvent.click(screen.getByRole('button', { name: LABELS.placeholder }));
-    await userEvent.click(screen.getByRole('combobox', { name: LABELS.searchPlaceholder }));
+    await userEvent.click(screen.getByRole('combobox', { name: LABELS.placeholder }));
+    await userEvent.click(screen.getByRole('textbox', { name: LABELS.searchPlaceholder }));
 
     expect(screen.getByRole('listbox')).toBeInTheDocument();
   });
@@ -75,7 +75,7 @@ describe('Combobox — portallanan panel', () => {
       </>,
     );
 
-    await userEvent.click(screen.getByRole('button', { name: LABELS.placeholder }));
+    await userEvent.click(screen.getByRole('combobox', { name: LABELS.placeholder }));
     expect(screen.getByRole('listbox')).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: 'dışarıdaki düğme' }));
@@ -85,7 +85,7 @@ describe('Combobox — portallanan panel', () => {
   it('panel kapanınca portal DÜĞÜMÜ de sökülür', async () => {
     render(<Combobox options={OPTIONS} value={null} onChange={jest.fn()} labels={LABELS} />);
 
-    const trigger = screen.getByRole('button', { name: LABELS.placeholder });
+    const trigger = screen.getByRole('combobox', { name: LABELS.placeholder });
 
     await userEvent.click(trigger);
     expect(screen.getByRole('listbox')).toBeInTheDocument();

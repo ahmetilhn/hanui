@@ -11,7 +11,7 @@ import {
   useState,
 } from 'react';
 
-import { useHanui } from '@ahmetilhn/hanui';
+import { useUi } from '@handijit/ui';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
@@ -87,7 +87,7 @@ const ActionList: FC<ListProps> = ({
   return (
     <div
       className={cx(styles.list, styles['list--virtual'], className)}
-      style={{ maxBlockSize: maxHeight, ['--hanui-row-height' as string]: `${rowHeight}px` }}
+      style={{ maxBlockSize: maxHeight, ['--ui-row-height' as string]: `${rowHeight}px` }}
       onScroll={event => setScrollTop(event.currentTarget.scrollTop)}
       data-testid={testId}
     >
@@ -123,7 +123,7 @@ export const ActionListItem: FC<ItemProps> = ({
   'aria-posinset': position,
   'aria-setsize': setSize,
 }) => {
-  const { linkComponent: LinkComponent } = useHanui();
+  const { linkComponent: LinkComponent } = useUi();
 
   const className = cx(
     styles.item,

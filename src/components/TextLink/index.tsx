@@ -3,8 +3,8 @@ import { type AnchorHTMLAttributes, memo, type ReactNode } from 'react';
 import { ArrowRight } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
-import type { HanuiLinkExtraProps } from '../../types/link.type';
-import HanuiLink from '../Link';
+import type { UiLinkExtraProps } from '../../types/link.type';
+import UiLink from '../Link';
 
 import styles from './index.module.scss';
 
@@ -16,7 +16,7 @@ type Props = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
   tone?: 'brand' | 'muted';
   size?: 'sm' | 'md';
   /** Yönlendiriciye geçirilecek ek props. */
-  linkProps?: HanuiLinkExtraProps;
+  linkProps?: UiLinkExtraProps;
 };
 
 /** Metin bağlantısı. */
@@ -30,7 +30,7 @@ const TextLink = ({
   linkProps,
   ...rest
 }: Props) => (
-  <HanuiLink
+  <UiLink
     href={href}
     className={cx(styles.link, styles[`link--${tone}`], styles[`link--${size}`], className)}
     {...linkProps}
@@ -42,7 +42,7 @@ const TextLink = ({
      * caret bir "devam" oku değil, bir açılır menü işareti okunuyor.
      */}
     {hasArrow && <ArrowRight aria-hidden className={styles.link__arrow} />}
-  </HanuiLink>
+  </UiLink>
 );
 
 export default /*#__PURE__*/ memo(TextLink) as typeof TextLink;

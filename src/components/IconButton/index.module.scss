@@ -30,6 +30,11 @@
 
   @include tap-target;
 
+  // Pasif BAĞLANTI (`href` + `disabled`): tıklama ve imleç burada kesilir.
+  &--inert {
+    pointer-events: none;
+  }
+
   &--round {
     border-radius: $radius-pill;
   }

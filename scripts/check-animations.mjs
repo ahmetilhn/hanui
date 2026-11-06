@@ -67,9 +67,9 @@ const css = readFileSync(CSS_PATH, 'utf8');
  */
 const defined = new Set([...css.matchAll(/@keyframes\s+([\w-]+)/g)].map(match => match[1]));
 
-/* Yayinlanan animasyon adi ozel ozellikleri: `--hanui-anim-spin: hanui-spin`. */
+/* Yayinlanan animasyon adi ozel ozellikleri: `--ui-anim-spin: ui-spin`. */
 const customProperties = new Map(
-  [...css.matchAll(/(--hanui-anim-[\w-]+)\s*:\s*([\w-]+)/g)].map(match => [match[1], match[2]]),
+  [...css.matchAll(/(--ui-anim-[\w-]+)\s*:\s*([\w-]+)/g)].map(match => [match[1], match[2]]),
 );
 
 const problems = [];
@@ -84,7 +84,7 @@ for (const match of css.matchAll(/animation(?:-name)?\s*:\s*([^;}]+)/g)) {
 
     if (variable) {
       /* Sure ve egri de degisken: yalnizca animasyon adi olanlari sinariz. */
-      if (!variable[1].startsWith('--hanui-anim-')) continue;
+      if (!variable[1].startsWith('--ui-anim-')) continue;
 
       const target = customProperties.get(variable[1]);
 

@@ -34,7 +34,7 @@
   }
 
   .list--virtual & {
-    block-size: var(--hanui-row-height);
+    block-size: var(--ui-row-height);
     overflow: hidden;
   }
 }

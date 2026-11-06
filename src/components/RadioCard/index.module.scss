@@ -7,8 +7,9 @@
   min-height: 44px;
   padding: $space-3 $space-4;
   background-color: $surface;
-  border: 1px solid $border;
-  border-radius: $radius-md;
+  // Bileşen değişkenleri (6.0): çizgi ve yarıçap.
+  border: 1px solid var(--ui-radio-card-line, #{$border});
+  border-radius: var(--ui-radio-card-radius, #{$radius-md});
   cursor: pointer;
   transition:
     border-color $duration-fast $ease-out,

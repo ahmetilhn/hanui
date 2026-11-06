@@ -1,3 +1,5 @@
+'use client';
+
 import { FC, memo, useEffect, useState } from 'react';
 
 import { named } from '../../helpers/component.helper';

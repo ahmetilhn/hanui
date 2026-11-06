@@ -2,7 +2,7 @@
 
 import { type FC, memo, type ReactNode } from 'react';
 
-import { Disclosure, StatusDot, useHanui } from '@ahmetilhn/hanui';
+import { Disclosure, StatusDot, useUi } from '@handijit/ui';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
@@ -62,7 +62,7 @@ const ToolCall: FC<Props> = ({
   className,
   testId,
 }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const statusText = resolveLabel(`ToolCall.status.${status}`, labels?.chat?.toolStatus?.[status]);
 
   const header = (

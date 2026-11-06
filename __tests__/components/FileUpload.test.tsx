@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { FileUpload, HanuiProvider } from '../../src';
+import { FileUpload, UiProvider } from '../../src';
 import { LABELS } from '../fixtures/labels';
 
 const file = (name: string, bytes: number): File =>
@@ -12,7 +12,7 @@ const renderUpload = (props: Partial<React.ComponentProps<typeof FileUpload>> = 
   const onRemove = jest.fn();
 
   render(
-    <HanuiProvider labels={LABELS}>
+    <UiProvider labels={LABELS}>
       <FileUpload
         files={[]}
         onSelect={onSelect}
@@ -22,7 +22,7 @@ const renderUpload = (props: Partial<React.ComponentProps<typeof FileUpload>> = 
         dropLabel="Dosyaları buraya bırakın"
         {...props}
       />
-    </HanuiProvider>,
+    </UiProvider>,
   );
 
   return { onSelect, onRemove };

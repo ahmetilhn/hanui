@@ -5,7 +5,7 @@ import { render } from '@testing-library/react';
 
 import { axe } from '@tests/support/axe';
 import * as chat from '@/chat';
-import * as hanui from '@/index';
+import * as ui from '@/index';
 
 const {
   ActionList,
@@ -52,10 +52,10 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     assistant: (
       <ChatMessage
         author="assistant"
-        avatar={<hanui.Avatar name="Asistan" tone="brand" shape="rounded" size="sm" />}
+        avatar={<ui.Avatar name="Asistan" tone="brand" shape="rounded" size="sm" />}
         actions={
           <MessageActions meta="2,4 sn">
-            <hanui.IconButton icon={<span>c</span>} label="Kopyala" size="sm" />
+            <ui.IconButton icon={<span>c</span>} label="Kopyala" size="sm" />
           </MessageActions>
         }
       >
@@ -119,7 +119,7 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   ToolCall: {
     running: <ToolCall name="bash" summary="ls -la" status="running" meta="1 sn" />,
     expanded: (
-      <ToolCall name="araştır" summary="hanui" status="ok" isDefaultOpen>
+      <ToolCall name="araştır" summary="ui" status="ok" isDefaultOpen>
         <ToolCallSection label="Çıktı">3 kaynak</ToolCallSection>
       </ToolCall>
     ),
@@ -148,7 +148,7 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     default: (
       <SourceList
         items={[
-          { id: '1', title: 'Hanui', url: 'https://example.com', domain: 'example.com' },
+          { id: '1', title: 'Ui', url: 'https://example.com', domain: 'example.com' },
           { id: '2', title: 'Yerel belge', onSelect: noop },
         ]}
       />
@@ -174,8 +174,8 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
   MessageActions: {
     default: (
       <MessageActions meta="412 belirteç">
-        <hanui.IconButton icon={<span>c</span>} label="Kopyala" size="sm" />
-        <hanui.IconButton icon={<span>r</span>} label="Yeniden dene" size="sm" />
+        <ui.IconButton icon={<span>c</span>} label="Kopyala" size="sm" />
+        <ui.IconButton icon={<span>r</span>} label="Yeniden dene" size="sm" />
       </MessageActions>
     ),
   },
@@ -183,8 +183,8 @@ const SCENARIOS: Record<string, Record<string, ReactElement>> = {
     default: (
       <AppBar
         brand="Hanration"
-        start={<hanui.StatusDot tone="success" label="Bağlı" />}
-        end={<hanui.IconButton icon={<span>t</span>} label="Tema" />}
+        start={<ui.StatusDot tone="success" label="Bağlı" />}
+        end={<ui.IconButton icon={<span>t</span>} label="Tema" />}
       />
     ),
   },
@@ -269,7 +269,7 @@ const cases = Object.entries(SCENARIOS).flatMap(([component, states]) =>
 
 describe('sohbet eksen taraması', () => {
   it.each(cases)('%s — %s', async (_component, _state, element) => {
-    render(<hanui.HanuiProvider labels={LABELS}>{element}</hanui.HanuiProvider>);
+    render(<ui.UiProvider labels={LABELS}>{element}</ui.UiProvider>);
 
     expect(await axe(document.body)).toHaveNoViolations();
   });

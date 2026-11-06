@@ -4,7 +4,7 @@ import { forwardRef, type KeyboardEvent, memo, type ReactNode, useEffect } from 
 
 import { ArrowUp, StopFill } from 'react-bootstrap-icons';
 
-import { hasOpenSurface, IconButton, Textarea, useHanui } from '@ahmetilhn/hanui';
+import { hasOpenSurface, IconButton, Textarea, useUi } from '@handijit/ui';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
@@ -77,7 +77,7 @@ const PromptInput = /*#__PURE__*/ forwardRef<HTMLTextAreaElement, Props>(
     },
     ref,
   ) => {
-    const { labels } = useHanui();
+    const { labels } = useUi();
     const isEmpty = value.trim() === '';
 
     /* `Escape` sayfa duzeyinde: odak alanda olmasa da (bir arac kartindayken) akis durdurulabilmeli. */

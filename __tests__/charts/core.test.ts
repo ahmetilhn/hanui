@@ -226,8 +226,8 @@ describe('palet, biçim, kenar boşluğu', () => {
     expect(toneAt(0)).toBe(TONE_ORDER[0]);
     expect(toneAt(TONE_ORDER.length)).toBe(TONE_ORDER[0]);
     expect(toneAt(2, 'series-1')).toBe('series-1');
-    expect(toneColor('cat-3')).toBe('var(--hanui-cat-3)');
-    expect(toneColor('muted')).toBe('var(--hanui-text-3)');
+    expect(toneColor('cat-3')).toBe('var(--ui-cat-3)');
+    expect(toneColor('muted')).toBe('var(--ui-text-3)');
   });
 
   it('sayı biçimi yerele göre; eksen kısa, ipucu tam', () => {

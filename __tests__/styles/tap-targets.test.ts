@@ -5,7 +5,7 @@ const read = (path: string): string => readFileSync(path, 'utf8');
 /*
  * ⚠ BU LISTE ELLE BAKILIR ve tam da bu yuzden IKI IHLAL KACIRDI: `Chip` (40px)
  * ve `Pagination` (dar ekranda 36×40) yillardir listede degildi, dolayisiyla
- * nobetci yesil koserken kural cignenıyordu. Ikisi de hanui'nin kendi
+ * nobetci yesil koserken kural cignenıyordu. Ikisi de ui'nin kendi
  * urununde degil, TUKETICIDE olculdu (e-ticaret vitrini, 390px ve 320px).
  *
  * ⚠ TURETILMIS BIR KURAL DENENDI VE ELENDI: "44px altinda sabit yukseklik
@@ -24,6 +24,7 @@ const SMALL_TARGETS = [
   ['Switch', 'src/components/Switch/index.module.scss'],
   ['Chip', 'src/components/Chip/index.module.scss'],
   ['Pagination', 'src/components/Pagination/index.module.scss'],
+  ['Select sm', 'src/components/Select/index.module.scss'],
 ] as const;
 
 describe('dokunma hedefleri', () => {

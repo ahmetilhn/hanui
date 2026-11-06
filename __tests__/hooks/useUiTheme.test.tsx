@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 
 import { THEME_ATTRIBUTE, THEME_SWITCHING_CLASS } from '@/helpers/theme.helper';
-import useHanuiTheme from '@/hooks/useHanuiTheme';
+import useUiTheme from '@/hooks/useUiTheme';
 
 const mockMatchMedia = (prefersDark: boolean) => {
   const listeners = new Set<() => void>();
@@ -21,7 +21,7 @@ const mockMatchMedia = (prefersDark: boolean) => {
   return { emit: () => listeners.forEach(listener => listener()), listeners };
 };
 
-describe('useHanuiTheme', () => {
+describe('useUiTheme', () => {
   beforeEach(() => {
     document.documentElement.removeAttribute(THEME_ATTRIBUTE);
     document.documentElement.classList.remove(THEME_SWITCHING_CLASS);
@@ -29,16 +29,16 @@ describe('useHanuiTheme', () => {
   });
 
   it('monte olmadan önce `light` ve `isReady: false`', () => {
-    const { result } = renderHook(() => useHanuiTheme());
+    const { result } = renderHook(() => useUiTheme());
 
     expect(result.current.isReady).toBe(true);
     expect(result.current.scheme).toBe('light');
   });
 
-  it('`<html data-hanui-theme>` neyse onu okur', () => {
+  it('`<html data-ui-theme>` neyse onu okur', () => {
     document.documentElement.setAttribute(THEME_ATTRIBUTE, 'dark');
 
-    const { result } = renderHook(() => useHanuiTheme());
+    const { result } = renderHook(() => useUiTheme());
 
     expect(result.current.scheme).toBe('dark');
   });
@@ -46,7 +46,7 @@ describe('useHanuiTheme', () => {
   it('öznitelik yokken SİSTEM tercihini okur', () => {
     mockMatchMedia(true);
 
-    const { result } = renderHook(() => useHanuiTheme());
+    const { result } = renderHook(() => useUiTheme());
 
     expect(result.current.scheme).toBe('dark');
   });
@@ -55,13 +55,13 @@ describe('useHanuiTheme', () => {
     document.documentElement.setAttribute(THEME_ATTRIBUTE, 'sepia');
     mockMatchMedia(true);
 
-    const { result } = renderHook(() => useHanuiTheme());
+    const { result } = renderHook(() => useUiTheme());
 
     expect(result.current.scheme).toBe('dark');
   });
 
   it('`setScheme` özniteliği yazar', () => {
-    const { result } = renderHook(() => useHanuiTheme());
+    const { result } = renderHook(() => useUiTheme());
 
     act(() => result.current.setScheme('dark'));
 
@@ -70,7 +70,7 @@ describe('useHanuiTheme', () => {
   });
 
   it('`toggle` iki yönde de çalışır', () => {
-    const { result } = renderHook(() => useHanuiTheme());
+    const { result } = renderHook(() => useUiTheme());
 
     act(() => result.current.toggle());
     expect(result.current.scheme).toBe('dark');
@@ -80,7 +80,7 @@ describe('useHanuiTheme', () => {
   });
 
   it('geçiş sınıfı yazılır ve iki kare sonra kaldırılır', async () => {
-    const { result } = renderHook(() => useHanuiTheme());
+    const { result } = renderHook(() => useUiTheme());
 
     act(() => result.current.setScheme('dark'));
     expect(document.documentElement).toHaveClass(THEME_SWITCHING_CLASS);
@@ -97,7 +97,7 @@ describe('useHanuiTheme', () => {
 
   it('AÇIK seçim varken sistem tercihi değişimi görmezden gelinir', () => {
     const media = mockMatchMedia(false);
-    const { result } = renderHook(() => useHanuiTheme());
+    const { result } = renderHook(() => useUiTheme());
 
     act(() => result.current.setScheme('light'));
     act(() => media.emit());
@@ -107,7 +107,7 @@ describe('useHanuiTheme', () => {
 
   it('seçim yokken sistem tercihi izlenmeye devam eder', () => {
     const media = mockMatchMedia(false);
-    const { result } = renderHook(() => useHanuiTheme());
+    const { result } = renderHook(() => useUiTheme());
 
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
@@ -129,14 +129,14 @@ describe('useHanuiTheme', () => {
     it('öznitelik yokken tercih `system`, çözülmüş şema sistemden gelir', () => {
       mockMatchMedia(true);
 
-      const { result } = renderHook(() => useHanuiTheme());
+      const { result } = renderHook(() => useUiTheme());
 
       expect(result.current.preference).toBe('system');
       expect(result.current.scheme).toBe('dark');
     });
 
     it('`setScheme("system")` özniteliği SİLER', () => {
-      const { result } = renderHook(() => useHanuiTheme());
+      const { result } = renderHook(() => useUiTheme());
 
       act(() => result.current.setScheme('dark'));
       expect(document.documentElement.hasAttribute(THEME_ATTRIBUTE)).toBe(true);
@@ -149,7 +149,7 @@ describe('useHanuiTheme', () => {
 
     it('`system`e dönüldüğünde ARADA değişen sistem tercihi görülür', () => {
       const media = mockMatchMedia(false);
-      const { result } = renderHook(() => useHanuiTheme());
+      const { result } = renderHook(() => useUiTheme());
 
       act(() => result.current.setScheme('light'));
 
@@ -163,7 +163,7 @@ describe('useHanuiTheme', () => {
 
     it('`toggle` `system` iken ÇÖZÜLMÜŞ değerin tersine geçer', () => {
       mockMatchMedia(true);
-      const { result } = renderHook(() => useHanuiTheme());
+      const { result } = renderHook(() => useUiTheme());
 
       expect(result.current.scheme).toBe('dark');
 
@@ -176,7 +176,7 @@ describe('useHanuiTheme', () => {
 
   it('sökülünce sistem dinleyicisi kaldırılır', () => {
     const media = mockMatchMedia(false);
-    const { unmount } = renderHook(() => useHanuiTheme());
+    const { unmount } = renderHook(() => useUiTheme());
 
     expect(media.listeners.size).toBe(1);
     unmount();

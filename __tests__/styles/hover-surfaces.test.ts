@@ -54,7 +54,7 @@ describe('hover yüzeyleri', () => {
     const input = read('src/components/Input/index.module.scss');
 
     expect(input).not.toMatch(/\$space-8/);
-    expect(input).toContain('--hanui-input-prefix-width');
-    expect(input).toContain('--hanui-input-suffix-width');
+    expect(input).toContain('--ui-input-prefix-width');
+    expect(input).toContain('--ui-input-suffix-width');
   });
 });

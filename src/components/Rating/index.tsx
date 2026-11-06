@@ -1,12 +1,14 @@
+'use client';
+
 import { type FC, memo } from 'react';
 
-import { isDefined } from '@ahmetilhn/handy-utils';
+import { isDefined } from '@handijit/utils';
 
 import { StarFill, StarHalf } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
 import { resolveFormatter } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -24,7 +26,7 @@ type Props = {
 
 /** Yıldız puanı — salt gösterim. */
 const Rating: FC<Props> = ({ value, count, srLabel, size = 'sm', className, testId }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const rounded = Math.round(value * 2) / 2;
 
   return (

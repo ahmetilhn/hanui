@@ -14,7 +14,7 @@ type Props = HTMLAttributes<HTMLDivElement> & {
  * bağlantı, formül) tipografisi.
  *
  * ⚠ AYRIŞTIRICI İÇERMEZ: `react-markdown`, `remark`/`rehype` eklentileri ve KaTeX tüketicide kalır;
- * hanui yalnızca çıktının nasıl göründüğünü verir (`linkComponent` ile aynı desen). Bir UI paketinin
+ * ui yalnızca çıktının nasıl göründüğünü verir (`linkComponent` ile aynı desen). Bir UI paketinin
  * markdown ayrıştırıcısı taşıması, sohbet kullanmayan tüketicinin hiç kullanmadığı yüzlerce kB demek.
  */
 const Prose: FC<Props> = ({ className, testId, ...rest }) => (

@@ -28,15 +28,15 @@ describe('buildThemeCss', () => {
   it('yalnızca EZİLEN token yazılır, tam eşleme değil', () => {
     const css = buildThemeCss({ light: { link: '#0d6efd' } });
 
-    expect(css).toContain('--hanui-link: #0d6efd');
-    expect(css).not.toContain('--hanui-surface:');
-    expect(css).not.toContain('--hanui-text:');
+    expect(css).toContain('--ui-link: #0d6efd');
+    expect(css).not.toContain('--ui-surface:');
+    expect(css).not.toContain('--ui-text:');
   });
 
   it('açık tema ezmesi HEM `html:root` HEM açık seçim seçicisine yazılır', () => {
     const css = buildThemeCss({ light: { link: '#0d6efd' } });
 
-    expect(css).toMatch(/html:root\s*\{[^}]*--hanui-link: #0d6efd/);
+    expect(css).toMatch(/html:root\s*\{[^}]*--ui-link: #0d6efd/);
     expect(selectorsOf(css)).toEqual(['html:root', `html:root[${THEME_ATTRIBUTE}='light']`]);
   });
 
@@ -53,16 +53,16 @@ describe('buildThemeCss', () => {
   it('ölçü ezmesi tema seçiminden bağımsız `:root`a yazılır', () => {
     const css = buildThemeCss({ metrics: { 'radius-md': '2px', 'space-4': '20px' } });
 
-    expect(css).toContain('--hanui-radius-md: 2px;');
-    expect(css).toContain('--hanui-space-4: 20px;');
+    expect(css).toContain('--ui-radius-md: 2px;');
+    expect(css).toContain('--ui-space-4: 20px;');
     expect(css).not.toContain(`[${THEME_ATTRIBUTE}='dark']`);
   });
 
   it('ölçü ezmesi YOĞUN kipte de geçerli kalır', () => {
     const css = buildThemeCss({ metrics: { 'space-4': '20px' } });
 
-    expect(css).toContain("html:root[data-hanui-density='compact'] {");
-    expect(css.match(/--hanui-space-4: 20px;/g)).toHaveLength(2);
+    expect(css).toContain("html:root[data-ui-density='compact'] {");
+    expect(css.match(/--ui-space-4: 20px;/g)).toHaveLength(2);
   });
 
   it('ölçü verilmediğinde yoğunluk bloğu HİÇ yazılmaz', () => {
@@ -73,7 +73,7 @@ describe('buildThemeCss', () => {
   it('font ezmesi tema seçiminden bağımsız `:root`a yazılır', () => {
     const css = buildThemeCss({ fonts: { heading: 'Archivo, sans-serif' } });
 
-    expect(css).toContain('--hanui-font-heading: Archivo, sans-serif');
+    expect(css).toContain('--ui-font-heading: Archivo, sans-serif');
     expect(css).not.toContain(THEME_ATTRIBUTE);
   });
 });
@@ -87,7 +87,7 @@ describe('buildThemeCss — tüketicinin ezmesi her zaman kazanır', () => {
   };
 
   /*
-   * Ezme katmansızken `:root:not([data-hanui-theme])` (0,2,0) tüketicinin `html:has(.panel)`
+   * Ezme katmansızken `:root:not([data-ui-theme])` (0,2,0) tüketicinin `html:has(.panel)`
    * (0,1,1) ezmesini hidrasyondan sonra eziyordu: koyu temada kırmızı sil düğmesi bir kare sonra
    * beyaza, alanların zemini ve çizgisi temanın griye dönüyordu (ölçüldü, 5.6.3).
    */
@@ -108,7 +108,7 @@ describe('buildThemeCss — tüketicinin ezmesi her zaman kazanır', () => {
 
   it('katman adı derlemenin sarmaladığı katmanla AYNI', () => {
     const plugin = readFileSync(
-      path.join(__dirname, '../../scripts/lib/postcss-hanui-layer.mjs'),
+      path.join(__dirname, '../../scripts/lib/postcss-ui-layer.mjs'),
       'utf8',
     );
 
@@ -181,7 +181,7 @@ describe('themeBootScript', () => {
   const run = (script: string) => new Function(script)();
 
   beforeEach(() => {
-    document.documentElement.removeAttribute('data-hanui-theme');
+    document.documentElement.removeAttribute('data-ui-theme');
     localStorage.clear();
   });
 
@@ -189,22 +189,22 @@ describe('themeBootScript', () => {
     localStorage.setItem('theme', 'dark');
     run(themeBootScript({ storageKey: 'theme' }));
 
-    expect(document.documentElement.getAttribute('data-hanui-theme')).toBe('dark');
+    expect(document.documentElement.getAttribute('data-ui-theme')).toBe('dark');
   });
 
   it('kayıt yoksa ya da geçersizse öznitelik YAZMAZ — sistem tercihi izlenir', () => {
     run(themeBootScript({ storageKey: 'theme' }));
-    expect(document.documentElement.hasAttribute('data-hanui-theme')).toBe(false);
+    expect(document.documentElement.hasAttribute('data-ui-theme')).toBe(false);
 
     localStorage.setItem('theme', 'system');
     run(themeBootScript({ storageKey: 'theme' }));
-    expect(document.documentElement.hasAttribute('data-hanui-theme')).toBe(false);
+    expect(document.documentElement.hasAttribute('data-ui-theme')).toBe(false);
   });
 
   it('anahtar betiğe KAÇIŞLI girer — tırnak betiği kırmaz', () => {
     localStorage.setItem('a"b', 'light');
 
     expect(() => run(themeBootScript({ storageKey: 'a"b' }))).not.toThrow();
-    expect(document.documentElement.getAttribute('data-hanui-theme')).toBe('light');
+    expect(document.documentElement.getAttribute('data-ui-theme')).toBe('light');
   });
 });

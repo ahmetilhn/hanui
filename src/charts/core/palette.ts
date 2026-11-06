@@ -1,5 +1,5 @@
 /**
- * SERİ RENKLERİ — hanui kategorik paleti (`cat-1…5`, `series-2`). Her ton iki temanın üç
+ * SERİ RENKLERİ — ui kategorik paleti (`cat-1…5`, `series-2`). Her ton iki temanın üç
  * yüzeyinde ≥3:1 (`check:contrast`) ve iki ton arasında ΔE ≥ 8 (palet üreteci).
  * ⚠ Marka yeşilleri (çam, mint) seri rengi OLMAZ: yeşil eylemin rengi. `cat-3` orta aydınlıkta bir
  * kategori yeşili.
@@ -23,4 +23,4 @@ export const toneAt = (index: number, tone?: ChartTone): ChartTone =>
 
 /** CSS rengi — tema değişince yeniden çizim gerekmez, değişken çözülür. */
 export const toneColor = (tone: ChartTone): string =>
-  tone === 'muted' ? 'var(--hanui-text-3)' : `var(--hanui-${tone})`;
+  tone === 'muted' ? 'var(--ui-text-3)' : `var(--ui-${tone})`;

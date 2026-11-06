@@ -1,8 +1,10 @@
+'use client';
+
 import { type FC, memo } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -15,7 +17,7 @@ type Props = {
 
 /** Yükleme göstergesi. */
 const Spinner: FC<Props> = ({ size = 'md', label, className }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
 
   return (
     <span className={cx(styles.spinner, styles[`spinner--${size}`], className)} role="status">

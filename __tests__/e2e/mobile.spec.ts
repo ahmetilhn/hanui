@@ -49,8 +49,8 @@ test.describe('kaydırma kutusu — kenar solması', () => {
   const fadeStops = (node: HTMLElement) => {
     const style = getComputedStyle(node);
     return {
-      start: style.getPropertyValue('--hanui-scroll-fade-start').trim(),
-      end: style.getPropertyValue('--hanui-scroll-fade-end').trim(),
+      start: style.getPropertyValue('--ui-scroll-fade-start').trim(),
+      end: style.getPropertyValue('--ui-scroll-fade-end').trim(),
     };
   };
 

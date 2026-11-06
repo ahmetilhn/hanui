@@ -4,9 +4,9 @@
 
 body {
   margin: 0;
-  background: var(--hanui-page);
-  color: var(--hanui-text);
-  font-family: var(--hanui-font-body);
+  background: var(--ui-page);
+  color: var(--ui-text);
+  font-family: var(--ui-font-body);
   font-size: 16px;
   line-height: 1.5;
 }
@@ -18,14 +18,14 @@ body {
   gap: 16px;
   flex-wrap: wrap;
   padding: 16px 24px;
-  background: var(--hanui-nav-bg);
-  border-bottom: 1px solid var(--hanui-nav-line);
+  background: var(--ui-nav-bg);
+  border-bottom: 1px solid var(--ui-nav-line);
 }
 
 .gallery__bar h1 {
   margin: 0;
   font-size: 18px;
-  font-family: var(--hanui-font-heading);
+  font-family: var(--ui-font-heading);
 }
 
 .gallery__bar nav {
@@ -34,7 +34,7 @@ body {
 }
 
 .gallery__bar a {
-  color: var(--hanui-link);
+  color: var(--ui-link);
 }
 
 .gallery {
@@ -47,8 +47,8 @@ body {
 }
 
 .gallery__section {
-  background: var(--hanui-surface);
-  border: 1px solid var(--hanui-border);
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-border);
   border-radius: 12px;
   padding: 20px;
 }
@@ -56,8 +56,8 @@ body {
 .gallery__title {
   margin: 0 0 16px;
   font-size: 15px;
-  font-family: var(--hanui-font-mono);
-  color: var(--hanui-text-2);
+  font-family: var(--ui-font-mono);
+  color: var(--ui-text-2);
 }
 
 .gallery__states {
@@ -88,8 +88,8 @@ body {
   font-size: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--hanui-text-3);
-  font-family: var(--hanui-font-mono);
+  color: var(--ui-text-3);
+  font-family: var(--ui-font-mono);
 }
 
 .gallery__stage {

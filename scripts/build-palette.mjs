@@ -41,9 +41,7 @@ const LEGACY = resolve(ROOT, 'scripts/legacy-hex.txt');
 
 /* --- Türetme ------------------------------------------------------------- */
 
-const neutral = Object.fromEntries(
-  NEUTRAL_STEPS.map(([name, step]) => [name, resolveStep(step)]),
-);
+const neutral = Object.fromEntries(NEUTRAL_STEPS.map(([name, step]) => [name, resolveStep(step)]));
 
 const surfaceDark = Object.fromEntries(
   Object.entries(SURFACE_DARK_STEPS).map(([name, step]) => [name, resolveStep(step)]),
@@ -58,8 +56,12 @@ const band = {
   fgThree: mix(BAND_STEPS.fgThree),
 };
 
-const cart = Object.fromEntries(Object.entries(CART_STEPS).map(([name, step]) => [name, mix(step)]));
-const link = Object.fromEntries(Object.entries(LINK_STEPS).map(([name, step]) => [name, mix(step)]));
+const cart = Object.fromEntries(
+  Object.entries(CART_STEPS).map(([name, step]) => [name, mix(step)]),
+);
+const link = Object.fromEntries(
+  Object.entries(LINK_STEPS).map(([name, step]) => [name, mix(step)]),
+);
 
 /**
  * Durum ailesi: ortak şablon + ailenin ton açısı. Sapma `c` taşıyorsa (nötr `off`) mutlak chroma
@@ -88,7 +90,9 @@ const dangerSolid = Object.fromEntries(
 const accent = Object.fromEntries(
   Object.entries(ACCENT_STEPS).map(([name, step]) => [name, mix(step)]),
 );
-const star = Object.fromEntries(Object.entries(STAR_STEPS).map(([name, step]) => [name, mix(step)]));
+const star = Object.fromEntries(
+  Object.entries(STAR_STEPS).map(([name, step]) => [name, mix(step)]),
+);
 
 /** Kategori: her ton iki temada aynı şablon (`light` / `dark`), değişen yalnızca ton açısı. */
 const category = Object.fromEntries(
@@ -175,7 +179,8 @@ const assertVividEnough = () => {
   for (const [name, step] of Object.entries(LINK_STEPS))
     check(`link.${name}`, step, MIN_SATURATION.fill);
 
-  if (violations.length > 0) throw new Error(`Canlilik tabani asildi:\n  ${violations.join('\n  ')}`);
+  if (violations.length > 0)
+    throw new Error(`Canlilik tabani asildi:\n  ${violations.join('\n  ')}`);
 };
 
 /**
@@ -329,7 +334,11 @@ const file = () =>
       `/** İNDİRİM ETİKETİ — olumlu durum ailesiyle aynı; ayrı bir yeşil değil. */`,
       entries(sale),
     ),
-    block('STAR', `/** YILDIZ ALTINI — puan sayısının yanında durduğu için metin eşiğini de geçer. */`, entries(star)),
+    block(
+      'STAR',
+      `/** YILDIZ ALTINI — puan sayısının yanında durduğu için metin eşiğini de geçer. */`,
+      entries(star),
+    ),
     block(
       'CATEGORY',
       `/**

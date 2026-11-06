@@ -5,13 +5,16 @@
   display: inline-flex;
   align-items: center;
   gap: $space-1;
-  font-family: $font-ui;
+  // Bileşen değişkenleri (6.0): rozet "etiket dili" (mono, büyük harf) tüketicide tek yerden.
+  font-family: var(--ui-badge-font, #{$font-ui});
   font-size: $font-size-xs;
-  font-weight: $weight-semibold;
+  font-weight: var(--ui-badge-weight, #{$weight-semibold});
+  letter-spacing: var(--ui-badge-tracking, normal);
+  text-transform: var(--ui-badge-transform, none);
   line-height: $leading-none;
   white-space: nowrap;
   padding: 5px $space-2;
-  border-radius: $radius-sm;
+  border-radius: var(--ui-badge-radius, #{$radius-sm});
   border: 1px solid transparent;
 
   &__icon {
@@ -23,14 +26,14 @@
 .badge--neutral {
   &.badge--soft,
   &.badge--solid {
-    background-color: var(--hanui-badge-bg, #{$off-bg});
-    border: 1px solid var(--hanui-badge-line, #{$off-line});
-    color: var(--hanui-badge-fg, #{$off-fg});
+    background-color: var(--ui-badge-bg, #{$off-bg});
+    border: 1px solid var(--ui-badge-line, #{$off-line});
+    color: var(--ui-badge-fg, #{$off-fg});
   }
 
   &.badge--outline {
-    border-color: var(--hanui-badge-line, #{$border-strong});
-    color: var(--hanui-badge-fg, #{$text-2});
+    border-color: var(--ui-badge-line, #{$border-strong});
+    color: var(--ui-badge-fg, #{$text-2});
   }
 }
 

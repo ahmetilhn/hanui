@@ -1,6 +1,6 @@
 /** Kaydırma yardımcıları. */
 
-import { isClient } from '@ahmetilhn/handy-utils';
+import { isClient } from '@handijit/utils';
 
 /**
  * Pencereyi en üste alır; ortam desteklemiyorsa sessizce geçer.

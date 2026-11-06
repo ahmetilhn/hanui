@@ -1,9 +1,11 @@
+'use client';
+
 import { type FC, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import { resolveLabel } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -25,7 +27,7 @@ type Props = {
 
 /** Filtre şeridi. */
 const FilterBar: FC<Props> = ({ onSubmit, children, actions, label, className, testId }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
 
   return (
     <form

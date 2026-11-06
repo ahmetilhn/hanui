@@ -17,9 +17,9 @@ import {
   TerminalOutput,
 } from '@/chat';
 import { pushModal, resetModalStack } from '@/helpers/focus.helper';
-import { HanuiProvider } from '@/index';
+import { UiProvider } from '@/index';
 
-const wrap = (node: ReactNode) => render(<HanuiProvider labels={LABELS}>{node}</HanuiProvider>);
+const wrap = (node: ReactNode) => render(<UiProvider labels={LABELS}>{node}</UiProvider>);
 
 describe('PromptInput — klavye', () => {
   const setup = (props: Partial<Parameters<typeof PromptInput>[0]> = {}) => {
@@ -123,9 +123,9 @@ describe('ChatThread', () => {
     expect(region()?.textContent ?? '').toBe('');
 
     rerender(
-      <HanuiProvider labels={LABELS}>
+      <UiProvider labels={LABELS}>
         <ChatThread isStreaming={false}>mesaj</ChatThread>
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     expect(region()?.textContent).toBe('Yanıt hazır');
@@ -154,9 +154,9 @@ describe('ReasoningBlock', () => {
     expect(details().open).toBe(true);
 
     rerender(
-      <HanuiProvider labels={LABELS}>
+      <UiProvider labels={LABELS}>
         <ReasoningBlock summary="Düşündü">gövde</ReasoningBlock>
-      </HanuiProvider>,
+      </UiProvider>,
     );
     expect(details().open).toBe(false);
   });
@@ -170,9 +170,9 @@ describe('ReasoningBlock', () => {
     });
 
     rerender(
-      <HanuiProvider labels={LABELS}>
+      <UiProvider labels={LABELS}>
         <ReasoningBlock summary="Düşündü · 2 araç">gövde</ReasoningBlock>
-      </HanuiProvider>,
+      </UiProvider>,
     );
     expect(details().open).toBe(true);
   });
@@ -290,7 +290,7 @@ describe('içerik', () => {
 });
 
 describe('AppBar', () => {
-  it('kendi yüksekliğini `--hanui-header-height`e yazar ve sökülünce siler', () => {
+  it('kendi yüksekliğini `--ui-header-height`e yazar ve sökülünce siler', () => {
     const original = globalThis.ResizeObserver;
     class Stub {
       constructor(private readonly callback: ResizeObserverCallback) {}
@@ -310,10 +310,10 @@ describe('AppBar', () => {
     globalThis.ResizeObserver = Stub as unknown as typeof ResizeObserver;
 
     const { unmount } = wrap(<AppBar brand="Hanration" />);
-    expect(document.documentElement.style.getPropertyValue('--hanui-header-height')).toBe('64px');
+    expect(document.documentElement.style.getPropertyValue('--ui-header-height')).toBe('64px');
 
     unmount();
-    expect(document.documentElement.style.getPropertyValue('--hanui-header-height')).toBe('');
+    expect(document.documentElement.style.getPropertyValue('--ui-header-height')).toBe('');
     globalThis.ResizeObserver = original;
   });
 });

@@ -1,4 +1,4 @@
-# @ahmetilhn/hanui
+# @handijit/ui
 
 Erişilebilir, tema güdümlü React bileşen kütüphanesi. SCSS Modules üzerine
 kurulu; tek çalışma zamanı bağımlılığı ikon seti (`react-bootstrap-icons`).
@@ -12,16 +12,16 @@ kurulu; tek çalışma zamanı bağımlılığı ikon seti (`react-bootstrap-ico
 - **Yerel öğeler korunur.** `<dialog>`, `<input type="range">`,
   `<input type="radio">` — odak tuzağı, klavye gezinmesi ve ekran okuyucu
   duyurusu tarayıcıdan gelir.
-- **Üç alt giriş, ana pakete sıfır bayt.** `@ahmetilhn/hanui/chat` (sohbet ve
-  araç arayüzleri), `@ahmetilhn/hanui/charts` (bağımlılıksız SVG grafikleri),
-  `@ahmetilhn/hanui/scss` (token değişkenleri ve mixin'ler). Kullanmayan uygulama
+- **Üç alt giriş, ana pakete sıfır bayt.** `@handijit/ui/chat` (sohbet ve
+  araç arayüzleri), `@handijit/ui/charts` (bağımlılıksız SVG grafikleri),
+  `@handijit/ui/scss` (token değişkenleri ve mixin'ler). Kullanmayan uygulama
   onları indirmez.
 
 ```bash
-npm install @ahmetilhn/hanui @ahmetilhn/handy-utils react-bootstrap-icons
+npm install @handijit/ui @handijit/utils react-bootstrap-icons
 ```
 
-`react`, `react-dom`, `@ahmetilhn/handy-utils` ve `react-bootstrap-icons`
+`react`, `react-dom`, `@handijit/utils` ve `react-bootstrap-icons`
 **peer** bağımlılıktır.
 
 ---
@@ -29,12 +29,7 @@ npm install @ahmetilhn/hanui @ahmetilhn/handy-utils react-bootstrap-icons
 ## Hızlı başlangıç
 
 ```tsx
-// Uygulamanın kökünde BİR KEZ.
-import '@ahmetilhn/hanui/styles.css';
-```
-
-```tsx
-import { Button, Field, Input, UIVariant } from '@ahmetilhn/hanui';
+import { Button, Field, Input, UIVariant } from '@handijit/ui';
 
 <Field label="E-posta" isRequired error={error}>
   {props => <Input {...props} type="email" value={email} onChange={onChange} />}
@@ -48,6 +43,31 @@ import { Button, Field, Input, UIVariant } from '@ahmetilhn/hanui';
 Sağlayıcı **zorunlu değil**: paket kurulup hiçbir yapılandırma yapılmadan
 çalışır. Bağlantılar ham `<a>` olur, tema varsayılanlarda kalır.
 
+**CSS tek dosya olarak alınır.** Uygulamanın kökünde bir kez:
+
+```tsx
+import '@handijit/ui/styles.css';
+```
+
+Alt küme isteyen tüketici `base.css` (token'lar, kutu modeli, `@keyframes`) ile
+kullandığı bileşenlerin `components/<Ad>/style.css` dosyalarını **kendi
+derlemesinde tek dosyaya** birleştirir:
+
+```scss
+// styles/ui.scss — Sass düz CSS dosyalarını içine alır.
+@use '@handijit/ui/base.css';
+@use '@handijit/ui/components/Button/style.css';
+@use '@handijit/ui/components/Chip/style.css';
+```
+
+JS modülleri CSS içe aktarmaz; bu bilinçli: Turbopack'te her istemci sınırının
+CSS'i ayrı dosyaya düşüyor ve render-blocking dosya sayısı LCP'yi bayttan çok
+etkiliyordu (`CHANGELOG.md` → 1.0.0).
+
+Her bileşenin alt yolu var — `@handijit/ui/button`, `/chip-group`,
+`/combobox`… — ama cephe (`@handijit/ui`) saf yeniden dışa aktarım olduğu
+için paketleyici ikisinden de aynı dosyaya iner.
+
 ---
 
 ## Tema
@@ -55,24 +75,24 @@ Sağlayıcı **zorunlu değil**: paket kurulup hiçbir yapılandırma yapılmada
 ### Tema seçimi `<html>` üzerinde taşınır
 
 ```html
-<html data-hanui-theme="dark">
+<html data-ui-theme="dark">
 ```
 
 Öznitelik yoksa `prefers-color-scheme` yedeği devreye girer — ama kullanıcının
 **açık bir seçimi** varsa sistem tercihi onu ezmez.
 
-### İlk boyamadan önce yazın — `HanuiThemeScript`
+### İlk boyamadan önce yazın — `UiThemeScript`
 
 ```tsx
 // app/layout.tsx — sunucu düzeni, <head> içine.
-import { HanuiThemeScript } from '@ahmetilhn/hanui';
+import { UiThemeScript } from '@handijit/ui';
 
 <head>
-  <HanuiThemeScript storageKey="theme" />
+  <UiThemeScript storageKey="theme" />
 </head>;
 ```
 
-Kayıtlı açık seçimi (`light` / `dark`) `<html data-hanui-theme>`e yazar; kayıt
+Kayıtlı açık seçimi (`light` / `dark`) `<html data-ui-theme>`e yazar; kayıt
 yoksa sistem tercihi izlenir. Satır içi betik HTML ayrıştırılırken çalışır.
 
 Bu iş sağlayıcıya bırakılamaz: sağlayıcı ağaç monte olduktan sonra çalışıyor ve
@@ -85,7 +105,7 @@ verilen düz bir fonksiyon Next'in sunucu düzeninde çağrılamıyor.
 Yalnızca değiştirdiğiniz token'ı verin; gerisi varsayılanında kalır.
 
 ```tsx
-import { HanuiProvider } from '@ahmetilhn/hanui';
+import { UiProvider } from '@handijit/ui';
 
 const THEME = {
   light: { link: '#0a58ca', 'ring-color': '#0d6efd' },
@@ -96,25 +116,25 @@ const THEME = {
   metrics: { 'radius-md': '2px', 'radius-lg': '4px', 'duration-normal': '120ms' },
 };
 
-<HanuiProvider theme={THEME} linkComponent={NextLink}>
+<UiProvider theme={THEME} linkComponent={NextLink}>
   <App />
-</HanuiProvider>;
+</UiProvider>;
 ```
 
 Sağlayıcı ezmeyi çocuklarından önce bir `<style>` olarak **çizer**: sunucu
 çıktısında da vardır, ilk boyamada uygulanır; hidrasyondan sonra hiçbir renk
 değişmez. Bu yüzden sağlayıcı `<body>` içinde durur, `<html>`i saramaz.
 
-Ezme `@layer hanui` içindedir: aynı token'ı kendi CSS'inizde ezerseniz
-(`html:has(.panel) { --hanui-danger-solid: #dc2626 }`) sizinki özgüllüğe ve
+Ezme `@layer ui` içindedir: aynı token'ı kendi CSS'inizde ezerseniz
+(`html:has(.panel) { --ui-danger-solid: #dc2626 }`) sizinki özgüllüğe ve
 sıraya bakılmaksızın kazanır. Açık temaya verilen değer koyu temaya sızmaz;
 koyu temada da istiyorsanız `dark`a da yazın.
 
 React'in dışından (Storybook'tan, stil sayfalarından sonra çalışan bir
-betikten) aynı işi `initHanui({ theme })` yapar; ezmeyi `<head>`in sonuna
-yazar. ⚠ Stil sayfalarınızdan **önce** çağırmayın: `@layer hanui` belgede ilk
+betikten) aynı işi `initUi({ theme })` yapar; ezmeyi `<head>`in sonuna
+yazar. ⚠ Stil sayfalarınızdan **önce** çağırmayın: `@layer ui` belgede ilk
 kez orada görülürse katman sırası oradan kurulur ve sonra gelen
-`@layer reset, hanui;` bildiriminiz `reset`i kütüphanenin üstüne koyar.
+`@layer reset, @handijit/ui;` bildiriminiz `reset`i kütüphanenin üstüne koyar.
 
 **Kütüphane font YÜKLEMEZ.** `fonts` yalnızca `font-family` dizesi; yüklemeyi
 (`next/font`, `@font-face`, CDN) siz yaparsınız. Bir UI paketinin ağdan font
@@ -132,20 +152,20 @@ geçersiz CSS), **katman (`z-*`)** (yığılma sırası, marka kararı değil) v
 ### Bilgi yoğunluğu
 
 ```html
-<html data-hanui-density="compact"></html>
+<html data-ui-density="compact"></html>
 ```
 
 Satır yüksekliği, dolgu ve punto bir kademe iner. Vitrin bir ekranda 8 satır,
 operasyon paneli 80 satır gösteriyor; ikisini tek ölçekle karşılamanın yolu yok.
-Kararı `initHanui({ density: 'compact' })` da verebilir.
+Kararı `initUi({ density: 'compact' })` da verebilir.
 
 **Yarıçap değişmez** (yuvarlaklık yoğunluğun değil markanın işi) ve **dokunma
 hedefi küçülmez**: görsel kutu daralır, `tap-target` örtüsü 44 px kalır.
 
-### CSS'imizi ezmek — `@layer hanui`
+### CSS'imizi ezmek — `@layer ui`
 
-Kütüphane CSS'inin tamamı `@layer hanui` içinde — tema ezmeleri
-(`HanuiProvider theme`, `initHanui`) dahil. Katmanlı bir kural, katmansız
+Kütüphane CSS'inin tamamı `@layer ui` içinde — tema ezmeleri
+(`UiProvider theme`, `initUi`) dahil. Katmanlı bir kural, katmansız
 bir kurala **her zaman yenilir** — özgüllüğe ve sıraya bakılmaksızın:
 
 ```css
@@ -162,7 +182,7 @@ geliştirme ile üretim aynı olmak zorunda değil.
 ### Temayı değiştirmek
 
 ```tsx
-const { scheme, preference, setScheme, toggle, isReady } = useHanuiTheme();
+const { scheme, preference, setScheme, toggle, isReady } = useUiTheme();
 
 useEffect(() => {
   if (isReady) localStorage.setItem('theme', preference);
@@ -178,7 +198,7 @@ useEffect(() => {
 Üç durumlu bir anahtar (Açık / Koyu / Sistem) `preference` okur; `scheme`
 okusaydı "Sistem" seçiliyken düğme "Koyu"yu işaretli gösterirdi. `system` bir
 değer değil **değerin yokluğu**: öznitelik silinir ve
-`:not([data-hanui-theme])` sorgusu devreye girer.
+`:not([data-ui-theme])` sorgusu devreye girer.
 
 Kalıcılık **kancanın işi değil**: seçimi `localStorage`a mı, sunucuda
 okunabilsin diye bir çereze mi, kullanıcı profiline mi yazacağınız sizin
@@ -202,7 +222,7 @@ styles/*.generated → yukarıdakinden ÜRETİLİR (npm run tokens)
 ```
 
 SCSS ve TypeScript tarafı elle tutulsaydı bir tarafta var olup diğerinde
-olmayan bir token çıkardı — ve ayrışma sessiz: bileşen `var(--hanui-yok)`
+olmayan bir token çıkardı — ve ayrışma sessiz: bileşen `var(--ui-yok)`
 okuyup rengini kaybediyor, derleme yeşil dönüyor. Nöbetçi
 `theme/__tests__/tokens.contract.test.ts`.
 
@@ -226,7 +246,7 @@ biri değiştiğinde doksan dokuzu eski kalıyor. Metinler **bir kez**, sağlay�
 verilir:
 
 ```tsx
-<HanuiProvider
+<UiProvider
   labels={{
     close: 'Kapat',
     cancel: 'Vazgeç',
@@ -284,8 +304,8 @@ prop'lar isteğe bağlı. Ne prop ne config varsa öğe adsız kalır ve bu geli
 kipinde konsola düşer:
 
 ```
-[hanui] Eksik metin: Modal.closeLabel. Prop olarak geçin ya da
-<HanuiProvider labels={…}> içinde bir kez tanımlayın.
+[@handijit/ui] Eksik metin: Modal.closeLabel. Prop olarak geçin ya da
+<UiProvider labels={…}> içinde bir kez tanımlayın.
 ```
 
 Uyarı anahtar başına bir kez verilir; yirmi satırlık bir liste konsolu
@@ -298,7 +318,7 @@ doldurmaz.
 ```tsx
 import NextLink from 'next/link';
 
-<HanuiProvider linkComponent={NextLink}>…</HanuiProvider>;
+<UiProvider linkComponent={NextLink}>…</UiProvider>;
 ```
 
 Bir bileşen kütüphanesi kendi yönlendiricisini **seçemez**: `next/link` import
@@ -334,14 +354,14 @@ gibi) **verilmez** — kullanıcıyı okuduğu bölümden sayfanın tepesine ata
 ## Yapışkan başlık
 
 Sayfa kaydırmasına yapışan bileşenler (`DirectoryGroup`, `DirectoryJump`,
-kapaklı `DataTable`) offset'i `--hanui-header-height`ten okur ve **varsayılanı
+kapaklı `DataTable`) offset'i `--ui-header-height`ten okur ve **varsayılanı
 0**. Kendi yapışkan bandınız varsa gerçek ölçüyü yazın:
 
 ```tsx
 useEffect(() => {
   const observer = new ResizeObserver(([entry]) =>
     document.documentElement.style.setProperty(
-      '--hanui-header-height',
+      '--ui-header-height',
       `${entry.contentRect.height}px`,
     ),
   );
@@ -366,12 +386,12 @@ büyür, bir duyuru şeridi çıkıp kaybolduğunda değişir.
 | Geri bild. | `Alert` · `Badge` · `StatusDot` · `CodeBadge` · `Kbd` · `EmptyState` · `Skeleton` (+ `SkeletonCard`, `SkeletonRows`, `SkeletonTable`) · `Spinner` · `Progress` · `Steps` · `Divider` · `Avatar` · `Rating` · `Price` · `Stat` · `CopyField` · `Breadcrumb` · `ToastHub` (+ `ToastPortal`) |
 | Kipsel | `Modal` · `Drawer` · `BottomSheet` · `ConfirmDialog` · `PromptDialog` · `CommandPalette` |
 | Veri | `Table` (+ `TableScroller`) · `DataTable` (+ `DataTableRow`) · `FilterBar` (+ `FilterBarField`) · `Pagination` · `Timeline` |
-| Tema ve kancalar | `HanuiProvider` · `HanuiThemeScript` · `initHanui` · `useHanui` · `useHanuiTheme` · `useHanuiTokens` · `useAnnounce` · `useStickToBottom` · `usePositioning` · `useVirtualList` · `useListboxNavigation` · `hasOpenSurface` |
+| Tema ve kancalar | `UiProvider` · `UiThemeScript` · `initUi` · `useUi` · `useUiTheme` · `useUiTokens` · `useAnnounce` · `useStickToBottom` · `usePositioning` · `useVirtualList` · `useListboxNavigation` · `hasOpenSurface` |
 | Sohbet — `/chat` | `ChatThread` · `ChatMessage` · `PromptInput` · `PromptSuggestions` · `Prose` · `CodeBlock` · `ReasoningBlock` (+ `ReasoningText`) · `ToolCall` (+ `ToolCallSection`) · `TerminalOutput` · `SourceList` · `Citation` · `MessageActions` · `AppBar` · `ActionList` (+ `ActionListItem`) · `SegmentBar` · `Legend` · `DescriptionList` |
 | Grafik — `/charts` | `LineChart` · `AreaChart` · `BarChart` · `ComposedChart` · `PieChart` · `ScatterPlot` · `Heatmap` · `BoxPlot` · `Histogram` · `RadarChart` |
 
 Alt girişlerin stilleri ayrı dosyada ve `styles.css`ten **sonra** içe aktarılır:
-`@ahmetilhn/hanui/chat.css`, `@ahmetilhn/hanui/charts.css`.
+`@handijit/ui/chat.css`, `@handijit/ui/charts.css`.
 
 ### Seçenek sayısı öğeyi belirler
 
@@ -451,25 +471,36 @@ gösterip görsel gürültü yaratıyor ve kullanıcılar bunu hata sanıyordu.
 
 ## Next.js App Router
 
-Paket `'use client'` sınırını **kendi içinde** çizer: sunucu bileşenlerinden
-doğrudan import edilebilir, `children` sunucuda çizilip aktarılır.
+Paket `'use client'` sınırını **kendi içinde ve dosya başına** çizer (6.0):
+kanca kullanmayan bileşenler (`Button`, `Chip`, `Badge`, `Card`, `Panel`,
+`Tile`, `TextLink`, `Kbd`, `Alert`, `EmptyState`, `IconButton`, `Progress`,
+`Skeleton`, `StatusDot`, `SummaryCard`, `SectionHeader`, `PageHeader`,
+`Divider`) sunucu bileşeni olarak çizilir ve istemciye JS indirmez; etkileşimli
+olanlar kendi yönergesini taşır, `children` sunucuda çizilip aktarılır. İnce
+`Client*` sarmalayıcıları gerekmez; `UIVariant`/`UISize` sunucuda da içe
+aktarılır.
+
+```ts
+// next.config.ts — cephe saf olduğu için içe aktarım bileşen dosyasına kısa devre yapılır.
+experimental: { optimizePackageImports: ['@handijit/ui'] }
+```
 
 ```tsx
 // app/layout.tsx — sunucu bileşeni
-import '@ahmetilhn/hanui/styles.css';
-import '@ahmetilhn/hanui/chat.css'; // yalnızca /chat kullanılıyorsa
-import '@ahmetilhn/hanui/charts.css'; // yalnızca /charts kullanılıyorsa
-import { HanuiProvider, HanuiThemeScript } from '@ahmetilhn/hanui';
+import '@handijit/ui/styles.css';
+import '@handijit/ui/chat.css'; // yalnızca /chat kullanılıyorsa
+import '@handijit/ui/charts.css'; // yalnızca /charts kullanılıyorsa
+import { UiProvider, UiThemeScript } from '@handijit/ui';
 import NextLink from 'next/link';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="tr" suppressHydrationWarning>
       <head>
-        <HanuiThemeScript storageKey="theme" />
+        <UiThemeScript storageKey="theme" />
       </head>
       <body>
-        <HanuiProvider linkComponent={NextLink}>{children}</HanuiProvider>
+        <UiProvider linkComponent={NextLink}>{children}</UiProvider>
       </body>
     </html>
   );
@@ -502,6 +533,7 @@ npm run playground # bileşen galerisi → http://localhost:5273
 | `npm run check:palette`   | palet tarifinin çıktısı mı + nötr chroma tavanı + tint ve kategori ayrışması |
 | `npm run check:api`       | genel API nöbetçisi — dört giriş, dört taban çizgisi (ana 176 · sohbet 30 · grafik 22 · SCSS 252 ad) |
 | `npm run size`            | paket boyutu bütçesi (`size-limit`)                              |
+| `npm run exports`         | `package.json` `exports` haritasını üretir (`check:exports` doğrular, `build`in son adımı) |
 | `npm run playground`      | bileşen galerisi (tema · RTL · yoğunluk anahtarı)                |
 | `npm run lint`            | ESLint (TS) + stylelint (SCSS)                                    |
 | `npm run typecheck`       | `tsc --noEmit`                                                   |
@@ -536,7 +568,7 @@ npm run playground # bileşen galerisi → http://localhost:5273
   `npm install`da derleme hatası olarak çıkar. Bilinçli değişiklikte
   `node scripts/check-api.mjs --update` + CLAUDE.md'ye gerekçe.
 - **Alt giriş sınırı** — `chat` ve `charts` ana girişi yalnızca PAKET ADIYLA
-  alır (`subentry-boundary.test.ts`); göreli bir yol `HanuiProvider` bağlamının
+  alır (`subentry-boundary.test.ts`); göreli bir yol `UiProvider` bağlamının
   ve kipsel yüzey yığınının ikinci bir kopyasını paketlerdi.
 - **Yeşil ayak izi** — bileşen SCSS'inde yeşil token ailesine uzanan her
   bileşen gerekçeli bir izin listesinde (`green-footprint.test.ts`).
@@ -600,17 +632,17 @@ yol, Playwright'ın resmi konteynerinde koşup `linux` referanslarını orada
 yükseltmeyi unutmayın**, aynı sürüm ikinci kez yayımlanamaz ve iş akışı kırmızı
 döner.
 
-## Sohbet bileşenleri — `@ahmetilhn/hanui/chat`
+## Sohbet bileşenleri — `@handijit/ui/chat`
 
 Sohbet ve araç arayüzleri için ayrı bir giriş; ana paketi ve `styles.css`i
 büyütmez.
 
 ```tsx
-import '@ahmetilhn/hanui/styles.css';
-import '@ahmetilhn/hanui/chat.css'; // styles.css'TEN SONRA
+import '@handijit/ui/styles.css';
+import '@handijit/ui/chat.css'; // styles.css'TEN SONRA
 
-import { HanuiProvider } from '@ahmetilhn/hanui';
-import { ChatMessage, ChatThread, PromptInput } from '@ahmetilhn/hanui/chat';
+import { UiProvider } from '@handijit/ui';
+import { ChatMessage, ChatThread, PromptInput } from '@handijit/ui/chat';
 
 <ChatThread
   isStreaming={isStreaming}
@@ -636,7 +668,7 @@ import { ChatMessage, ChatThread, PromptInput } from '@ahmetilhn/hanui/chat';
 Metinler aynı sağlayıcıdan, `labels.chat` altında:
 
 ```tsx
-<HanuiProvider
+<UiProvider
   labels={{
     chat: {
       thread: 'Sohbet',
@@ -667,49 +699,49 @@ JSON iki boşlukla yeniden girintilenir (değerler metin olarak korunur: büyük
 sayılar yuvarlanmaz), kenardaki boş satırlar atılır; başka dilde girintiye
 dokunulmaz. 30'dan fazla dil tanınır (ts/tsx, json, bash, python, yaml, css,
 html, sql, diff, go, rust…), tanınmayan dil düz çizilir. Kopyala düğmesi ekranda
-görüneni kopyalar. Renkler `chat.css`teki `--hanui-syntax-keyword`, `-string`,
+görüneni kopyalar. Renkler `chat.css`teki `--ui-syntax-keyword`, `-string`,
 `-number`, `-name`, `-type` değişkenleridir; CSS'te ezilir. Shiki düzeyinde
 doğruluk isterseniz önceden vurgulanmış HTML'i `html` olarak verin (güvenliği
 sizin) — yerleşik vurgulayıcının yerine geçer.
 
 Markdown ayrıştırması tüketicide kalır: `Prose` yalnızca tipografi kabıdır.
-Bileşen listesi ve kararlar: `CLAUDE.md` → "`@ahmetilhn/hanui/chat`".
+Bileşen listesi ve kararlar: `CLAUDE.md` → "`@handijit/ui/chat`".
 
-## SCSS API — `@ahmetilhn/hanui/scss`
+## SCSS API — `@handijit/ui/scss`
 
 Token değişkenleri ve mixin'ler kopyalanmadan alınır. Değişkenler
-`var(--hanui-…)` dizeleridir; tema çalışma zamanında döner. Modül kural basmaz,
-`styles.css` yine gerekir.
+`var(--ui-…)` dizeleridir; tema çalışma zamanında döner. Modül kural basmaz;
+`:root` token kuralları `base.css`tedir (bileşen modülleri onu kendileri getirir).
 
 ```scss
-@use '@ahmetilhn/hanui/scss' as hanui;
+@use '@handijit/ui/scss' as ui;
 
 .panel {
-  padding: hanui.$space-4;
-  border: 1px solid hanui.$border;
+  padding: ui.$space-4;
+  border: 1px solid ui.$border;
 
-  @include hanui.focus-ring;
+  @include ui.focus-ring;
 
-  @media (max-width: hanui.$breakpoint-tablet-portrait) {
-    padding: hanui.$space-3;
+  @media (max-width: ui.$breakpoint-tablet-portrait) {
+    padding: ui.$space-3;
   }
 }
 ```
 
 Next.js (Turbopack ve webpack) paket `exports`'unu çözer. Başka bir derleyici
-çözemezse yol `node_modules/@ahmetilhn/hanui/build/scss` ile `loadPaths`e verilip
-`@use 'index' as hanui` yazılabilir.
+çözemezse yol `node_modules/@handijit/ui/build/scss` ile `loadPaths`e verilip
+`@use 'index' as @handijit/ui` yazılabilir.
 
-## Grafikler — `@ahmetilhn/hanui/charts`
+## Grafikler — `@handijit/ui/charts`
 
 On SVG grafiği, sıfır bağımlılık (çizim, ölçek ve istatistik kütüphanenin
 kendisinde). Ana paketi ve `styles.css`i büyütmez.
 
 ```tsx
-import '@ahmetilhn/hanui/styles.css';
-import '@ahmetilhn/hanui/charts.css'; // styles.css'TEN SONRA
+import '@handijit/ui/styles.css';
+import '@handijit/ui/charts.css'; // styles.css'TEN SONRA
 
-import { BarChart, LineChart, PieChart } from '@ahmetilhn/hanui/charts';
+import { BarChart, LineChart, PieChart } from '@handijit/ui/charts';
 
 <LineChart
   label="Aylık gelir ve gider"
@@ -746,6 +778,51 @@ ezilir. Eksen bölmeleri bunu KULLANMAZ: kısa gösterimde ("12 B", "0,005") ve
 birimsiz kalır, basamak sayısı bölme adımından gelir. Renkler kategorik paletten
 (`tone`: `cat-1`…`cat-5`, `series-1`, `series-2`, `muted`).
 
+## 1.0'a geçiş — `@ahmetilhn/hanui` 5.x'ten
+
+1.0 iki şeyi birden getirir: **yeni ad** (`@ahmetilhn/hanui` → `@handijit/ui`; CSS öneki `hanui-` →
+`ui-`, token'lar `--hanui-*` → `--ui-*`, `@layer ui`, `data-ui-theme`, `UiProvider`/`useUi`/`initUi`;
+peer `@ahmetilhn/handy-utils` → `@handijit/utils`) ve 6.0 olarak hazırlanmış **paketleme** değişiklikleri.
+6.0 bir **paketleme** sürümü: bileşen API'si değişmedi, kırılan şey paketin
+dosya düzeni, `'use client'` sınırı ve CSS'in inişi. Tam liste `CHANGELOG.md`.
+
+| 5.x | 6.0 |
+|---|---|
+| `import '@handijit/ui/styles.css'` | ESM'de **silinir** — bileşen modülleri `base.css` + kendi `style.css`ini getirir; CJS/paketleyicisiz kullanımda kalır |
+| tek `build/index.js`, tamamı `'use client'` | `build/components/<Ad>/index.js`; 18 bileşen yönergesiz (sunucuda çizilir), alt yol `@handijit/ui/<kebab-ad>` |
+| `build/index.d.ts` toplanmış | dosya başına `.d.ts`; `import type` aynı |
+| `Combobox` tetikleyicisi `role="button"`, arama kutusu `role="combobox"` | tetikleyici `role="combobox"` (`aria-expanded`, `aria-controls`, `aria-invalid`, `aria-required`), arama kutusu metin kutusu |
+| bağlantı `Button` pasifken `preventDefault` işleyicisi | `aria-disabled` + `tabIndex=-1` + `pointer-events: none`; işlev prop'u yok (sunucudan çizilebilir) |
+| site ezmesi sınıf seçicisiyle | **bileşen değişkenleri** (aşağıda) |
+
+### Bileşen değişkenleri
+
+Token sözleşmesinin (`--ui-page`, `--ui-text`… 110 ad) dışında, tek bir
+bileşenin görünümünü tüketicinin `:root`ta ezdiği CSS özel özellikleri. Bileşen
+`var(--ui-…, varsayılan)` ile okur; yazılmazsa varsayılan geçerlidir.
+
+| Bileşen | Değişkenler |
+|---|---|
+| odak halkası | `--ui-ring-width` (2px) · `--ui-ring-offset` (2px; öğenin içine çekmek için `-2px`) |
+| girdiler | `--ui-placeholder` (`text-3`) |
+| kipsel perde | `--ui-scrim-blur` (3px) |
+| `Button` | `--ui-button-radius` · `-weight` · `-tracking` · `-wrap` (`nowrap`) |
+| `Chip` | `--ui-chip-bg` · `-line` · `-fg` · `-radius` · `-weight` · `-selected-bg` · `-selected-line` · `-selected-fg` · `-selected-weight` |
+| `Badge` | `--ui-badge-font` · `-weight` · `-tracking` · `-transform` · `-radius` (+ `-bg` · `-line` · `-fg`, 5.x) |
+| `Stat` | `--ui-stat-label-font/-size/-weight/-tracking/-transform` · `-value-font/-weight/-tracking` · `-unit-font/-size/-tracking/-transform` |
+| `Tabs` | `--ui-tab-weight` |
+| `RadioCard` | `--ui-radio-card-line` · `-radius` |
+
+```css
+:root {
+  --ui-ring-offset: -2px;
+  --ui-button-weight: 500;
+  --ui-chip-radius: var(--ui-radius-pill);
+  --ui-badge-font: var(--ui-font-mono);
+  --ui-badge-transform: uppercase;
+}
+```
+
 ## 5.0'a geçiş
 
 5.0 bir **renk** sürümü: nötr eksen yeşilden sıcak mürekkebe geçti, yeşil
@@ -761,7 +838,7 @@ token adları ve görünüm.
 | `shell*` | aynı ad, değer çamdan mürekkebe; yeni `on-shell`, `on-shell-2`, `on-shell-danger`, `shell-line` |
 | — | `cat-1…5`, `series-1/2` (kategorik palet) |
 
-Eski adlara takma ad **yok**. Kendi CSS'inizde `--hanui-role*` okuyan ya da
+Eski adlara takma ad **yok**. Kendi CSS'inizde `--ui-role*` okuyan ya da
 `theme={{ light: { role: … } }}` ezmesi yazan yerler yeni adlara geçer.
 Görünüm değişiklikleri: açık sayfa krem (`#faf9f5`), koyu sayfa sıcak siyah
 (`#141413`), kart ve panel durgunken gölgesiz, `info` tonu nötr, `CodeBadge`
@@ -773,16 +850,16 @@ Hepsi ekleme; 5.0'ın token sözleşmesi dışında kırıcı değişiklik yok.
 
 | Sürüm | Ne |
 |---|---|
-| 5.1 | `Disclosure`, `StatusDot`, `Kbd`; `useHanuiTokens`, `useStickToBottom`, `hasOpenSurface`; `Modal size="xl"`, `Button size={UISize.XSMALL}` + `shape="pill"`, `IconButton shape="round"`, `Textarea variant="bare"`, `Progress size="xs"`, etkileşimli `CodeBadge`, `Avatar` (`icon`, `shape="rounded"`, `tone="brand"`), `Stat variant="inline"`, `ScrollArea isFollowingEnd`; `CommandPalette` `hotkey` + komut kapanıştan SONRA çalışır |
-| 5.2 | `HanuiThemeScript`; `@ahmetilhn/hanui/chat` — 20 sohbet bileşeni |
-| 5.3 | `@ahmetilhn/hanui/charts` — 10 SVG grafiği; `@ahmetilhn/hanui/scss`; `Input --technical` dar ekranda ≥16px; `QuantityStepper` ve `DataTable` pasif/dinlenme hâli opacity yerine token |
+| 5.1 | `Disclosure`, `StatusDot`, `Kbd`; `useUiTokens`, `useStickToBottom`, `hasOpenSurface`; `Modal size="xl"`, `Button size={UISize.XSMALL}` + `shape="pill"`, `IconButton shape="round"`, `Textarea variant="bare"`, `Progress size="xs"`, etkileşimli `CodeBadge`, `Avatar` (`icon`, `shape="rounded"`, `tone="brand"`), `Stat variant="inline"`, `ScrollArea isFollowingEnd`; `CommandPalette` `hotkey` + komut kapanıştan SONRA çalışır |
+| 5.2 | `UiThemeScript`; `@handijit/ui/chat` — 20 sohbet bileşeni |
+| 5.3 | `@handijit/ui/charts` — 10 SVG grafiği; `@handijit/ui/scss`; `Input --technical` dar ekranda ≥16px; `QuantityStepper` ve `DataTable` pasif/dinlenme hâli opacity yerine token |
 | 5.3.2 | Düzeltme: kaydırma kapları kapsayıcı blok (`ChatThread`, `ScrollArea`, `TerminalOutput`, `ActionList` ve 12 kab daha) — görsel olarak gizli metin kabın dışına taşıp atalarını kaydırılabilir yapmıyor; grafik ekseni 0,1'in altındaki adımda sıfıra çökmüyor |
-| 5.4 | `CodeBlock` yerleşik vurgulayıcı ve biçimlendirici (bağımlılıksız, 30+ dil); sözdizimi renkleri `--hanui-syntax-*` (yalnızca `chat.css`) |
+| 5.4 | `CodeBlock` yerleşik vurgulayıcı ve biçimlendirici (bağımlılıksız, 30+ dil); sözdizimi renkleri `--ui-syntax-*` (yalnızca `chat.css`) |
 | 5.5 | `Input`, `DateField`, `DateRange` `size="sm"` (36px — `Select sm` ve `Button` SMALL ile tek hiza); SCSS `input-sm` mixin'i; yerel sayısal `size` niteliği bu üç girdinin tipinden çıktı |
 | 5.6 | `ContextMenu` — imleç noktasında açılan menü (sağ tık), `role="menu"` dışında başlık; `Menu` ile ortak yüzey; `usePositioning` öğesiz (nokta) çapayı da ölçer; düzeltme: `Menu` açılışta odağı gerçekten ilk öğeye taşır (gerçek tarayıcıda `<body>`de kalıyordu) |
 
 Ayrıntı ve ölçülmüş gerekçeler: `CLAUDE.md` → "Göç ve `@deprecated` yollar",
-"`@ahmetilhn/hanui/chat`", "`@ahmetilhn/hanui/charts`".
+"`@handijit/ui/chat`", "`@handijit/ui/charts`".
 
 ## Tasarım sözleşmesi
 

@@ -55,7 +55,8 @@
     border: none;
     background: none;
     font-family: $font-ui;
-    font-size: $font-size-base;
+    // Form denetimi puntosu: 16 px altına inmez; iOS Safari küçük metin alanına odaklanınca yakınlaştırıyordu.
+    font-size: $font-size-control;
     color: $text;
 
     &::placeholder {

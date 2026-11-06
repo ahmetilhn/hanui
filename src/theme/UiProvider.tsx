@@ -3,29 +3,29 @@
 import { type FC, type ReactNode, useMemo, useRef } from 'react';
 
 import { buildThemeCss, THEME_STYLE_ID, toStyleHtml } from '../helpers/theme.helper';
-import type { HanuiLinkComponent } from '../types/link.type';
-import HanuiContext from './context';
-import type { HanuiLabels, HanuiThemeConfig } from '@/types/theme.type';
+import type { UiLinkComponent } from '../types/link.type';
+import UiContext from './context';
+import type { UiLabels, UiThemeConfig } from '@/types/theme.type';
 
 type Props = {
   children: ReactNode;
   /** Tema ezmeleri. */
-  theme?: HanuiThemeConfig;
+  theme?: UiThemeConfig;
   /**
    * Tüketicinin bağlantı bileşeni.
-   * @example import NextLink from 'next/link'; <HanuiProvider linkComponent={NextLink}>…</Ha…
+   * @example import NextLink from 'next/link'; <UiProvider linkComponent={NextLink}>…</Ha…
    */
-  linkComponent?: HanuiLinkComponent;
+  linkComponent?: UiLinkComponent;
   /** Arayüz metinleri — bir kez, burada. */
-  labels?: HanuiLabels;
+  labels?: UiLabels;
 };
 
 /**
  * Kütüphane sağlayıcısı. `<body>` içine konur: tema ezmesini çocuklarından önce bir `<style>`
  * olarak çizer.
- * @example <HanuiProvider linkComponent={NextLink} theme={{ light: { link: '#0a58ca' } }}> <App…
+ * @example <UiProvider linkComponent={NextLink} theme={{ light: { link: '#0a58ca' } }}> <App…
  */
-const HanuiProvider: FC<Props> = ({ children, theme, linkComponent, labels }) => {
+const UiProvider: FC<Props> = ({ children, theme, linkComponent, labels }) => {
   /*
    * `JSON.stringify` bagimlilik anahtari olarak kullaniliyor: cagiran taraf neredeyse her zaman
    * satir ici bir nesne literali veriyor ve referans her…
@@ -60,13 +60,13 @@ const HanuiProvider: FC<Props> = ({ children, theme, linkComponent, labels }) =>
   );
 
   return (
-    <HanuiContext.Provider value={value}>
+    <UiContext.Provider value={value}>
       {themeHtml !== '' && (
         <style id={THEME_STYLE_ID} dangerouslySetInnerHTML={{ __html: themeHtml }} />
       )}
       {children}
-    </HanuiContext.Provider>
+    </UiContext.Provider>
   );
 };
 
-export default HanuiProvider;
+export default UiProvider;

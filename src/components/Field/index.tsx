@@ -1,10 +1,12 @@
+'use client';
+
 import { type FC, memo, type ReactNode, useId } from 'react';
 
 import { ExclamationCircleFill } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -48,7 +50,7 @@ const Field: FC<Props> = ({
   isLabelHidden,
   className,
 }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const id = useId();
   const errorId = `${id}-error`;
   const hintId = `${id}-hint`;

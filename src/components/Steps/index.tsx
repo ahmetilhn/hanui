@@ -8,7 +8,7 @@ import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -59,7 +59,7 @@ const Steps: FC<Props> = ({
   className,
   testId,
 }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
 
   return (
     <ol

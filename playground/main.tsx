@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { HanuiProvider, LABELS, SCENARIOS } from './scenarios';
+import { UiProvider, LABELS, SCENARIOS } from './scenarios';
 import { SOLO_ONLY } from './solo';
 
 /* Kutuphanenin GLOBAL stil sayfasi ACIKCA import ediliyor. */
@@ -18,19 +18,19 @@ const direction = params.get('dir') === 'rtl' ? 'rtl' : 'ltr';
 const density = params.get('density') === 'compact' ? 'compact' : 'default';
 const solo = params.get('solo');
 
-document.documentElement.setAttribute('data-hanui-theme', theme);
+document.documentElement.setAttribute('data-ui-theme', theme);
 document.documentElement.setAttribute('dir', direction);
-document.documentElement.setAttribute('data-hanui-density', density);
+document.documentElement.setAttribute('data-ui-density', density);
 
 const entries = Object.entries(SCENARIOS).filter(([name]) =>
   solo ? name === solo : !SOLO_ONLY.includes(name as (typeof SOLO_ONLY)[number]),
 );
 
 const Gallery = () => (
-  <HanuiProvider labels={LABELS}>
+  <UiProvider labels={LABELS}>
     {!solo && (
       <header className="gallery__bar">
-        <h1>hanui — bileşen galerisi</h1>
+        <h1>ui — bileşen galerisi</h1>
         <nav>
           <a
             href={`?theme=${theme === 'dark' ? 'light' : 'dark'}&dir=${direction}&density=${density}`}
@@ -65,7 +65,7 @@ const Gallery = () => (
         </section>
       ))}
     </main>
-  </HanuiProvider>
+  </UiProvider>
 );
 
 createRoot(document.getElementById('root') as HTMLElement).render(

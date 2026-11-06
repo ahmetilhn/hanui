@@ -5,7 +5,7 @@ import { CodeBlock } from '@/chat';
 import { formatCode } from '@/chat/CodeBlock/format';
 import { GRAMMARS } from '@/chat/CodeBlock/grammars';
 import { type CodeToken, HIGHLIGHT_LIMIT, highlight } from '@/chat/CodeBlock/highlight';
-import { HanuiProvider } from '@/index';
+import { UiProvider } from '@/index';
 
 /** Yalnızca boyanan parçalar, `tür:metin` biçiminde — düz metin ve boşluk dışarıda. */
 const painted = (code: string, language: string): string[] =>
@@ -371,8 +371,7 @@ describe('formatCode', () => {
 });
 
 describe('CodeBlock', () => {
-  const wrap = (node: React.ReactNode) =>
-    render(<HanuiProvider labels={LABELS}>{node}</HanuiProvider>);
+  const wrap = (node: React.ReactNode) => render(<UiProvider labels={LABELS}>{node}</UiProvider>);
 
   it('kodu vurgulayarak çizer; renk sınıfı parça türünden', () => {
     const errors = jest.spyOn(console, 'error').mockImplementation(() => {});

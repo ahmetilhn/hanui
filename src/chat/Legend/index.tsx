@@ -22,7 +22,7 @@ type Props = {
 };
 
 const swatchColor = (tone: LegendTone): string =>
-  tone === 'muted' ? 'var(--hanui-text-3)' : `var(--hanui-${tone})`;
+  tone === 'muted' ? 'var(--ui-text-3)' : `var(--ui-${tone})`;
 
 /**
  * Grafik lejantı — renk karesi + ad. Renk yalnızca kategorik paletten gelir (iki temanın üç

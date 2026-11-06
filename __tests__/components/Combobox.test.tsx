@@ -36,8 +36,8 @@ describe('Combobox yerel filtreleme', () => {
   it('aksansız yazılan arama aksanlı seçeneği bulur', async () => {
     render(<Combobox options={OPTIONS} value={null} onChange={jest.fn()} labels={LABELS} />);
 
-    await userEvent.click(screen.getByRole('button', { name: LABELS.placeholder }));
-    await userEvent.type(screen.getByRole('combobox', { name: LABELS.searchPlaceholder }), 'sisli');
+    await userEvent.click(screen.getByRole('combobox', { name: LABELS.placeholder }));
+    await userEvent.type(screen.getByRole('textbox', { name: LABELS.searchPlaceholder }), 'sisli');
 
     expect(screen.getByText('Şişli')).toBeInTheDocument();
     expect(screen.queryByText('İzmir')).not.toBeInTheDocument();
@@ -46,11 +46,8 @@ describe('Combobox yerel filtreleme', () => {
   it('ikincil satırda da eşleşir', async () => {
     render(<Combobox options={OPTIONS} value={null} onChange={jest.fn()} labels={LABELS} />);
 
-    await userEvent.click(screen.getByRole('button', { name: LABELS.placeholder }));
-    await userEvent.type(
-      screen.getByRole('combobox', { name: LABELS.searchPlaceholder }),
-      'IST-34',
-    );
+    await userEvent.click(screen.getByRole('combobox', { name: LABELS.placeholder }));
+    await userEvent.type(screen.getByRole('textbox', { name: LABELS.searchPlaceholder }), 'IST-34');
 
     expect(screen.getByText('Şişli')).toBeInTheDocument();
     expect(screen.queryByText('İstanbul')).not.toBeInTheDocument();
@@ -59,11 +56,8 @@ describe('Combobox yerel filtreleme', () => {
   it('sonuç yokken boş mesajı çizilir', async () => {
     render(<Combobox options={OPTIONS} value={null} onChange={jest.fn()} labels={LABELS} />);
 
-    await userEvent.click(screen.getByRole('button', { name: LABELS.placeholder }));
-    await userEvent.type(
-      screen.getByRole('combobox', { name: LABELS.searchPlaceholder }),
-      'ankara',
-    );
+    await userEvent.click(screen.getByRole('combobox', { name: LABELS.placeholder }));
+    await userEvent.type(screen.getByRole('textbox', { name: LABELS.searchPlaceholder }), 'ankara');
 
     expect(screen.getByText(LABELS.emptyMessage)).toBeInTheDocument();
   });
@@ -83,8 +77,8 @@ describe('Combobox sunucu araması', () => {
       />,
     );
 
-    await userEvent.click(screen.getByRole('button', { name: LABELS.placeholder }));
-    await userEvent.type(screen.getByRole('combobox', { name: LABELS.searchPlaceholder }), 'zzz');
+    await userEvent.click(screen.getByRole('combobox', { name: LABELS.placeholder }));
+    await userEvent.type(screen.getByRole('textbox', { name: LABELS.searchPlaceholder }), 'zzz');
 
     expect(screen.getByText('İstanbul')).toBeInTheDocument();
     expect(screen.getByText('Şişli')).toBeInTheDocument();
@@ -97,7 +91,7 @@ describe('Combobox seçim', () => {
   it('seçilen değer tetikleyicide görünür VE erişilebilir adda duyurulur', () => {
     render(<Combobox options={OPTIONS} value="sisli" onChange={jest.fn()} labels={LABELS} />);
 
-    const trigger = screen.getByRole('button', { name: /Şişli/ });
+    const trigger = screen.getByRole('combobox', { name: /Şişli/ });
 
     expect(trigger).toHaveTextContent('Şişli');
 
@@ -108,19 +102,19 @@ describe('Combobox seçim', () => {
   it('seçim yokken erişilebilir ad YALNIZCA etikettir', () => {
     render(<Combobox options={OPTIONS} value={null} onChange={jest.fn()} labels={LABELS} />);
 
-    expect(screen.getByRole('button')).toHaveAccessibleName(LABELS.placeholder);
+    expect(screen.getByRole('combobox')).toHaveAccessibleName(LABELS.placeholder);
   });
 
   it('seçenek tıklanınca `onChange` çağrılır ve panel kapanır', async () => {
     const onChange = jest.fn();
     render(<Combobox options={OPTIONS} value={null} onChange={onChange} labels={LABELS} />);
 
-    await userEvent.click(screen.getByRole('button', { name: LABELS.placeholder }));
+    await userEvent.click(screen.getByRole('combobox', { name: LABELS.placeholder }));
     await userEvent.click(screen.getByText('İzmir'));
 
     expect(onChange).toHaveBeenCalledWith('izmir');
     expect(
-      screen.queryByRole('combobox', { name: LABELS.searchPlaceholder }),
+      screen.queryByRole('textbox', { name: LABELS.searchPlaceholder }),
     ).not.toBeInTheDocument();
   });
 
@@ -135,10 +129,10 @@ describe('Combobox seçim', () => {
       />,
     );
 
-    await userEvent.click(screen.getByRole('button', { name: LABELS.placeholder }));
+    await userEvent.click(screen.getByRole('combobox', { name: LABELS.placeholder }));
 
     expect(
-      screen.queryByRole('combobox', { name: LABELS.searchPlaceholder }),
+      screen.queryByRole('textbox', { name: LABELS.searchPlaceholder }),
     ).not.toBeInTheDocument();
     expect(screen.getByText('İstanbul')).toBeInTheDocument();
   });

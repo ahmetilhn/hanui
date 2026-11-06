@@ -11,7 +11,7 @@ import useAnnounce from '../../hooks/useAnnounce';
 import IconButton from '../IconButton';
 import Progress from '../Progress';
 
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -87,7 +87,7 @@ const FileUpload = ({
   const inputId = useId();
   const hintId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const announce = useAnnounce();
 
   const [isDragging, setIsDragging] = useState(false);

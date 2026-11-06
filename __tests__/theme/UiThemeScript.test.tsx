@@ -4,18 +4,18 @@
 /* Sunucu çizimi SINANIYOR: jsdom değil Node — tarayıcı API'si olmadan çizilebilmeli. */
 import { renderToString } from 'react-dom/server';
 
-import HanuiThemeScript from '@/theme/HanuiThemeScript';
+import UiThemeScript from '@/theme/UiThemeScript';
 
-describe('HanuiThemeScript', () => {
+describe('UiThemeScript', () => {
   it('SUNUCUDA çizilir — sunucu düzeninin `<head>`inde kullanılabilir', () => {
-    const html = renderToString(<HanuiThemeScript storageKey="theme" />);
+    const html = renderToString(<UiThemeScript storageKey="theme" />);
 
     expect(html.startsWith('<script>')).toBe(true);
-    expect(html).toContain('data-hanui-theme');
+    expect(html).toContain('data-ui-theme');
   });
 
   it('anahtar betiğe KAÇIŞLI girer — tırnak betiği kırmaz', () => {
-    const html = renderToString(<HanuiThemeScript storageKey={'te"ma'} />);
+    const html = renderToString(<UiThemeScript storageKey={'te"ma'} />);
 
     expect(html).toContain(`localStorage.getItem(${JSON.stringify('te"ma')})`);
   });

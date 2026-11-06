@@ -1,6 +1,6 @@
-import type * as hanui from '../../src';
+import type * as ui from '../../src';
 
-export const LABELS: hanui.HanuiLabels = {
+export const LABELS: ui.UiLabels = {
   close: 'Kapat',
   cancel: 'Vazgeç',
   submit: 'Kaydet',

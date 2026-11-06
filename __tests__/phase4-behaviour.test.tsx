@@ -6,10 +6,10 @@ import Pagination from '@/components/Pagination';
 import Price from '@/components/Price';
 import Tabs from '@/components/Tabs';
 import Textarea from '@/components/Textarea';
-import HanuiProvider from '@/theme/HanuiProvider';
+import UiProvider from '@/theme/UiProvider';
 
 const wrap = (ui: React.ReactElement, labels?: Record<string, unknown>) =>
-  render(<HanuiProvider labels={labels}>{ui}</HanuiProvider>);
+  render(<UiProvider labels={labels}>{ui}</UiProvider>);
 
 describe('Field — hata ipucunu EZMEZ', () => {
   it('hata varken ipucu da `aria-describedby` içinde kalır', () => {
@@ -74,9 +74,9 @@ describe('Textarea — sayaç', () => {
     const calm = counter.className;
 
     rerender(
-      <HanuiProvider>
+      <UiProvider>
         <Textarea value={'a'.repeat(95)} maxLength={100} hasCounter onChange={() => {}} />
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     expect(screen.getByText('95 / 100').className).not.toBe(calm);
@@ -143,9 +143,9 @@ describe('Pagination — sonuç duyurusu', () => {
     );
 
     rerender(
-      <HanuiProvider>
+      <UiProvider>
         <Pagination page={2} totalPages={9} onPageChange={() => {}} formatAnnouncement={format} />
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     await waitFor(() => expect(screen.getByText('Sayfa 2 / 9')).toBeInTheDocument());
@@ -176,9 +176,9 @@ describe('Textarea — otomatik büyüme', () => {
     const tall = node.style.height;
 
     rerender(
-      <HanuiProvider>
+      <UiProvider>
         <Textarea value="tek satır" isAutoSize onChange={() => {}} />
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     expect(node.style.height).toBe(tall);

@@ -8,13 +8,13 @@ import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 import { scrollWindowToTop } from '../../helpers/scroll.helper';
 import useAnnounce from '../../hooks/useAnnounce';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 import UISize from '../../enums/ui-size.enum';
 import UIVariant from '../../enums/ui-variant.enum';
-import type { HanuiLinkExtraProps } from '../../types/link.type';
+import type { UiLinkExtraProps } from '../../types/link.type';
 import Button from '../Button';
 import IconButton from '../IconButton';
-import HanuiLink from '../Link';
+import UiLink from '../Link';
 
 import styles from './index.module.scss';
 
@@ -43,7 +43,7 @@ type LinkProps = BaseProps & {
   buildHref: (page: number) => string;
   onPageChange?: never;
   /** Yönlendiriciye geçirilecek ek props (`{ scroll: false }` gibi). */
-  linkProps?: HanuiLinkExtraProps;
+  linkProps?: UiLinkExtraProps;
 };
 
 type ButtonProps = BaseProps & {
@@ -89,7 +89,7 @@ const Pagination: FC<Props> = ({
   className,
   testId,
 }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const announce = useAnnounce();
 
   /*
@@ -145,7 +145,7 @@ const Pagination: FC<Props> = ({
 
     if (buildHref && !isDisabled)
       return (
-        <HanuiLink
+        <UiLink
           href={buildHref(target)}
           className={styles.pagination__arrow}
           aria-label={arrowLabel}
@@ -153,7 +153,7 @@ const Pagination: FC<Props> = ({
           onClick={event => handleLinkClick(event, target)}
         >
           {icon}
-        </HanuiLink>
+        </UiLink>
       );
 
     return (
@@ -189,7 +189,7 @@ const Pagination: FC<Props> = ({
           ) : (
             <li key={value}>
               {buildHref ? (
-                <HanuiLink
+                <UiLink
                   href={buildHref(value)}
                   className={cx(
                     styles.pagination__page,
@@ -200,7 +200,7 @@ const Pagination: FC<Props> = ({
                   onClick={event => handleLinkClick(event, value)}
                 >
                   {value}
-                </HanuiLink>
+                </UiLink>
               ) : (
                 <Button
                   variant={UIVariant.SECONDARY}

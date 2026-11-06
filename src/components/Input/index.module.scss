@@ -42,14 +42,12 @@
    */
   &--hasPrefix {
     padding-inline-start: calc(
-      #{$space-3} + var(--hanui-input-prefix-width, #{$icon-md}) + #{$space-2}
+      #{$space-3} + var(--ui-input-prefix-width, #{$icon-md}) + #{$space-2}
     );
   }
 
   &--hasSuffix {
-    padding-inline-end: calc(
-      #{$space-3} + var(--hanui-input-suffix-width, #{$icon-md}) + #{$space-2}
-    );
+    padding-inline-end: calc(#{$space-3} + var(--ui-input-suffix-width, #{$icon-md}) + #{$space-2});
   }
 
   /*

@@ -7,7 +7,7 @@
     "emitDeclarationOnly": true,
     "rootDir": "src",
     "outDir": "build/types",
-    /* `@ahmetilhn/hanui` EŞLENMEZ: paketin kendi `exports`u üzerinden derlenmiş ana tiplere çözülür. */
+    /* `@handijit/ui` EŞLENMEZ: paketin kendi `exports`u üzerinden derlenmiş ana tiplere çözülür. */
     "paths": { "@/*": ["./src/*"] },
     "types": ["node"]
   },

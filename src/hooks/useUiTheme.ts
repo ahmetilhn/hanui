@@ -2,17 +2,17 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-import { isClient } from '@ahmetilhn/handy-utils';
+import { isClient } from '@handijit/utils';
 
 import { THEME_ATTRIBUTE, THEME_SWITCHING_CLASS } from '../helpers/theme.helper';
-import type { HanuiColorPreference, HanuiColorScheme, HanuiThemeState } from '@/types/theme.type';
+import type { UiColorPreference, UiColorScheme, UiThemeState } from '@/types/theme.type';
 
 /** Sistem tercihini okur. */
-const readSystemScheme = (): HanuiColorScheme =>
+const readSystemScheme = (): UiColorScheme =>
   isClient() && window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
 /** `<html>` üzerindeki AÇIK seçim; öznitelik yoksa `system`. */
-const readPreference = (): HanuiColorPreference => {
+const readPreference = (): UiColorPreference => {
   if (!isClient()) return 'system';
 
   const attribute = document.documentElement.getAttribute(THEME_ATTRIBUTE);
@@ -21,15 +21,15 @@ const readPreference = (): HanuiColorPreference => {
 
 /**
  * Açık/koyu seçimini okur ve değiştirir.
- * @example const { scheme, toggle, isReady } = useHanuiTheme();
+ * @example const { scheme, toggle, isReady } = useUiTheme();
  */
-const useHanuiTheme = (): HanuiThemeState => {
+const useUiTheme = (): UiThemeState => {
   /*
    * Ilk deger SABIT 'light': sunucuda `document` yok ve istemcideki gercek degeri ilk render'da
    * okumak hidrasyon uyusmazligi uretiyordu (sunucu "light"…
    */
-  const [preference, setPreferenceState] = useState<HanuiColorPreference>('light');
-  const [systemScheme, setSystemScheme] = useState<HanuiColorScheme>('light');
+  const [preference, setPreferenceState] = useState<UiColorPreference>('light');
+  const [systemScheme, setSystemScheme] = useState<UiColorScheme>('light');
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -49,9 +49,9 @@ const useHanuiTheme = (): HanuiThemeState => {
     return () => query.removeEventListener('change', handleChange);
   }, []);
 
-  const scheme: HanuiColorScheme = preference === 'system' ? systemScheme : preference;
+  const scheme: UiColorScheme = preference === 'system' ? systemScheme : preference;
 
-  const setScheme = useCallback((next: HanuiColorPreference) => {
+  const setScheme = useCallback((next: UiColorPreference) => {
     if (!isClient()) return;
 
     const root = document.documentElement;
@@ -60,7 +60,7 @@ const useHanuiTheme = (): HanuiThemeState => {
 
     /*
      * `system` bir DEGER degil, degerin YOKLUGU: oznitelik silinir ve `_tokens.generated.scss`
-     * icindeki `:not([data-hanui-theme])` sorgusu devreye girer.…
+     * icindeki `:not([data-ui-theme])` sorgusu devreye girer.…
      */
     if (next === 'system') root.removeAttribute(THEME_ATTRIBUTE);
     else root.setAttribute(THEME_ATTRIBUTE, next);
@@ -81,4 +81,4 @@ const useHanuiTheme = (): HanuiThemeState => {
   return { scheme, preference, setScheme, toggle, isReady };
 };
 
-export default useHanuiTheme;
+export default useUiTheme;

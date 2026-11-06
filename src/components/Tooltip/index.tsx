@@ -87,7 +87,7 @@ const Tooltip = ({
   }, [children]);
 
   /*
-   * `typeof type!== 'string'` her BILESENI "odaklanamaz" sayiyor; hanui'nin her bileseni bir `memo`
+   * `typeof type!== 'string'` her BILESENI "odaklanamaz" sayiyor; ui'nin her bileseni bir `memo`
    * NESNESI, yani `<Tooltip><Button/></Tooltip>` icin…
    * ⚠ STATIK KONTROL TEK BASINA YANLIS CEVAP VERIYORDU.
    */

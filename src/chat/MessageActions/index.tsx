@@ -2,7 +2,7 @@
 
 import { type FC, type KeyboardEvent, memo, type ReactNode, useRef } from 'react';
 
-import { useHanui } from '@ahmetilhn/hanui';
+import { useUi } from '@handijit/ui';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
@@ -31,7 +31,7 @@ const FOCUSABLE = 'button:not(:disabled), a[href]';
  * ⚠ Satır içi araç çubuğu: ok tuşu yalnızca odak ÇUBUKTAYKEN çalışır, sayfayı kaydırmaz.
  */
 const MessageActions: FC<Props> = ({ children, meta, label, className, testId }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const ref = useRef<HTMLDivElement>(null);
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {

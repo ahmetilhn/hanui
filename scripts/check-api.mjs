@@ -2,10 +2,10 @@
 /**
  * GENEL API NOBETCISI — her girisin disa aktarim kumesini kendi taban cizgisiyle karsilastirir.
  *
- * - `@ahmetilhn/hanui`      → `build/index.d.ts`             ↔ `scripts/api-baseline.txt`
- * - `@ahmetilhn/hanui/chat` → `build/types/chat/index.d.ts`  ↔ `scripts/api-baseline.chat.txt`
- * - `@ahmetilhn/hanui/charts` → `build/types/charts/index.d.ts` ↔ `scripts/api-baseline.charts.txt`
- * - `@ahmetilhn/hanui/scss`   → `build/scss/*.scss` (`$degisken`, `@mixin`) ↔ `scripts/api-baseline.scss.txt`
+ * - `@handijit/ui`      → `build/index.d.ts`             ↔ `scripts/api-baseline.txt`
+ * - `@handijit/ui/chat` → `build/types/chat/index.d.ts`  ↔ `scripts/api-baseline.chat.txt`
+ * - `@handijit/ui/charts` → `build/types/charts/index.d.ts` ↔ `scripts/api-baseline.charts.txt`
+ * - `@handijit/ui/scss`   → `build/scss/*.scss` (`$degisken`, `@mixin`) ↔ `scripts/api-baseline.scss.txt`
  *
  * ⚠ Grep deseni `export { … }` DEGIL (ana giris icin). vite-plugin-dts her bildirimi tek tek
  * `export declare …` olarak yaziyor ve dosyanin sonunda yalnizca BOS bir `export { }` birakiyor.
@@ -21,7 +21,8 @@ import { dirname, join } from 'node:path';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 
-const DECLARED_NAME = /^export declare (?:const|type|function|class|interface|enum) ([A-Za-z0-9_$]+)/gm;
+const DECLARED_NAME =
+  /^export declare (?:const|type|function|class|interface|enum) ([A-Za-z0-9_$]+)/gm;
 const REEXPORT_BLOCK = /^export (?:type )?\{([^}]*)\} from /gm;
 
 /** `export { default as X, type Y, Z } from` → `X`, `Y`, `Z`. */
@@ -51,25 +52,32 @@ const scssNames = (_source, file) =>
 
 const ENTRIES = [
   {
-    name: '@ahmetilhn/hanui',
+    name: '@handijit/ui',
     declarationFile: join(ROOT, 'build', 'index.d.ts'),
     baselineFile: join(ROOT, 'scripts', 'api-baseline.txt'),
-    read: source => [...source.matchAll(DECLARED_NAME)].map(match => match[1]),
+    /*
+     * 6.0: ana girişin tipleri de dosya başına (`preserveModules`); cephe `export { … } from`
+     * satırlarından ibaret. Toplanmış (`export declare`) biçim alt girişlerle aynı desene indi.
+     */
+    read: source => [
+      ...reexportedNames(source),
+      ...[...source.matchAll(DECLARED_NAME)].map(match => match[1]),
+    ],
   },
   {
-    name: '@ahmetilhn/hanui/chat',
+    name: '@handijit/ui/chat',
     declarationFile: join(ROOT, 'build', 'types', 'chat', 'index.d.ts'),
     baselineFile: join(ROOT, 'scripts', 'api-baseline.chat.txt'),
     read: reexportedNames,
   },
   {
-    name: '@ahmetilhn/hanui/charts',
+    name: '@handijit/ui/charts',
     declarationFile: join(ROOT, 'build', 'types', 'charts', 'index.d.ts'),
     baselineFile: join(ROOT, 'scripts', 'api-baseline.charts.txt'),
     read: reexportedNames,
   },
   {
-    name: '@ahmetilhn/hanui/scss',
+    name: '@handijit/ui/scss',
     declarationFile: join(ROOT, 'build', 'scss', '_index.scss'),
     baselineFile: join(ROOT, 'scripts', 'api-baseline.scss.txt'),
     read: scssNames,
@@ -108,7 +116,9 @@ for (const entry of ENTRIES) {
   }
 
   if (!existsSync(entry.baselineFile)) {
-    console.error(`✗ ${entry.name}: taban cizgisi yok. \`node scripts/check-api.mjs --update\` calistir.`);
+    console.error(
+      `✗ ${entry.name}: taban cizgisi yok. \`node scripts/check-api.mjs --update\` calistir.`,
+    );
     process.exit(1);
   }
 

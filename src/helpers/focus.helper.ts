@@ -88,9 +88,9 @@ const FOCUSABLE_SELECTOR = [
  */
 export const focusFirstMeaningful = (
   container: HTMLElement,
-  skipSelector = '[data-hanui-close]',
+  skipSelector = '[data-ui-close]',
 ): void => {
-  const explicit = container.querySelector<HTMLElement>('[data-hanui-autofocus]');
+  const explicit = container.querySelector<HTMLElement>('[data-ui-autofocus]');
   if (explicit) {
     explicit.focus({ preventScroll: true });
     return;
@@ -117,7 +117,7 @@ const modalStack: symbol[] = [];
 
 /** Yığına katılır; dönen fonksiyon çıkarır. */
 export const pushModal = (): { token: symbol; pop: () => void } => {
-  const token = Symbol('hanui-modal');
+  const token = Symbol('ui-modal');
   modalStack.push(token);
 
   return {

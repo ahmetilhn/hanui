@@ -82,12 +82,12 @@
 // Koyu temaya özgü kural — açık seçim ve sistem tercihi, `_tokens.generated.scss` ile AYNI seçiciler.
 // ⚠ Tema alt ağaca kapsamlandırılamaz (bkz. CLAUDE.md "Marka şeridi"); bu yalnızca KÖKE bakar.
 @mixin for-dark {
-  :root[data-hanui-theme='dark'] & {
+  :root[data-ui-theme='dark'] & {
     @content;
   }
 
   @media (prefers-color-scheme: dark) {
-    :root:not([data-hanui-theme]) & {
+    :root:not([data-ui-theme]) & {
       @content;
     }
   }
@@ -154,7 +154,7 @@
   padding-right: max(#{$padding}, env(safe-area-inset-right, 0px));
 }
 
-$sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bottom, 0px))'};
+$sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--ui-sheet-inset-bottom, 0px))'};
 
 @mixin safe-bottom($padding: $space-3) {
   padding-bottom: max(#{$padding}, calc(env(safe-area-inset-bottom, 0px) - #{$sheet-lift}));
@@ -382,7 +382,7 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
   $lg-index: list.index($font-steps, lg);
   $xxl-index: list.index($font-steps, 2xl);
 
-  font-size: var(--hanui-font-size-#{$step});
+  font-size: var(--ui-font-size-#{$step});
   font-weight: $weight;
   line-height: $leading-tight;
   color: $text;
@@ -460,9 +460,11 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
   min-width: 0;
 }
 
+// Odak halkası: kalınlık ve dış pay tüketicinin ezebildiği bileşen değişkenleri (6.0). Site halkayı
+// öğenin kendi yüzeyine çekmek istiyorsa `--ui-ring-offset: -2px` yazar; sınıf başına ezme gerekmez.
 @mixin focus-ring-shape($color: $ring-color, $offset: 2px) {
-  outline: 2px solid $color;
-  outline-offset: $offset;
+  outline: var(--ui-ring-width, 2px) solid $color;
+  outline-offset: var(--ui-ring-offset, #{$offset});
 }
 
 @mixin focus-ring($color: $ring-color, $offset: 2px) {
@@ -528,8 +530,10 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
     border-color $duration-fast $ease-out,
     box-shadow $duration-fast $ease-out;
 
+  // Yer tutucu rengi ayrı bir değişken: `text-3` metin rengine yakın temalarda boş alan dolu
+  // görünüyordu (6.0; tüketici `--ui-placeholder` yazar).
   &::placeholder {
-    color: $text-3;
+    color: var(--ui-placeholder, #{$text-3});
   }
 
   /*
@@ -692,9 +696,9 @@ $sheet-lift: #{'max(env(safe-area-inset-bottom, 0px), var(--hanui-sheet-inset-bo
 @mixin skeleton {
   background: linear-gradient(
     90deg,
-    var(--hanui-skeleton-a) 0%,
-    var(--hanui-skeleton-b) 50%,
-    var(--hanui-skeleton-a) 100%
+    var(--ui-skeleton-a) 0%,
+    var(--ui-skeleton-b) 50%,
+    var(--ui-skeleton-a) 100%
   );
   background-size: 200% 100%;
   animation: $anim-shimmer $duration-shimmer ease-in-out infinite;

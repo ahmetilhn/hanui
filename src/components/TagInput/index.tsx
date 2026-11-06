@@ -9,7 +9,7 @@ import { named } from '../../helpers/component.helper';
 import { resolveFormatter } from '../../helpers/label.helper';
 import useAnnounce from '../../hooks/useAnnounce';
 
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -65,7 +65,7 @@ const TagInput = ({
     },
     [],
   );
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const announce = useAnnounce();
 
   const [draft, setDraft] = useState('');

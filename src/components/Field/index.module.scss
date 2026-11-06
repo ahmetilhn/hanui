@@ -10,7 +10,7 @@
     display: flex;
     align-items: center;
     gap: 2px;
-    order: var(--hanui-field-label-order, 0);
+    order: var(--ui-field-label-order, 0);
 
     &--hidden {
       @include visually-hidden;
@@ -29,7 +29,7 @@
     font-size: $font-size-xs;
     color: $text-2;
     line-height: $leading-normal;
-    order: var(--hanui-field-message-order, 0);
+    order: var(--ui-field-message-order, 0);
   }
 
   &__error {
@@ -41,7 +41,7 @@
     color: $bad-fg;
     line-height: $leading-normal;
     margin: 0;
-    order: var(--hanui-field-message-order, 0);
+    order: var(--ui-field-message-order, 0);
   }
 
   &__errorIcon {

@@ -8,9 +8,9 @@ import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import { resolveFormatter, resolveLabel } from '../../helpers/label.helper';
 import { useCopyFeedback } from '../../hooks/useCopyFeedback';
-import { useHanui } from '../../theme/context';
-import type { HanuiLinkExtraProps } from '../../types/link.type';
-import HanuiLink from '../Link';
+import { useUi } from '../../theme/context';
+import type { UiLinkExtraProps } from '../../types/link.type';
+import UiLink from '../Link';
 
 import styles from './index.module.scss';
 
@@ -32,7 +32,7 @@ type Props = {
   onClick?: () => void;
   /** Kodu bir BAĞLANTI yapar; `onClick` ile birlikte verilmez. */
   href?: string;
-  linkProps?: HanuiLinkExtraProps;
+  linkProps?: UiLinkExtraProps;
   /**
    * Etkileşimli kodun okunan adı. Kısa kimliklerde ("A3") kod tek başına ne açılacağını söylemez
    * ("A3 kaynağını aç"). Verilmezse kodun kendisi.
@@ -61,7 +61,7 @@ const CodeBadge: FC<Props> = ({
   className,
   testId,
 }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const { isCopied, copy, nodeRef } = useCopyFeedback(code);
   const isInteractive = Boolean(onClick || href);
 
@@ -83,9 +83,9 @@ const CodeBadge: FC<Props> = ({
       data-testid={testId}
     >
       {href ? (
-        <HanuiLink {...linkProps} href={href} className={styles.badge__action} aria-label={label}>
+        <UiLink {...linkProps} href={href} className={styles.badge__action} aria-label={label}>
           {codeNode}
-        </HanuiLink>
+        </UiLink>
       ) : onClick ? (
         <button type="button" className={styles.badge__action} onClick={onClick} aria-label={label}>
           {codeNode}

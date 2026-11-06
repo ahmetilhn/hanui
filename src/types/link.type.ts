@@ -1,17 +1,17 @@
 import type { AnchorHTMLAttributes, ComponentType, ReactNode } from 'react';
 
 /** Kütüphanenin bir bağlantı bileşenine geçirdiği props. */
-export type HanuiLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
+export type UiLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   href: string;
   children?: ReactNode;
   [key: string]: unknown;
 };
 
 /** Tüketicinin yönlendiricisi (`next/link`, `react-router`ın `Link`i…). */
-export type HanuiLinkComponent = ComponentType<HanuiLinkProps>;
+export type UiLinkComponent = ComponentType<UiLinkProps>;
 
 /**
  * Bileşenden yönlendiriciye geçirilecek ek props.
  * @example // Next.js App Router: sayfa numarasına basınca liste yukarı sıçramasın.…
  */
-export type HanuiLinkExtraProps = Record<string, unknown>;
+export type UiLinkExtraProps = Record<string, unknown>;

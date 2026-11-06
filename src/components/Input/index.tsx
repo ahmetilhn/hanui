@@ -1,3 +1,5 @@
+'use client';
+
 import {
   forwardRef,
   type InputHTMLAttributes,
@@ -53,8 +55,8 @@ const Input = /*#__PURE__*/ forwardRef<HTMLInputElement, Props>(
       const wrapper = wrapperRef.current;
       if (!wrapper) return undefined;
       const slots = [
-        [prefixRef, '--hanui-input-prefix-width'],
-        [suffixRef, '--hanui-input-suffix-width'],
+        [prefixRef, '--ui-input-prefix-width'],
+        [suffixRef, '--ui-input-suffix-width'],
       ] as const;
       const write = () => {
         for (const [slot, property] of slots) {

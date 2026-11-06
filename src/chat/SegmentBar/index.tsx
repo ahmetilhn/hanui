@@ -50,7 +50,7 @@ const percent = (value: number, max: number): number =>
   max <= 0 ? 0 : Math.min(100, Math.max(0, (value / max) * 100));
 
 const swatch = (tone: LegendTone): string =>
-  tone === 'muted' ? 'var(--hanui-text-3)' : `var(--hanui-${tone})`;
+  tone === 'muted' ? 'var(--ui-text-3)' : `var(--ui-${tone})`;
 
 /**
  * Parçalı çubuk — yığılmış bileşim (`value`) ya da zaman çizelgesi (`from`/`to`).

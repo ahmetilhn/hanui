@@ -27,7 +27,7 @@
 
   &::backdrop {
     background-color: $scrim;
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(var(--ui-scrim-blur, 3px));
   }
 
   @include for-mobile {

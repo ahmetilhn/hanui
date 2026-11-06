@@ -1,3 +1,5 @@
+'use client';
+
 import { type FC, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';

@@ -177,7 +177,7 @@ for (const [name, theme] of themes) {
   console.log(`\n${name} — ${rows.length} çift, ${failed.length} ihlal`);
   for (const row of failed) console.log(`  ${format(row)}`);
 
-  if (process.env.HANUI_CONTRAST_VERBOSE) {
+  if (process.env.UI_CONTRAST_VERBOSE) {
     console.log(`  — advisory (kırmaz) —`);
     for (const row of measure(theme, advisory)) console.log(`  ${format(row)}`);
   }
@@ -185,7 +185,7 @@ for (const [name, theme] of themes) {
 
 if (failures.length > 0) {
   console.error(
-    `\nhanui: ${failures.length} kontrast ihlali. Düzeltme src/theme/palette.ts` +
+    `\nui: ${failures.length} kontrast ihlali. Düzeltme src/theme/palette.ts` +
       ` içinde yapılır — bileşenin SCSS'ine tek seferlik bir renk yazmak,` +
       ` aynı tonu kullanan diğer yerleri sessizce ihlalde bırakır.\n`,
   );
@@ -193,7 +193,7 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `\nhanui: ${pairs.length * 2} kontrast çifti temiz` +
+  `\nui: ${pairs.length * 2} kontrast çifti temiz` +
     ` (metin ≥${THRESHOLD.text}:1, grafik ≥${THRESHOLD.graphic}:1).` +
-    ` Advisory için: HANUI_CONTRAST_VERBOSE=1\n`,
+    ` Advisory için: UI_CONTRAST_VERBOSE=1\n`,
 );

@@ -2,7 +2,7 @@
 
 import { memo, useCallback, useMemo, useState } from 'react';
 
-import { useHanui } from '@ahmetilhn/hanui';
+import { useUi } from '@handijit/ui';
 
 import { named } from '../../helpers/component.helper';
 import { fitLabel, labelWidth } from '../core/axes';
@@ -77,7 +77,7 @@ const RadarChart = ({
   className,
   testId,
 }: Props) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const [containerRef, width] = useChartWidth(fixedWidth);
   const [hidden, setHidden] = useState<ReadonlySet<string>>(() => new Set());
   const tickFormat = useMemo(() => tickLabels(labels?.locale), [labels?.locale]);

@@ -2,7 +2,7 @@
 
 import { type FC, memo } from 'react';
 
-import { useHanui } from '@ahmetilhn/hanui';
+import { useUi } from '@handijit/ui';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
@@ -23,7 +23,7 @@ type Props = {
  * başına ekran okuyucuda "üç" diye, bağlamsız okunuyordu.
  */
 const Citation: FC<Props> = ({ index, href, onClick, className }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const name = resolveFormatter('Citation.label', labels?.chat?.citation, index);
 
   if (href)

@@ -19,8 +19,8 @@ export const resolveLabel = (key: string, ...values: (string | undefined)[]): st
   if (process.env.NODE_ENV !== 'production' && !warned.has(key)) {
     warned.add(key);
     console.error(
-      `[hanui] Eksik metin: ${key}. Prop olarak geçin ya da ` +
-        '<HanuiProvider labels={…}> içinde bir kez tanımlayın. ' +
+      `[@handijit/ui] Eksik metin: ${key}. Prop olarak geçin ya da ` +
+        '<UiProvider labels={…}> içinde bir kez tanımlayın. ' +
         'Metinsiz bırakılan öğe ekran okuyucuda adsız kalır.',
     );
   }

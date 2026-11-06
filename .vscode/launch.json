@@ -1,6 +1,6 @@
 {
   // ─────────────────────────────────────────────────────────────────────
-  // hanui — LOKAL koşu. Hata ayıklayıcı YOK (`node-terminal` +
+  // ui — LOKAL koşu. Hata ayıklayıcı YOK (`node-terminal` +
   // `autoAttachChildProcesses: false`).
   //
   // ⚠ `nvm use` öneki ZORUNLU: makinenin varsayılanı node 14, `.nvmrc` -> 24.
@@ -15,7 +15,7 @@
     {
       // Bileşen galerisi — tema · RTL · yoğunluk anahtarı.
       // http://localhost:5273 (playground/vite.config.ts, strictPort).
-      "name": "hanui — playground (5273)",
+      "name": "ui — playground (5273)",
       "type": "node-terminal",
       "request": "launch",
       "cwd": "${workspaceFolder}",
@@ -26,7 +26,7 @@
       // Kütüphane derlemesi izleme kipinde: tüketici uygulamalara
       // `npm link` ile bağlıyken kaynakta yapılan değişikliği `build/`e taşır.
       // Galeri bunu KULLANMAZ — orada `src/` doğrudan okunuyor.
-      "name": "hanui — build --watch (link için)",
+      "name": "ui — build --watch (link için)",
       "type": "node-terminal",
       "request": "launch",
       "cwd": "${workspaceFolder}",

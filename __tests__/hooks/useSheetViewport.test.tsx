@@ -9,8 +9,8 @@ type ViewportStub = {
   removeEventListener: jest.Mock;
 };
 
-const INSET = '--hanui-sheet-inset-bottom';
-const HEIGHT = '--hanui-sheet-height';
+const INSET = '--ui-sheet-inset-bottom';
+const HEIGHT = '--ui-sheet-height';
 
 const mockViewport = (height: number, offsetTop = 0): ViewportStub => {
   const stub: ViewportStub = {

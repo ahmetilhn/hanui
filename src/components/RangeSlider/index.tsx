@@ -2,11 +2,11 @@
 
 import { memo, useCallback } from 'react';
 
-import { normalize } from '@ahmetilhn/handy-utils';
+import { normalize } from '@handijit/utils';
 
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -50,7 +50,7 @@ const RangeSlider = ({
   className,
   testId,
 }: Props) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const lowName = resolveLabel('RangeSlider.minLabel', minLabel, labels?.range?.min);
   const highName = resolveLabel('RangeSlider.maxLabel', maxLabel, labels?.range?.max);
   const [low, high] = value;

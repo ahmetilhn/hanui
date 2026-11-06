@@ -1,12 +1,14 @@
+'use client';
+
 import { type FC, memo } from 'react';
 
 import { CaretRightFill } from 'react-bootstrap-icons';
 
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
-import type { HanuiLinkExtraProps } from '../../types/link.type';
-import HanuiLink from '../Link';
+import { useUi } from '../../theme/context';
+import type { UiLinkExtraProps } from '../../types/link.type';
+import UiLink from '../Link';
 
 import styles from './index.module.scss';
 
@@ -21,14 +23,14 @@ type Props = {
   /** Gezinme bölgesinin erişilebilir adı. */
   label?: string;
   /** Yönlendiriciye geçirilecek ek props. */
-  linkProps?: HanuiLinkExtraProps;
+  linkProps?: UiLinkExtraProps;
   className?: string;
   testId?: string;
 };
 
 /** Kırıntı yolu. */
 const Breadcrumb: FC<Props> = ({ items, label, linkProps, className, testId }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
 
   return (
     <nav
@@ -43,9 +45,9 @@ const Breadcrumb: FC<Props> = ({ items, label, linkProps, className, testId }) =
           return (
             <li key={`${item.label}-${index}`} className={styles.breadcrumb__item}>
               {item.href && !isLast ? (
-                <HanuiLink href={item.href} className={styles.breadcrumb__link} {...linkProps}>
+                <UiLink href={item.href} className={styles.breadcrumb__link} {...linkProps}>
                   {item.label}
-                </HanuiLink>
+                </UiLink>
               ) : (
                 <span className={styles.breadcrumb__current} aria-current="page">
                   {item.label}

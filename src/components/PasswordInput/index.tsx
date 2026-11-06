@@ -1,9 +1,11 @@
+'use client';
+
 import { FC, InputHTMLAttributes, memo, useState } from 'react';
 import { EyeFill, EyeSlashFill } from 'react-bootstrap-icons';
 
 import { named } from '../../helpers/component.helper';
 import { resolveLabel } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 import IconButton from '../IconButton';
 import Input from '../Input';
 
@@ -22,7 +24,7 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> & {
  * olarak duruyordu
  */
 const PasswordInput: FC<Props> = ({ className, showLabel, hideLabel, ...rest }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const [isVisible, setIsVisible] = useState(false);
 
   const toggleLabel = isVisible

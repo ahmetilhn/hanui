@@ -21,7 +21,7 @@ import usePositioning from '../../hooks/usePositioning';
 import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 import BottomSheet from '../BottomSheet';
 
 import styles from './index.module.scss';
@@ -84,7 +84,7 @@ const Select = <T extends string>({
   'aria-describedby': describedBy,
   'aria-invalid': isInvalid,
 }: Props<T>) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const emptyText = resolveLabel('Select.placeholder', placeholder, labels?.selectPlaceholder);
   const generatedId = useId();
   const baseId = id ?? generatedId;

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-import { isClient } from '@ahmetilhn/handy-utils';
+import { isClient } from '@handijit/utils';
 import {
   PositionAlign,
   PositionSide,

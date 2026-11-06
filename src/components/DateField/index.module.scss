@@ -47,11 +47,11 @@
   font-size: $font-size-xs;
   color: $text-2;
 
-  order: var(--hanui-field-message-order, 0);
+  order: var(--ui-field-message-order, 0);
 }
 
 .range__error {
   font-size: $font-size-xs;
   color: $bad-fg;
-  order: var(--hanui-field-message-order, 0);
+  order: var(--ui-field-message-order, 0);
 }

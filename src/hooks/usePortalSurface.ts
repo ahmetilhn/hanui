@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { isClient } from '@ahmetilhn/handy-utils';
+import { isClient } from '@handijit/utils';
 
 import { POPOVER_RESET, resolvePortalTarget, showTopLayer } from '../helpers/portal.helper';
 

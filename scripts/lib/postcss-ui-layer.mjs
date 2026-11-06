@@ -1,4 +1,4 @@
-/** KÜTÜPHANE CSS'İNİN TAMAMINI `@layer hanui` İÇİNE ALIR. */
+/** KÜTÜPHANE CSS'İNİN TAMAMINI `@layer ui` İÇİNE ALIR. */
 const PRELUDE = new Set(['charset', 'import']);
 
 /** Yalnızca KÜTÜPHANE CSS'i sarmalanır. */
@@ -6,8 +6,8 @@ const isLibrarySource = file =>
   typeof file === 'string' && (file.includes('/src/') || file.includes('\\src\\'));
 
 /** @type {import('postcss').PluginCreator<{ layer?: string }>} */
-const hanuiLayer = ({ layer = 'hanui' } = {}) => ({
-  postcssPlugin: 'postcss-hanui-layer',
+const uiLayer = ({ layer = 'ui' } = {}) => ({
+  postcssPlugin: 'postcss-ui-layer',
 
   OnceExit(root, { AtRule }) {
     if (!isLibrarySource(root.source?.input?.file)) return;
@@ -31,6 +31,6 @@ const hanuiLayer = ({ layer = 'hanui' } = {}) => ({
   },
 });
 
-hanuiLayer.postcss = true;
+uiLayer.postcss = true;
 
-export default hanuiLayer;
+export default uiLayer;

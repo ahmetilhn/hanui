@@ -55,7 +55,7 @@ test.describe('açılır panel ankrajı — düz akış', () => {
     await page.goto('/?theme=light&solo=Combobox');
     await page.evaluate(() => document.fonts.ready);
 
-    const trigger = page.getByRole('button', { name: 'Marka seçin' }).first();
+    const trigger = page.getByRole('combobox', { name: 'Marka seçin' }).first();
     await trigger.click();
 
     const panel = page.getByRole('listbox');
@@ -84,7 +84,7 @@ test.describe('açılır panel ankrajı — dönüştürülmüş ata', () => {
     await page.addStyleTag({ content: CONTAINING_BLOCK_BREAKER });
     await page.evaluate(() => document.fonts.ready);
 
-    const trigger = page.getByRole('button', { name: 'Marka seçin' }).first();
+    const trigger = page.getByRole('combobox', { name: 'Marka seçin' }).first();
     await trigger.click();
 
     const panel = page.getByRole('listbox');
@@ -118,7 +118,7 @@ test.describe('açılır panel ankrajı — kırpan ata', () => {
     });
     await page.evaluate(() => document.fonts.ready);
 
-    const trigger = page.getByRole('button', { name: 'Marka seçin' }).first();
+    const trigger = page.getByRole('combobox', { name: 'Marka seçin' }).first();
     await trigger.click();
 
     const panel = page.getByRole('listbox');

@@ -5,7 +5,7 @@ import { type FC, memo, type ReactNode, useState } from 'react';
 import { ExclamationTriangleFill, QuestionCircleFill, TrashFill } from 'react-bootstrap-icons';
 
 import { resolveLabel } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 import UISize from '../../enums/ui-size.enum';
 import UIVariant from '../../enums/ui-variant.enum';
 import Button from '../Button';
@@ -75,7 +75,7 @@ const ConfirmDialog: FC<Props> = ({
   kind,
   children,
 }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const [isRunning, setIsRunning] = useState(false);
 
   /* Eski prop bir surum boyunca calisir; `variant` verilmisse o kazanir. */

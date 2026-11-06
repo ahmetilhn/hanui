@@ -11,7 +11,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import { isClient } from '@ahmetilhn/handy-utils';
+import { isClient } from '@handijit/utils';
 
 import { ABOVE_MOBILE_MEDIA_QUERY } from '../../constants/breakpoint.constants';
 import { XLg } from 'react-bootstrap-icons';
@@ -25,7 +25,7 @@ import {
   pushModal,
 } from '../../helpers/focus.helper';
 import { resolveLabel } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 import useScrollLock from '../../hooks/useScrollLock';
 import useSheetViewport from '../../hooks/useSheetViewport';
 import IconButton from '../IconButton';
@@ -63,7 +63,7 @@ const BottomSheet = ({
   className,
   testId,
 }: Props) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const titleId = useId();
   /* Yigindaki yerimiz: */
   const tokenRef = useRef<symbol | null>(null);

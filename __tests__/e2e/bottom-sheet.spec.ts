@@ -64,7 +64,7 @@ test.describe('alt sayfa ölçüsü', () => {
       await openSortSheet(page);
 
       await page.evaluate(value => {
-        document.documentElement.style.setProperty('--hanui-sheet-height', value);
+        document.documentElement.style.setProperty('--ui-sheet-height', value);
       }, bogus);
 
       const sizes = await readSizes(page);

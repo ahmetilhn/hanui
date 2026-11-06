@@ -16,12 +16,13 @@
   align-items: center;
   justify-content: center;
   gap: $space-2;
-  background-color: $surface;
-  border: 1px solid $border;
-  border-radius: $radius-md;
-  color: $text-2;
+  // Bileşen değişkenleri (6.0): zemin, çizgi, yarıçap, ağırlık ve seçili renkler tüketicide ezilir.
+  background-color: var(--ui-chip-bg, #{$surface});
+  border: 1px solid var(--ui-chip-line, #{$border});
+  border-radius: var(--ui-chip-radius, #{$radius-md});
+  color: var(--ui-chip-fg, #{$text-2});
   font-family: $font-body;
-  font-weight: $weight-medium;
+  font-weight: var(--ui-chip-weight, #{$weight-medium});
   line-height: $leading-none;
   white-space: nowrap;
   cursor: pointer;
@@ -109,23 +110,23 @@
 
   // Seçili: kenarlık + zemin BİRLİKTE, MÜREKKEP. 4.x'te rol yeşiliydi; seçim bir eylem değil.
   &--selected {
-    border-color: $selected-line;
-    color: $text;
-    background-color: $selected-tint;
-    font-weight: $weight-semibold;
+    border-color: var(--ui-chip-selected-line, #{$selected-line});
+    color: var(--ui-chip-selected-fg, #{$text});
+    background-color: var(--ui-chip-selected-bg, #{$selected-tint});
+    font-weight: var(--ui-chip-selected-weight, #{$weight-semibold});
 
     .chip__icon {
-      color: $text;
+      color: var(--ui-chip-selected-fg, #{$text});
     }
 
     .chip__count {
-      color: $text-2;
+      color: var(--ui-chip-selected-fg, #{$text-2});
     }
 
     &:hover:not(:disabled) {
-      border-color: $selected-hover;
-      color: $text;
-      background-color: $selected-tint;
+      border-color: var(--ui-chip-selected-line, #{$selected-hover});
+      color: var(--ui-chip-selected-fg, #{$text});
+      background-color: var(--ui-chip-selected-bg, #{$selected-tint});
     }
 
     /* Pasif secili cip rol rengini birakir; secimi KENARLIK tasir. */

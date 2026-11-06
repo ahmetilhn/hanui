@@ -1,10 +1,9 @@
 {
-  "name": "@ahmetilhn/hanui",
-  "version": "5.6.3",
+  "name": "@handijit/ui",
+  "version": "1.0.0",
   "description": "Accessible, theme-driven React component library built on SCSS Modules. Bootstrap Icons for shell iconography, two built-in themes and a fully overridable design-token contract.",
   "author": "Ahmet ilhan <ahmetilhan.dev@gmail.com>",
   "license": "MIT",
-  "publisher": "Ahmet ilhan",
   "private": false,
   "type": "module",
   "engines": {
@@ -20,6 +19,348 @@
       "require": "./build/index.cjs"
     },
     "./styles.css": "./build/styles.css",
+    "./base.css": "./build/base.css",
+    "./components/*/style.css": "./build/components/*/style.css",
+    "./accordion": {
+      "types": "./build/components/Accordion/index.d.ts",
+      "import": "./build/components/Accordion/index.js",
+      "require": "./build/components/Accordion/index.cjs"
+    },
+    "./alert": {
+      "types": "./build/components/Alert/index.d.ts",
+      "import": "./build/components/Alert/index.js",
+      "require": "./build/components/Alert/index.cjs"
+    },
+    "./avatar": {
+      "types": "./build/components/Avatar/index.d.ts",
+      "import": "./build/components/Avatar/index.js",
+      "require": "./build/components/Avatar/index.cjs"
+    },
+    "./badge": {
+      "types": "./build/components/Badge/index.d.ts",
+      "import": "./build/components/Badge/index.js",
+      "require": "./build/components/Badge/index.cjs"
+    },
+    "./bottom-sheet": {
+      "types": "./build/components/BottomSheet/index.d.ts",
+      "import": "./build/components/BottomSheet/index.js",
+      "require": "./build/components/BottomSheet/index.cjs"
+    },
+    "./breadcrumb": {
+      "types": "./build/components/Breadcrumb/index.d.ts",
+      "import": "./build/components/Breadcrumb/index.js",
+      "require": "./build/components/Breadcrumb/index.cjs"
+    },
+    "./button": {
+      "types": "./build/components/Button/index.d.ts",
+      "import": "./build/components/Button/index.js",
+      "require": "./build/components/Button/index.cjs"
+    },
+    "./card": {
+      "types": "./build/components/Card/index.d.ts",
+      "import": "./build/components/Card/index.js",
+      "require": "./build/components/Card/index.cjs"
+    },
+    "./carousel": {
+      "types": "./build/components/Carousel/index.d.ts",
+      "import": "./build/components/Carousel/index.js",
+      "require": "./build/components/Carousel/index.cjs"
+    },
+    "./checkbox": {
+      "types": "./build/components/Checkbox/index.d.ts",
+      "import": "./build/components/Checkbox/index.js",
+      "require": "./build/components/Checkbox/index.cjs"
+    },
+    "./chip": {
+      "types": "./build/components/Chip/index.d.ts",
+      "import": "./build/components/Chip/index.js",
+      "require": "./build/components/Chip/index.cjs"
+    },
+    "./chip-group": {
+      "types": "./build/components/ChipGroup/index.d.ts",
+      "import": "./build/components/ChipGroup/index.js",
+      "require": "./build/components/ChipGroup/index.cjs"
+    },
+    "./code-badge": {
+      "types": "./build/components/CodeBadge/index.d.ts",
+      "import": "./build/components/CodeBadge/index.js",
+      "require": "./build/components/CodeBadge/index.cjs"
+    },
+    "./combobox": {
+      "types": "./build/components/Combobox/index.d.ts",
+      "import": "./build/components/Combobox/index.js",
+      "require": "./build/components/Combobox/index.cjs"
+    },
+    "./command-palette": {
+      "types": "./build/components/CommandPalette/index.d.ts",
+      "import": "./build/components/CommandPalette/index.js",
+      "require": "./build/components/CommandPalette/index.cjs"
+    },
+    "./confirm-dialog": {
+      "types": "./build/components/ConfirmDialog/index.d.ts",
+      "import": "./build/components/ConfirmDialog/index.js",
+      "require": "./build/components/ConfirmDialog/index.cjs"
+    },
+    "./copy-field": {
+      "types": "./build/components/CopyField/index.d.ts",
+      "import": "./build/components/CopyField/index.js",
+      "require": "./build/components/CopyField/index.cjs"
+    },
+    "./data-table": {
+      "types": "./build/components/DataTable/index.d.ts",
+      "import": "./build/components/DataTable/index.js",
+      "require": "./build/components/DataTable/index.cjs"
+    },
+    "./date-field": {
+      "types": "./build/components/DateField/index.d.ts",
+      "import": "./build/components/DateField/index.js",
+      "require": "./build/components/DateField/index.cjs"
+    },
+    "./directory": {
+      "types": "./build/components/Directory/index.d.ts",
+      "import": "./build/components/Directory/index.js",
+      "require": "./build/components/Directory/index.cjs"
+    },
+    "./disclosure": {
+      "types": "./build/components/Disclosure/index.d.ts",
+      "import": "./build/components/Disclosure/index.js",
+      "require": "./build/components/Disclosure/index.cjs"
+    },
+    "./divider": {
+      "types": "./build/components/Divider/index.d.ts",
+      "import": "./build/components/Divider/index.js",
+      "require": "./build/components/Divider/index.cjs"
+    },
+    "./drawer": {
+      "types": "./build/components/Drawer/index.d.ts",
+      "import": "./build/components/Drawer/index.js",
+      "require": "./build/components/Drawer/index.cjs"
+    },
+    "./empty-state": {
+      "types": "./build/components/EmptyState/index.d.ts",
+      "import": "./build/components/EmptyState/index.js",
+      "require": "./build/components/EmptyState/index.cjs"
+    },
+    "./field": {
+      "types": "./build/components/Field/index.d.ts",
+      "import": "./build/components/Field/index.js",
+      "require": "./build/components/Field/index.cjs"
+    },
+    "./file-upload": {
+      "types": "./build/components/FileUpload/index.d.ts",
+      "import": "./build/components/FileUpload/index.js",
+      "require": "./build/components/FileUpload/index.cjs"
+    },
+    "./filter-bar": {
+      "types": "./build/components/FilterBar/index.d.ts",
+      "import": "./build/components/FilterBar/index.js",
+      "require": "./build/components/FilterBar/index.cjs"
+    },
+    "./icon-button": {
+      "types": "./build/components/IconButton/index.d.ts",
+      "import": "./build/components/IconButton/index.js",
+      "require": "./build/components/IconButton/index.cjs"
+    },
+    "./input": {
+      "types": "./build/components/Input/index.d.ts",
+      "import": "./build/components/Input/index.js",
+      "require": "./build/components/Input/index.cjs"
+    },
+    "./kbd": {
+      "types": "./build/components/Kbd/index.d.ts",
+      "import": "./build/components/Kbd/index.js",
+      "require": "./build/components/Kbd/index.cjs"
+    },
+    "./menu": {
+      "types": "./build/components/Menu/index.d.ts",
+      "import": "./build/components/Menu/index.js",
+      "require": "./build/components/Menu/index.cjs"
+    },
+    "./modal": {
+      "types": "./build/components/Modal/index.d.ts",
+      "import": "./build/components/Modal/index.js",
+      "require": "./build/components/Modal/index.cjs"
+    },
+    "./page-header": {
+      "types": "./build/components/PageHeader/index.d.ts",
+      "import": "./build/components/PageHeader/index.js",
+      "require": "./build/components/PageHeader/index.cjs"
+    },
+    "./pagination": {
+      "types": "./build/components/Pagination/index.d.ts",
+      "import": "./build/components/Pagination/index.js",
+      "require": "./build/components/Pagination/index.cjs"
+    },
+    "./panel": {
+      "types": "./build/components/Panel/index.d.ts",
+      "import": "./build/components/Panel/index.js",
+      "require": "./build/components/Panel/index.cjs"
+    },
+    "./password-input": {
+      "types": "./build/components/PasswordInput/index.d.ts",
+      "import": "./build/components/PasswordInput/index.js",
+      "require": "./build/components/PasswordInput/index.cjs"
+    },
+    "./popover": {
+      "types": "./build/components/Popover/index.d.ts",
+      "import": "./build/components/Popover/index.js",
+      "require": "./build/components/Popover/index.cjs"
+    },
+    "./price": {
+      "types": "./build/components/Price/index.d.ts",
+      "import": "./build/components/Price/index.js",
+      "require": "./build/components/Price/index.cjs"
+    },
+    "./progress": {
+      "types": "./build/components/Progress/index.d.ts",
+      "import": "./build/components/Progress/index.js",
+      "require": "./build/components/Progress/index.cjs"
+    },
+    "./prompt-dialog": {
+      "types": "./build/components/PromptDialog/index.d.ts",
+      "import": "./build/components/PromptDialog/index.js",
+      "require": "./build/components/PromptDialog/index.cjs"
+    },
+    "./quantity-stepper": {
+      "types": "./build/components/QuantityStepper/index.d.ts",
+      "import": "./build/components/QuantityStepper/index.js",
+      "require": "./build/components/QuantityStepper/index.cjs"
+    },
+    "./radio": {
+      "types": "./build/components/Radio/index.d.ts",
+      "import": "./build/components/Radio/index.js",
+      "require": "./build/components/Radio/index.cjs"
+    },
+    "./radio-card": {
+      "types": "./build/components/RadioCard/index.d.ts",
+      "import": "./build/components/RadioCard/index.js",
+      "require": "./build/components/RadioCard/index.cjs"
+    },
+    "./range-slider": {
+      "types": "./build/components/RangeSlider/index.d.ts",
+      "import": "./build/components/RangeSlider/index.js",
+      "require": "./build/components/RangeSlider/index.cjs"
+    },
+    "./rating": {
+      "types": "./build/components/Rating/index.d.ts",
+      "import": "./build/components/Rating/index.js",
+      "require": "./build/components/Rating/index.cjs"
+    },
+    "./rating-input": {
+      "types": "./build/components/RatingInput/index.d.ts",
+      "import": "./build/components/RatingInput/index.js",
+      "require": "./build/components/RatingInput/index.cjs"
+    },
+    "./scroll-area": {
+      "types": "./build/components/ScrollArea/index.d.ts",
+      "import": "./build/components/ScrollArea/index.js",
+      "require": "./build/components/ScrollArea/index.cjs"
+    },
+    "./section-header": {
+      "types": "./build/components/SectionHeader/index.d.ts",
+      "import": "./build/components/SectionHeader/index.js",
+      "require": "./build/components/SectionHeader/index.cjs"
+    },
+    "./segmented-control": {
+      "types": "./build/components/SegmentedControl/index.d.ts",
+      "import": "./build/components/SegmentedControl/index.js",
+      "require": "./build/components/SegmentedControl/index.cjs"
+    },
+    "./select": {
+      "types": "./build/components/Select/index.d.ts",
+      "import": "./build/components/Select/index.js",
+      "require": "./build/components/Select/index.cjs"
+    },
+    "./skeleton": {
+      "types": "./build/components/Skeleton/index.d.ts",
+      "import": "./build/components/Skeleton/index.js",
+      "require": "./build/components/Skeleton/index.cjs"
+    },
+    "./spinner": {
+      "types": "./build/components/Spinner/index.d.ts",
+      "import": "./build/components/Spinner/index.js",
+      "require": "./build/components/Spinner/index.cjs"
+    },
+    "./stat": {
+      "types": "./build/components/Stat/index.d.ts",
+      "import": "./build/components/Stat/index.js",
+      "require": "./build/components/Stat/index.cjs"
+    },
+    "./status-dot": {
+      "types": "./build/components/StatusDot/index.d.ts",
+      "import": "./build/components/StatusDot/index.js",
+      "require": "./build/components/StatusDot/index.cjs"
+    },
+    "./steps": {
+      "types": "./build/components/Steps/index.d.ts",
+      "import": "./build/components/Steps/index.js",
+      "require": "./build/components/Steps/index.cjs"
+    },
+    "./summary-card": {
+      "types": "./build/components/SummaryCard/index.d.ts",
+      "import": "./build/components/SummaryCard/index.js",
+      "require": "./build/components/SummaryCard/index.cjs"
+    },
+    "./switch": {
+      "types": "./build/components/Switch/index.d.ts",
+      "import": "./build/components/Switch/index.js",
+      "require": "./build/components/Switch/index.cjs"
+    },
+    "./table": {
+      "types": "./build/components/Table/index.d.ts",
+      "import": "./build/components/Table/index.js",
+      "require": "./build/components/Table/index.cjs"
+    },
+    "./table-checkbox": {
+      "types": "./build/components/TableCheckbox/index.d.ts",
+      "import": "./build/components/TableCheckbox/index.js",
+      "require": "./build/components/TableCheckbox/index.cjs"
+    },
+    "./tabs": {
+      "types": "./build/components/Tabs/index.d.ts",
+      "import": "./build/components/Tabs/index.js",
+      "require": "./build/components/Tabs/index.cjs"
+    },
+    "./tag-input": {
+      "types": "./build/components/TagInput/index.d.ts",
+      "import": "./build/components/TagInput/index.js",
+      "require": "./build/components/TagInput/index.cjs"
+    },
+    "./textarea": {
+      "types": "./build/components/Textarea/index.d.ts",
+      "import": "./build/components/Textarea/index.js",
+      "require": "./build/components/Textarea/index.cjs"
+    },
+    "./text-link": {
+      "types": "./build/components/TextLink/index.d.ts",
+      "import": "./build/components/TextLink/index.js",
+      "require": "./build/components/TextLink/index.cjs"
+    },
+    "./tile": {
+      "types": "./build/components/Tile/index.d.ts",
+      "import": "./build/components/Tile/index.js",
+      "require": "./build/components/Tile/index.cjs"
+    },
+    "./timeline": {
+      "types": "./build/components/Timeline/index.d.ts",
+      "import": "./build/components/Timeline/index.js",
+      "require": "./build/components/Timeline/index.cjs"
+    },
+    "./toast": {
+      "types": "./build/components/Toast/index.d.ts",
+      "import": "./build/components/Toast/index.js",
+      "require": "./build/components/Toast/index.cjs"
+    },
+    "./toast-portal": {
+      "types": "./build/components/ToastPortal/index.d.ts",
+      "import": "./build/components/ToastPortal/index.js",
+      "require": "./build/components/ToastPortal/index.cjs"
+    },
+    "./tooltip": {
+      "types": "./build/components/Tooltip/index.d.ts",
+      "import": "./build/components/Tooltip/index.js",
+      "require": "./build/components/Tooltip/index.cjs"
+    },
     "./chat": {
       "types": "./build/types/chat/index.d.ts",
       "import": "./build/chat.js",
@@ -47,12 +388,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ahmetilhn/hanui.git"
+    "url": "git+https://github.com/handijit/ui.git"
   },
   "bugs": {
-    "url": "https://github.com/ahmetilhn/hanui/issues"
+    "url": "https://github.com/handijit/ui/issues"
   },
-  "homepage": "https://github.com/ahmetilhn/hanui#readme",
+  "homepage": "https://github.com/handijit/ui#readme",
   "keywords": [
     "react",
     "ui",
@@ -76,7 +417,7 @@
   "scripts": {
     "prepare": "git rev-parse --git-dir >/dev/null 2>&1 && git config core.hooksPath .githooks || true",
     "tokens": "node scripts/build-palette.mjs && node scripts/build-tokens.mjs",
-    "build": "npm run tokens && vite build && vite build --config vite.chat.config.ts && vite build --config vite.charts.config.ts && tsc -p tsconfig.subentries.json && node scripts/build-scss.mjs",
+    "build": "npm run tokens && vite build && vite build --config vite.chat.config.ts && vite build --config vite.charts.config.ts && tsc -p tsconfig.subentries.json && node scripts/build-scss.mjs && node scripts/build-exports.mjs --check",
     "dev": "npm run tokens && vite build --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src __tests__ scripts --max-warnings 0 && stylelint \"src/**/*.scss\"",
@@ -95,17 +436,19 @@
     "playground:build": "npm run tokens && vite build --config playground/vite.config.ts",
     "size": "npm run build && size-limit",
     "verify": "npm run check:palette && npm run tokens && npm run check:contrast && npm run typecheck && npm run lint && npm run test:coverage && npm run build && npm run check:api && npm run check:animations && size-limit",
-    "check:palette": "node scripts/build-palette.mjs --check"
+    "check:palette": "node scripts/build-palette.mjs --check",
+    "check:exports": "node scripts/build-exports.mjs --check",
+    "exports": "node scripts/build-exports.mjs"
   },
   "peerDependencies": {
-    "@ahmetilhn/handy-utils": "latest",
+    "@handijit/utils": "^1.0.0",
     "react": ">=18",
     "react-bootstrap-icons": ">=1.11.0",
     "react-dom": ">=18"
   },
   "devDependencies": {
-    "@ahmetilhn/handy-utils": "latest",
     "@eslint/js": "^9.18.0",
+    "@handijit/utils": "^1.0.0",
     "@playwright/test": "^1.62.1",
     "@size-limit/preset-small-lib": "^13.0.3",
     "@testing-library/jest-dom": "^6.9.1",
@@ -126,6 +469,7 @@
     "jest": "^29.7.0",
     "jest-axe": "^11.0.0",
     "jest-environment-jsdom": "^29.7.0",
+    "magic-string": "^0.30.21",
     "prettier": "^3.4.2",
     "react": "^19.0.0",
     "react-bootstrap-icons": "^1.11.6",
@@ -138,5 +482,8 @@
     "typescript": "^5.7.3",
     "vite": "^5.4.11",
     "vite-plugin-dts": "^4.5.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

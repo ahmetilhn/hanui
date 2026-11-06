@@ -25,15 +25,15 @@
   @include focus-ring($ring-color, -2px);
 
   &--fade {
-    --hanui-scroll-fade-start: 0px;
-    --hanui-scroll-fade-end: 0px;
+    --ui-scroll-fade-start: 0px;
+    --ui-scroll-fade-end: 0px;
 
     &[data-fade-start] {
-      --hanui-scroll-fade-start: #{$space-4};
+      --ui-scroll-fade-start: #{$space-4};
     }
 
     &[data-fade-end] {
-      --hanui-scroll-fade-end: #{$space-4};
+      --ui-scroll-fade-end: #{$space-4};
     }
   }
 
@@ -41,8 +41,8 @@
     mask-image: linear-gradient(
       to bottom,
       transparent 0,
-      #000 var(--hanui-scroll-fade-start),
-      #000 calc(100% - var(--hanui-scroll-fade-end)),
+      #000 var(--ui-scroll-fade-start),
+      #000 calc(100% - var(--ui-scroll-fade-end)),
       transparent 100%
     );
   }
@@ -51,8 +51,8 @@
     mask-image: linear-gradient(
       to right,
       transparent 0,
-      #000 var(--hanui-scroll-fade-start),
-      #000 calc(100% - var(--hanui-scroll-fade-end)),
+      #000 var(--ui-scroll-fade-start),
+      #000 calc(100% - var(--ui-scroll-fade-end)),
       transparent 100%
     );
   }

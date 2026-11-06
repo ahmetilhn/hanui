@@ -2,7 +2,7 @@
 
 import { memo, useCallback, useId, useMemo } from 'react';
 
-import { useHanui } from '@ahmetilhn/hanui';
+import { useUi } from '@handijit/ui';
 
 import { named } from '../../helpers/component.helper';
 import { fitLabel, labelWidth, thinTicks } from '../core/axes';
@@ -70,12 +70,12 @@ const Heatmap = ({
   className,
   testId,
 }: Props) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const [containerRef, width] = useChartWidth(fixedWidth);
   const full = useMemo(() => fullNumber(labels?.locale), [labels?.locale]);
   const fv = formatValue ?? full;
   /* Bir sayfada iki ısı haritası aynı `id`yi taşımasın. */
-  const gradientId = `hanui-heat-${useId().replace(/:/g, '')}`;
+  const gradientId = `ui-heat-${useId().replace(/:/g, '')}`;
 
   const geometry = useMemo(() => {
     const left = Math.min(width * 0.3, Math.max(32, ...rows.map(labelWidth)) + 12);
@@ -144,7 +144,7 @@ const Heatmap = ({
             style={
               cell.mix === null
                 ? undefined
-                : { fill: `color-mix(in srgb, ${color} ${cell.mix}%, var(--hanui-surface))` }
+                : { fill: `color-mix(in srgb, ${color} ${cell.mix}%, var(--ui-surface))` }
             }
           />
         ))}
@@ -172,7 +172,7 @@ const Heatmap = ({
             <stop
               offset="0%"
               style={{
-                stopColor: `color-mix(in srgb, ${color} ${MIN_MIX}%, var(--hanui-surface))`,
+                stopColor: `color-mix(in srgb, ${color} ${MIN_MIX}%, var(--ui-surface))`,
               }}
             />
             <stop offset="100%" style={{ stopColor: color }} />

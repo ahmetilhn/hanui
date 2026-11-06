@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, type InputHTMLAttributes, memo, type ReactNode, useId } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';

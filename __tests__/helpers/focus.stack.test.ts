@@ -42,7 +42,7 @@ describe('focusFirstMeaningful', () => {
   it('KAPATMA düğmesini atlar', () => {
     const panel = mount(`
       <div>
-        <button class="close" data-hanui-close>Kapat</button>
+        <button class="close" data-ui-close>Kapat</button>
         <input id="first" />
         <button id="save">Kaydet</button>
       </div>
@@ -53,11 +53,11 @@ describe('focusFirstMeaningful', () => {
     expect(panel.querySelector('#first')).toHaveFocus();
   });
 
-  it('`data-hanui-autofocus` her şeyi EZER', () => {
+  it('`data-ui-autofocus` her şeyi EZER', () => {
     const panel = mount(`
       <div>
         <input id="first" />
-        <button id="save" data-hanui-autofocus>Kaydet</button>
+        <button id="save" data-ui-autofocus>Kaydet</button>
       </div>
     `);
 
@@ -67,7 +67,7 @@ describe('focusFirstMeaningful', () => {
   });
 
   it('atlanacak öğe TEK adaysa yine ona odaklanır', () => {
-    const panel = mount('<div><button data-hanui-close>Kapat</button></div>');
+    const panel = mount('<div><button data-ui-close>Kapat</button></div>');
 
     focusFirstMeaningful(panel);
 

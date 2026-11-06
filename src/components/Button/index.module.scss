@@ -9,12 +9,14 @@
   justify-content: center;
   gap: $space-2;
   border: 1px solid transparent;
-  border-radius: $radius-md;
+  // Bileşen değişkenleri (6.0): yarıçap, ağırlık, harf aralığı ve satır kırma tüketicide tek yerden
+  // ezilir; önceden her biri sınıf seçicili bir geçersiz kılma gerektiriyordu.
+  border-radius: var(--ui-button-radius, #{$radius-md});
   font-family: $font-ui;
-  font-weight: $weight-semibold;
+  font-weight: var(--ui-button-weight, #{$weight-semibold});
   line-height: $leading-none;
-  letter-spacing: -0.006em;
-  white-space: nowrap;
+  letter-spacing: var(--ui-button-tracking, -0.006em);
+  white-space: var(--ui-button-wrap, nowrap);
   cursor: pointer;
   text-decoration: none;
   transition:
@@ -61,6 +63,11 @@
   &__label {
     display: inline-flex;
     align-items: center;
+  }
+
+  // Pasif BAĞLANTI: düğme gibi `disabled` olamaz; tıklama ve imleç burada kesilir (bkz. index.tsx).
+  &--inert {
+    pointer-events: none;
   }
 
   &--full {

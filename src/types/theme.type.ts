@@ -1,4 +1,4 @@
-import type { HanuiLinkComponent } from '@/types/link.type';
+import type { UiLinkComponent } from '@/types/link.type';
 import { LIGHT_THEME, METRIC_TOKENS } from '@/theme/tokens';
 
 /**
@@ -9,21 +9,21 @@ export type Formatter<TArgs extends unknown[]> = (...args: TArgs) => string;
 
 /**
  * Dışarıdan verilebilecek tema yapılandırması.
- * @example initHanui({ theme: { light: { link: '#0a58ca', 'ring-color': '#0d6efd' }, dark: {…
+ * @example initUi({ theme: { light: { link: '#0a58ca', 'ring-color': '#0d6efd' }, dark: {…
  */
-export type HanuiThemeConfig = Partial<{
-  light: HanuiThemeTokens;
-  dark: HanuiThemeTokens;
-  fonts: HanuiFonts;
+export type UiThemeConfig = Partial<{
+  light: UiThemeTokens;
+  dark: UiThemeTokens;
+  fonts: UiFonts;
   /**
    * Ölçü ezmeleri — yarıçap, boşluk, punto, süre.
-   * @example initHanui({ theme: { metrics: { 'radius-md': '2px', 'radius-lg': '4px' } } });
+   * @example initUi({ theme: { metrics: { 'radius-md': '2px', 'radius-lg': '4px' } } });
    */
-  metrics: HanuiMetrics;
+  metrics: UiMetrics;
 }>;
 
 /** Yazı tipi ailesi sözleşmesi. */
-export type HanuiFonts = Partial<{
+export type UiFonts = Partial<{
   heading: string;
   body: string;
   mono: string;
@@ -33,43 +33,43 @@ export type HanuiFonts = Partial<{
  * Kullanıcının SEÇİMİ. `system` = açık bir seçim yok, işletim sistemi tercihi izlenir
  * (`prefers-color-scheme`).
  */
-export type HanuiColorPreference = HanuiColorScheme | 'system';
+export type UiColorPreference = UiColorScheme | 'system';
 
 /** ÇÖZÜLMÜŞ tema — ekranda gerçekten hangisi çizili. */
-export type HanuiColorScheme = 'light' | 'dark';
+export type UiColorScheme = 'light' | 'dark';
 
 /** Bir temanın TAM eşlemesi. */
-export type HanuiResolvedTokens = Record<HanuiToken, string>;
+export type UiResolvedTokens = Record<UiToken, string>;
 
 /** Bir temanın token → değer eşlemesi. */
-export type HanuiThemeTokens = Partial<Record<HanuiToken, string>>;
+export type UiThemeTokens = Partial<Record<UiToken, string>>;
 
 /** Bilgi yoğunluğu. `default` vitrin, `compact` operasyon paneli. */
-export type HanuiDensity = 'default' | 'compact';
+export type UiDensity = 'default' | 'compact';
 
 /** Ölçü ezmeleri. */
-export type HanuiMetrics = Partial<Record<HanuiMetricToken, string>>;
+export type UiMetrics = Partial<Record<UiMetricToken, string>>;
 
 /** Ölçü token adları — `METRIC_TOKENS`ten türetilir. */
-export type HanuiMetricToken = keyof typeof METRIC_TOKENS;
+export type UiMetricToken = keyof typeof METRIC_TOKENS;
 
 /** Token adları — `LIGHT_THEME`den türetilir, elle listelenmez. */
-export type HanuiToken = keyof typeof LIGHT_THEME;
+export type UiToken = keyof typeof LIGHT_THEME;
 
-export type HanuiContextValue = {
+export type UiContextValue = {
   /** Tüketicinin yönlendiricisi (`next/link`, `react-router`ın `Link`i…). */
-  linkComponent?: HanuiLinkComponent;
+  linkComponent?: UiLinkComponent;
   /** Uygulanan tema ezmeleri. */
-  theme?: HanuiThemeConfig;
+  theme?: UiThemeConfig;
   /**
    * Arayüz metinleri.
    * ⚠ Referans bir dönem `theme/labels.ts`yi gösteriyordu; o dosya yalnızca tek satırlık bir başlık
    * yorumu taşıyordu (sıfır export, sıfır…
    */
-  labels?: HanuiLabels;
+  labels?: UiLabels;
 };
 
-export type HanuiLabels = Partial<{
+export type UiLabels = Partial<{
   /** Kip pencere ve alt sayfanın kapatma düğmesi. `Modal`, `BottomSheet`. */
   close: string;
   /**
@@ -139,7 +139,7 @@ export type HanuiLabels = Partial<{
   }>;
 
   /**
-   * Sohbet bileşenleri (`@ahmetilhn/hanui/chat`). Çağrı yerine ÖZGÜ metinler buraya girmez:
+   * Sohbet bileşenleri (`@handijit/ui/chat`). Çağrı yerine ÖZGÜ metinler buraya girmez:
    * `PromptInput.placeholder`, `ReasoningBlock.summary`, `ToolCall.name`.
    */
   chat: Partial<{
@@ -228,25 +228,25 @@ export type HanuiLabels = Partial<{
   }>;
 }>;
 
-export type InitHanuiOptions = Partial<{
+export type InitUiOptions = Partial<{
   /** Tema ve ölçü ezmeleri. */
-  theme: HanuiThemeConfig;
+  theme: UiThemeConfig;
   /** Başlangıç şeması. */
-  colorScheme: HanuiColorScheme;
+  colorScheme: UiColorScheme;
   /** Bilgi yoğunluğu. */
-  density: HanuiDensity;
+  density: UiDensity;
 }>;
 
-export type HanuiThemeState = {
+export type UiThemeState = {
   /**
    * ÇÖZÜLMÜŞ tema — ekranda çizili olan. `preference` `system` iken bu alan işletim sisteminin o
    * anki tercihini taşır.
    */
-  scheme: HanuiColorScheme;
+  scheme: UiColorScheme;
   /** Kullanıcının SEÇİMİ. */
-  preference: HanuiColorPreference;
+  preference: UiColorPreference;
   /** `'system'` verildiğinde AÇIK seçim silinir ve sistem tercihi izlenir. */
-  setScheme: (preference: HanuiColorPreference) => void;
+  setScheme: (preference: UiColorPreference) => void;
   /** Açık ↔ koyu. `system` iken ÇÖZÜLMÜŞ değerin tersine geçer. */
   toggle: () => void;
   /** Sunucu çıktısında ve hidrasyondan önceki ilk karede `false`. */

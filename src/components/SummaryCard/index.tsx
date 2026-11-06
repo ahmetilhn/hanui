@@ -2,8 +2,8 @@ import { type ElementType, type FC, memo, type ReactNode } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
-import type { HanuiLinkExtraProps } from '../../types/link.type';
-import HanuiLink from '../Link';
+import type { UiLinkExtraProps } from '../../types/link.type';
+import UiLink from '../Link';
 
 import styles from './index.module.scss';
 
@@ -22,7 +22,7 @@ type Props = {
   /** Liste bağlamındaki başlık seviyesi. */
   headingLevel?: SummaryCardHeadingLevel;
   /** Yönlendiriciye geçirilecek ek props. */
-  linkProps?: HanuiLinkExtraProps;
+  linkProps?: UiLinkExtraProps;
   className?: string;
   testId?: string;
 };
@@ -51,9 +51,9 @@ const SummaryCard: FC<Props> = ({
 
       <div className={styles.card__content}>
         <Heading className={styles.card__title}>
-          <HanuiLink href={href} className={styles.card__link} {...linkProps}>
+          <UiLink href={href} className={styles.card__link} {...linkProps}>
             {title}
-          </HanuiLink>
+          </UiLink>
         </Heading>
 
         {description && <p className={styles.card__description}>{description}</p>}

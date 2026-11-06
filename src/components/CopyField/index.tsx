@@ -7,7 +7,7 @@ import { ClipboardCheckFill, ClipboardFill } from 'react-bootstrap-icons';
 import { cx } from '../../helpers/class-name.helper';
 import { resolveFormatter, resolveLabel } from '../../helpers/label.helper';
 import { useCopyFeedback } from '../../hooks/useCopyFeedback';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -38,7 +38,7 @@ const CopyField: FC<Props> = ({
   className,
   testId,
 }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const { isCopied, copy, nodeRef } = useCopyFeedback(value);
 
   return (

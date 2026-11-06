@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 
-import { HanuiProvider, Select } from '../../src';
+import { UiProvider, Select } from '../../src';
 import { LABELS } from '../fixtures/labels';
 
 const OPTIONS = [
@@ -15,9 +15,9 @@ const Harness = ({ initial = '' }: { initial?: string }) => {
   const [value, setValue] = useState(initial);
 
   return (
-    <HanuiProvider labels={LABELS}>
+    <UiProvider labels={LABELS}>
       <Select label="Ülke" options={OPTIONS} value={value} onChange={setValue} />
-    </HanuiProvider>
+    </UiProvider>
   );
 };
 
@@ -77,9 +77,9 @@ describe('Select', () => {
   it('PASİF durumda açılmaz', async () => {
     const user = userEvent.setup();
     render(
-      <HanuiProvider labels={LABELS}>
+      <UiProvider labels={LABELS}>
         <Select label="Ülke" options={OPTIONS} value="" onChange={() => {}} isDisabled />
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     await user.click(screen.getByRole('combobox'));
@@ -89,9 +89,9 @@ describe('Select', () => {
 
   it('`aria-invalid` GEÇERLİ bir rolde taşınır', () => {
     render(
-      <HanuiProvider labels={LABELS}>
+      <UiProvider labels={LABELS}>
         <Select label="Ülke" options={OPTIONS} value="" onChange={() => {}} aria-invalid />
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     expect(screen.getByRole('combobox')).toHaveAttribute('aria-invalid', 'true');

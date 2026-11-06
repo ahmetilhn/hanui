@@ -2,7 +2,7 @@
 
 import { useCallback } from 'react';
 
-import { isClient } from '@ahmetilhn/handy-utils';
+import { isClient } from '@handijit/utils';
 import { AnnouncePoliteness } from '@/types/hook.type';
 
 /**
@@ -10,7 +10,7 @@ import { AnnouncePoliteness } from '@/types/hook.type';
  * @example const announce = useAnnounce(); announce(`${count} ürün bulundu`)
  */
 
-const REGION_ID = 'hanui-live-region';
+const REGION_ID = 'ui-live-region';
 
 /** Bölgeyi bulur; yoksa oluşturur. */
 const getRegion = (politeness: AnnouncePoliteness): HTMLElement | null => {
@@ -29,7 +29,7 @@ const getRegion = (politeness: AnnouncePoliteness): HTMLElement | null => {
    * Gorsel olarak gizli ama DOM'da: `display: none` ya da `hidden` bolgeyi erisilebilirlik
    * agacindan da cikarir ve hicbir sey duyurulmaz.
    */
-  region.className = 'hanui-visually-hidden';
+  region.className = 'ui-visually-hidden';
 
   document.body.appendChild(region);
   return region;

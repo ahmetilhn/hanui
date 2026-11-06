@@ -15,7 +15,7 @@ import {
   SURFACE_DARK,
   SYNTAX,
 } from './palette';
-import { HanuiFonts } from '@/types/theme.type';
+import { UiFonts } from '@/types/theme.type';
 
 /** TEMA TOKEN'LARI. */
 
@@ -59,11 +59,11 @@ const fluid = (min: number, max: number): string => {
 };
 
 /**
- * Akışkan ölçüyü YOĞUNLUK ÇARPANIYLA sarar. ⚠ Yoğun kip (`data-hanui-density="compact"`) eskiden 17
+ * Akışkan ölçüyü YOĞUNLUK ÇARPANIYLA sarar. ⚠ Yoğun kip (`data-ui-density="compact"`) eskiden 17
  * sabit değeri ezerek çalışıyordu ve o değerler…
  */
 const scaled = (value: string, variable: 'type-scale' | 'space-scale'): string =>
-  `calc(${value} * var(--hanui-${variable}))`;
+  `calc(${value} * var(--ui-${variable}))`;
 
 const fluidType = (min: number, max: number): string => scaled(fluid(min, max), 'type-scale');
 
@@ -432,7 +432,7 @@ export const DARK_THEME: Record<keyof typeof LIGHT_THEME, string> = {
  * ⚠ Temaya bağlı ama ANA TABLODA DEĞİL. Yalnızca sohbet girişi kullanıyor; `LIGHT_THEME`e
  * girdiklerinde çalışma zamanı tablosuyla HER bileşenin paketine biniyorlardı (ölçüldü: yalnızca
  * `Button` alan uygulama 5,12 → 5,28 kB, `styles.css` +0,1 kB). Değişkenleri `chat.css` taşır
- * (`_syntax.generated.scss`); ezme CSS'te (`--hanui-syntax-*`), `HanuiProvider theme`inde değil.
+ * (`_syntax.generated.scss`); ezme CSS'te (`--ui-syntax-*`), `UiProvider theme`inde değil.
  */
 export const SYNTAX_LIGHT_THEME = {
   'syntax-keyword': SYNTAX.keyword,
@@ -529,7 +529,7 @@ export const METRIC_TOKENS = {
   'duration-pulse': '1600ms',
 } as const;
 
-/** YOĞUN (compact) KİP — `<html data-hanui-density="compact">`. */
+/** YOĞUN (compact) KİP — `<html data-ui-density="compact">`. */
 export const COMPACT_DENSITY = {
   'type-scale': '0.93',
   'space-scale': '0.88',
@@ -556,7 +556,7 @@ export const NARROW_METRICS = {
 export const NARROW_BREAKPOINT = '640px';
 
 /** Kütüphanenin varsayılan font yığınları — hepsi sistem fontlarına iner. */
-export const DEFAULT_FONTS: Required<HanuiFonts> = {
+export const DEFAULT_FONTS: Required<UiFonts> = {
   heading: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
   body: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
   mono: "ui-monospace, 'SF Mono', Menlo, Consolas, monospace",

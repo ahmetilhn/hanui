@@ -23,7 +23,7 @@ import useListboxNavigation from '../../hooks/useListboxNavigation';
 import usePortalSurface from '../../hooks/usePortalSurface';
 import usePositioning from '../../hooks/usePositioning';
 import useVirtualList from '../../hooks/useVirtualList';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 import BottomSheet from '../BottomSheet';
 import Spinner from '../Spinner';
 
@@ -38,7 +38,7 @@ import styles from './index.module.scss';
 
 /*
  * Tipler `types/`e tasindi ama BURADAN da disa aciliyor: cagiranlar (uygulamalar ve testler)
- * `@ahmetilhn/hanui/components/Combobox` yolundan aliyordu…
+ * `@handijit/ui/components/Combobox` yolundan aliyordu…
  */
 export type { ComboboxLabels, ComboboxOption, ComboboxProps } from '../../types/combobox.type';
 
@@ -61,7 +61,7 @@ const Combobox = <T extends string>({
   'aria-describedby': describedBy,
   'aria-invalid': isInvalid,
 }: ComboboxProps<T>) => {
-  const { labels: config } = useHanui();
+  const { labels: config } = useUi();
 
   /* Metinler TEMBEL cozulur: cizilmeyen bir ogenin metnini istemek yanlis alarm uretiyordu */
   const text = {
@@ -273,16 +273,19 @@ const Combobox = <T extends string>({
   const search = isSearchHidden ? null : (
     <div className={styles.combobox__search}>
       <Search aria-hidden className={styles.combobox__searchIcon} />
+      {/*
+       * 6.0: arama kutusu bir METİN KUTUSU; `role="combobox"` TETİKLEYİCİDEDİR. İki combobox
+       * (tetikleyici + kutu) ekran okuyucuda iki ayrı denetim sayılıyordu. `aria-autocomplete`,
+       * `aria-controls` ve `aria-activedescendant` textbox rolünde geçerli (ARIA 1.2).
+       */}
       <input
         ref={inputRef}
         type="text"
-        role="combobox"
         className={styles.combobox__searchInput}
         value={query}
         placeholder={text.search}
         autoComplete="off"
         aria-autocomplete="list"
-        aria-expanded
         aria-controls={listboxId}
         aria-activedescendant={
           visibleOptions[activeIndex] ? `${baseId}-option-${activeIndex}` : undefined
@@ -383,20 +386,25 @@ const Combobox = <T extends string>({
           isClearable && displayLabel && !isDisabled && styles['combobox__trigger--clearable'],
         )}
         disabled={isDisabled}
+        /*
+         * 6.0: tetikleyici `role="combobox"` (`Select` ile aynı): kapalıyken de "açılır seçim"
+         * olarak duyurulur, `aria-expanded` durumu, `aria-controls` listeyi gösterir (kapalıyken
+         * hedef DOM'da yok — `aria-expanded="false"` ile geçerli) ve `aria-invalid` bu rolde
+         * TANIMLI olduğu için hata artık doğrudan yazılır. Düğme rolünde `aria-invalid` tanımsızdı
+         * ve eksen taraması form hatasında ilk hatalı alana odaklanamıyordu (handijit.com D-12).
+         */
+        role="combobox"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
-        aria-controls={isOpen ? listboxId : undefined}
+        aria-controls={listboxId}
         /*
          * Yerine `aria-labelledby`: once kontrolun ADI (gorunmez span), sonra DEGERI.
          * ⚠ `aria-label` KULLANILMAZ — SECILI DEGERI MASKELIYORDU. `aria-label` elemanin ICERIGININ
          * yerine gecer
          */
         aria-labelledby={displayLabel ? `${baseId}-name ${baseId}-value` : `${baseId}-name`}
-        /*
-         * Hata `aria-invalid` ile DEGIL `aria-describedby` ile duyurulur: `aria-invalid`,
-         * `role="button"` uzerinde tanimsizdir ve ekran okuyucular onu yok…
-         */
         aria-describedby={describedBy}
+        aria-invalid={isInvalid || undefined}
         /* Tetikleyici bir `<button>`; yerel `required` yok, karsiligi bu. */
         aria-required={required || undefined}
         onClick={() => (isOpen ? close() : open())}

@@ -25,7 +25,7 @@ const LABELS = {
   closeLabel: 'Kapat',
 } as const;
 
-const open = () => fireEvent.click(screen.getByRole('button', { name: LABELS.placeholder }));
+const open = () => fireEvent.click(screen.getByRole('combobox', { name: LABELS.placeholder }));
 
 const renderBox = (list: ReturnType<typeof options>) =>
   render(<Combobox options={list} value={null} onChange={() => {}} labels={LABELS} />);
@@ -90,7 +90,7 @@ describe('Combobox — sanallaştırma', () => {
     renderBox(options(1121));
     open();
 
-    fireEvent.change(screen.getByRole('combobox', { name: LABELS.searchPlaceholder }), {
+    fireEvent.change(screen.getByRole('textbox', { name: LABELS.searchPlaceholder }), {
       target: { value: 'Seçenek 100' },
     });
 

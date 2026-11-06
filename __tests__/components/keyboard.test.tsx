@@ -59,8 +59,8 @@ describe('Combobox klavye sözleşmesi', () => {
       <Combobox options={OPTIONS} value={null} onChange={onChange} labels={COMBOBOX_LABELS} />,
     );
 
-    await user.click(screen.getByRole('button', { name: COMBOBOX_LABELS.placeholder }));
-    const input = screen.getByRole('combobox', { name: COMBOBOX_LABELS.searchPlaceholder });
+    await user.click(screen.getByRole('combobox', { name: COMBOBOX_LABELS.placeholder }));
+    const input = screen.getByRole('textbox', { name: COMBOBOX_LABELS.searchPlaceholder });
 
     return { user, input, onChange };
   };
@@ -109,7 +109,7 @@ describe('Combobox klavye sözleşmesi', () => {
     await user.keyboard('{Escape}');
 
     expect(input).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: COMBOBOX_LABELS.placeholder })).toHaveFocus();
+    expect(screen.getByRole('combobox', { name: COMBOBOX_LABELS.placeholder })).toHaveFocus();
   });
 
   it('`Tab` paneli kapatır', async () => {

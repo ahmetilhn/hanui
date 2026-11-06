@@ -138,7 +138,7 @@ const Carousel: FC<Props> = ({
          */
         style={
           {
-            '--hanui-carousel-item-default': `${itemWidth ?? itemMinWidth ?? 240}px`,
+            '--ui-carousel-item-default': `${itemWidth ?? itemMinWidth ?? 240}px`,
           } as React.CSSProperties
         }
         /*

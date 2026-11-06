@@ -35,7 +35,7 @@ const mixinBody = (source: string, name: string): string => {
 const declarations = (block: string): Record<string, string> => {
   const result: Record<string, string> = {};
 
-  for (const [, name, value] of block.matchAll(/^\s*--hanui-([\w-]+):\s*(.+);$/gm))
+  for (const [, name, value] of block.matchAll(/^\s*--ui-([\w-]+):\s*(.+);$/gm))
     result[name] = value.trim();
 
   return result;
@@ -81,7 +81,7 @@ describe('üretilmiş SCSS kaynakla eşleşir', () => {
   });
 
   it('yoğun kip yalnızca EZDİĞİ ölçüleri yazar ve hepsi gerçek bir token', () => {
-    const start = tokensFile.indexOf("[data-hanui-density='compact'] {");
+    const start = tokensFile.indexOf("[data-ui-density='compact'] {");
     const compact = declarations(tokensFile.slice(start, tokensFile.indexOf('\n}', start)));
 
     expect(compact).toEqual(COMPACT_DENSITY);
@@ -89,9 +89,9 @@ describe('üretilmiş SCSS kaynakla eşleşir', () => {
     for (const name of Object.keys(compact)) expect(METRIC_TOKENS).toHaveProperty(name);
   });
 
-  it('ölçü sözleşmesi her token için `$ad: var(--hanui-ad)` satırı taşır', () => {
+  it('ölçü sözleşmesi her token için `$ad: var(--ui-ad)` satırı taşır', () => {
     const metricsFile = readGenerated('_metrics.generated.scss');
-    const declared = [...metricsFile.matchAll(/^\$([\w-]+): var\(--hanui-([\w-]+)\);$/gm)];
+    const declared = [...metricsFile.matchAll(/^\$([\w-]+): var\(--ui-([\w-]+)\);$/gm)];
 
     for (const [, name, variable] of declared) expect(name).toBe(variable);
 
@@ -104,8 +104,8 @@ describe('üretilmiş SCSS kaynakla eşleşir', () => {
     expect(shared).toEqual([]);
   });
 
-  it('her token için `$ad: var(--hanui-ad)` satırı var, fazlası yok', () => {
-    const declared = [...colorsFile.matchAll(/^\$([\w-]+): var\(--hanui-([\w-]+)\);$/gm)];
+  it('her token için `$ad: var(--ui-ad)` satırı var, fazlası yok', () => {
+    const declared = [...colorsFile.matchAll(/^\$([\w-]+): var\(--ui-([\w-]+)\);$/gm)];
 
     for (const [, name, variable] of declared) expect(name).toBe(variable);
 
@@ -132,8 +132,8 @@ describe('sözdizimi token`ları — sohbet girişinin kendi dosyası', () => {
     expect(declarations(mixinBody(syntaxFile, name))).toEqual(theme);
   });
 
-  it('her token için `$ad: var(--hanui-ad)` satırı var, fazlası yok', () => {
-    const declared = [...syntaxFile.matchAll(/^\$([\w-]+): var\(--hanui-([\w-]+)\);$/gm)];
+  it('her token için `$ad: var(--ui-ad)` satırı var, fazlası yok', () => {
+    const declared = [...syntaxFile.matchAll(/^\$([\w-]+): var\(--ui-([\w-]+)\);$/gm)];
 
     for (const [, name, variable] of declared) expect(name).toBe(variable);
 
@@ -142,6 +142,6 @@ describe('sözdizimi token`ları — sohbet girişinin kendi dosyası', () => {
 
   /* Ana dosyaya girerlerse `styles.css` ve çalışma zamanı tablosuyla HER bileşene binerler. */
   it('ana token dosyasında YOKTUR', () => {
-    expect(readGenerated('_tokens.generated.scss')).not.toContain('--hanui-syntax-');
+    expect(readGenerated('_tokens.generated.scss')).not.toContain('--ui-syntax-');
   });
 });

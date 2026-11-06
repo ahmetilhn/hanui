@@ -39,21 +39,42 @@ describe('geçersiz durum — Select', () => {
   });
 });
 
+/*
+ * 6.0: tetikleyici `role="combobox"` — `aria-invalid` bu rolde tanımlı ve YAZILIR. 5.x'te
+ * tetikleyici düğmeydi, `aria-invalid` düğmede tanımsız olduğu için yazılmıyordu ve form hatasında
+ * ilk hatalı alan bulunamıyordu (handijit.com D-12).
+ */
 describe('geçersiz durum — Combobox', () => {
-  it('GÖRSEL hata sınıfı uygulanır', () => {
+  it('tetikleyici `role="combobox"`: `aria-invalid`, `aria-expanded` ve `aria-controls` taşır', () => {
     render(
       <Combobox options={OPTIONS} value={null} onChange={() => {}} labels={LABELS} aria-invalid />,
     );
 
-    const trigger = screen.getByRole('button');
+    const trigger = screen.getByRole('combobox', { name: LABELS.placeholder });
+    expect(trigger).toHaveAttribute('aria-invalid', 'true');
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger).toHaveAttribute('aria-controls');
     expect(trigger.className).toMatch(/invalid/);
   });
 
-  it('düğme tetikleyicide `aria-invalid` YAZILMAZ — kararı koruyan iddia', () => {
+  it('geçerli durumda `aria-invalid` yazılmaz; `required` → `aria-required`', () => {
     render(
-      <Combobox options={OPTIONS} value={null} onChange={() => {}} labels={LABELS} aria-invalid />,
+      <Combobox options={OPTIONS} value={null} onChange={() => {}} labels={LABELS} required />,
     );
 
-    expect(screen.getByRole('button')).not.toHaveAttribute('aria-invalid');
+    const trigger = screen.getByRole('combobox', { name: LABELS.placeholder });
+    expect(trigger).not.toHaveAttribute('aria-invalid');
+    expect(trigger).toHaveAttribute('aria-required', 'true');
+  });
+
+  it('arama kutusu metin kutusudur — sayfada tek combobox', async () => {
+    render(<Combobox options={OPTIONS} value={null} onChange={() => {}} labels={LABELS} />);
+
+    screen.getByRole('combobox', { name: LABELS.placeholder }).click();
+
+    expect(
+      await screen.findByRole('textbox', { name: LABELS.searchPlaceholder }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByRole('combobox')).toHaveLength(1);
   });
 });

@@ -3,7 +3,7 @@ import { act, renderHook } from '@testing-library/react';
 import useAnnounce from '@/hooks/useAnnounce';
 
 const region = (politeness: 'polite' | 'assertive') =>
-  document.getElementById(`hanui-live-region-${politeness}`);
+  document.getElementById(`ui-live-region-${politeness}`);
 
 const flushFrame = () =>
   act(() => new Promise<void>(resolve => requestAnimationFrame(() => resolve())));
@@ -40,7 +40,7 @@ describe('useAnnounce', () => {
 
     const live = region('polite');
 
-    expect(live).toHaveClass('hanui-visually-hidden');
+    expect(live).toHaveClass('ui-visually-hidden');
     expect(live).toHaveAttribute('aria-live', 'polite');
     expect(live).toHaveAttribute('aria-atomic', 'true');
     expect(live).not.toHaveAttribute('hidden');
@@ -54,7 +54,7 @@ describe('useAnnounce', () => {
     act(() => result.current('iki'));
     await flushFrame();
 
-    expect(document.querySelectorAll('[id^="hanui-live-region"]')).toHaveLength(1);
+    expect(document.querySelectorAll('[id^="ui-live-region"]')).toHaveLength(1);
     expect(region('polite')).toHaveTextContent('iki');
   });
 

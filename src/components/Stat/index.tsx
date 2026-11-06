@@ -8,7 +8,7 @@ import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
 import { resolveLabel } from '../../helpers/label.helper';
 
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -71,7 +71,7 @@ const Stat: FC<Props> = ({
   className,
   testId,
 }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
 
   /* Yonun IYI mi KOTU mu oldugu ayri bir karar: "artis" her zaman iyi degil. */
   const isPositive = trend === 'flat' ? undefined : (trend === 'up') === isUpPositive;

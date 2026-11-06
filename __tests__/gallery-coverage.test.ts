@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 
 import * as charts from '@/charts';
 import * as chat from '@/chat';
-import * as hanui from '@/index';
+import * as ui from '@/index';
 
 const source = readFileSync(resolve(__dirname, '../playground/scenarios.tsx'), 'utf8');
 
@@ -12,7 +12,7 @@ const isComponent = (value: unknown): boolean =>
   (typeof value === 'object' && value !== null && '$$typeof' in value);
 
 /* Ana giriş VE alt girişler — galeri hepsini gösterir. */
-const exported = [...Object.entries(hanui), ...Object.entries(chat), ...Object.entries(charts)]
+const exported = [...Object.entries(ui), ...Object.entries(chat), ...Object.entries(charts)]
   .filter(([name, value]) => /^[A-Z]/.test(name) && isComponent(value))
   .map(([name]) => name);
 

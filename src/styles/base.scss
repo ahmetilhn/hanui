@@ -1,16 +1,16 @@
 @use 'mixins' as *;
 @use 'tokens.generated';
 
-[class^='hanui-'],
-[class*=' hanui-'],
-[class^='hanui-']::before,
-[class^='hanui-']::after,
-[class*=' hanui-']::before,
-[class*=' hanui-']::after {
+[class^='ui-'],
+[class*=' ui-'],
+[class^='ui-']::before,
+[class^='ui-']::after,
+[class*=' ui-']::before,
+[class*=' ui-']::after {
   box-sizing: border-box;
 }
 
-@keyframes hanui-shimmer {
+@keyframes ui-shimmer {
   0% {
     background-position: 200% 0;
   }
@@ -20,13 +20,13 @@
   }
 }
 
-@keyframes hanui-spin {
+@keyframes ui-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes hanui-fade-in-up {
+@keyframes ui-fade-in-up {
   from {
     opacity: 0;
     transform: translateY(6px);
@@ -38,7 +38,7 @@
   }
 }
 
-@keyframes hanui-fade-in-down {
+@keyframes ui-fade-in-down {
   from {
     opacity: 0;
     transform: translateY(-6px);
@@ -50,7 +50,7 @@
   }
 }
 
-@keyframes hanui-fade-in {
+@keyframes ui-fade-in {
   from {
     opacity: 0;
   }
@@ -62,7 +62,7 @@
 
 // Nabız bir HALE: nokta soluklaşmaz, etrafında genişleyen halka söner. Kesirli `opacity`
 // kullanılmaz (nöbetçi `passive-opacity.test.ts`); renk `currentColor`dan karışır.
-@keyframes hanui-pulse {
+@keyframes ui-pulse {
   from {
     box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 55%, transparent);
   }
@@ -72,7 +72,7 @@
   }
 }
 
-@keyframes hanui-slide-up {
+@keyframes ui-slide-up {
   from {
     transform: translateY(100%);
   }
@@ -83,24 +83,24 @@
 }
 
 :root {
-  --hanui-anim-shimmer: hanui-shimmer;
-  --hanui-anim-spin: hanui-spin;
-  --hanui-anim-fade-in-up: hanui-fade-in-up;
-  --hanui-anim-fade-in-down: hanui-fade-in-down;
-  --hanui-anim-fade-in: hanui-fade-in;
-  --hanui-anim-slide-up: hanui-slide-up;
-  --hanui-anim-pulse: hanui-pulse;
-  --hanui-anim-progress-slide: hanui-progress-slide;
+  --ui-anim-shimmer: ui-shimmer;
+  --ui-anim-spin: ui-spin;
+  --ui-anim-fade-in-up: ui-fade-in-up;
+  --ui-anim-fade-in-down: ui-fade-in-down;
+  --ui-anim-fade-in: ui-fade-in;
+  --ui-anim-slide-up: ui-slide-up;
+  --ui-anim-pulse: ui-pulse;
+  --ui-anim-progress-slide: ui-progress-slide;
 }
 
-.hanui-theme-switching,
-.hanui-theme-switching *,
-.hanui-theme-switching *::before,
-.hanui-theme-switching *::after {
+.ui-theme-switching,
+.ui-theme-switching *,
+.ui-theme-switching *::before,
+.ui-theme-switching *::after {
   transition: none !important;
 }
 
-.hanui-visually-hidden {
+.ui-visually-hidden {
   @include visually-hidden;
 }
 
@@ -144,10 +144,10 @@
 
 @media (prefers-contrast: more) {
   :root {
-    --hanui-border: var(--hanui-border-strong);
-    --hanui-nav-line: var(--hanui-nav-line-strong);
-    --hanui-text-3: var(--hanui-text-2);
-    --hanui-nav-fg-3: var(--hanui-nav-fg-2);
+    --ui-border: var(--ui-border-strong);
+    --ui-nav-line: var(--ui-nav-line-strong);
+    --ui-text-3: var(--ui-text-2);
+    --ui-nav-fg-3: var(--ui-nav-fg-2);
   }
 }
 
@@ -155,18 +155,18 @@
 // mavi-grisini (`rgb(17 21 27)`) ve saf siyahı taşıyordu — ikisi de palette yoktu.
 @media (prefers-reduced-transparency: reduce) {
   :root {
-    --hanui-glass: var(--hanui-glass-solid);
-    --hanui-scrim: color-mix(in srgb, var(--hanui-shell) 92%, transparent);
-    --hanui-scrim-soft: color-mix(in srgb, var(--hanui-shell) 78%, transparent);
+    --ui-glass: var(--ui-glass-solid);
+    --ui-scrim: color-mix(in srgb, var(--ui-shell) 92%, transparent);
+    --ui-scrim-soft: color-mix(in srgb, var(--ui-shell) 78%, transparent);
   }
 
-  :root[data-hanui-theme='dark'] {
-    --hanui-scrim: color-mix(in srgb, var(--hanui-surface-inset) 94%, transparent);
-    --hanui-scrim-soft: color-mix(in srgb, var(--hanui-surface-inset) 82%, transparent);
+  :root[data-ui-theme='dark'] {
+    --ui-scrim: color-mix(in srgb, var(--ui-surface-inset) 94%, transparent);
+    --ui-scrim-soft: color-mix(in srgb, var(--ui-surface-inset) 82%, transparent);
   }
 }
 
-@keyframes hanui-progress-slide {
+@keyframes ui-progress-slide {
   from {
     translate: -100% 0;
   }

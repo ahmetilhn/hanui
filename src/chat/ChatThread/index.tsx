@@ -4,7 +4,7 @@ import { type FC, memo, type ReactNode, useEffect, useRef } from 'react';
 
 import { ArrowDown } from 'react-bootstrap-icons';
 
-import { IconButton, useAnnounce, useHanui, useStickToBottom } from '@ahmetilhn/hanui';
+import { IconButton, useAnnounce, useUi, useStickToBottom } from '@handijit/ui';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';
@@ -34,7 +34,7 @@ type Props = {
  * - Dok sayfanın dibine yapışır ve `safe-area` payını taşır; iOS'ta klavye açıkken görünür kalır.
  */
 const ChatThread: FC<Props> = ({ children, dock, isStreaming, label, className, testId }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const announce = useAnnounce();
   const scrollRef = useRef<HTMLDivElement>(null);
   const { isAtEnd, scrollToEnd } = useStickToBottom(scrollRef);

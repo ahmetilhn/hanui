@@ -24,7 +24,7 @@ import {
 import { resolveLabel } from '../../helpers/label.helper';
 import useScrollLock from '../../hooks/useScrollLock';
 import useSheetViewport from '../../hooks/useSheetViewport';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 import IconButton from '../IconButton';
 
 import styles from './index.module.scss';
@@ -61,7 +61,7 @@ const Drawer = ({
   className,
   testId,
 }: Props) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const dialogRef = useRef<HTMLDialogElement>(null);
   /* Yigindaki yerimiz: */
   const tokenRef = useRef<symbol | null>(null);

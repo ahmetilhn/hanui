@@ -18,9 +18,9 @@ describe('Carousel şerit genişliği', () => {
     expect(gridAutoColumns()).not.toContain('minmax(');
   });
 
-  it('genişlik `--hanui-carousel-item` ile ezilebilir', () => {
-    expect(gridAutoColumns()).toContain('var(--hanui-carousel-item,');
-    expect(read('index.tsx')).toContain("'--hanui-carousel-item-default'");
+  it('genişlik `--ui-carousel-item` ile ezilebilir', () => {
+    expect(gridAutoColumns()).toContain('var(--ui-carousel-item,');
+    expect(read('index.tsx')).toContain("'--ui-carousel-item-default'");
   });
 
   it('dolmayan şerit başa yaslanır', () => {

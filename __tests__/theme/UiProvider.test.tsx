@@ -5,23 +5,23 @@ import { hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server.node';
 
 import { THEME_STYLE_ID } from '@/helpers/theme.helper';
-import HanuiProvider from '@/theme/HanuiProvider';
+import UiProvider from '@/theme/UiProvider';
 
 const THEME = { light: { link: '#0d6efd' }, dark: { link: '#6ea8fe' } };
 
-describe('HanuiProvider — tema ezmesi', () => {
+describe('UiProvider — tema ezmesi', () => {
   it('ezme çocuklardan ÖNCE ağaçta çizilir, `<head>`e yazılmaz', () => {
     const { container } = render(
-      <HanuiProvider theme={THEME}>
+      <UiProvider theme={THEME}>
         <p>içerik</p>
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     const style = document.getElementById(THEME_STYLE_ID);
 
     expect(container.firstElementChild).toBe(style);
     expect(document.head.querySelector(`#${THEME_STYLE_ID}`)).toBeNull();
-    expect(style?.textContent).toContain('@layer hanui {');
+    expect(style?.textContent).toContain('@layer ui {');
   });
 
   /*
@@ -38,34 +38,34 @@ describe('HanuiProvider — tema ezmesi', () => {
     };
 
     render(
-      <HanuiProvider theme={THEME}>
+      <UiProvider theme={THEME}>
         <Probe />
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
-    expect(seen).toContain('--hanui-link: #0d6efd;');
+    expect(seen).toContain('--ui-link: #0d6efd;');
   });
 
   it('tema değişince AYNI etiket güncellenir, kaldırılınca etiket gider', () => {
     const { rerender } = render(
-      <HanuiProvider theme={THEME}>
+      <UiProvider theme={THEME}>
         <p>içerik</p>
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     rerender(
-      <HanuiProvider theme={{ light: { link: '#123456' } }}>
+      <UiProvider theme={{ light: { link: '#123456' } }}>
         <p>içerik</p>
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     expect(document.querySelectorAll(`#${THEME_STYLE_ID}`)).toHaveLength(1);
     expect(document.getElementById(THEME_STYLE_ID)?.textContent).toContain('#123456');
 
     rerender(
-      <HanuiProvider>
+      <UiProvider>
         <p>içerik</p>
-      </HanuiProvider>,
+      </UiProvider>,
     );
 
     expect(document.getElementById(THEME_STYLE_ID)).toBeNull();
@@ -73,9 +73,9 @@ describe('HanuiProvider — tema ezmesi', () => {
 
   it('sunucu çıktısı uyuşmazlıksız hidrate olur — etiket yeniden yaratılmaz', async () => {
     const tree = (
-      <HanuiProvider theme={THEME}>
+      <UiProvider theme={THEME}>
         <p>içerik</p>
-      </HanuiProvider>
+      </UiProvider>
     );
     const container = document.createElement('div');
     container.innerHTML = renderToString(tree);

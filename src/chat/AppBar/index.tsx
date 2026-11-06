@@ -19,12 +19,12 @@ type Props = {
 };
 
 /** Belgeye yazılan değişken — yapışkan bileşenler (`DirectoryGroup`, kapaklı `DataTable`) bunu okur. */
-const HEIGHT_VARIABLE = '--hanui-header-height';
+const HEIGHT_VARIABLE = '--ui-header-height';
 
 /**
  * Uygulamanın üst bandı — sayfaya yapışık, sayfanın devamı (bant sayfayı ÖRTMEZ: `nav-*`).
  *
- * Kendi yüksekliğini ölçüp `--hanui-header-height`e yazar. README bu `ResizeObserver` kodunu her
+ * Kendi yüksekliğini ölçüp `--ui-header-height`e yazar. README bu `ResizeObserver` kodunu her
  * tüketiciye elle yazdırıyordu; sabit bir sayı yazan da vardı ve bant mobilde iki satıra düştüğünde
  * yapışkan başlıklar altında kalıyordu.
  */

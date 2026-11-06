@@ -1,14 +1,14 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { HanuiProvider, ToastPortal, toast } from '../../src';
+import { UiProvider, ToastPortal, toast } from '../../src';
 import { LABELS } from '../fixtures/labels';
 
 const renderPortal = () =>
   render(
-    <HanuiProvider labels={LABELS}>
+    <UiProvider labels={LABELS}>
       <ToastPortal />
-    </HanuiProvider>,
+    </UiProvider>,
   );
 
 beforeEach(() => {

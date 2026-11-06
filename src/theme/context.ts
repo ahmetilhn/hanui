@@ -2,11 +2,11 @@
 
 import { createContext, useContext } from 'react';
 
-import type { HanuiContextValue } from '@/types/theme.type';
+import type { UiContextValue } from '@/types/theme.type';
 
-const HanuiContext = createContext<HanuiContextValue>({});
+const UiContext = createContext<UiContextValue>({});
 
 /** Sağlayıcı ZORUNLU DEĞİL. */
-export const useHanui = (): HanuiContextValue => useContext(HanuiContext);
+export const useUi = (): UiContextValue => useContext(UiContext);
 
-export default HanuiContext;
+export default UiContext;

@@ -1,6 +1,8 @@
+'use client';
+
 import { forwardRef, type InputHTMLAttributes, memo, type ReactNode, useId } from 'react';
 
-import { isDefined } from '@ahmetilhn/handy-utils';
+import { isDefined } from '@handijit/utils';
 
 import { cx } from '../../helpers/class-name.helper';
 import { named } from '../../helpers/component.helper';

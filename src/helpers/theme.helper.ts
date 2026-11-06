@@ -1,25 +1,25 @@
-import { isClient } from '@ahmetilhn/handy-utils';
+import { isClient } from '@handijit/utils';
 
 import { DARK_THEME, DEFAULT_FONTS, LIGHT_THEME } from '../theme/tokens';
-import type { HanuiColorScheme, HanuiResolvedTokens, HanuiThemeConfig } from '@/types/theme.type';
+import type { UiColorScheme, UiResolvedTokens, UiThemeConfig } from '@/types/theme.type';
 
 /** CSS özel özelliği öneki — `_tokens.generated.scss` ile aynı olmak zorunda. */
-export const TOKEN_PREFIX = '--hanui-';
+export const TOKEN_PREFIX = '--ui-';
 
 /** Ezme kurallarını taşıyan `<style>` etiketinin kimliği. */
-export const THEME_STYLE_ID = 'hanui-theme-overrides';
+export const THEME_STYLE_ID = 'ui-theme-overrides';
 
-/** Temanın taşındığı öznitelik. `<html data-hanui-theme="dark">`. */
-export const THEME_ATTRIBUTE = 'data-hanui-theme';
+/** Temanın taşındığı öznitelik. `<html data-ui-theme="dark">`. */
+export const THEME_ATTRIBUTE = 'data-ui-theme';
 
-/** Bilgi yoğunluğunun taşındığı öznitelik. `<html data-hanui-density="compact">`. */
-export const DENSITY_ATTRIBUTE = 'data-hanui-density';
+/** Bilgi yoğunluğunun taşındığı öznitelik. `<html data-ui-density="compact">`. */
+export const DENSITY_ATTRIBUTE = 'data-ui-density';
 
 /** Geçiş animasyonlarını tek kare boyunca kapatan sınıf (bkz. `base.scss`). */
-export const THEME_SWITCHING_CLASS = 'hanui-theme-switching';
+export const THEME_SWITCHING_CLASS = 'ui-theme-switching';
 
-/** Ezmelerin katmanı — `scripts/lib/postcss-hanui-layer.mjs`in varsayılanıyla aynı olmak zorunda. */
-export const THEME_LAYER = 'hanui';
+/** Ezmelerin katmanı — `scripts/lib/postcss-ui-layer.mjs`in varsayılanıyla aynı olmak zorunda. */
+export const THEME_LAYER = 'ui';
 
 /**
  * Ezme kurallarının kök seçicisi: `_tokens.generated.scss`teki karşılığından bir öğe (`html`) daha
@@ -30,10 +30,7 @@ export const THEME_LAYER = 'hanui';
 const THEME_ROOT = 'html:root';
 
 /** Verilen şemanın tam token eşlemesi — ezmeler uygulanmış hâliyle. */
-export const resolveTokens = (
-  scheme: HanuiColorScheme,
-  config?: HanuiThemeConfig,
-): HanuiResolvedTokens => {
+export const resolveTokens = (scheme: UiColorScheme, config?: UiThemeConfig): UiResolvedTokens => {
   const base = scheme === 'dark' ? DARK_THEME : LIGHT_THEME;
   const overrides = (scheme === 'dark' ? config?.dark : config?.light) ?? {};
 
@@ -41,14 +38,14 @@ export const resolveTokens = (
 };
 
 /**
- * Yapılandırmayı CSS metnine çevirir. Çıktının tamamı `@layer hanui` içinde: tüketicinin katmansız
+ * Yapılandırmayı CSS metnine çevirir. Çıktının tamamı `@layer ui` içinde: tüketicinin katmansız
  * her kuralı ezmeyi özgüllükten ve sıradan bağımsız yener (README, "CSS'imizi ezmek").
- * ⚠ 5.6.2'ye kadar ezme katmansızdı: `:root:not([data-hanui-theme])` (0,2,0) tüketicinin `<html>`e
+ * ⚠ 5.6.2'ye kadar ezme katmansızdı: `:root:not([data-ui-theme])` (0,2,0) tüketicinin `<html>`e
  * yazdığı ezmeyi (`html:has(.panel)`, 0,1,1) hidrasyondan SONRA eziyordu — sunucu çiziminde
  * tüketicinin rengi, bir kare sonra temanınki (ölçüldü: panelin kırmızı sil düğmesi koyu temada
  * beyaza dönüyordu). Katmansız açık ezme koyu varsayılanı da yeniyor, koyu temaya sızıyordu.
  */
-export const buildThemeCss = (config: HanuiThemeConfig): string => {
+export const buildThemeCss = (config: UiThemeConfig): string => {
   const blocks: string[] = [];
 
   const declarations = (tokens: Record<string, string>, indent = '  ') =>
@@ -80,7 +77,7 @@ export const buildThemeCss = (config: HanuiThemeConfig): string => {
 
   /*
    * Acik tema iki secicide birden yazilir: `html:root` (varsayilan) ve
-   * `html:root[data-hanui-theme='light']` (kullanicinin acik secimi).
+   * `html:root[data-ui-theme='light']` (kullanicinin acik secimi).
    */
   if (config.light && Object.keys(config.light).length > 0) {
     const body = declarations(config.light);
@@ -111,13 +108,13 @@ export const buildThemeCss = (config: HanuiThemeConfig): string => {
 export const toStyleHtml = (css: string): string => css.replace(/<\/style/gi, '<\\/style');
 
 /**
- * Ezmeleri `<head>`in sonuna yazar — React dışındaki yol (`initHanui`); sağlayıcı ezmeyi ağaçta
+ * Ezmeleri `<head>`in sonuna yazar — React dışındaki yol (`initUi`); sağlayıcı ezmeyi ağaçta
  * çizer.
- * ⚠ Stil sayfalarından SONRA çağrılmalı: `@layer hanui` belgede ilk kez burada görülürse katman
- * sırası buradan kurulur ve tüketicinin sonra gelen `@layer reset, hanui;` bildirimi `reset`i
- * `hanui`nin üstüne koyar.
+ * ⚠ Stil sayfalarından SONRA çağrılmalı: `@layer ui` belgede ilk kez burada görülürse katman
+ * sırası buradan kurulur ve tüketicinin sonra gelen `@layer reset, ui;` bildirimi `reset`i
+ * `ui`nin üstüne koyar.
  */
-export const applyThemeConfig = (config: HanuiThemeConfig | undefined): void => {
+export const applyThemeConfig = (config: UiThemeConfig | undefined): void => {
   if (!isClient()) return;
 
   const css = config ? buildThemeCss(config) : '';
@@ -137,7 +134,7 @@ export const applyThemeConfig = (config: HanuiThemeConfig | undefined): void => 
 
 /**
  * İLK BOYAMADAN ÖNCE çalışacak tema betiği — `<head>` içine, React ağacından ÖNCE.
- * Kayıtlı açık seçimi (`light` / `dark`) `<html data-hanui-theme>`e yazar; kayıt yoksa öznitelik
+ * Kayıtlı açık seçimi (`light` / `dark`) `<html data-ui-theme>`e yazar; kayıt yoksa öznitelik
  * yazılmaz ve sistem tercihi izlenir.
  * ⚠ React ağacına konamaz: sağlayıcı ağaç monte olduktan sonra çalışıyor ve koyu tema seçmiş
  * kullanıcı o ana kadar bir kare beyaz ekran görüyordu. İki tüketici bu betiği ELLE yazıyordu.

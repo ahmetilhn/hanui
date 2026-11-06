@@ -1,8 +1,10 @@
+'use client';
+
 import { type FC, memo } from 'react';
 
 import { cx } from '../../helpers/class-name.helper';
 import { resolveLabel } from '../../helpers/label.helper';
-import { useHanui } from '../../theme/context';
+import { useUi } from '../../theme/context';
 
 import styles from './index.module.scss';
 
@@ -36,7 +38,7 @@ const Price: FC<Props> = ({
   className,
   testId,
 }) => {
-  const { labels } = useHanui();
+  const { labels } = useUi();
   const symbol = resolveLabel('Price.currency', currency, labels?.currency);
 
   /* BICIMLENDIRME OPSIYONEL ve yerel ayara BAGLI. */

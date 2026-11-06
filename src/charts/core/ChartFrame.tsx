@@ -13,7 +13,7 @@ import {
   useState,
 } from 'react';
 
-import { useAnnounce } from '@ahmetilhn/hanui';
+import { useAnnounce } from '@handijit/ui';
 
 import { cx } from '../../helpers/class-name.helper';
 

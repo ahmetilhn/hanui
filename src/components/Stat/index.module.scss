@@ -67,8 +67,12 @@
 }
 
 .stat__label {
-  font-size: $font-size-xs;
-  font-weight: $weight-medium;
+  // Bileşen değişkenleri (6.0): etiket ve değer tipografisi tüketicide tek yerden ezilir.
+  font-family: var(--ui-stat-label-font, inherit);
+  font-size: var(--ui-stat-label-size, #{$font-size-xs});
+  font-weight: var(--ui-stat-label-weight, #{$weight-medium});
+  letter-spacing: var(--ui-stat-label-tracking, normal);
+  text-transform: var(--ui-stat-label-transform, none);
   color: $text-2;
   padding-inline-end: $space-6;
 }
@@ -76,11 +80,11 @@
 .stat__value {
   @include row($space-1, baseline);
 
-  font-family: $font-heading;
+  font-family: var(--ui-stat-value-font, #{$font-heading});
   font-size: $font-size-2xl;
-  font-weight: $weight-bold;
+  font-weight: var(--ui-stat-value-weight, #{$weight-bold});
   line-height: $leading-tight;
-  letter-spacing: $tracking-tight;
+  letter-spacing: var(--ui-stat-value-tracking, #{$tracking-tight});
   color: $text;
   font-variant-numeric: tabular-nums;
 
@@ -90,10 +94,12 @@
 }
 
 .stat__unit {
-  font-size: $font-size-sm;
+  font-family: var(--ui-stat-unit-font, inherit);
+  font-size: var(--ui-stat-unit-size, #{$font-size-sm});
   font-weight: $weight-medium;
   color: $text-2;
-  letter-spacing: normal;
+  letter-spacing: var(--ui-stat-unit-tracking, normal);
+  text-transform: var(--ui-stat-unit-transform, none);
 }
 
 .stat__delta {
